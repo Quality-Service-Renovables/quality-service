@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ct_status', function (Blueprint $table) {
-            $table->id('id_status');
-            $table->string('status');
-            $table->string('code');
-            $table->string('description');
-            $table->unsignedBigInteger('client_id');
-            $table->boolean('active');
+        Schema::create('ct_equipment_failures', static function (Blueprint $table) {
+            $table->id('ct_equipment_failure');
+            $table->uuid('ct_equipment_failure_uuid');
+            $table->string('ct_failure_id');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ct_status');
+        Schema::dropIfExists('ct_equipment_failures');
     }
 };

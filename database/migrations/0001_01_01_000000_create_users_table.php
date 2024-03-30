@@ -20,12 +20,12 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('password');
             $table->boolean('active');
-            $table->unsignedInteger('cliente_id');
+            $table->unsignedBigInteger('client_id');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
             //INDEX
-            $table->index(['cliente_id']);
+            $table->index(['client_id']);
             //FOREIGN KEYS
             $table->foreign('client_id', 'fk_user_client')
                 ->references('client_id')

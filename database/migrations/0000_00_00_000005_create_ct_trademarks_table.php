@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ct_equipment_failures', function (Blueprint $table) {
-            $table->id();
+        Schema::create('ct_trademarks', static function (Blueprint $table) {
+            $table->id('trademark_id');
+            $table->uuid('trademark_uuid');
+            $table->string('name');
+            $table->boolean('active')->default(1);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -22,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ct_equipment_failures');
+        Schema::dropIfExists('ct_trademarks');
     }
 };

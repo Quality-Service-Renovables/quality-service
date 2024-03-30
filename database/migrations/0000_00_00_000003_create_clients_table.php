@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clients', function (Blueprint $table) {
+        Schema::create('clients', static function (Blueprint $table) {
             $table->id('client_id');
             $table->uuid('client_uuid');
             $table->string('name')->unique();
@@ -28,6 +28,18 @@ return new class extends Migration
             $table->string('logo')->nullable();
             $table->timestamps();
             $table->softDeletes();
+            //INDEX
+            $table->index(['country_id', 'state_id', 'city_id']);
+            //FOREIGN KEYS
+            $table->foreign('country_id', 'fk_client_country')
+                ->references('country_id')
+                ->on('countries');
+            $table->foreign('state_id', 'fk_client_state')
+                ->references('state_id')
+                ->on('states');
+            $table->foreign('city_id', 'fk_client_city')
+                ->references('city_id')
+                ->on('cities');
         });
     }
 

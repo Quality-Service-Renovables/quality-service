@@ -22,7 +22,6 @@ return new class extends Migration
             $table->unsignedSmallInteger('trademark_id');
             $table->unsignedSmallInteger('category_id');
             $table->unsignedBigInteger('status_id');
-            $table->unsignedBigInteger('status_id');
             $table->timestamps();
             $table->softDeletes();
         });

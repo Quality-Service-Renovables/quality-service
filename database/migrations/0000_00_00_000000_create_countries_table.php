@@ -11,9 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ct_trademarks', function (Blueprint $table) {
-            $table->id();
+        Schema::create('countries', static function (Blueprint $table) {
+            $table->id('country_id');
+            $table->uuid('country_uuid');
+            $table->string('name')->unique();
+            $table->string('code_name')->unique()->nullable();
+            $table->boolean('active')->default(1);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -22,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ct_trademarks');
+        Schema::dropIfExists('countries');
     }
 };
