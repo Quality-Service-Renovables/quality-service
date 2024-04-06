@@ -11,34 +11,36 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id('user_id');
-            $table->uuid('user_uuid');
+        Schema::create('users', static function (Blueprint $table) {
+            $table->id();
+            $table->uuid();
             $table->string('name');
+            $table->string('image_profile')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('phone')->unique();
+            $table->string('phone')->unique()->nullable();
             $table->string('password');
-            $table->boolean('active');
-            $table->unsignedBigInteger('client_id');
+            $table->boolean('active')->default(true);
+            $table->unsignedBigInteger('client_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
             //INDEX
-            $table->index(['client_id']);
+            $table->index('uuid');
+            $table->index('client_id');
             //FOREIGN KEYS
             $table->foreign('client_id', 'fk_user_client')
                 ->references('client_id')
                 ->on('clients');
         });
 
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
+        Schema::create('password_reset_tokens', static function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
 
-        Schema::create('sessions', function (Blueprint $table) {
+        Schema::create('sessions', static function (Blueprint $table) {
             $table->string('id')->primary();
             $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();

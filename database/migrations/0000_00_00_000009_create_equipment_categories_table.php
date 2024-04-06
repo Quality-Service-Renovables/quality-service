@@ -11,17 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('status', static function (Blueprint $table) {
-            $table->id('status_id');
-            $table->uuid('status_uuid');
-            $table->string('status')->unique();
-            $table->string('status_code')->unique();
-            $table->longText('description');
+        Schema::create('equipment_categories', static function (Blueprint $table) {
+            $table->id('equipment_category_id');
+            $table->uuid('equipment_category_uuid');
+            $table->string('equipment_category')->unique();
+            $table->string('equipment_category_code')->unique();
+            $table->string('description')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();
-            //INDEX
-            $table->index(['status_uuid']);
         });
     }
 
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('status');
+        Schema::dropIfExists('equipment_categories');
     }
 };

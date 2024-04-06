@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('states', static function (Blueprint $table) {
             $table->id('state_id');
             $table->uuid('state_uuid');
-            $table->string('name')->unique();
-            $table->string('code_name')->unique()->nullable();
-            $table->boolean('active')->default(1);
+            $table->string('state')->unique();
+            $table->string('state_code')->unique();
+            $table->boolean('active')->default(true);
             $table->unsignedBigInteger('country_id');
             $table->timestamps();
             $table->softDeletes();
             //INDEX
-            $table->index(['state_uuid', 'country_id']);
+            $table->index(['state_uuid','country_id']);
             //FOREIGN KEYS
             $table->foreign('country_id', 'fk_state_country')
                 ->references('country_id')

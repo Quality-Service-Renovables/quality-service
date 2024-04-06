@@ -11,12 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ct_equipment_failures', static function (Blueprint $table) {
-            $table->id('ct_equipment_failure');
-            $table->uuid('ct_equipment_failure_uuid');
-            $table->string('ct_failure_id');
+        Schema::create('trademarks', static function (Blueprint $table) {
+            $table->id('trademark_id');
+            $table->uuid('trademark_uuid');
+            $table->string('trademark')->unique();
+            $table->string('trademark_code')->unique();
+            $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();
+            //INDEX
+            $table->index(['trademark_uuid']);
         });
     }
 
@@ -25,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ct_equipment_failures');
+        Schema::dropIfExists('trademarks');
     }
 };

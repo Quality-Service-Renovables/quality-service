@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('client_configuration', function (Blueprint $table) {
+        Schema::create('client_configuration', static function (Blueprint $table) {
             $table->id('client_configuration_id');
             $table->uuid('client_configuration_uuid');
             $table->unsignedBigInteger('client_id');
@@ -19,6 +19,12 @@ return new class extends Migration
             $table->boolean('invoice_required');
             $table->timestamps();
             $table->softDeletes();
+            //INDEX
+            $table->index('client_configuration_uuid');
+            $table->index('client_id');
+            //FOREIGN KEYS
+            $table->foreign('client_id', 'fk_client_configuration_client')
+                ->references('client_id')->on('clients');
         });
     }
 

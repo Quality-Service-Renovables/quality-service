@@ -11,14 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ct_failures_categories', static function (Blueprint $table) {
+        Schema::create('failure_categories', static function (Blueprint $table) {
             $table->id('failure_category_id');
             $table->uuid('failure_category_uuid');
-            $table->string('description');
-            $table->boolean('active')->default(1);
-            $table->integer('level');
+            $table->string('failure_category')->unique();
+            $table->string('failure_category_code')->unique();
+            $table->boolean('is_default')->default(true);
+            $table->bigInteger('level')->default(1);
+            $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();
+            //INDEX
+            $table->index(['failure_category_uuid']);
         });
     }
 
@@ -27,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ct_failures_categories');
+        Schema::dropIfExists('failures_categories');
     }
 };

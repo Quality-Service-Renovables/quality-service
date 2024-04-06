@@ -14,16 +14,16 @@ return new class extends Migration
         Schema::create('cities', static function (Blueprint $table) {
             $table->id('city_id');
             $table->uuid('city_uuid');
-            $table->string('name')->unique();
-            $table->string('code_name')->unique()->nullable();
-            $table->boolean('active')->default(1);
+            $table->string('city')->unique();
+            $table->string('city_code')->unique();
+            $table->boolean('active')->default(true);
             $table->unsignedBigInteger('state_id');
             $table->timestamps();
             $table->softDeletes();
             //INDEX
-            $table->index(['city_uuid', 'state_id']);
+            $table->index(['state_id','city_uuid']);
             //FOREIGN KEYS
-            $table->foreign('state_id', 'fk_city_country')
+            $table->foreign('state_id', 'fk_city_state')
                 ->references('state_id')
                 ->on('states');
         });
