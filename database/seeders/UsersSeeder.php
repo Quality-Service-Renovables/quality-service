@@ -1,5 +1,9 @@
 <?php
 
+/** @noinspection UnknownInspectionInspection */
+
+/** @noinspection PhpUndefinedMethodInspection */
+
 namespace Database\Seeders;
 
 use App\Models\Client;
@@ -22,12 +26,11 @@ class UsersSeeder extends Seeder
 
     /**
      * Get the users array.
-     *
-     * @return array
      */
     private function getUsers(): array
     {
         $client = Client::where('client_code', 'quality_service')->first();
+
         return [
             [
                 'uuid' => Str::uuid()->toString(),
