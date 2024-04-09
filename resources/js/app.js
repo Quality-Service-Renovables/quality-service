@@ -17,6 +17,11 @@ const vuetify = createVuetify({
   directives,
 })
 
+// Pinia
+import { createPinia } from 'pinia'
+
+const pinia = createPinia()
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
@@ -27,6 +32,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(vuetify)
+            .use(pinia)
             .mount(el);
     },
     progress: {
