@@ -19,6 +19,6 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
-        "vuetify": "^3.5.11"
+        "vuetify": "^3.5.14"
     }
 }
