@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class InitialSeeder extends Seeder
@@ -16,6 +15,7 @@ class InitialSeeder extends Seeder
             ClientsSeeder::class,
             StatusSeeder::class,
             UsersSeeder::class,
+            VersionsSeeder::class,
         ]);
     }
 }

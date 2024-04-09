@@ -11,13 +11,23 @@ profile:
 #Enable inspections
 #include:
 #  - name: <SomeEnabledInspectionId>
-
+include:
+  - name: CheckDependencyLicenses
 #Disable inspections
 #exclude:
 #  - name: <SomeDisabledInspectionId>
 #    paths:
 #      - <path/where/not/run/inspection>
-
+exclude:
+  - name: All
+    paths:
+      - vendor
+      - node_modules
+      - tests
+      - app/Http/Middleware
+      - bootstrap
+      - config
+      - storage
 php:
   version: 8.2 #(Applied in CI/CD pipeline)
 

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('model');
             $table->string('serial_number');
             $table->longText('description');
+            $table->string('manual')->nullable();
             $table->unsignedBigInteger('equipment_category_id');
             $table->unsignedBigInteger('trademark_id');
             $table->unsignedBigInteger('status_id');

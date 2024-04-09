@@ -19,14 +19,18 @@ return new class extends Migration
             $table->boolean('maintenance_apply')->default(true);
             $table->dateTime('maintenance_date');
             $table->dateTime('maintenance_scheduled');
+            $table->unsignedBigInteger('maintenance_category_id');
             $table->timestamps();
             $table->softDeletes();
             //INDEX
             $table->index('equipment_maintenance_uuid');
             $table->index('equipment_id');
+            $table->index('maintenance_category_id');
             //FOREIGN KEYS
             $table->foreign('equipment_id', 'fk_equipment_maintenance_equipment')
                 ->references('equipment_id')->on('equipments');
+            $table->foreign('maintenance_category_id', 'fk_equipment_maintenance_maintenance_categories')
+                ->references('maintenance_category_id')->on('maintenance_categories');
         });
     }
 

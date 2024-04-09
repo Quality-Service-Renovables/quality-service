@@ -21,6 +21,10 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('zip_code')->nullable();
             $table->string('phone')->nullable();
+            $table->string('phone_office')->nullable();
+            $table->time('open_time')->nullable();
+            $table->time('close_time')->nullable();
+            $table->string('office_days')->nullable();
             $table->string('website')->nullable();
             $table->string('email')->unique()->nullable();
             $table->boolean('active')->default(true);
