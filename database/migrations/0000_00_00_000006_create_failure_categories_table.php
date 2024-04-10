@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('failure_category')->unique();
             $table->string('failure_category_code')->unique();
             $table->boolean('is_default')->default(true);
+            $table->bigInteger('dependency');
             $table->bigInteger('level')->default(1);
             $table->boolean('active')->default(true);
             $table->timestamps();

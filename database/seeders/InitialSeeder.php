@@ -15,6 +15,10 @@ class InitialSeeder extends Seeder
             ClientsSeeder::class,
             StatusSeeder::class,
             UsersSeeder::class,
+            ServiceCategoriesSeeder::class,
+            MaintenanceCategoriesSeeder::class,
+            FixCategoriesSeeder::class,
+            InspectionCategoriesSeeder::class,
             VersionsSeeder::class,
         ]);
     }
