@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('application_logs', static function (Blueprint $table) {
-            $table->id('application_logs_id');
-            $table->uuid('application_logs_uuid');
+            $table->id('application_log_id');
+            $table->uuid('application_log_uuid');
             $table->string('request_url');
             $table->json('request_received');
             $table->json('request_response')->nullable();

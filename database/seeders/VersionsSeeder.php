@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Version;
+use App\Models\Application\Version;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 

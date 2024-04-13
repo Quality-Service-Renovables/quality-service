@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Equipments;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EquipmentCategory extends Model
+class Category extends Model
 {
     use HasFactory;
     protected $table = 'equipment_categories';

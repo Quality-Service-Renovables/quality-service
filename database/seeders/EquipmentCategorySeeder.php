@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\EquipmentCategory;
+use App\Models\Equipments\Category;
+use App\Models\Equipments\EquipmentCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -14,7 +15,7 @@ class EquipmentCategorySeeder extends Seeder
     public function run(): void
     {
         foreach ($this->getCategories() as $category) {
-            EquipmentCategory::updateOrCreate(['equipment_catergory_code' => $category['equipment_catergory_code']], $category);
+            Category::updateOrCreate(['equipment_catergory_code' => $category['equipment_catergory_code']], $category);
         }
     }
 
