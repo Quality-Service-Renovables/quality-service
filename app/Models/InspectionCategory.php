@@ -20,4 +20,5 @@ class InspectionCategory extends Model
         'level',
         'active',
     ];
+    protected $hidden = ['inspection_category_id'];
 }
