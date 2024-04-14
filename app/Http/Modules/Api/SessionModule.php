@@ -5,6 +5,7 @@ namespace App\Http\Modules\Api;
 use App\Http\Modules\MainModule;
 use App\Http\Requests\Api\Sessions\SessionRequest;
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 
 class SessionModule extends MainModule

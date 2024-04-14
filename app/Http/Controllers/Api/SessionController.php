@@ -17,7 +17,7 @@ class SessionController extends Controller
         $this->module = new SessionModule();
     }
 
-    public function login(SessionRequest $request): JsonResponse
+    public function login(SessionRequest $request)
     {
         $this->module->login($request);
 
