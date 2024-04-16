@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('equipment_uuid');
             $table->string('equipment');
             $table->string('equipment_code');
-            $table->string('equipment_image')->default('equipments/default.jpg');
+            $table->string('equipment_image')->default('img/equipments/default.jpg');
             $table->string('model')->nullable();
             $table->string('serial_number')->nullable()->comment('Serial number or vin number');
             $table->string('manufacture_date')->nullable()->comment('Manufacture date');
