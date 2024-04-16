@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\Api\Equipments;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\ValidationException;
 
 class EquipmentRequest extends FormRequest
 {
@@ -11,7 +14,7 @@ class EquipmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +25,19 @@ class EquipmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'equipment' => 'required|string',
+            'equipment_category_code' => 'required|string|exists:equipment_categories,equipment_category_code',
+            'trademark_code' => 'required|string|exists:trademarks,trademark_code',
+            'status_code' => 'required|string|exists:status,status_code',
         ];
+    }
+
+    protected function failedValidation(Validator $validator): void
+    {
+        $errors = (new ValidationException($validator))->errors();
+
+        throw new HttpResponseException(
+            response()->json(['errors' => $errors], 422)
+        );
     }
 }

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('failure_categories', static function (Blueprint $table) {
             $table->id('failure_category_id');
             $table->uuid('failure_category_uuid');
-            $table->string('failure_category')->unique();
-            $table->string('failure_category_code')->unique();
+            $table->string('failure_category');
+            $table->string('failure_category_code');
             $table->boolean('is_default')->default(true);
             $table->bigInteger('dependency');
             $table->bigInteger('level')->default(1);

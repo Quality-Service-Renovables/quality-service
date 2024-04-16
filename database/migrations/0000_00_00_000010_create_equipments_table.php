@@ -16,12 +16,12 @@ return new class extends Migration
             $table->uuid('equipment_uuid');
             $table->string('equipment');
             $table->string('equipment_code');
-            $table->string('equipment_image');
-            $table->string('model');
-            $table->string('serial_number')->comment('Serial number or vin number');
-            $table->string('manufacture_date')->comment('Manufacture date');
-            $table->date('barcode')->comment('Barcode');
-            $table->longText('description')->comment('General comments');
+            $table->string('equipment_image')->default('equipments/default.jpg');
+            $table->string('model')->nullable();
+            $table->string('serial_number')->nullable()->comment('Serial number or vin number');
+            $table->string('manufacture_date')->nullable()->comment('Manufacture date');
+            $table->date('barcode')->nullable()->comment('Barcode');
+            $table->longText('description')->nullable()->comment('General comments');
             $table->string('manual')->nullable();
             $table->unsignedBigInteger('equipment_category_id');
             $table->unsignedBigInteger('trademark_id');

@@ -29,7 +29,7 @@ class CategoryModule extends MainModule
             // Complement Request
             $data = $request->all();
             $data['inspection_category_uuid'] = Str::uuid()->toString();
-            $data['inspection_category_code'] = $this->createSlug($request->get('inspection_category'));
+            $data['inspection_category_code'] = create_slug($request->get('inspection_category'));
             // Create Register
             InspectionCategory::create($data);
             // Recover Register
@@ -66,7 +66,7 @@ class CategoryModule extends MainModule
             DB::beginTransaction();
             // Complement Request
             $data = $request->all();
-            $data['inspection_category_code'] = $this->createSlug($request->get('inspection_category'));
+            $data['inspection_category_code'] = create_slug($request->get('inspection_category'));
             // Create Register
             InspectionCategory::where('inspection_category_uuid', $request->inspection_category_uuid)
                 ->update($data);
@@ -164,20 +164,5 @@ class CategoryModule extends MainModule
         }
 
         return $this->response;
-    }
-
-    public function createSlug(string $string): string
-    {
-        // Primero, reemplazar los caracteres no latinos por "-"
-        $slug = preg_replace('~[^\pL\d]+~u', '_', $string);
-
-        // A continuación, transcribimos cualquier carácter latino a ASCII
-        $slug = iconv('utf-8', 'us-ascii//TRANSLIT', $slug);
-
-        // Entonces, eliminamos los caracteres indeseables
-        $slug = preg_replace('~[^-\w]+~', '', $slug);
-
-        // Finalmente, convertimos el slug a minúscula y lo recortamos
-        return strtolower(trim($slug, '-'));
     }
 }

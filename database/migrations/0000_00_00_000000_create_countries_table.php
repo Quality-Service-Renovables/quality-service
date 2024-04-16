@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('countries', static function (Blueprint $table) {
             $table->id('country_id');
             $table->uuid('country_uuid');
-            $table->string('country')->unique();
-            $table->string('country_code')->unique();
+            $table->string('country');
+            $table->string('country_code');
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();

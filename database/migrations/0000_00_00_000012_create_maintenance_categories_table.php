@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('maintenance_categories', static function (Blueprint $table) {
             $table->id('maintenance_category_id');
             $table->uuid('maintenance_category_uuid');
-            $table->string('maintenance_category')->unique();
-            $table->string('maintenance_category_code')->unique();
+            $table->string('maintenance_category');
+            $table->string('maintenance_category_code');
             $table->longText('description')->nullable();
             $table->boolean('is_default')->default(true);
             $table->unsignedBigInteger('dependency')->nullable();

@@ -15,7 +15,7 @@ class EquipmentCategorySeeder extends Seeder
     public function run(): void
     {
         foreach ($this->getCategories() as $category) {
-            Category::updateOrCreate(['equipment_catergory_code' => $category['equipment_catergory_code']], $category);
+            Category::updateOrCreate(['equipment_category_code' => $category['equipment_category_code']], $category);
         }
     }
 
@@ -28,10 +28,24 @@ class EquipmentCategorySeeder extends Seeder
     {
         return [
             [
-                'equipment_catergory_uuid' => Str::uuid()->toString(),
-                'equipment_catergory' => '',
-                'equipment_catergory_code' => '',
-                'description' => '',
+                'equipment_category_uuid' => Str::uuid()->toString(),
+                'equipment_category' => 'Generadores',
+                'equipment_category_code' => 'generador',
+                'description' => 'Generadores',
+                'active' => true,
+            ],
+            [
+                'equipment_category_uuid' => Str::uuid()->toString(),
+                'equipment_category' => 'Multiplicadoras',
+                'equipment_category_code' => 'multiplicador',
+                'description' => 'Multiplicadoras',
+                'active' => true,
+            ],
+            [
+                'equipment_category_uuid' => Str::uuid()->toString(),
+                'equipment_category' => 'Transforamadores',
+                'equipment_category_code' => 'transformador',
+                'description' => 'Transformadores',
                 'active' => true,
             ],
         ];

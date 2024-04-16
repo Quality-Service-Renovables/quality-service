@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('cities', static function (Blueprint $table) {
             $table->id('city_id');
             $table->uuid('city_uuid');
-            $table->string('city')->unique();
-            $table->string('city_code')->unique();
+            $table->string('city');
+            $table->string('city_code');
             $table->boolean('active')->default(true);
             $table->unsignedBigInteger('state_id');
             $table->timestamps();

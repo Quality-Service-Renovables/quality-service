@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('supervision_categories', static function (Blueprint $table) {
             $table->id('supervision_category_id');
             $table->uuid('supervision_category_uuid');
-            $table->string('supervision_category')->unique();
-            $table->string('supervision_category_code')->unique();
+            $table->string('supervision_category');
+            $table->string('supervision_category_code');
             $table->longText('description')->nullable();
             $table->boolean('is_default')->default(true);
             $table->unsignedBigInteger('dependency')->nullable();

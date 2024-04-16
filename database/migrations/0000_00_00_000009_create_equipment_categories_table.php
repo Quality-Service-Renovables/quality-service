@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('equipment_categories', static function (Blueprint $table) {
             $table->id('equipment_category_id');
             $table->uuid('equipment_category_uuid');
-            $table->string('equipment_category')->unique();
-            $table->string('equipment_category_code')->unique();
+            $table->string('equipment_category');
+            $table->string('equipment_category_code');
             $table->string('description')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();

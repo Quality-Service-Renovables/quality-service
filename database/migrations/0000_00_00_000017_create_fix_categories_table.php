@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('fix_categories', static function (Blueprint $table) {
             $table->id('fix_category_id');
             $table->uuid('fix_category_uuid');
-            $table->string('fix_category')->unique();
-            $table->string('fix_category_code')->unique();
+            $table->string('fix_category');
+            $table->string('fix_category_code');
             $table->longText('description')->nullable();
             $table->boolean('is_default')->default(true);
             $table->unsignedBigInteger('dependency')->nullable();

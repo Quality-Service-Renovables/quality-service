@@ -4,11 +4,14 @@
 
 namespace App\Http\Modules\Api\V1\Equipments;
 
-use App\Http\Modules\Api\Equipments\DB;
 use App\Http\Modules\Applications\LogModule;
+use App\Models\Equipments\Category;
 use App\Models\Equipments\Equipment;
+use App\Models\Status;
+use App\Models\Trademarks\Trademark;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class EquipmentModule
@@ -46,12 +49,18 @@ class EquipmentModule
 
             $data = $request->all();
             $data['equipment_uuid'] = Str::uuid()->toString();
+            $data['equipment_code'] = create_slug($request->get('equipment'));
+
+            $data['equipment_category_id'] = Category::where('equipment_category_code', $request->get('equipment_category_code'))->first()->equipment_category_id;
+            $data['trademark_id'] = Trademark::where('trademark_code', $request->get('trademark_code'))->first()->trademark_id;
+            $data['status_id'] = Status::where('status_code', $request->get('status_code'))->first()->status_id;
+
             $equipment = Equipment::create($data);
             $this->response['data'] = $equipment;
 
             $this->logModule->create(
                 $this->nameModule,
-                $request,
+                $request->all(),
                 $this->response,
                 'Create equipment request',
             );
@@ -81,6 +90,7 @@ class EquipmentModule
 
             $data = $request->all();
             $data['equipment_uuid'] = Str::uuid()->toString();
+            $data['equipment_code'] = create_slug($request->get('equipment'));
             $equipment = Equipment::update($data);
             $this->response['data'] = $equipment;
 
@@ -110,7 +120,9 @@ class EquipmentModule
      */
     public function read(): array
     {
-        $this->response['data'] = Equipment::all();
+        $this->response['data'] = Equipment::with([
+            'category', 'status', 'trademark',
+        ])->get();
 
         return $this->response;
     }

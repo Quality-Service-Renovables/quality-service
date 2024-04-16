@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('trademarks', static function (Blueprint $table) {
             $table->id('trademark_id');
             $table->uuid('trademark_uuid');
-            $table->string('trademark')->unique();
-            $table->string('trademark_code')->unique();
+            $table->string('trademark');
+            $table->string('trademark_code');
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();

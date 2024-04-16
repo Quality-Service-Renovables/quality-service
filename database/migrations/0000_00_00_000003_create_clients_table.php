@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('clients', static function (Blueprint $table) {
             $table->id('client_id');
             $table->uuid('client_uuid');
-            $table->string('client')->unique();
-            $table->string('client_code')->unique();
+            $table->string('client');
+            $table->string('client_code');
             $table->string('logo')->nullable();
-            $table->string('legal_name')->unique()->nullable();
+            $table->string('legal_name')->nullable();
             $table->string('address')->nullable();
             $table->string('zip_code')->nullable();
             $table->string('phone')->nullable();

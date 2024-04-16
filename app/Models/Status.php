@@ -15,6 +15,8 @@ class Status extends Model
         'status',
         'status_code',
         'description',
-        'active'
+        'active',
     ];
+
+    protected $hidden = ['status_id'];
 }

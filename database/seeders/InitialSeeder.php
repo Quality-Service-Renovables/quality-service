@@ -18,7 +18,9 @@ class InitialSeeder extends Seeder
             ServiceCategoriesSeeder::class,
             MaintenanceCategoriesSeeder::class,
             FixCategoriesSeeder::class,
+            EquipmentCategorySeeder::class,
             InspectionCategoriesSeeder::class,
+            TrademarksSeeder::class,
             VersionsSeeder::class,
         ]);
     }

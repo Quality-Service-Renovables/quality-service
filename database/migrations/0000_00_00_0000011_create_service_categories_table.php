@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('service_categories', static function (Blueprint $table) {
             $table->id('service_category_id');
             $table->uuid('service_category_uuid');
-            $table->string('service_category')->unique();
-            $table->string('service_category_code')->unique();
+            $table->string('service_category');
+            $table->string('service_category_code');
             $table->longText('description')->nullable();
             $table->boolean('is_default')->default(true);
             $table->unsignedBigInteger('dependency')->nullable();

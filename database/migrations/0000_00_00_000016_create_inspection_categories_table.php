@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('inspection_categories', static function (Blueprint $table) {
             $table->id('inspection_category_id');
             $table->uuid('inspection_category_uuid');
-            $table->string('inspection_category')->unique();
-            $table->string('inspection_category_code')->unique();
+            $table->string('inspection_category');
+            $table->string('inspection_category_code');
             $table->longText('description')->nullable();
             $table->boolean('is_default')->default(true);
             $table->unsignedBigInteger('dependency')->nullable();

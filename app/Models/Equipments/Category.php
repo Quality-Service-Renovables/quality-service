@@ -17,4 +17,6 @@ class Category extends Model
         'description',
         'active',
     ];
+
+    protected $hidden = ['equipment_category_id'];
 }
