@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\User;
 use Tests\TestCase;
 
 /*
@@ -14,8 +14,10 @@ use Tests\TestCase;
 |
 */
 
-uses(TestCase::class, RefreshDatabase::class)->in('Feature');
-
+//uses(TestCase::class, RefreshDatabase::class)->in('Feature');
+uses(TestCase::class)
+    ->beforeEach(fn () => $this->actingAs(User::first()))
+    ->in('Feature');
 /*
 |--------------------------------------------------------------------------
 | Expectations

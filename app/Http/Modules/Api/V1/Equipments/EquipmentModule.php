@@ -1,5 +1,6 @@
 <?php
 
+/** @noinspection UnknownInspectionInspection */
 /** @noinspection PhpUndefinedMethodInspection */
 
 namespace App\Http\Modules\Api\V1\Equipments;
@@ -20,7 +21,7 @@ class EquipmentModule
 
     public array $response;
 
-    public int $status_code;
+    public int $statusCode;
 
     public LogModule $logModule;
 
@@ -32,7 +33,7 @@ class EquipmentModule
             'message' => null,
             'data' => [],
         ];
-        $this->status_code = 200;
+        $this->statusCode = 200;
         $this->logModule = new LogModule();
     }
 
@@ -56,6 +57,7 @@ class EquipmentModule
             $data['status_id'] = Status::where('status_code', $request->get('status_code'))->first()->status_id;
 
             $equipment = Equipment::create($data);
+            $this->statusCode = 201;
             $this->response['data'] = $equipment;
 
             $this->logModule->create(
@@ -71,7 +73,7 @@ class EquipmentModule
 
             $this->response['status'] = 'error';
             $this->response['message'] = $exception->getMessage();
-            $this->status_code = 500;
+            $this->statusCode = 500;
         }
 
         return $this->response;
@@ -87,16 +89,31 @@ class EquipmentModule
     {
         try {
             DB::beginTransaction();
-
-            $data = $request->all();
-            $data['equipment_uuid'] = Str::uuid()->toString();
-            $data['equipment_code'] = create_slug($request->get('equipment'));
-            $equipment = Equipment::update($data);
-            $this->response['data'] = $equipment;
-
+            // Asignación de identificadores
+            $slug = create_slug($request->get('equipment'));
+            $categoryId = Category::where('equipment_category_code', $request->get('equipment_category_code'))->first()->equipment_category_id;
+            $trademarkId = Trademark::where('trademark_code', $request->get('trademark_code'))->first()->trademark_id;
+            $statusId = Status::where('status_code', $request->get('status_code'))->first()->status_id;
+            // Agregar elementos al request
+            $request->merge([
+                'equipment_code' => $slug,
+                'equipment_category_id' => $categoryId,
+                'trademark_id' => $trademarkId,
+                'status_id' => $statusId,
+            ]);
+            // Depura elementos incompatibles con la actualización
+            $request->offsetUnset('equipment_category_code');
+            $request->offsetUnset('trademark_code');
+            $request->offsetUnset('status_code');
+            // Actualiza Equipo
+            Equipment::where('equipment_uuid', $request->equipment_uuid)->update($request->all());
+            // Recupera Equipo Actualizado
+            $equipmentUpdated = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
+            $this->response['data'] = $equipmentUpdated;
+            // Registro de log
             $this->logModule->create(
                 $this->nameModule,
-                $request,
+                $request->all(),
                 $this->response,
                 'Update equipment request',
             );
@@ -107,7 +124,7 @@ class EquipmentModule
 
             $this->response['status'] = 'error';
             $this->response['message'] = $exception->getMessage();
-            $this->status_code = 500;
+            $this->statusCode = 500;
         }
 
         return $this->response;
@@ -127,22 +144,22 @@ class EquipmentModule
         return $this->response;
     }
 
-    public function delete(int $equipmentId): array
+    public function delete(string $uuid): array
     {
         try {
-            Equipment::where('equipment_id', $equipmentId)->update((['deleted_at' => null]));
-            $request = ['equipment_id' => $equipmentId];
+            // Aplica soft delete al equipo especificado por medio de su uuid
+            Equipment::where('equipment_uuid', $uuid)->update(['deleted_at' => now()]);
             $this->logModule->create(
                 $this->nameModule,
-                $request,
+                compact('uuid'),
                 $this->response,
-                'Create equipment request',
+                'Delete equipment request',
             );
             $this->response['message'] = 'Equipment deleted successfully';
         } catch (Exception $exception) {
             $this->response['status'] = 'error';
             $this->response['message'] = $exception->getMessage();
-            $this->status_code = 500;
+            $this->statusCode = 500;
         }
 
         return $this->response;
