@@ -49,12 +49,13 @@ export default {
     min-width: 80px;
     height: 80px;
     max-height: 80px;
+    margin-left: .5rem;
 }
 
 /* cada 4 elementos le ponemos el margin-left en 0 */
-.app:nth-child(4n+1) {
+/*.app:nth-child(4n+1) {
     margin-left: 0;
-}
+}*/
 
 .app:hover {
     cursor: pointer;
