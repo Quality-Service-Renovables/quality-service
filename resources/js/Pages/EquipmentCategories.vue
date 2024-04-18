@@ -3,6 +3,7 @@ import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ref, reactive, defineProps } from 'vue';
 import { router } from '@inertiajs/vue3'
+import { Toaster, toast } from 'vue-sonner'
 
 defineProps({
     equipment_categories: Object,
@@ -32,29 +33,73 @@ let editItem = (item) => {
 };
 
 let update = () => {
-    axios.put('api/equipment/categories/' + form.equipment_category_uuid, form).
-        then(response => {
-            console.log(response.data);
+    const putRequest = () => {
+        return axios.put('api/equipment/categories/' + form.equipment_category_uuid, form);
+    };
+    toast.promise(putRequest, {
+        loading: 'Loading...',
+        success: (data) => {
             dialog.value = false;
             router.reload();
-        }).catch(error => {
-            console.log(error);
-        });
+            return 'Categoria actualizada correctamente';
+        },
+        error: (data ) => {
+            if (data.response) {
+                // Si hay una respuesta de error, puedes acceder a los datos así:
+                const responseData = data.response.data;
+
+                // Verificamos si el error contiene un mensaje
+                if (responseData && responseData.status === 'fail' && responseData.message) {
+                    // Iteramos sobre cada campo que contiene errores y mostramos los mensajes
+                    for (const field in responseData.message) {
+                        console.log(responseData.message[field]);
+                        const errors = responseData.message[field];
+                        // Aquí puedes manejar los errores como desees
+                        toast.error(`Errores en el campo ${field}:`, {
+                            description: `${errors.join(', ')}`,
+                        })
+                    }
+                }
+            }
+        }
+    });
 };
 
 let deleteItem = (item) => {
-    axios.delete('api/equipment/categories/' + item.equipment_category_uuid).
-        then(response => {
-            console.log(response.data);
+    const putRequest = () => {
+        return axios.delete('api/equipment/categories/' + item.equipment_category_uuid);
+    };
+    toast.promise(putRequest, {
+        loading: 'Loading...',
+        success: (data) => {
             router.reload();
-        }).catch(error => {
-            console.log(error);
-        });
+            return 'Categoria eliminada correctamente';
+        },
+        error: (data) => {
+            if (data.response) {
+                // Si hay una respuesta de error, puedes acceder a los datos así:
+                const responseData = data.response.data;
+
+                // Verificamos si el error contiene un mensaje
+                if (responseData && responseData.status === 'fail' && responseData.message) {
+                    // Iteramos sobre cada campo que contiene errores y mostramos los mensajes
+                    for (const field in responseData.message) {
+                        const errors = responseData.message[field];
+                        // Aquí puedes manejar los errores como desees
+                        toast.error(`Errores en el campo ${field}:`, {
+                            description: `${errors.join(', ')}`,
+                        })
+                    }
+                }
+            }
+        }
+    });
 };
 
 </script>
 
 <template>
+    <Toaster position="top-right" richColors closeButton />
 
     <Head title="Equipments" />
     <AuthenticatedLayout>
