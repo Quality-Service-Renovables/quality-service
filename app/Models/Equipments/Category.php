@@ -4,12 +4,16 @@ namespace App\Models\Equipments;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
     protected $table = 'equipment_categories';
+
     protected $primaryKey = 'equipment_category_id';
+
     protected $fillable = [
         'equipment_category_uuid',
         'equipment_category',

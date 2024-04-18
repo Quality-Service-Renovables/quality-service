@@ -1,4 +1,7 @@
 <?php
+/** @noinspection PhpInconsistentReturnPointsInspection */
+/** @noinspection UnknownInspectionInspection */
+/** @noinspection PhpUndefinedMethodInspection */
 
 use App\Models\Equipments\Equipment;
 
@@ -19,7 +22,9 @@ test('read', function () {
     $response->assertStatus(200);
 });
 
-test('update', function () {
+test(/**
+ * @throws \JsonException
+ */ 'update', function () {
 
     $equipment = Equipment::where('equipment_code', 'unit_test_equipment')->first();
     if (! $equipment) {

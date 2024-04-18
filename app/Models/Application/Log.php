@@ -4,10 +4,11 @@ namespace App\Models\Application;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Log extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $table = 'application_logs';
     protected $primaryKey = 'application_log_id';
     protected $fillable = [

@@ -33,4 +33,5 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::resource('inspection-categories', CategoryController::class);
     //######################################################### EQUIPMENT ##########################################################
     Route::resource('equipments', EquipmentController::class);
+    Route::resource('equipment/categories', \App\Http\Controllers\Api\V1\Equipments\CategoryController::class);
 });
