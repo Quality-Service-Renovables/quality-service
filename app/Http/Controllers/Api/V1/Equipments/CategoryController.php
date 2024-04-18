@@ -3,24 +3,25 @@
 namespace App\Http\Controllers\Api\V1\Equipments;
 
 use App\Http\Controllers\Controller;
-use App\Http\Modules\Api\V1\Equipments\EquipmentModule;
-use App\Http\Requests\Api\Equipments\EquipmentRequest;
+use App\Http\Modules\Api\V1\Equipments\CategoryModule;
+use App\Http\Requests\Api\Equipments\CategoryRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class EquipmentController extends Controller
+class CategoryController extends Controller
 {
-    protected EquipmentModule $module;
+    protected CategoryModule $module;
 
     /**
      * Constructor for the class.
      */
     public function __construct()
     {
-        $this->module = new EquipmentModule();
+        $this->module = new CategoryModule();
     }
 
     /**
@@ -36,7 +37,7 @@ class EquipmentController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(EquipmentRequest $request): JsonResponse
+    public function create(CategoryRequest $request): JsonResponse
     {
         $this->module->create($request);
 
@@ -46,7 +47,7 @@ class EquipmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(EquipmentRequest $request): JsonResponse
+    public function store(CategoryRequest $request): JsonResponse
     {
         $this->module->create($request);
 
@@ -56,9 +57,23 @@ class EquipmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id): JsonResponse
+    public function show(string $uuid): JsonResponse
     {
-        $this->module->read();
+        $request = (['equipment_category_uuid' => $uuid]);
+
+        $validated = Validator::make($request, [
+            'equipment_category_uuid' => 'required|uuid|exists:equipment_categories,equipment_category_uuid',
+        ]);
+
+        if ($validated->fails()) {
+            $this->module->statusCode = 400;
+            $this->module->response['status'] = 'fail';
+            $this->module->response['message'] = $validated->errors();
+
+            return response()->json($this->module->response, $this->module->statusCode);
+        }
+
+        $this->module->show($uuid);
 
         return response()->json($this->module->response, $this->module->statusCode);
     }
@@ -66,7 +81,7 @@ class EquipmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id): JsonResponse
+    public function edit(string $uuid): JsonResponse
     {
         $this->module->read();
 
@@ -78,20 +93,28 @@ class EquipmentController extends Controller
      */
     public function update(Request $request, string $uuid): JsonResponse
     {
-        $request->merge(['equipment_uuid' => $uuid]);
+        $request->merge(['equipment_category_uuid' => $uuid]);
 
         $validated = Validator::make($request->all(), [
-            'equipment_uuid' => 'required|uuid|exists:equipments,equipment_uuid',
-            'equipment' => 'required|string',
-            'equipment_category_code' => 'required|string|exists:equipment_categories,equipment_category_code',
-            'trademark_code' => 'required|string|exists:trademarks,trademark_code',
-            'status_code' => 'required|string|exists:status,status_code',
+            'equipment_category_uuid' => 'required|uuid|exists:equipment_categories,equipment_category_uuid',
+            'equipment_category' => [
+                'required',
+                'string',
+                'min:1',
+                'max:255',
+                Rule::unique('equipment_categories', 'equipment_category')
+                    ->whereNot('equipment_category_uuid', $uuid)
+                    ->whereNull('deleted_at'),
+            ],
+            'description' => 'required|string|min:3|max:255',
+            'active' => 'required|bool',
         ]);
 
         if ($validated->fails()) {
             $this->module->statusCode = 400;
             $this->module->response['status'] = 'fail';
             $this->module->response['message'] = $validated->errors();
+
             return response()->json($this->module->response, $this->module->statusCode);
         }
 
@@ -105,16 +128,17 @@ class EquipmentController extends Controller
      */
     public function destroy(string $uuid): JsonResponse
     {
-        $request = ['equipment_uuid' => $uuid];
+        $request = ['equipment_category_uuid' => $uuid];
 
         $validated = Validator::make($request, [
-            'equipment_uuid' => 'required|uuid|exists:equipments,equipment_uuid',
+            'equipment_category_uuid' => 'required|uuid|exists:equipment_categories,equipment_category_uuid',
         ]);
 
         if ($validated->fails()) {
             $this->module->statusCode = 400;
             $this->module->response['status'] = 'fail';
             $this->module->response['message'] = $validated->errors();
+
             return response()->json($this->module->response, $this->module->statusCode);
         }
 
@@ -125,8 +149,6 @@ class EquipmentController extends Controller
 
     /**
      * Render the equipment component.
-     *
-     * @return \Inertia\Response
      */
     public function component(): Response
     {

@@ -7,15 +7,12 @@ namespace App\Http\Modules\Api\V1\Equipments;
 
 use App\Http\Modules\Applications\LogModule;
 use App\Models\Equipments\Category;
-use App\Models\Equipments\Equipment;
-use App\Models\Status;
-use App\Models\Trademarks\Trademark;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class EquipmentModule
+class CategoryModule
 {
     public string $nameModule;
 
@@ -52,36 +49,33 @@ class EquipmentModule
     public function create(Request $request): array
     {
         try {
+            // Control de transacciones
             DB::beginTransaction();
-
-            $data = $request->all();
-            $data['equipment_uuid'] = Str::uuid()->toString();
-            $data['equipment_code'] = create_slug($request->get('equipment'));
-
-            $data['equipment_category_id'] = Category::where('equipment_category_code', $request->get('equipment_category_code'))->first()->equipment_category_id;
-            $data['trademark_id'] = Trademark::where('trademark_code', $request->get('trademark_code'))->first()->trademark_id;
-            $data['status_id'] = Status::where('status_code', $request->get('status_code'))->first()->status_id;
-
-            $equipment = Equipment::create($data);
+            // Agrega atributos a la solicitud
+            $request->merge(['equipment_category_uuid' => Str::uuid()->toString()]);
+            $request->merge(['equipment_category_code' => create_slug($request->get('equipment_category'))]);
+            // Registra los atributos de la solicitud a la categoria
+            $category = Category::create($request->all());
+            // Define parámetros de respuesta
             $this->statusCode = 201;
-            $this->response['data'] = $equipment;
-
+            $this->response['data'] = $category;
+            // Registro en log
             $this->logModule->create(
                 $this->nameModule,
                 $request->all(),
                 $this->response,
                 'Create equipment request',
             );
-
+            // Finaliza Transacción
             DB::commit();
         } catch (Exception $exception) {
             DB::rollBack();
-
+            // Parámetros de respuesta en caso de error
             $this->response['status'] = 'error';
             $this->response['message'] = $exception->getMessage();
             $this->statusCode = 500;
         }
-
+        // Respuesta del módulo
         return $this->response;
     }
 
@@ -94,27 +88,18 @@ class EquipmentModule
     public function update(Request $request): array
     {
         try {
+            // Control de transacciones
             DB::beginTransaction();
             // Asignación de identificadores
-            $slug = create_slug($request->get('equipment'));
-            $categoryId = Category::where('equipment_category_code', $request->get('equipment_category_code'))->first()->equipment_category_id;
-            $trademarkId = Trademark::where('trademark_code', $request->get('trademark_code'))->first()->trademark_id;
-            $statusId = Status::where('status_code', $request->get('status_code'))->first()->status_id;
+            $slug = create_slug($request->get('equipment_category'));
             // Agregar elementos al request
             $request->merge([
-                'equipment_code' => $slug,
-                'equipment_category_id' => $categoryId,
-                'trademark_id' => $trademarkId,
-                'status_id' => $statusId,
+                'equipment_category_code' => $slug,
             ]);
-            // Depura elementos incompatibles con la actualización
-            $request->offsetUnset('equipment_category_code');
-            $request->offsetUnset('trademark_code');
-            $request->offsetUnset('status_code');
             // Actualiza Equipo
-            Equipment::where('equipment_uuid', $request->equipment_uuid)->update($request->all());
+            Category::where('equipment_category_uuid', $request->equipment_category_uuid)->update($request->all());
             // Recupera Equipo Actualizado
-            $equipmentUpdated = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
+            $equipmentUpdated = Category::where('equipment_category_uuid', $request->equipment_category_uuid)->first();
             $this->response['data'] = $equipmentUpdated;
             // Registro de log
             $this->logModule->create(
@@ -123,11 +108,11 @@ class EquipmentModule
                 $this->response,
                 'Update equipment request',
             );
-
+            // Confirmación de transacción
             DB::commit();
         } catch (Exception $exception) {
             DB::rollBack();
-
+            // Parámetros de respuesta en caso de error
             $this->response['status'] = 'error';
             $this->response['message'] = $exception->getMessage();
             $this->statusCode = 500;
@@ -143,9 +128,7 @@ class EquipmentModule
      */
     public function read(): array
     {
-        $this->response['data'] = Equipment::with([
-            'category', 'status', 'trademark',
-        ])->get();
+        $this->response['data'] = Category::all();
 
         return $this->response;
     }
@@ -160,15 +143,36 @@ class EquipmentModule
     {
         try {
             // Aplica soft delete al equipo especificado por medio de su uuid
-            Equipment::where('equipment_uuid', $uuid)->update(['deleted_at' => now()]);
+            Category::where('equipment_category_uuid', $uuid)->update(['deleted_at' => now()]);
+            // Registro en Log
             $this->logModule->create(
                 $this->nameModule,
                 compact('uuid'),
                 $this->response,
-                'Delete equipment request',
+                'Delete equipment category request',
             );
-            $this->response['message'] = 'Equipment deleted successfully';
+            // Parámetros de respuesta
+            $this->response['message'] = 'Category deleted successfully';
         } catch (Exception $exception) {
+            // Parámetros de respuesta en caso de error
+            $this->response['status'] = 'error';
+            $this->response['message'] = $exception->getMessage();
+            $this->statusCode = 500;
+        }
+
+        return $this->response;
+    }
+
+    public function show(string $uuid): array
+    {
+        try {
+            // Obtiene categoria del equipo
+            $category = Category::where('equipment_category_uuid', $uuid)->first();
+            $this->response['message'] = $category === null ? 'Category not found' : 'Category found';
+            $this->response['data'] = $category ?? [];
+        } catch (Exception $exception) {
+            DB::rollBack();
+            // Parámetros de respuesta en caso de error
             $this->response['status'] = 'error';
             $this->response['message'] = $exception->getMessage();
             $this->statusCode = 500;

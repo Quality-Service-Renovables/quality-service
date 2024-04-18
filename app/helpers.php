@@ -1,6 +1,12 @@
 <?php
 
 if (! function_exists('create_slug')) {
+    /**
+     * Creates a slug for a given string.
+     *
+     * @param  string  $string  The string to create a slug from.
+     * @return string The generated slug.
+     */
     function create_slug(string $string): string
     {
         // Primero, reemplazar los caracteres no latinos por "-"
