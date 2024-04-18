@@ -23,6 +23,7 @@
     },
     "dependencies": {
         "pinia": "^2.1.7",
+        "sweetalert2": "^11.10.8",
         "vuetify": "^3.5.14"
     }
 }
