@@ -1,10 +1,57 @@
 <script setup>
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { ref, reactive, defineProps } from 'vue';
+import { router } from '@inertiajs/vue3'
 
 defineProps({
     equipment_categories: Object,
 });
+
+let search = ref('');
+let dialog = ref(false);
+let form = reactive({
+    equipment_category_uuid: '',
+    equipment_category: '',
+    description: '',
+    active: true
+});
+
+let headers = [
+    { title: 'Categoria', key: 'equipment_category', value: 'equipment_category' },
+    { title: 'Descripción', key: 'description' },
+    { title: 'Estado', key: 'active' },
+    { title: 'Actions', key: 'actions', sortable: false }
+];
+
+let editItem = (item) => {
+    dialog.value = true;
+    form.equipment_category_uuid = item.equipment_category_uuid;
+    form.equipment_category = item.equipment_category;
+    form.description = item.description;
+};
+
+let update = () => {
+    axios.put('api/equipment/categories/' + form.equipment_category_uuid, form).
+        then(response => {
+            console.log(response.data);
+            dialog.value = false;
+            router.reload();
+        }).catch(error => {
+            console.log(error);
+        });
+};
+
+let deleteItem = (item) => {
+    axios.delete('api/equipment/categories/' + item.equipment_category_uuid).
+        then(response => {
+            console.log(response.data);
+            router.reload();
+        }).catch(error => {
+            console.log(error);
+        });
+};
+
 </script>
 
 <template>
@@ -56,15 +103,16 @@ defineProps({
                                 </template>
 
                                 <v-card prepend-icon="mdi-pencil" title="Editar categoria">
-                                    <v-card-text>
+                                    <v-card-text class="mt-3">
                                         <v-row dense>
-                                            <v-col cols="12" md="4" sm="6">
-                                                <v-text-field variant="solo" label="Categoria*" required v-model="form.category"></v-text-field>
+                                            <v-col cols="12">
+                                                <v-text-field variant="solo-filled" label="Categoria*" required
+                                                    v-model="form.equipment_category"></v-text-field>
                                             </v-col>
 
-                                            <v-col cols="12" md="4" sm="6">
-                                                <v-text-field variant="solo"
-                                                    label="Descripción" v-model="form.description"></v-text-field>
+                                            <v-col cols="12">
+                                                <v-textarea variant="solo-filled" label="Descripción"
+                                                    v-model="form.description"></v-textarea>
                                             </v-col>
                                         </v-row>
 
@@ -78,8 +126,7 @@ defineProps({
 
                                         <v-btn text="Cerrar" variant="plain" @click="dialog = false"></v-btn>
 
-                                        <v-btn color="primary" text="Guardar" variant="tonal"
-                                            @click="dialog = false"></v-btn>
+                                        <v-btn color="primary" text="Guardar" variant="tonal" @click="update"></v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
@@ -91,36 +138,3 @@ defineProps({
         </div>
     </AuthenticatedLayout>
 </template>
-
-<script>
-export default {
-    data() {
-        return {
-            search: '',
-            headers: [
-                { title: 'Categoria', key: 'equipment_category', value: 'equipment_category' },
-                { title: 'Descripción', key: 'description' },
-                { title: 'Estado', key: 'active' },
-                { title: 'Actions', key: 'actions', sortable: false },
-            ],
-            form: {
-                category: '',
-                description: '',
-            },
-            dialog: false,
-        };
-    },
-    methods: {
-        editItem(item) {
-            console.log(item.equipment_category_uuid);
-            this.dialog = true;
-            this.form.category = item.equipment_category;
-            this.form.description = item.description;
-        },
-        deleteItem(item) {
-            console.log(item);
-        },
-    },
-}
-
-</script>
