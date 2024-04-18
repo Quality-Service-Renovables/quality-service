@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
+use App\Http\Controllers\Api\V1\Equipments\CategoryController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -24,7 +25,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     //Equipments
-    Route::get('/equipments/component', [EquipmentController::class, 'component'])->name('equipments.component');
+    Route::get('/equipments', [EquipmentController::class, 'component'])->name('equipments.component');
+    //Equipments category
+    Route::get('/equipments/categories', [CategoryController::class, 'component'])->name('equipment_categories.component');
 });
 
 require __DIR__.'/auth.php';
