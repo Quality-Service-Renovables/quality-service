@@ -46,11 +46,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 <v-col cols="12">
                                                                     <v-text-field
                                                                         v-model="editedItem.equipment_category"
-                                                                        label="Nombre"></v-text-field>
+                                                                        label="Nombre" variant="solo" hide-details></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-textarea v-model="editedItem.description"
-                                                                        label="Descripción"></v-textarea>
+                                                                        label="Descripción" variant="solo" hide-details></v-textarea>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
