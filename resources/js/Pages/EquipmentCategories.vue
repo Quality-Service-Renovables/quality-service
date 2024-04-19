@@ -4,6 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ref, reactive, defineProps } from 'vue';
 import { router } from '@inertiajs/vue3'
 import { Toaster, toast } from 'vue-sonner'
+import Swal from 'sweetalert2';
 
 defineProps({
     equipment_categories: Object,
@@ -43,7 +44,7 @@ let update = () => {
             router.reload();
             return 'Categoria actualizada correctamente';
         },
-        error: (data ) => {
+        error: (data) => {
             if (data.response) {
                 // Si hay una respuesta de error, puedes acceder a los datos así:
                 const responseData = data.response.data;
@@ -66,34 +67,45 @@ let update = () => {
 };
 
 let deleteItem = (item) => {
-    const putRequest = () => {
-        return axios.delete('api/equipment/categories/' + item.equipment_category_uuid);
-    };
-    toast.promise(putRequest, {
-        loading: 'Loading...',
-        success: (data) => {
-            router.reload();
-            return 'Categoria eliminada correctamente';
-        },
-        error: (data) => {
-            if (data.response) {
-                // Si hay una respuesta de error, puedes acceder a los datos así:
-                const responseData = data.response.data;
+    Swal.fire({
+        title: "¿Estás seguro?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Si, eliminar",
+    }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            const putRequest = () => {
+                return axios.delete('api/equipment/categories/' + item.equipment_category_uuid);
+            };
+            toast.promise(putRequest, {
+                loading: 'Loading...',
+                success: (data) => {
+                    router.reload();
+                    return 'Categoria eliminada correctamente';
+                },
+                error: (data) => {
+                    if (data.response) {
+                        // Si hay una respuesta de error, puedes acceder a los datos así:
+                        const responseData = data.response.data;
 
-                // Verificamos si el error contiene un mensaje
-                if (responseData && responseData.status === 'fail' && responseData.message) {
-                    // Iteramos sobre cada campo que contiene errores y mostramos los mensajes
-                    for (const field in responseData.message) {
-                        const errors = responseData.message[field];
-                        // Aquí puedes manejar los errores como desees
-                        toast.error(`Errores en el campo ${field}:`, {
-                            description: `${errors.join(', ')}`,
-                        })
+                        // Verificamos si el error contiene un mensaje
+                        if (responseData && responseData.status === 'fail' && responseData.message) {
+                            // Iteramos sobre cada campo que contiene errores y mostramos los mensajes
+                            for (const field in responseData.message) {
+                                const errors = responseData.message[field];
+                                // Aquí puedes manejar los errores como desees
+                                toast.error(`Errores en el campo ${field}:`, {
+                                    description: `${errors.join(', ')}`,
+                                })
+                            }
+                        }
                     }
                 }
-            }
+            });
         }
     });
+
 };
 
 </script>
