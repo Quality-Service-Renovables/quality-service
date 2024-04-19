@@ -1,87 +1,191 @@
 <script setup>
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { ref, reactive, defineProps } from 'vue';
+</script>
+
+<template>
+    <Toaster position="top-right" richColors />
+
+    <Head title="Equipments" />
+    <AuthenticatedLayout>
+        <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Categorias de Equipos</h2>
+        </template>
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <v-card>
+                        <v-row>
+                            <v-col cols="12" sm="12">
+                                <v-data-table :headers="headers" :items="equipment_categories" fixed-header
+                                    :search="search">
+                                    <template v-slot:item.active="{ value }">
+                                        <v-icon :color="getColor(value)">mdi-circle-slice-8</v-icon>
+                                    </template>
+                                    <template v-slot:top>
+                                        <v-toolbar flat>
+                                            <v-toolbar-title class="ml-1">
+                                                <v-text-field v-model="search" label="Buscar" hide-details
+                                                    variant="solo"></v-text-field>
+                                            </v-toolbar-title>
+                                            <v-divider class="mx-4" inset vertical></v-divider>
+                                            <v-spacer></v-spacer>
+                                            <v-dialog v-model="dialog" max-width="500px">
+                                                <template v-slot:activator="{ props }">
+                                                    <v-btn class="mb-2" color="primary" dark v-bind="props"
+                                                        icon="mdi-plus"></v-btn>
+                                                </template>
+                                                <v-card>
+                                                    <v-card-title>
+                                                        <span class="text-h5">{{ formTitle }}</span>
+                                                    </v-card-title>
+
+                                                    <v-card-text>
+                                                        <v-container>
+                                                            <v-row>
+                                                                <v-col cols="12">
+                                                                    <v-text-field
+                                                                        v-model="editedItem.equipment_category"
+                                                                        label="Nombre"></v-text-field>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-textarea v-model="editedItem.description"
+                                                                        label="Descripción"></v-textarea>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-switch label="Activo" v-model="editedItem.active"
+                                                                        color="primary"></v-switch>
+                                                                </v-col>
+
+                                                            </v-row>
+                                                        </v-container>
+                                                    </v-card-text>
+
+                                                    <v-card-actions>
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn color="blue-darken-1" variant="text" @click="close">
+                                                            Cancelar
+                                                        </v-btn>
+                                                        <v-btn color="blue-darken-1" variant="text" @click="save">
+                                                            Guardar
+                                                        </v-btn>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </v-dialog>
+                                            <v-dialog v-model="dialogDelete" max-width="500px">
+                                                <v-card>
+                                                    <v-card-title class="text-h5 text-center">¿Estás seguro de
+                                                        eliminar?</v-card-title>
+                                                    <v-card-actions>
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn color="blue-darken-1" variant="text"
+                                                            @click="closeDelete">Cancel</v-btn>
+                                                        <v-btn color="blue-darken-1" variant="text"
+                                                            @click="deleteItemConfirm(editedItem.equipment_category_uuid)">Si,
+                                                            eliminar</v-btn>
+                                                        <v-spacer></v-spacer>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </v-dialog>
+                                        </v-toolbar>
+                                    </template>
+                                    <template v-slot:item.actions="{ item }">
+                                        <v-icon class="me-2" size="small" @click="editItem(item)">
+                                            mdi-pencil
+                                        </v-icon>
+                                        <v-icon size="small" @click="deleteItem(item)">
+                                            mdi-delete
+                                        </v-icon>
+                                    </template>
+                                    <template v-slot:no-data>
+                                        <v-btn color="primary" @click="initialize">
+                                            Reset
+                                        </v-btn>
+                                    </template>
+                                </v-data-table>
+                            </v-col>
+                        </v-row>
+                    </v-card>
+                </div>
+            </div>
+
+        </div>
+    </AuthenticatedLayout>
+</template>
+
+<script>
 import { router } from '@inertiajs/vue3'
 import { Toaster, toast } from 'vue-sonner'
 import Swal from 'sweetalert2';
 
-defineProps({
-    equipment_categories: Object,
-});
-
-let search = ref('');
-let dialog = ref(false);
-let form = reactive({
-    equipment_category_uuid: '',
-    equipment_category: '',
-    description: '',
-    active: true
-});
-
-let headers = [
-    { title: 'Categoria', key: 'equipment_category', value: 'equipment_category' },
-    { title: 'Descripción', key: 'description' },
-    { title: 'Estado', key: 'active' },
-    { title: 'Actions', key: 'actions', sortable: false }
-];
-
-let editItem = (item) => {
-    dialog.value = true;
-    form.equipment_category_uuid = item.equipment_category_uuid;
-    form.equipment_category = item.equipment_category;
-    form.description = item.description;
-};
-
-let update = () => {
-    const putRequest = () => {
-        return axios.put('api/equipment/categories/' + form.equipment_category_uuid, form);
-    };
-    toast.promise(putRequest, {
-        loading: 'Loading...',
-        success: (data) => {
-            dialog.value = false;
-            router.reload();
-            return 'Categoria actualizada correctamente';
-        },
-        error: (data) => {
-            if (data.response) {
-                // Si hay una respuesta de error, puedes acceder a los datos así:
-                const responseData = data.response.data;
-
-                // Verificamos si el error contiene un mensaje
-                if (responseData && responseData.status === 'fail' && responseData.message) {
-                    // Iteramos sobre cada campo que contiene errores y mostramos los mensajes
-                    for (const field in responseData.message) {
-                        console.log(responseData.message[field]);
-                        const errors = responseData.message[field];
-                        // Aquí puedes manejar los errores como desees
-                        toast.error(`Errores en el campo ${field}:`, {
-                            description: `${errors.join(', ')}`,
-                        })
-                    }
-                }
-            }
+export default {
+    components: {
+        Toaster,
+    },
+    props: {
+        equipment_categories: {
+            type: Array,
+            required: true
         }
-    });
-};
-
-let deleteItem = (item) => {
-    Swal.fire({
-        title: "¿Estás seguro?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Si, eliminar",
-    }).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
-        if (result.isConfirmed) {
+    },
+    data: () => ({
+        search: '',
+        dialog: false,
+        dialogDelete: false,
+        headers: [
+            { title: 'Categoria', key: 'equipment_category' },
+            { title: 'Descripción', key: 'description' },
+            { title: 'Estado', key: 'active' },
+            { title: 'Actions', key: 'actions', sortable: false }
+        ],
+        editedIndex: -1,
+        editedItem: {
+            equipment_category_uuid: '',
+            equipment_category: '',
+            description: '',
+            active: false,
+        },
+        defaultItem: {
+            equipment_category_uuid: '',
+            equipment_category: '',
+            description: '',
+            active: false
+        },
+    }),
+    computed: {
+        formTitle() {
+            return this.editedIndex === -1 ? 'Nueva categoria' : 'Editar categoria'
+        },
+    },
+    watch: {
+        dialog(val) {
+            val || this.close()
+        },
+        dialogDelete(val) {
+            val || this.closeDelete()
+        },
+    },
+    methods: {
+        editItem(item) {
+            this.editedIndex = this.equipment_categories.indexOf(item)
+            item.active = item.active == "1" ? true : false
+            this.editedItem = Object.assign({}, item)
+            this.dialog = true
+        },
+        deleteItem(item) {
+            this.editedIndex = this.equipment_categories.indexOf(item)
+            this.editedItem = Object.assign({}, item)
+            this.dialogDelete = true
+        },
+        deleteItemConfirm(item) {
+            this.equipment_categories.splice(this.editedIndex, 1)
             const putRequest = () => {
-                return axios.delete('api/equipment/categories/' + item.equipment_category_uuid);
+                return axios.delete('api/equipment/categories/' + item);
             };
             toast.promise(putRequest, {
-                loading: 'Loading...',
+                loading: 'Procesando...',
                 success: (data) => {
-                    router.reload();
+                    this.closeDelete()
                     return 'Categoria eliminada correctamente';
                 },
                 error: (data) => {
@@ -103,95 +207,102 @@ let deleteItem = (item) => {
                     }
                 }
             });
-        }
-    });
+        },
+        close() {
+            this.dialog = false
+            this.$nextTick(() => {
+                console.log("Cambiando estatus en close");
+                this.editedItem = Object.assign({}, this.defaultItem)
+                this.editedIndex = -1
+            })
+        },
+        closeDelete() {
+            this.dialogDelete = false
+            this.$nextTick(() => {
+                console.log("Cambiando estatus en closeDelete");
+                this.editedItem = Object.assign({}, this.defaultItem)
+                this.editedIndex = -1
+            })
+        },
+        save() {
+            if (this.editedIndex > -1) {
+                Object.assign(this.equipment_categories[this.editedIndex], this.editedItem)
+                const putRequest = () => {
+                    return axios.put('api/equipment/categories/' + this.editedItem.equipment_category_uuid, {
+                        equipment_category: this.editedItem.equipment_category,
+                        description: this.editedItem.description,
+                        active: this.editedItem.active
+                    });
+                };
+                toast.promise(putRequest(), {
+                    loading: 'Procesando...',
+                    success: (data) => {
+                        this.close()
+                        return 'Categoria actualizada correctamente';
+                    },
+                    error: (data) => {
+                        if (data.response) {
+                            // Si hay una respuesta de error, puedes acceder a los datos así:
+                            const responseData = data.response.data;
 
-};
+                            // Verificamos si el error contiene un mensaje
+                            if (responseData && responseData.status === 'fail' && responseData.message) {
+                                // Iteramos sobre cada campo que contiene errores y mostramos los mensajes
+                                for (const field in responseData.message) {
+                                    console.log(responseData.message[field]);
+                                    const errors = responseData.message[field];
+                                    // Aquí puedes manejar los errores como desees
+                                    toast.error(`Errores en el campo ${field}:`, {
+                                        description: `${errors.join(', ')}`,
+                                    })
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                this.equipment_categories.push(this.editedItem)
+                const postRequest = () => {
+                    return axios.post('api/equipment/categories', {
+                        equipment_category: this.editedItem.equipment_category,
+                        description: this.editedItem.description,
+                        active: this.editedItem.active
+                    });
+                };
 
+                toast.promise(postRequest(), {
+                    loading: 'Procesando...',
+                    success: (data) => {
+                        this.close()
+                        return 'Categoria creada correctamente';
+                    },
+                    error: (data) => {
+                        if (data.response) {
+                            // Si hay una respuesta de error, puedes acceder a los datos así:
+                            const responseData = data.response.data;
+
+                            // Verificamos si el error contiene un mensaje
+                            if (responseData && responseData.status === 'fail' && responseData.message) {
+                                // Iteramos sobre cada campo que contiene errores y mostramos los mensajes
+                                for (const field in responseData.message) {
+                                    console.log(responseData.message[field]);
+                                    const errors = responseData.message[field];
+                                    // Aquí puedes manejar los errores como desees
+                                    toast.error(`Errores en el campo ${field}:`, {
+                                        description: `${errors.join(', ')}`,
+                                    })
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+        },
+        getColor(value) {
+            return value ? 'green' : 'red';
+        },
+    },
+
+}
 </script>
-
-<template>
-    <Toaster position="top-right" richColors closeButton />
-
-    <Head title="Equipments" />
-    <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Categorias de Equipos</h2>
-        </template>
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <v-card>
-                        <v-row>
-                            <v-col cols="12" sm="12">
-                                <div class="text-end">
-                                    <v-btn prepend-icon="$plus" variant="tonal" class="m-2">
-                                        Agregar
-                                    </v-btn>
-                                </div>
-                                <v-card-title class="text-h6 text-md-h5 text-lg-h4">
-                                    <v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" single-line
-                                        hide-details variant="solo"></v-text-field>
-                                </v-card-title>
-                            </v-col>
-                            <v-col cols="12" sm="12">
-                                <v-data-table :headers="headers" :items="equipment_categories"
-                                    :sort-by="[{ key: 'equipment_category', order: 'asc' }]" :search="search"
-                                    fixed-header>
-                                    <template v-slot:item.actions="{ item }">
-                                        <v-icon color="blue-grey-lighten-4" size="small" class="me-2"
-                                            @click="editItem(item)">
-                                            mdi-pencil
-                                        </v-icon>
-                                        <v-icon color="red-lighten-3" size="small" @click="deleteItem(item)">
-                                            mdi-delete
-                                        </v-icon>
-                                    </template>
-                                </v-data-table>
-                            </v-col>
-                        </v-row>
-                    </v-card>
-                    <template>
-                        <div class="pa-4 text-center">
-                            <v-dialog v-model="dialog" max-width="600">
-                                <template v-slot:activator="{ props: activatorProps }">
-                                    <v-btn class="text-none font-weight-regular" prepend-icon="mdi-account"
-                                        text="Edit Profile" variant="tonal" v-bind="activatorProps"></v-btn>
-                                </template>
-
-                                <v-card prepend-icon="mdi-pencil" title="Editar categoria">
-                                    <v-card-text class="mt-3">
-                                        <v-row dense>
-                                            <v-col cols="12">
-                                                <v-text-field variant="solo-filled" label="Categoria*" required
-                                                    v-model="form.equipment_category"></v-text-field>
-                                            </v-col>
-
-                                            <v-col cols="12">
-                                                <v-textarea variant="solo-filled" label="Descripción"
-                                                    v-model="form.description"></v-textarea>
-                                            </v-col>
-                                        </v-row>
-
-                                        <small class="text-caption text-medium-emphasis">* campos requeridos</small>
-                                    </v-card-text>
-
-                                    <v-divider></v-divider>
-
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-
-                                        <v-btn text="Cerrar" variant="plain" @click="dialog = false"></v-btn>
-
-                                        <v-btn color="primary" text="Guardar" variant="tonal" @click="update"></v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
-                        </div>
-                    </template>
-                </div>
-            </div>
-
-        </div>
-    </AuthenticatedLayout>
-</template>
