@@ -9,7 +9,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     <Head title="Equipments" />
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Equipos</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Categorias de Equipos</h2>
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
@@ -17,11 +17,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                     <v-card>
                         <v-row>
                             <v-col cols="12" sm="12">
-                                <v-data-table :headers="headers" :items="equipments" fixed-header
+                                <v-data-table :headers="headers" :items="equipment_categories" fixed-header
                                     :search="search">
-                                    <template v-slot:item.equipment_image="{ item }">
-                                        <v-avatar :image="'../'+item.equipment_image" size="40" class="ma-1"></v-avatar>
-                                    </template>
                                     <template v-slot:item.active="{ value }">
                                         <v-icon :color="getColor(value)">mdi-circle-slice-8</v-icon>
                                     </template>
@@ -48,19 +45,18 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                             <v-row>
                                                                 <v-col cols="12">
                                                                     <v-text-field
-                                                                        v-model="editedItem.equipment"
-                                                                        label="Nombre"></v-text-field>
+                                                                        v-model="editedItem.equipment_category"
+                                                                        label="Nombre" variant="solo" hide-details></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="12">
-                                                                    <v-text-field
-                                                                        v-model="editedItem.model"
-                                                                        label="Modelo"></v-text-field>
+                                                                    <v-textarea v-model="editedItem.description"
+                                                                        label="Descripción" variant="solo" hide-details></v-textarea>
                                                                 </v-col>
                                                                 <v-col cols="12">
-                                                                    <v-text-field
-                                                                        v-model="editedItem.serial_number"
-                                                                        label="Número de serie"></v-text-field>
+                                                                    <v-switch label="Activo" v-model="editedItem.active"
+                                                                        color="primary"></v-switch>
                                                                 </v-col>
+
                                                             </v-row>
                                                         </v-container>
                                                     </v-card-text>
@@ -85,7 +81,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         <v-btn color="blue-darken-1" variant="text"
                                                             @click="closeDelete">Cancel</v-btn>
                                                         <v-btn color="blue-darken-1" variant="text"
-                                                            @click="deleteItemConfirm(editedItem.equipment_uuid)">Si,
+                                                            @click="deleteItemConfirm(editedItem.equipment_category_uuid)">Si,
                                                             eliminar</v-btn>
                                                         <v-spacer></v-spacer>
                                                     </v-card-actions>
@@ -127,7 +123,7 @@ export default {
         Toaster,
     },
     props: {
-        equipments: {
+        equipment_categories: {
             type: Array,
             required: true
         }
@@ -137,42 +133,28 @@ export default {
         dialog: false,
         dialogDelete: false,
         headers: [
-            { title: '', key: 'equipment_image', value: 'equipment_image' },
-            {
-                title: 'Equipo',
-                align: 'start',
-                key: 'equipment',
-            },
-            { title: 'Marca', key: 'trademark.trademark' },
-            { title: 'Modelo', key: 'model' },
-            { title: 'No. Serie', key: 'serial_number' },
-            { title: 'Category', key: 'category.equipment_category' },
-            { title: 'Estado', key: 'status.status' },
-            { title: 'Actions', key: 'actions', sortable: false },
+            { title: 'Categoria', key: 'equipment_category' },
+            { title: 'Descripción', key: 'description' },
+            { title: 'Estado', key: 'active' },
+            { title: 'Actions', key: 'actions', sortable: false }
         ],
         editedIndex: -1,
         editedItem: {
-            equipment_uuid: '',
-            equipment_image: '',
-            equipment: '',
-            trademark: '',
-            model: '',
-            serial_number: '',
-            status: '',
+            equipment_category_uuid: '',
+            equipment_category: '',
+            description: '',
+            active: false,
         },
         defaultItem: {
-            equipment_uuid: '',
-            equipment_image: '',
-            equipment: '',
-            trademark: '',
-            model: '',
-            serial_number: '',
-            status: '',
+            equipment_category_uuid: '',
+            equipment_category: '',
+            description: '',
+            active: false
         },
     }),
     computed: {
         formTitle() {
-            return this.editedIndex === -1 ? 'Nueva equipo' : 'Editar equipo'
+            return this.editedIndex === -1 ? 'Nueva categoria' : 'Editar categoria'
         },
     },
     watch: {
@@ -185,20 +167,20 @@ export default {
     },
     methods: {
         editItem(item) {
-            this.editedIndex = this.equipments.indexOf(item)
+            this.editedIndex = this.equipment_categories.indexOf(item)
             item.active = item.active == "1" ? true : false
             this.editedItem = Object.assign({}, item)
             this.dialog = true
         },
         deleteItem(item) {
-            this.editedIndex = this.equipments.indexOf(item)
+            this.editedIndex = this.equipment_categories.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
         },
         deleteItemConfirm(item) {
-            this.equipments.splice(this.editedIndex, 1)
+            this.equipment_categories.splice(this.editedIndex, 1)
             const putRequest = () => {
-                return axios.delete('api/equipments/' + item);
+                return axios.delete('api/equipment/categories/' + item);
             };
             toast.promise(putRequest, {
                 loading: 'Procesando...',
@@ -244,21 +226,19 @@ export default {
         },
         save() {
             if (this.editedIndex > -1) {
-                Object.assign(this.equipments[this.editedIndex], this.editedItem)
+                Object.assign(this.equipment_categories[this.editedIndex], this.editedItem)
                 const putRequest = () => {
-                    return axios.put('api/equipments/' + this.editedItem.equipment_uuid, {
-                        equipment: this.editedItem.equipment,
-                        trademark: this.editedItem.trademark.trademark,
-                        model: this.editedItem.model,
-                        serial_number: this.editedItem.serial_number,
-                        status: this.editedItem.active
+                    return axios.put('api/equipment/categories/' + this.editedItem.equipment_category_uuid, {
+                        equipment_category: this.editedItem.equipment_category,
+                        description: this.editedItem.description,
+                        active: this.editedItem.active
                     });
                 };
                 toast.promise(putRequest(), {
                     loading: 'Procesando...',
                     success: (data) => {
                         this.close()
-                        return 'Equipo actualizado correctamente';
+                        return 'Categoria actualizada correctamente';
                     },
                     error: (data) => {
                         if (data.response) {
@@ -281,9 +261,9 @@ export default {
                     }
                 });
             } else {
-                this.equipments.push(this.editedItem)
+                this.equipment_categories.push(this.editedItem)
                 const postRequest = () => {
-                    return axios.post('api/equipments', {
+                    return axios.post('api/equipment/categories', {
                         equipment_category: this.editedItem.equipment_category,
                         description: this.editedItem.description,
                         active: this.editedItem.active
@@ -294,7 +274,7 @@ export default {
                     loading: 'Procesando...',
                     success: (data) => {
                         this.close()
-                        return 'Equipo creada correctamente';
+                        return 'Categoria creada correctamente';
                     },
                     error: (data) => {
                         if (data.response) {
@@ -323,10 +303,6 @@ export default {
             return value ? 'green' : 'red';
         },
     },
-    mounted() {
-        console.log("Equipments mounted");
-        console.log(this.equipments);
-    }
 
 }
 </script>
