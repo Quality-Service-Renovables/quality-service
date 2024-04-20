@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Status;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Status\Status;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 

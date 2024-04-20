@@ -1,5 +1,9 @@
 <?php
 
+/** @noinspection UnknownInspectionInspection */
+
+/** @noinspection LaravelUnknownEloquentFactoryInspection */
+
 namespace App\Models\Equipments;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;

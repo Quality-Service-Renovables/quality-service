@@ -22,4 +22,10 @@ class Trademark extends Model
     ];
 
     protected $hidden = ['trademark_id'];
+
+
+    public function models()
+    {
+        return $this->hasMany(TrademarkModel::class, 'trademark_id');
+    }
 }

@@ -4,7 +4,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\FixCategory;
+use App\Models\Fixs\FixCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 

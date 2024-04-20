@@ -123,8 +123,8 @@ return [
     'teams' => false,
 
     /*
-     * Passport Client Credentials Grant
-     * When set to true the package will use Passports Client to check permissions
+     * Passport Clients Credentials Grant
+     * When set to true the package will use Passports Clients to check permissions
      */
 
     'use_passport_client_credentials' => false,
@@ -167,7 +167,7 @@ return [
          * When permissions or roles are updated the cache is flushed automatically.
          */
 
-        'expiration_time' => \DateInterval::createFromDateString('24 hours'),
+        'expiration_time' => DateInterval::createFromDateString('24 hours'),
 
         /*
          * The cache key used to store all permissions.

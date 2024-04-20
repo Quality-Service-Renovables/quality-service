@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @author Luis Adrian Olvera Facio
+ * @author  Luis Adrian Olvera Facio
  *
  * @version 1.0.0
  */
@@ -45,13 +45,14 @@ class ApiController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  string  $uuid  Unique identifier
+     * @param string $uuid Unique identifier
+     *
      * @return JsonResponse Response json format
      */
     public function show(string $uuid): JsonResponse
     {
         $user = User::where('uuid', $uuid)->first();
-        if (! $user) {
+        if (!$user) {
             return response()->json(
                 ['message' => 'User not found'],
                 404
@@ -66,8 +67,9 @@ class ApiController extends Controller
     /**
      * Update the specified resource in storage by uuid.
      *
-     * @param  Request  $request  Request given from client
-     * @param  string  $uuid  Unique identifier
+     * @param Request $request Request given from client
+     * @param string  $uuid    Unique identifier
+     *
      * @return JsonResponse Response json format
      */
     public function update(Request $request, string $uuid): JsonResponse
@@ -78,7 +80,8 @@ class ApiController extends Controller
     /**
      * Remove item from uuid
      *
-     * @param  string  $uuid  Unique identifier
+     * @param string $uuid Unique identifier
+     *
      * @return JsonResponse Response json format
      */
     public function destroy(string $uuid): JsonResponse
@@ -102,8 +105,9 @@ class ApiController extends Controller
     }
 
     /**
-     * @param  Request  $request  Request given from client
-     * @param  $uuid  | Unique Identifier
+     * @param Request $request Request given from client
+     * @param         $uuid    | Unique Identifier
+     *
      * @return JsonResponse Json response
      */
     private function setUser(Request $request, ?string $uuid = null): JsonResponse
@@ -136,8 +140,9 @@ class ApiController extends Controller
     }
 
     /**
-     * @param  User  $user  Instance of user
-     * @param  Request  $request  Request given from client
+     * @param User    $user    Instance of user
+     * @param Request $request Request given from client
+     *
      * @return void Not response
      */
     private function createUser(User $user, Request $request): void
@@ -148,8 +153,9 @@ class ApiController extends Controller
     }
 
     /**
-     * @param  User  $user  Instance of user given
-     * @param  Request  $request  Request from client
+     * @param User    $user    Instance of user given
+     * @param Request $request Request from client
+     *
      * @return void Not response
      */
     private function updateUser(User $user, Request $request): void
@@ -159,9 +165,10 @@ class ApiController extends Controller
     }
 
     /**
-     * @param  User  $user  Instancia de usuario
-     * @param  Request  $request  Request given from client
-     * @param  array  $showFields  Array with fields to show
+     * @param User    $user       Instancia de usuario
+     * @param Request $request    Request given from client
+     * @param array   $showFields Array with fields to show
+     *
      * @return void Not response
      */
     private function updateCommonFields(User $user, Request $request, array $showFields = []): void
@@ -173,7 +180,8 @@ class ApiController extends Controller
     }
 
     /**
-     * @param  array  $exceptions  Array exceptions to show
+     * @param array $exceptions Array exceptions to show
+     *
      * @return string[] Array with fields to hide
      */
     private function hiddenFields(array $exceptions = []): array

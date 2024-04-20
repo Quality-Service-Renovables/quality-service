@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Api\V1\Equipments;
 
 use App\Http\Controllers\Controller;
-use App\Http\Modules\Api\V1\Equipments\CategoryModule;
 use App\Http\Requests\Api\Equipments\CategoryRequest;
+use App\Http\Requests\Api\Trademarks\TrademarkRequest;
+use App\Services\Api\V1\Equipments\CategoryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -14,14 +15,14 @@ use Inertia\Response;
 
 class CategoryController extends Controller
 {
-    protected CategoryModule $module;
+    protected CategoryService $service;
 
     /**
      * Constructor for the class.
      */
     public function __construct()
     {
-        $this->module = new CategoryModule();
+        $this->service = new CategoryService();
     }
 
     /**
@@ -29,19 +30,19 @@ class CategoryController extends Controller
      */
     public function index(): JsonResponse
     {
-        $this->module->read();
+        $this->service->read();
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(CategoryRequest $request): JsonResponse
+    public function create(TrademarkRequest $request): JsonResponse
     {
-        $this->module->create($request);
+        $this->service->create($request);
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
@@ -49,9 +50,9 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request): JsonResponse
     {
-        $this->module->create($request);
+        $this->service->create($request);
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
@@ -61,21 +62,13 @@ class CategoryController extends Controller
     {
         $request = (['equipment_category_uuid' => $uuid]);
 
-        $validated = Validator::make($request, [
-            'equipment_category_uuid' => 'required|uuid|exists:equipment_categories,equipment_category_uuid',
-        ]);
-
-        if ($validated->fails()) {
-            $this->module->statusCode = 400;
-            $this->module->response['status'] = 'fail';
-            $this->module->response['message'] = $validated->errors();
-
-            return response()->json($this->module->response, $this->module->statusCode);
+        if (!$this->commonValidation($request)) {
+            return response()->json($this->service->response, $this->service->statusCode);
         }
 
-        $this->module->show($uuid);
+        $this->service->show($uuid);
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
@@ -83,9 +76,11 @@ class CategoryController extends Controller
      */
     public function edit(string $uuid): JsonResponse
     {
-        $this->module->read();
+        $this->service->read();
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        $this->service->response['message'] = 'Api edit request not available: ' . $uuid;
+
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
@@ -111,16 +106,14 @@ class CategoryController extends Controller
         ]);
 
         if ($validated->fails()) {
-            $this->module->statusCode = 400;
-            $this->module->response['status'] = 'fail';
-            $this->module->response['message'] = $validated->errors();
+            $this->service->setFailValidation($validated->errors());
 
-            return response()->json($this->module->response, $this->module->statusCode);
+            return response()->json($this->service->response, $this->service->statusCode);
         }
 
-        $this->module->update($request);
+        $this->service->update($request);
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
@@ -130,21 +123,13 @@ class CategoryController extends Controller
     {
         $request = ['equipment_category_uuid' => $uuid];
 
-        $validated = Validator::make($request, [
-            'equipment_category_uuid' => 'required|uuid|exists:equipment_categories,equipment_category_uuid',
-        ]);
-
-        if ($validated->fails()) {
-            $this->module->statusCode = 400;
-            $this->module->response['status'] = 'fail';
-            $this->module->response['message'] = $validated->errors();
-
-            return response()->json($this->module->response, $this->module->statusCode);
+        if (!$this->commonValidation($request)) {
+            return response()->json($this->service->response, $this->service->statusCode);
         }
 
-        $this->module->delete($uuid);
+        $this->service->delete($uuid);
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
@@ -152,10 +137,31 @@ class CategoryController extends Controller
      */
     public function component(): Response
     {
-        $this->module->read();
+        $this->service->read();
 
         return Inertia::render('Equipment', [
-            'equipments' => $this->module->response['data'],
+            'equipments' => $this->service->response['data'],
         ]);
+    }
+
+    /**
+     * Perform common validation for the request data.
+     *
+     *
+     * @return bool Returns true if validation passes, false otherwise.
+     */
+    private function commonValidation(array $request): bool
+    {
+        $validated = Validator::make($request, [
+            'equipment_category_uuid' => 'required|uuid|exists:equipment_categories,equipment_category_uuid',
+        ]);
+
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+
+            return false;
+        }
+
+        return true;
     }
 }

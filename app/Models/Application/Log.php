@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Log extends Model
 {
     use HasFactory, SoftDeletes;
+
     protected $table = 'application_logs';
     protected $primaryKey = 'application_log_id';
     protected $fillable = [

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\V1\Equipments;
 
 use App\Http\Controllers\Controller;
-use App\Http\Modules\Api\V1\Equipments\EquipmentModule;
 use App\Http\Requests\Api\Equipments\EquipmentRequest;
+use App\Services\Api\V1\Equipments\EquipmentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -13,14 +13,14 @@ use Inertia\Response;
 
 class EquipmentController extends Controller
 {
-    protected EquipmentModule $module;
+    protected EquipmentService $service;
 
     /**
      * Constructor for the class.
      */
     public function __construct()
     {
-        $this->module = new EquipmentModule();
+        $this->service = new EquipmentService();
     }
 
     /**
@@ -28,9 +28,9 @@ class EquipmentController extends Controller
      */
     public function index(): JsonResponse
     {
-        $this->module->read();
+        $this->service->read();
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
@@ -38,9 +38,9 @@ class EquipmentController extends Controller
      */
     public function create(EquipmentRequest $request): JsonResponse
     {
-        $this->module->create($request);
+        $this->service->create($request);
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
@@ -48,29 +48,37 @@ class EquipmentController extends Controller
      */
     public function store(EquipmentRequest $request): JsonResponse
     {
-        $this->module->create($request);
+        $this->service->create($request);
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id): JsonResponse
+    public function show(string $uuid): JsonResponse
     {
-        $this->module->read();
+        $request = (['equipment_uuid' => $uuid]);
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        if (!$this->commonValidation($request)) {
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->show($uuid);
+
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id): JsonResponse
+    public function edit(string $uuid): JsonResponse
     {
-        $this->module->read();
+        $this->service->read();
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        $this->service->response['message'] = 'Api edit request not available: ' . $uuid;
+
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
@@ -85,19 +93,18 @@ class EquipmentController extends Controller
             'equipment' => 'required|string',
             'equipment_category_code' => 'required|string|exists:equipment_categories,equipment_category_code',
             'trademark_code' => 'required|string|exists:trademarks,trademark_code',
+            'trademark_model_code' => 'required|string|exists:trademark_models,trademark_model_code',
             'status_code' => 'required|string|exists:status,status_code',
         ]);
 
         if ($validated->fails()) {
-            $this->module->statusCode = 400;
-            $this->module->response['status'] = 'fail';
-            $this->module->response['message'] = $validated->errors();
-            return response()->json($this->module->response, $this->module->statusCode);
+            $this->service->setFailValidation($validated->errors());
+            return response()->json($this->service->response, $this->service->statusCode);
         }
 
-        $this->module->update($request);
+        $this->service->update($request);
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
@@ -107,20 +114,13 @@ class EquipmentController extends Controller
     {
         $request = ['equipment_uuid' => $uuid];
 
-        $validated = Validator::make($request, [
-            'equipment_uuid' => 'required|uuid|exists:equipments,equipment_uuid',
-        ]);
-
-        if ($validated->fails()) {
-            $this->module->statusCode = 400;
-            $this->module->response['status'] = 'fail';
-            $this->module->response['message'] = $validated->errors();
-            return response()->json($this->module->response, $this->module->statusCode);
+        if (!$this->commonValidation($request)) {
+            return response()->json($this->service->response, $this->service->statusCode);
         }
 
-        $this->module->delete($uuid);
+        $this->service->delete($uuid);
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
@@ -130,10 +130,31 @@ class EquipmentController extends Controller
      */
     public function component(): Response
     {
-        $this->module->read();
+        $this->service->read();
 
         return Inertia::render('Equipment', [
-            'equipments' => $this->module->response['data'],
+            'equipments' => $this->service->response['data'],
         ]);
+    }
+
+    /**
+     * Perform common validation for the request data.
+     *
+     *
+     * @return bool Returns true if validation passes, false otherwise.
+     */
+    private function commonValidation(array $request): bool
+    {
+        $validated = Validator::make($request, [
+            'equipment_uuid' => 'required|uuid|exists:equipments,equipment_uuid',
+        ]);
+
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+
+            return false;
+        }
+
+        return true;
     }
 }

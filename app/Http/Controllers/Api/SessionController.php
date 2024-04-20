@@ -3,25 +3,25 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Modules\Api\SessionModule;
 use App\Http\Requests\Api\Sessions\SessionRequest;
+use App\Services\Api\SessionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class SessionController extends Controller
 {
-    protected SessionModule $module;
+    protected SessionService $service;
 
     public function __construct()
     {
-        $this->module = new SessionModule();
+        $this->service = new SessionService();
     }
 
     public function login(SessionRequest $request)
     {
-        $this->module->login($request);
+        $this->service->login($request);
 
-        return response()->json($this->module->response, $this->module->statusCode);
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     public function logout(Request $request): JsonResponse

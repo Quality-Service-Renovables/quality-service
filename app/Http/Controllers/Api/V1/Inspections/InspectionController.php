@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\Api\V1\Inspections;
 
 use App\Http\Controllers\Controller;
-use App\Http\Modules\Api\V1\Inspections\InspectionModule;
+use App\Services\Api\V1\Inspections\Inspectionservice;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class InspectionController extends Controller
 {
-    protected InspectionModule $module;
+    protected Inspectionservice $service;
+
     public function __construct()
     {
-        $this->module = new InspectionModule();
+        $this->service = new Inspectionservice();
     }
 
     /**
@@ -20,8 +21,8 @@ class InspectionController extends Controller
      */
     public function index(): JsonResponse
     {
-        $this->module->read();
-        return response()->json($this->module->response, $this->module->status_code);
+        $this->service->read();
+        return response()->json($this->service->response, $this->service->status_code);
     }
 
     /**
@@ -29,7 +30,7 @@ class InspectionController extends Controller
      */
     public function create(Request $request): JsonResponse
     {
-        return response()->json($this->module->response, $this->module->status_code);
+        return response()->json($this->service->response, $this->service->status_code);
     }
 
     /**
@@ -37,7 +38,7 @@ class InspectionController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        return response()->json($this->module->response, $this->module->status_code);
+        return response()->json($this->service->response, $this->service->status_code);
     }
 
     /**
@@ -45,7 +46,7 @@ class InspectionController extends Controller
      */
     public function show(string $id): JsonResponse
     {
-        return response()->json($this->module->response, $this->module->status_code);
+        return response()->json($this->service->response, $this->service->status_code);
     }
 
     /**
@@ -53,7 +54,7 @@ class InspectionController extends Controller
      */
     public function edit(string $id): JsonResponse
     {
-        return response()->json($this->module->response, $this->module->status_code);
+        return response()->json($this->service->response, $this->service->status_code);
     }
 
     /**
@@ -61,7 +62,7 @@ class InspectionController extends Controller
      */
     public function update(Request $request, string $id): JsonResponse
     {
-        return response()->json($this->module->response, $this->module->status_code);
+        return response()->json($this->service->response, $this->service->status_code);
     }
 
     /**
@@ -69,6 +70,6 @@ class InspectionController extends Controller
      */
     public function destroy(string $id): JsonResponse
     {
-        return response()->json($this->module->response, $this->module->status_code);
+        return response()->json($this->service->response, $this->service->status_code);
     }
 }

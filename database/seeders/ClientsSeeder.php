@@ -5,7 +5,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Client;
+use App\Models\Clients\Client;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 

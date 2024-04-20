@@ -2,21 +2,11 @@
 
 namespace App\Http\Requests\Api\Equipments;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Validation\ValidationException;
+use App\Http\Requests\CustomRequest;
+use Illuminate\Validation\Rule;
 
-class EquipmentRequest extends FormRequest
+class EquipmentRequest extends CustomRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -25,19 +15,27 @@ class EquipmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'equipment' => 'required|string',
-            'equipment_category_code' => 'required|string|exists:equipment_categories,equipment_category_code',
+            //'equipment' => 'required|string',
+            //'equipment_category_code' => 'required|string|exists:equipment_categories,equipment_category_code',
+            'equipment' => [
+                'required',
+                'string',
+                'min:1',
+                'max:255',
+                Rule::unique('equipments', 'equipment')
+                    ->whereNull('deleted_at'),
+            ],
+            'equipment_category_code' => [
+                'required',
+                'string',
+                'min:1',
+                'max:255',
+                Rule::exists('equipment_categories', 'equipment_category_code')
+                    ->whereNull('deleted_at'),
+            ],
             'trademark_code' => 'required|string|exists:trademarks,trademark_code',
+            'trademark_model_code' => 'required|string|exists:trademark_models,trademark_model_code',
             'status_code' => 'required|string|exists:status,status_code',
         ];
-    }
-
-    protected function failedValidation(Validator $validator): void
-    {
-        $errors = (new ValidationException($validator))->errors();
-
-        throw new HttpResponseException(
-            response()->json(['errors' => $errors], 422)
-        );
     }
 }

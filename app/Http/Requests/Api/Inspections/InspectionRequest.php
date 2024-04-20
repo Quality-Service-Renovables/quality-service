@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Api\Inspections;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\CustomRequest;
 
-class InspectionRequest extends FormRequest
+class InspectionRequest extends CustomRequest
 {
     /**
      * Determine if the user is authorized to make this request.

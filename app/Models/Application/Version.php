@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Version extends Model
 {
     use HasFactory, SoftDeletes;
+
     protected $table = 'application_versions';
     protected $primaryKey = 'application_version_id';
     protected $fillable = [

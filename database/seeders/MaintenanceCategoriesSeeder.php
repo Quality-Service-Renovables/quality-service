@@ -4,7 +4,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\MaintenanceCategory;
+use App\Models\Maintenances\MaintenanceCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 

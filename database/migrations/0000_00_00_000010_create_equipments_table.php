@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('equipment');
             $table->string('equipment_code');
             $table->string('equipment_image')->default('img/equipments/default.jpg');
-            $table->string('model')->nullable();
             $table->string('serial_number')->nullable()->comment('Serial number or vin number');
             $table->string('manufacture_date')->nullable()->comment('Manufacture date');
             $table->date('barcode')->nullable()->comment('Barcode');
@@ -25,6 +24,7 @@ return new class extends Migration
             $table->string('manual')->nullable();
             $table->unsignedBigInteger('equipment_category_id');
             $table->unsignedBigInteger('trademark_id');
+            $table->unsignedBigInteger('trademark_model_id');
             $table->unsignedBigInteger('status_id');
             $table->boolean('active')->default(true);
             $table->timestamps();
@@ -33,12 +33,15 @@ return new class extends Migration
             $table->index('equipment_uuid');
             $table->index('equipment_category_id');
             $table->index('trademark_id');
+            $table->index('trademark_model_id');
             $table->index('status_id');
             //FOREIGN KEYS
             $table->foreign('equipment_category_id', 'fk_equipment_category')
                 ->references('equipment_category_id')->on('equipment_categories');
             $table->foreign('trademark_id', 'fk_equipment_trademark')
                 ->references('trademark_id')->on('trademarks');
+            $table->foreign('trademark_model_id', 'fk_equipment_trademark_model')
+                ->references('trademark_model_id')->on('trademark_models');
             $table->foreign('status_id', 'fk_equipment_status')
                 ->references('status_id')->on('status');
         });

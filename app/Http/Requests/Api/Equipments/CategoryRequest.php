@@ -2,26 +2,15 @@
 
 namespace App\Http\Requests\Api\Equipments;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Requests\CustomRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 
-class CategoryRequest extends FormRequest
+class CategoryRequest extends CustomRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
     public function rules(): array
     {
@@ -37,14 +26,5 @@ class CategoryRequest extends FormRequest
             'description' => 'required|string|min:3|max:255',
             'active' => 'required|bool',
         ];
-    }
-
-    protected function failedValidation(Validator $validator): void
-    {
-        $errors = (new ValidationException($validator))->errors();
-
-        throw new HttpResponseException(
-            response()->json(['errors' => $errors], 422)
-        );
     }
 }

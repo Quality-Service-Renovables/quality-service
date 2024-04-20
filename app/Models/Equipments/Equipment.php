@@ -1,9 +1,14 @@
 <?php
 
+/** @noinspection UnknownInspectionInspection */
+
+/** @noinspection LaravelUnknownEloquentFactoryInspection */
+
 namespace App\Models\Equipments;
 
-use App\Models\Status;
+use App\Models\Status\Status;
 use App\Models\Trademarks\Trademark;
+use App\Models\Trademarks\TrademarkModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,11 +35,12 @@ class Equipment extends Model
         'manual',
         'equipment_category_id',
         'trademark_id',
+        'trademark_model_id',
         'status_id',
         'active',
     ];
 
-    protected $hidden = ['equipment_id', 'equipment_category_id', 'trademark_id', 'status_id'];
+    protected $hidden = ['equipment_id', 'equipment_category_id', 'trademark_id', 'trademark_model_id', 'status_id'];
 
     /**
      * Get the category that this equipment belongs to.
@@ -58,5 +64,15 @@ class Equipment extends Model
     public function trademark(): BelongsTo
     {
         return $this->belongsTo(Trademark::class, 'trademark_id', 'trademark_id');
+    }
+
+    /**
+     * Get the model that this item belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function model(): BelongsTo
+    {
+        return $this->belongsTo(TrademarkModel::class, 'trademark_model_id', 'trademark_model_id');
     }
 }
