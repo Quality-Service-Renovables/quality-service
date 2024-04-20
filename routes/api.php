@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\SessionController;
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
 use App\Http\Controllers\Api\V1\Inspections\CategoryController;
+use App\Http\Controllers\Api\V1\Status\StatusController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
 use App\Http\Controllers\Api\V1\User\ApiController;
@@ -39,4 +40,8 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //######################################################### TRADEMARKS ##########################################################
     Route::resource('trademarks', TrademarkController::class);
     Route::resource('trademark/models', TrademarkModelController::class);
+    //######################################################## INSPECTIONS ##########################################################
+    Route::resource('inspection/categories', CategoryController::class);
+    //######################################################### EQUIPMENTS ##########################################################
+    Route::resource('status', StatusController::class);
 });
