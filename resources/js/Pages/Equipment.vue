@@ -17,10 +17,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                     <v-card>
                         <v-row>
                             <v-col cols="12" sm="12">
-                                <v-data-table :headers="headers" :items="equipments" fixed-header
-                                    :search="search">
+                                <v-data-table :headers="headers" :items="equipments" fixed-header :search="search">
                                     <template v-slot:item.equipment_image="{ item }">
-                                        <v-avatar :image="'../'+item.equipment_image" size="40" class="ma-1"></v-avatar>
+                                        <v-avatar :image="'../' + item.equipment_image" size="40"
+                                            class="ma-1"></v-avatar>
                                     </template>
                                     <template v-slot:item.active="{ value }">
                                         <v-icon :color="getColor(value)">mdi-circle-slice-8</v-icon>
@@ -47,18 +47,38 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         <v-container>
                                                             <v-row>
                                                                 <v-col cols="12">
-                                                                    <v-text-field
-                                                                        v-model="editedItem.equipment"
+                                                                    <v-text-field v-model="editedItem.equipment"
                                                                         label="Nombre"></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="12">
-                                                                    <v-text-field
-                                                                        v-model="editedItem.model"
-                                                                        label="Modelo"></v-text-field>
+                                                                    <v-select
+                                                                        v-model="editedItem.equipment_category_code"
+                                                                        :items="equipment_categories"
+                                                                        item-title="equipment_category"
+                                                                        item-value="equipment_category_code"
+                                                                        label="Categoría"></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
-                                                                    <v-text-field
-                                                                        v-model="editedItem.serial_number"
+                                                                    <v-select v-model="editedItem.trademark_code"
+                                                                        :items="trademarks" item-title="trademark"
+                                                                        item-value="trademark_code" label="Marca"
+                                                                        @update:model-value="setTradermarkModels()"></v-select>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-select v-model="editedItem.trademark_model_code"
+                                                                        :items="editedItem.models"
+                                                                        item-title="trademark_model"
+                                                                        item-value="trademark_model_code"
+                                                                        label="Modelo"></v-select>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-select v-model="editedItem.status_code"
+                                                                        :items="status" item-title="status"
+                                                                        item-value="status_code"
+                                                                        label="Estatus"></v-select>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-text-field v-model="editedItem.serial_number"
                                                                         label="Número de serie"></v-text-field>
                                                                 </v-col>
                                                             </v-row>
@@ -101,11 +121,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             mdi-delete
                                         </v-icon>
                                     </template>
-                                    <template v-slot:no-data>
-                                        <v-btn color="primary" @click="initialize">
-                                            Reset
-                                        </v-btn>
-                                    </template>
                                 </v-data-table>
                             </v-col>
                         </v-row>
@@ -144,35 +159,42 @@ export default {
                 key: 'equipment',
             },
             { title: 'Marca', key: 'trademark.trademark' },
-            { title: 'Modelo', key: 'model' },
+            { title: 'Modelo', key: 'model.trademark_model' },
             { title: 'No. Serie', key: 'serial_number' },
-            { title: 'Category', key: 'category.equipment_category' },
+            { title: 'Categoría', key: 'category.equipment_category' },
             { title: 'Estado', key: 'status.status' },
             { title: 'Actions', key: 'actions', sortable: false },
         ],
         editedIndex: -1,
         editedItem: {
             equipment_uuid: '',
-            equipment_image: '',
             equipment: '',
-            trademark: '',
-            model: '',
+            equipment_image: '',
+            equipment_category_code: '',
+            trademark_code: '',
+            trademark_model_code: '',
+            status_code: '',
             serial_number: '',
-            status: '',
+            models: [],
         },
         defaultItem: {
             equipment_uuid: '',
-            equipment_image: '',
             equipment: '',
-            trademark: '',
-            model: '',
+            equipment_image: '',
+            equipment_category_code: '',
+            trademark_code: '',
+            trademark_model_code: '',
+            status_code: '',
             serial_number: '',
-            status: '',
+            models: [],
         },
+        trademarks: [],
+        equipment_categories: [],
+        status: [],
     }),
     computed: {
         formTitle() {
-            return this.editedIndex === -1 ? 'Nueva equipo' : 'Editar equipo'
+            return this.editedIndex === -1 ? 'Nuevo equipo' : 'Editar equipo'
         },
     },
     watch: {
@@ -184,15 +206,28 @@ export default {
         },
     },
     methods: {
+        getItem(item) {
+            return {
+                equipment_uuid: item.equipment_uuid,
+                equipment: item.equipment,
+                equipment_image: item.equipment_image,
+                equipment_category_code: item.category.equipment_category_code,
+                trademark_code: item.trademark.trademark_code,
+                trademark_model_code: item.model.trademark_model_code,
+                status_code: item.status.status_code,
+                serial_number: item.serial_number,
+                models: this.trademarks.find(trademark => trademark.trademark_code === item.trademark.trademark_code).models
+            }
+        },
         editItem(item) {
             this.editedIndex = this.equipments.indexOf(item)
             item.active = item.active == "1" ? true : false
-            this.editedItem = Object.assign({}, item)
+            this.editedItem = Object.assign({}, this.getItem(item))
             this.dialog = true
         },
         deleteItem(item) {
             this.editedIndex = this.equipments.indexOf(item)
-            this.editedItem = Object.assign({}, item)
+            this.editedItem = Object.assign({}, this.getItem(item))
             this.dialogDelete = true
         },
         deleteItemConfirm(item) {
@@ -248,16 +283,18 @@ export default {
                 const putRequest = () => {
                     return axios.put('api/equipments/' + this.editedItem.equipment_uuid, {
                         equipment: this.editedItem.equipment,
-                        trademark: this.editedItem.trademark.trademark,
-                        model: this.editedItem.model,
-                        serial_number: this.editedItem.serial_number,
-                        status: this.editedItem.active
+                        equipment_category_code: this.editedItem.equipment_category_code,
+                        trademark_code: this.editedItem.trademark_code,
+                        trademark_model_code: this.editedItem.trademark_model_code,
+                        status_code: this.editedItem.status_code,
+                        serial_number: this.editedItem.serial_number
                     });
                 };
                 toast.promise(putRequest(), {
                     loading: 'Procesando...',
                     success: (data) => {
                         this.close()
+                        this.$inertia.reload()
                         return 'Equipo actualizado correctamente';
                     },
                     error: (data) => {
@@ -284,9 +321,12 @@ export default {
                 this.equipments.push(this.editedItem)
                 const postRequest = () => {
                     return axios.post('api/equipments', {
-                        equipment_category: this.editedItem.equipment_category,
-                        description: this.editedItem.description,
-                        active: this.editedItem.active
+                        equipment: this.editedItem.equipment,
+                        equipment_category_code: this.editedItem.equipment_category_code,
+                        trademark_code: this.editedItem.trademark_code,
+                        trademark_model_code: this.editedItem.trademark_model_code,
+                        status_code: this.editedItem.status_code,
+                        serial_number: this.editedItem.serial_number
                     });
                 };
 
@@ -294,7 +334,8 @@ export default {
                     loading: 'Procesando...',
                     success: (data) => {
                         this.close()
-                        return 'Equipo creada correctamente';
+                        this.$inertia.reload()
+                        return 'Equipo creado correctamente';
                     },
                     error: (data) => {
                         if (data.response) {
@@ -322,10 +363,42 @@ export default {
         getColor(value) {
             return value ? 'green' : 'red';
         },
+        getTrademarks() {
+            axios.get('api/trademarks')
+                .then(response => {
+                    this.trademarks = response.data.data;
+                })
+                .catch(error => {
+                    toast.error('Error al cargar el catálogo de marcas');
+                });
+        },
+        setTradermarkModels() {
+            this.editedItem.trademark_model_code = '';
+            this.editedItem.models = this.trademarks.find(trademark => trademark.trademark_code === this.editedItem.trademark_code).models;
+        },
+        getCategories() {
+            axios.get('api/equipment/categories')
+                .then(response => {
+                    this.equipment_categories = response.data.data;
+                })
+                .catch(error => {
+                    toast.error('Error al cargar el catálogo de categorías');
+                });
+        },
+        getStatus() {
+            axios.get('api/status')
+                .then(response => {
+                    this.status = response.data.data;
+                })
+                .catch(error => {
+                    toast.error('Error al cargar el catálogo de estatus');
+                });
+        }
     },
     mounted() {
-        console.log("Equipments mounted");
-        console.log(this.equipments);
+        this.getTrademarks();
+        this.getCategories();
+        this.getStatus();
     }
 
 }
