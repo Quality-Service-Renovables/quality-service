@@ -139,8 +139,8 @@ class CategoryController extends Controller
     {
         $this->service->read();
 
-        return Inertia::render('Equipment', [
-            'equipments' => $this->service->response['data'],
+        return Inertia::render('EquipmentCategories', [
+            'equipment_categories' => $this->service->response['data'],
         ]);
     }
 
