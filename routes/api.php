@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\SessionController;
+use App\Http\Controllers\Api\V1\Clients\ClientController;
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
 use App\Http\Controllers\Api\V1\Inspections\CategoryController;
 use App\Http\Controllers\Api\V1\Status\StatusController;
@@ -32,6 +33,8 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //****************************** USER *******************************
     Route::resource('user', ApiController::class);
     //**************************** END USER *****************************
+    //######################################################### CLIENTS ##########################################################
+    Route::resource('clients', ClientController::class);
     //######################################################## INSPECTIONS #########################################################
     Route::resource('inspection/categories', CategoryController::class);
     //######################################################### EQUIPMENTS ##########################################################

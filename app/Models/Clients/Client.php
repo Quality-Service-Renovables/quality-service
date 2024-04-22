@@ -15,13 +15,19 @@ class Client extends Model
     protected $fillable = [
         'client_uuid',
         'client',
+        'client_code',
         'logo',
         'legal_name',
         'address',
         'zip_code',
         'phone',
+        'phone_office',
+        'open_time',
+        'close_time',
+        'office_days',
         'website',
         'email',
         'active',
     ];
+    protected $hidden = ['client_id'];
 }
