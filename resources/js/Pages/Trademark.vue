@@ -6,10 +6,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 <template>
     <Toaster position="top-right" richColors :visibleToasts="10" />
 
-    <Head title="Equipments" />
+    <Head title="Marcas" />
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Categorias de Equipos</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Marcas</h2>
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
@@ -17,7 +17,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                     <v-card>
                         <v-row>
                             <v-col cols="12" sm="12">
-                                <v-data-table :headers="headers" :items="equipment_categories" fixed-header
+                                <v-data-table :headers="headers" :items="trademarks" fixed-header
                                     :search="search">
                                     <template v-slot:item.active="{ value }">
                                         <v-icon :color="getColor(value)">mdi-circle-slice-8</v-icon>
@@ -45,14 +45,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                             <v-row>
                                                                 <v-col cols="12">
                                                                     <v-text-field
-                                                                        v-model="editedItem.equipment_category"
+                                                                        v-model="editedItem.trademark"
                                                                         label="Nombre" variant="solo"
                                                                         hide-details></v-text-field>
-                                                                </v-col>
-                                                                <v-col cols="12">
-                                                                    <v-textarea v-model="editedItem.description"
-                                                                        label="Descripción" variant="solo"
-                                                                        hide-details></v-textarea>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
@@ -83,7 +78,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         <v-btn color="blue-darken-1" variant="text"
                                                             @click="closeDelete">Cancel</v-btn>
                                                         <v-btn color="blue-darken-1" variant="text"
-                                                            @click="deleteItemConfirm(editedItem.equipment_category_uuid)">Si,
+                                                            @click="deleteItemConfirm(editedItem.trademark_uuid)">Si,
                                                             eliminar</v-btn>
                                                         <v-spacer></v-spacer>
                                                     </v-card-actions>
@@ -120,7 +115,7 @@ export default {
         Toaster,
     },
     props: {
-        equipment_categories: {
+        trademarks: {
             type: Array,
             required: true
         }
@@ -130,28 +125,25 @@ export default {
         dialog: false,
         dialogDelete: false,
         headers: [
-            { title: 'Categoria', key: 'equipment_category' },
-            { title: 'Descripción', key: 'description' },
+            { title: 'Marca', key: 'trademark' },
             { title: 'Estado', key: 'active' },
             { title: 'Actions', key: 'actions', sortable: false }
         ],
         editedIndex: -1,
         editedItem: {
-            equipment_category_uuid: '',
-            equipment_category: '',
-            description: '',
+            trademark_uuid: '',
+            trademark: '',
             active: false,
         },
         defaultItem: {
-            equipment_category_uuid: '',
-            equipment_category: '',
-            description: '',
+            trademark_uuid: '',
+            trademark: '',
             active: false
         },
     }),
     computed: {
         formTitle() {
-            return this.editedIndex === -1 ? 'Nueva categoria' : 'Editar categoria'
+            return this.editedIndex === -1 ? 'Nueva marca' : 'Editar marca'
         },
     },
     watch: {
@@ -164,26 +156,26 @@ export default {
     },
     methods: {
         editItem(item) {
-            this.editedIndex = this.equipment_categories.indexOf(item)
+            this.editedIndex = this.trademarks.indexOf(item)
             item.active = item.active == "1" ? true : false
             this.editedItem = Object.assign({}, item)
             this.dialog = true
         },
         deleteItem(item) {
-            this.editedIndex = this.equipment_categories.indexOf(item)
+            this.editedIndex = this.trademarks.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
         },
         deleteItemConfirm(item) {
-            this.equipment_categories.splice(this.editedIndex, 1)
+            this.trademarks.splice(this.editedIndex, 1)
             const putRequest = () => {
-                return axios.delete('api/equipment/categories/' + item);
+                return axios.delete('api/trademarks/' + item);
             };
             toast.promise(putRequest, {
                 loading: 'Procesando...',
                 success: (data) => {
                     this.closeDelete()
-                    return 'Categoria eliminada correctamente';
+                    return 'Marca eliminada correctamente';
                 },
                 error: (data) => {
                     this.handleErrors(data);
@@ -208,11 +200,10 @@ export default {
         },
         save() {
             if (this.editedIndex > -1) {
-                Object.assign(this.equipment_categories[this.editedIndex], this.editedItem)
+                Object.assign(this.trademarks[this.editedIndex], this.editedItem)
                 const putRequest = () => {
-                    return axios.put('api/equipment/categories/' + this.editedItem.equipment_category_uuid, {
-                        equipment_category: this.editedItem.equipment_category,
-                        description: this.editedItem.description,
+                    return axios.put('api/trademarks/' + this.editedItem.trademark_uuid, {
+                        trademark: this.editedItem.trademark,
                         active: this.editedItem.active
                     });
                 };
@@ -220,18 +211,17 @@ export default {
                     loading: 'Procesando...',
                     success: (data) => {
                         this.close()
-                        return 'Categoria actualizada correctamente';
+                        return 'Marca actualizada correctamente';
                     },
                     error: (data) => {
                         this.handleErrors(data);
                     }
                 });
             } else {
-                this.equipment_categories.push(this.editedItem)
+                this.trademarks.push(this.editedItem)
                 const postRequest = () => {
-                    return axios.post('api/equipment/categories', {
-                        equipment_category: this.editedItem.equipment_category,
-                        description: this.editedItem.description,
+                    return axios.post('api/trademarks', {
+                        trademark: this.editedItem.trademark,
                         active: this.editedItem.active
                     });
                 };
@@ -240,7 +230,7 @@ export default {
                     loading: 'Procesando...',
                     success: (data) => {
                         this.close()
-                        return 'Categoria creada correctamente';
+                        return 'Marca creada correctamente';
                     },
                     error: (data) => {
                         this.handleErrors(data);

@@ -4,7 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 </script>
 
 <template>
-    <Toaster position="top-right" richColors />
+    <Toaster position="top-right" richColors :visibleToasts="10" />
 
     <Head title="Equipments" />
     <AuthenticatedLayout>
@@ -135,7 +135,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 <script>
 import { router } from '@inertiajs/vue3'
 import { Toaster, toast } from 'vue-sonner'
-import Swal from 'sweetalert2';
 
 export default {
     components: {
@@ -239,25 +238,10 @@ export default {
                 loading: 'Procesando...',
                 success: (data) => {
                     this.closeDelete()
-                    return 'Categoria eliminada correctamente';
+                    return 'Equipo eliminado correctamente';
                 },
                 error: (data) => {
-                    if (data.response) {
-                        // Si hay una respuesta de error, puedes acceder a los datos así:
-                        const responseData = data.response.data;
-
-                        // Verificamos si el error contiene un mensaje
-                        if (responseData && responseData.status === 'fail' && responseData.message) {
-                            // Iteramos sobre cada campo que contiene errores y mostramos los mensajes
-                            for (const field in responseData.message) {
-                                const errors = responseData.message[field];
-                                // Aquí puedes manejar los errores como desees
-                                toast.error(`Errores en el campo ${field}:`, {
-                                    description: `${errors.join(', ')}`,
-                                })
-                            }
-                        }
-                    }
+                    this.handleErrors(data);
                 }
             });
         },
@@ -298,23 +282,7 @@ export default {
                         return 'Equipo actualizado correctamente';
                     },
                     error: (data) => {
-                        if (data.response) {
-                            // Si hay una respuesta de error, puedes acceder a los datos así:
-                            const responseData = data.response.data;
-
-                            // Verificamos si el error contiene un mensaje
-                            if (responseData && responseData.status === 'fail' && responseData.message) {
-                                // Iteramos sobre cada campo que contiene errores y mostramos los mensajes
-                                for (const field in responseData.message) {
-                                    console.log(responseData.message[field]);
-                                    const errors = responseData.message[field];
-                                    // Aquí puedes manejar los errores como desees
-                                    toast.error(`Errores en el campo ${field}:`, {
-                                        description: `${errors.join(', ')}`,
-                                    })
-                                }
-                            }
-                        }
+                        this.handleErrors(data);
                     }
                 });
             } else {
@@ -338,23 +306,7 @@ export default {
                         return 'Equipo creado correctamente';
                     },
                     error: (data) => {
-                        if (data.response) {
-                            // Si hay una respuesta de error, puedes acceder a los datos así:
-                            const responseData = data.response.data;
-
-                            // Verificamos si el error contiene un mensaje
-                            if (responseData && responseData.status === 'fail' && responseData.message) {
-                                // Iteramos sobre cada campo que contiene errores y mostramos los mensajes
-                                for (const field in responseData.message) {
-                                    console.log(responseData.message[field]);
-                                    const errors = responseData.message[field];
-                                    // Aquí puedes manejar los errores como desees
-                                    toast.error(`Errores en el campo ${field}:`, {
-                                        description: `${errors.join(', ')}`,
-                                    })
-                                }
-                            }
-                        }
+                        this.handleErrors(data);
                     }
                 });
             }

@@ -36,7 +36,7 @@ defineProps({
                             <App path="" title="Clientes" icon="mdi-format-list-checkbox"/>
                             <App path="" title="Inspecciones" icon="mdi-table-cog"/>
                             <App path="" title="Fallas" icon="mdi-playlist-remove"/>
-                            <App path="" title="Marcas" icon="mdi-playlist-star"/>
+                            <App path="trademarks" title="Marcas" icon="mdi-playlist-star"/>
                             <App path="" title="Modelos" icon="mdi-format-list-text"/>
                             <App path="" title="Aceites" icon="mdi-barrel"/>
                         </div>

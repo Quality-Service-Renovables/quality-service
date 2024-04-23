@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
 use App\Http\Controllers\Api\V1\Equipments\CategoryController;
+use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
 use App\Http\Controllers\Api\V1\AppsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -25,11 +26,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    //Apps
+    Route::get('/apps', [AppsController::class, 'component'])->name('apps');
     //Equipments
     Route::get('/equipments', [EquipmentController::class, 'component'])->name('equipments');
     //Equipments category
     Route::get('/equipments-categories', [CategoryController::class, 'component'])->name('equipment_categories');
-    Route::get('/apps', [AppsController::class, 'component'])->name('apps');
+    //Trademarks
+    Route::get('/trademarks', [TrademarkController::class, 'component'])->name('trademaks');
 });
 
 require __DIR__.'/auth.php';
