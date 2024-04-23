@@ -26,7 +26,7 @@ return new class extends Migration
             $table->time('close_time')->nullable();
             $table->string('office_days')->nullable();
             $table->string('website')->nullable();
-            $table->string('email')->unique()->nullable();
+            $table->string('email')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();
