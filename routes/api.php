@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\SessionController;
 use App\Http\Controllers\Api\V1\Clients\ClientController;
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
 use App\Http\Controllers\Api\V1\Inspections\CategoryController;
+use App\Http\Controllers\Api\V1\Oils\OilController;
 use App\Http\Controllers\Api\V1\Status\StatusController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
@@ -40,6 +41,9 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //######################################################### EQUIPMENTS ##########################################################
     Route::resource('equipments', EquipmentController::class);
     Route::resource('equipment/categories', \App\Http\Controllers\Api\V1\Equipments\CategoryController::class);
+    //######################################################### OILS ##########################################################
+    Route::resource('oils', OilController::class);
+    Route::resource('oil/categories', \App\Http\Controllers\Api\V1\Oils\CategoryController::class);
     //######################################################### TRADEMARKS ##########################################################
     Route::resource('trademarks', TrademarkController::class);
     Route::resource('trademark/models', TrademarkModelController::class);

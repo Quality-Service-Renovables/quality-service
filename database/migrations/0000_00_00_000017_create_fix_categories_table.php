@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('fix_category');
             $table->string('fix_category_code');
             $table->longText('description')->nullable();
-            $table->boolean('is_default')->default(true);
+            $table->boolean('is_default')->default(false);
             $table->unsignedBigInteger('dependency')->nullable();
             $table->bigInteger('level')->default(1);
             $table->boolean('active')->default(true);

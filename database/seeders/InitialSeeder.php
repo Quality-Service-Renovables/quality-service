@@ -20,7 +20,9 @@ class InitialSeeder extends Seeder
             FixCategoriesSeeder::class,
             EquipmentCategorySeeder::class,
             InspectionCategoriesSeeder::class,
+            TrademarkCategoriesSeeder::class,
             TrademarksSeeder::class,
+            OilsCategoriesSeeder::class,
             VersionsSeeder::class,
         ]);
     }

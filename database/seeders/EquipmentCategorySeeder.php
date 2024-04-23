@@ -32,6 +32,7 @@ class EquipmentCategorySeeder extends Seeder
                 'equipment_category' => 'Generadores',
                 'equipment_category_code' => 'generador',
                 'description' => 'Generadores',
+                'is_default' => true,
                 'active' => true,
             ],
             [
@@ -39,6 +40,7 @@ class EquipmentCategorySeeder extends Seeder
                 'equipment_category' => 'Multiplicadoras',
                 'equipment_category_code' => 'multiplicador',
                 'description' => 'Multiplicadoras',
+                'is_default' => true,
                 'active' => true,
             ],
             [
@@ -46,6 +48,7 @@ class EquipmentCategorySeeder extends Seeder
                 'equipment_category' => 'Transforamadores',
                 'equipment_category_code' => 'transformador',
                 'description' => 'Transformadores',
+                'is_default' => true,
                 'active' => true,
             ],
         ];

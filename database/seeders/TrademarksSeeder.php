@@ -1,10 +1,12 @@
 <?php
+
 /** @noinspection UnknownInspectionInspection */
 
 /** @noinspection PhpUndefinedMethodInspection */
 
 namespace Database\Seeders;
 
+use App\Models\Trademarks\Category;
 use App\Models\Trademarks\Trademark;
 use App\Models\Trademarks\TrademarkModel;
 use Illuminate\Database\Seeder;
@@ -22,6 +24,7 @@ class TrademarksSeeder extends Seeder
                 'trademark_uuid' => $trademark['trademark_uuid'],
                 'trademark' => $trademark['trademark'],
                 'trademark_code' => $trademark['trademark_code'],
+                'trademark_category_id' => $trademark['trademark_category_id'],
                 'active' => $trademark['active'],
             ]);
             foreach ($trademark['models'] as $model) {
@@ -36,21 +39,27 @@ class TrademarksSeeder extends Seeder
 
     /**
      * Get the array of trademarks.
-     *
-     * @return array
      */
     private function getTrademarks(): array
     {
+        return array_merge($this->getEquipmentsTrademarks(), $this->getOilTrademarks());
+    }
+
+    private function getEquipmentsTrademarks(): array
+    {
+        $equipmentCategory = Category::where('trademark_category_code', 'equipos')->first()->trademark_category_id;
+
         return [
             [
                 'trademark_uuid' => Str::uuid()->toString(),
-                'trademark' => 'Generic',
-                'trademark_code' => 'generic',
+                'trademark' => 'Marca Genérica',
+                'trademark_code' => 'generic_equipment',
+                'trademark_category_id' => $equipmentCategory,
                 'active' => true,
                 'models' => [
                     [
-                        'trademark_model' => 'Generic',
-                        'trademark_model_code' => 'generic',
+                        'trademark_model' => 'Modelo Genérico',
+                        'trademark_model_code' => 'generic_model_equipment',
                     ],
                 ],
             ],
@@ -58,6 +67,60 @@ class TrademarksSeeder extends Seeder
                 'trademark_uuid' => Str::uuid()->toString(),
                 'trademark' => 'Winergy',
                 'trademark_code' => 'winergy',
+                'trademark_category_id' => $equipmentCategory,
+                'active' => true,
+                'models' => [],
+            ],
+        ];
+    }
+
+    private function getOilTrademarks(): array
+    {
+        $oilCategory = Category::where('trademark_category_code', 'aceites')->first()->trademark_category_id;
+
+        return [
+            [
+                'trademark_uuid' => Str::uuid()->toString(),
+                'trademark' => 'Aceite Genérico',
+                'trademark_code' => 'generic_oil',
+                'trademark_category_id' => $oilCategory,
+                'active' => true,
+                'models' => [
+                    [
+                        'trademark_model' => 'Modelo Genérico de Aceite',
+                        'trademark_model_code' => 'generic_model_oil',
+                    ],
+                ],
+            ],
+            [
+                'trademark_uuid' => Str::uuid()->toString(),
+                'trademark' => 'Castrol',
+                'trademark_code' => 'castrol',
+                'trademark_category_id' => $oilCategory,
+                'active' => true,
+                'models' => [],
+            ],
+            [
+                'trademark_uuid' => Str::uuid()->toString(),
+                'trademark' => 'Mobil',
+                'trademark_code' => 'mobil',
+                'trademark_category_id' => $oilCategory,
+                'active' => true,
+                'models' => [],
+            ],
+            [
+                'trademark_uuid' => Str::uuid()->toString(),
+                'trademark' => 'Shell',
+                'trademark_code' => 'shell',
+                'trademark_category_id' => $oilCategory,
+                'active' => true,
+                'models' => [],
+            ],
+            [
+                'trademark_uuid' => Str::uuid()->toString(),
+                'trademark' => 'Valvoline',
+                'trademark_code' => 'valvoline',
+                'trademark_category_id' => $oilCategory,
                 'active' => true,
                 'models' => [],
             ],

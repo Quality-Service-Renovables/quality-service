@@ -11,19 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('failure_categories', static function (Blueprint $table) {
-            $table->id('failure_category_id');
-            $table->uuid('failure_category_uuid');
-            $table->string('failure_category');
-            $table->string('failure_category_code');
+        Schema::create('trademark_categories', static function (Blueprint $table) {
+            $table->id('trademark_category_id');
+            $table->uuid('trademark_category_uuid');
+            $table->string('trademark_category');
+            $table->string('trademark_category_code');
             $table->boolean('is_default')->default(false);
-            $table->bigInteger('dependency');
-            $table->bigInteger('level')->default(1);
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();
             //INDEX
-            $table->index(['failure_category_uuid']);
+            $table->index(['trademark_category_uuid']);
         });
     }
 
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('failures_categories');
+        Schema::dropIfExists('trademark_categories');
     }
 };

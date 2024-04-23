@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('equipment_category');
             $table->string('equipment_category_code');
             $table->string('description')->nullable();
+            $table->boolean('is_default')->default(false);
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();

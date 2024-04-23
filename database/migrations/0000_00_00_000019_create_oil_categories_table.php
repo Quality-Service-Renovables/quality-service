@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inspection_categories', static function (Blueprint $table) {
-            $table->id('inspection_category_id');
-            $table->uuid('inspection_category_uuid');
-            $table->string('inspection_category');
-            $table->string('inspection_category_code');
-            $table->longText('description')->nullable();
+        Schema::create('oil_categories', static function (Blueprint $table) {
+            $table->id('oil_category_id');
+            $table->uuid('oil_category_uuid');
+            $table->string('oil_category');
+            $table->string('oil_category_code');
+            $table->longText('description')->nullable()->comment('Oil Category Description');
             $table->boolean('is_default')->default(false);
             $table->unsignedBigInteger('dependency')->nullable();
             $table->bigInteger('level')->default(1);
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             //INDEX
-            $table->index('inspection_category_uuid');
+            $table->index('oil_category_uuid');
             $table->index('dependency');
         });
     }
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inspection_categories');
+        Schema::dropIfExists('oil_categories');
     }
 };
