@@ -22,11 +22,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     <template v-slot:item.active="{ value }">
                                         <v-icon :color="getColor(value)">mdi-circle-slice-8</v-icon>
                                     </template>
+                                    <template v-slot:item.models="{ value }">
+                                        {{ value.map(objeto => objeto.trademark_model).join(', ')}}
+                                    </template>
                                     <template v-slot:top>
                                         <v-toolbar flat>
                                             <v-toolbar-title class="ml-1">
                                                 <v-text-field v-model="search" label="Buscar" hide-details
-                                                    variant="solo"></v-text-field>
+                                                    variant="solo" append-inner-icon="mdi-magnify" density="compact"></v-text-field>
                                             </v-toolbar-title>
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
@@ -127,6 +130,7 @@ export default {
         headers: [
             { title: 'Marca', key: 'trademark' },
             { title: 'Estado', key: 'active' },
+            { title: 'Models', key: 'models' },
             { title: 'Actions', key: 'actions', sortable: false }
         ],
         editedIndex: -1,

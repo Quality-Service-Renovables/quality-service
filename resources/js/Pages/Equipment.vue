@@ -29,7 +29,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <v-toolbar flat>
                                             <v-toolbar-title class="ml-1">
                                                 <v-text-field v-model="search" label="Buscar" hide-details
-                                                    variant="solo"></v-text-field>
+                                                    variant="solo" append-inner-icon="mdi-magnify" density="compact"></v-text-field>
                                             </v-toolbar-title>
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
