@@ -138,8 +138,8 @@ class TrademarkController extends Controller
     {
         $this->service->read();
 
-        return Inertia::render('Equipment', [
-            'equipments' => $this->service->response['data'],
+        return Inertia::render('Trademark', [
+            'trademarks' => $this->service->response['data'],
         ]);
     }
 
