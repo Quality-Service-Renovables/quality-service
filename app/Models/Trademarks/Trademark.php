@@ -4,6 +4,7 @@ namespace App\Models\Trademarks;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Trademark extends Model
@@ -18,13 +19,19 @@ class Trademark extends Model
         'trademark_uuid',
         'trademark',
         'trademark_code',
+        'trademark_category_id',
         'active',
     ];
 
-    protected $hidden = ['trademark_id'];
+    protected $hidden = ['trademark_id', 'trademark_category_id'];
 
 
-    public function models()
+    /**
+     * Retrieve all models associated with this trademark.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function models(): HasMany
     {
         return $this->hasMany(TrademarkModel::class, 'trademark_id');
     }

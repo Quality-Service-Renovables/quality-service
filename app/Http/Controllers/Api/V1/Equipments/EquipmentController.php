@@ -66,7 +66,6 @@ class EquipmentController extends Controller
     public function update(Request $request, string $uuid): JsonResponse
     {
         $request->merge(['equipment_uuid' => $uuid]);
-
         $validated = Validator::make($request->all(), [
             'equipment_uuid' => 'required|uuid|exists:equipments,equipment_uuid',
             'equipment' => [
@@ -78,20 +77,21 @@ class EquipmentController extends Controller
                     ->whereNot('equipment_uuid', $uuid)
                     ->whereNull('deleted_at'),
             ],
-            'equipment_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'equipment_image' => 'nullable|string',
+            'equipment_image_storage' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'serial_number' => 'nullable|string',
             'manufacture_date' => 'nullable|date_format:Y-m-d',
             'work_hours' => 'nullable|integer',
             'barcode' => 'nullable|string',
             'description' => 'nullable|string|max:255',
-            'manual' => 'nullable|file|mimes:pdf|max:2048',
+            'manual' => 'nullable|string',
+            'manual_storage' => 'nullable|file|mimes:pdf|max:2048',
             'equipment_category_code' => [
                 'required',
                 'string',
                 'min:1',
                 'max:255',
                 Rule::exists('equipment_categories', 'equipment_category_code')
-                    ->whereNot('equipment_uuid', $uuid)
                     ->whereNull('deleted_at'),
             ],
             'trademark_code' => 'required|string|exists:trademarks,trademark_code',

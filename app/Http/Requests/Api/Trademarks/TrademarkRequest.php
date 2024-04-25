@@ -23,6 +23,14 @@ class TrademarkRequest extends CustomRequest
                 Rule::unique('trademarks', 'trademark')
                     ->whereNull('deleted_at'),
             ],
+            'trademark_category_code' => [
+                'required',
+                'string',
+                'min:1',
+                'max:255',
+                Rule::exists('trademark_categories', 'trademark_category_code')
+                    ->whereNull('deleted_at'),
+            ],
         ];
     }
 }

@@ -62,23 +62,11 @@ class TrademarkController extends Controller
     {
         $request = (['trademark_uuid' => $uuid]);
 
-        if (!$this->commonValidation($request)) {
+        if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
         $this->service->show($uuid);
-
-        return response()->json($this->service->response, $this->service->statusCode);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $uuid): JsonResponse
-    {
-        $this->service->read();
-
-        $this->service->response['message'] = 'Api edit request not available: ' . $uuid;
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
@@ -99,6 +87,14 @@ class TrademarkController extends Controller
                 'max:255',
                 Rule::unique('trademarks', 'trademark')
                     ->whereNot('trademark_uuid', $uuid)
+                    ->whereNull('deleted_at'),
+            ],
+            'trademark_category_code' => [
+                'required',
+                'string',
+                'min:1',
+                'max:255',
+                Rule::exists('trademark_categories', 'trademark_category_code')
                     ->whereNull('deleted_at'),
             ],
             'active' => 'required|boolean',
@@ -122,7 +118,7 @@ class TrademarkController extends Controller
     {
         $request = ['trademark_uuid' => $uuid];
 
-        if (!$this->commonValidation($request)) {
+        if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
