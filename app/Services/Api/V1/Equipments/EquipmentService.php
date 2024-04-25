@@ -63,11 +63,11 @@ class EquipmentService extends Service implements ServiceInterface
             );
             // Finaliza Transacción
             DB::commit();
-        } catch (Throwable $e) {
+        } catch (Throwable $exception) {
             DB::rollBack();
             // Manejo del error
             $this->response['status'] = 'error';
-            $this->response['message'] = $e->getMessage();
+            $this->response['message'] = $exception->getMessage();
             $this->statusCode = 500;
         }
 
@@ -116,11 +116,11 @@ class EquipmentService extends Service implements ServiceInterface
             );
             // Confirmación de transacción
             DB::commit();
-        } catch (Throwable $e) {
+        } catch (Throwable $exception) {
             DB::rollBack();
             // Manejo del error
             $this->response['status'] = 'error';
-            $this->response['message'] = $e->getMessage();
+            $this->response['message'] = $exception->getMessage();
             $this->statusCode = 500;
         }
 
@@ -146,10 +146,10 @@ class EquipmentService extends Service implements ServiceInterface
                 'Delete equipment request',
             );
             $this->response['message'] = 'Equipment deleted successfully';
-        } catch (Throwable $e) {
+        } catch (Throwable $exception) {
             // Manejo del error
             $this->response['status'] = 'error';
-            $this->response['message'] = $e->getMessage();
+            $this->response['message'] = $exception->getMessage();
             $this->statusCode = 500;
         }
 
@@ -172,10 +172,10 @@ class EquipmentService extends Service implements ServiceInterface
             ])->where('equipment_uuid', $uuid)->first();
             $this->response['message'] = $equipment === null ? 'Equipment not found' : 'Equipment found';
             $this->response['data'] = $equipment ?? [];
-        } catch (Throwable $e) {
+        } catch (Throwable $exception) {
             // Manejo del error
             $this->response['status'] = 'error';
-            $this->response['message'] = $e->getMessage();
+            $this->response['message'] = $exception->getMessage();
             $this->statusCode = 500;
         }
 
