@@ -219,6 +219,7 @@ export default {
                 toast.promise(putRequest(), {
                     loading: 'Procesando...',
                     success: (data) => {
+                        this.$inertia.reload()
                         this.close()
                         return 'Categoria actualizada correctamente';
                     },
@@ -239,6 +240,7 @@ export default {
                 toast.promise(postRequest(), {
                     loading: 'Procesando...',
                     success: (data) => {
+                        this.$inertia.reload()
                         this.close()
                         return 'Categoria creada correctamente';
                     },

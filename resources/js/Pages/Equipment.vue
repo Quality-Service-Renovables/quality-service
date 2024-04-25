@@ -81,6 +81,13 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                     <v-text-field v-model="editedItem.serial_number"
                                                                         label="Número de serie"></v-text-field>
                                                                 </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-file-input variant="solo" label="Manual" v-model="editedItem.manual" accept=".pdf"></v-file-input>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-switch label="Activo" v-model="editedItem.active"
+                                                                        color="primary"></v-switch>
+                                                                </v-col>
                                                             </v-row>
                                                         </v-container>
                                                     </v-card-text>
@@ -162,6 +169,7 @@ export default {
             { title: 'No. Serie', key: 'serial_number' },
             { title: 'Categoría', key: 'category.equipment_category' },
             { title: 'Estado', key: 'status.status' },
+            { title: 'Activo', key: 'active' },
             { title: 'Actions', key: 'actions', sortable: false },
         ],
         editedIndex: -1,
@@ -174,6 +182,8 @@ export default {
             trademark_model_code: '',
             status_code: '',
             serial_number: '',
+            active: false,
+            manual: null,
             models: [],
         },
         defaultItem: {
@@ -185,6 +195,8 @@ export default {
             trademark_model_code: '',
             status_code: '',
             serial_number: '',
+            active: false,
+            manual: null,
             models: [],
         },
         trademarks: [],
@@ -215,6 +227,8 @@ export default {
                 trademark_model_code: item.model.trademark_model_code,
                 status_code: item.status.status_code,
                 serial_number: item.serial_number,
+                active: item.active,
+                manual: item.manual,
                 models: this.trademarks.find(trademark => trademark.trademark_code === item.trademark.trademark_code).models
             }
         },
@@ -263,7 +277,6 @@ export default {
         },
         save() {
             if (this.editedIndex > -1) {
-                Object.assign(this.equipments[this.editedIndex], this.editedItem)
                 const putRequest = () => {
                     return axios.put('api/equipments/' + this.editedItem.equipment_uuid, {
                         equipment: this.editedItem.equipment,
@@ -271,7 +284,9 @@ export default {
                         trademark_code: this.editedItem.trademark_code,
                         trademark_model_code: this.editedItem.trademark_model_code,
                         status_code: this.editedItem.status_code,
-                        serial_number: this.editedItem.serial_number
+                        serial_number: this.editedItem.serial_number,
+                        active: this.editedItem.active ? 1 : 0,
+                        manual: this.editedItem.manual
                     });
                 };
                 toast.promise(putRequest(), {
@@ -286,15 +301,22 @@ export default {
                     }
                 });
             } else {
-                this.equipments.push(this.editedItem)
+                let formData = new FormData();
+                formData.append('equipment', this.editedItem.equipment);
+                formData.append('equipment_category_code', this.editedItem.equipment_category_code);
+                formData.append('trademark_code', this.editedItem.trademark_code);
+                formData.append('trademark_model_code', this.editedItem.trademark_model_code);
+                formData.append('status_code', this.editedItem.status_code);
+                formData.append('serial_number', this.editedItem.serial_number);
+                formData.append('active', this.editedItem.active ? 1 : 0);
+                formData.append('manual_storage', this.editedItem.manual);
+
+
                 const postRequest = () => {
-                    return axios.post('api/equipments', {
-                        equipment: this.editedItem.equipment,
-                        equipment_category_code: this.editedItem.equipment_category_code,
-                        trademark_code: this.editedItem.trademark_code,
-                        trademark_model_code: this.editedItem.trademark_model_code,
-                        status_code: this.editedItem.status_code,
-                        serial_number: this.editedItem.serial_number
+                    return axios.post('api/equipments', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
                     });
                 };
 
@@ -345,7 +367,7 @@ export default {
                 .catch(error => {
                     toast.error('Error al cargar el catálogo de estatus');
                 });
-        }
+        },
     },
     mounted() {
         this.getTrademarks();
