@@ -8,6 +8,7 @@ use App\Services\Api\V1\Equipments\EquipmentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -34,16 +35,6 @@ class EquipmentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create(EquipmentRequest $request): JsonResponse
-    {
-        $this->service->create($request);
-
-        return response()->json($this->service->response, $this->service->statusCode);
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(EquipmentRequest $request): JsonResponse
@@ -60,23 +51,11 @@ class EquipmentController extends Controller
     {
         $request = (['equipment_uuid' => $uuid]);
 
-        if (!$this->commonValidation($request)) {
+        if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
         $this->service->show($uuid);
-
-        return response()->json($this->service->response, $this->service->statusCode);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $uuid): JsonResponse
-    {
-        $this->service->read();
-
-        $this->service->response['message'] = 'Api edit request not available: ' . $uuid;
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
@@ -90,11 +69,35 @@ class EquipmentController extends Controller
 
         $validated = Validator::make($request->all(), [
             'equipment_uuid' => 'required|uuid|exists:equipments,equipment_uuid',
-            'equipment' => 'required|string',
-            'equipment_category_code' => 'required|string|exists:equipment_categories,equipment_category_code',
+            'equipment' => [
+                'required',
+                'string',
+                'min:1',
+                'max:255',
+                Rule::unique('equipments', 'equipment')
+                    ->whereNot('equipment_uuid', $uuid)
+                    ->whereNull('deleted_at'),
+            ],
+            'equipment_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'serial_number' => 'nullable|string',
+            'manufacture_date' => 'nullable|date_format:Y-m-d',
+            'work_hours' => 'nullable|integer',
+            'barcode' => 'nullable|string',
+            'description' => 'nullable|string|max:255',
+            'manual' => 'nullable|file|mimes:pdf|max:2048',
+            'equipment_category_code' => [
+                'required',
+                'string',
+                'min:1',
+                'max:255',
+                Rule::exists('equipment_categories', 'equipment_category_code')
+                    ->whereNot('equipment_uuid', $uuid)
+                    ->whereNull('deleted_at'),
+            ],
             'trademark_code' => 'required|string|exists:trademarks,trademark_code',
             'trademark_model_code' => 'required|string|exists:trademark_models,trademark_model_code',
             'status_code' => 'required|string|exists:status,status_code',
+            'active' => 'required|boolean',
         ]);
 
         if ($validated->fails()) {
@@ -114,7 +117,7 @@ class EquipmentController extends Controller
     {
         $request = ['equipment_uuid' => $uuid];
 
-        if (!$this->commonValidation($request)) {
+        if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -125,8 +128,6 @@ class EquipmentController extends Controller
 
     /**
      * Render the equipment component.
-     *
-     * @return \Inertia\Response
      */
     public function component(): Response
     {

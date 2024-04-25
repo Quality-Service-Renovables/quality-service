@@ -25,6 +25,13 @@ class EquipmentRequest extends CustomRequest
                 Rule::unique('equipments', 'equipment')
                     ->whereNull('deleted_at'),
             ],
+            'equipment_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'serial_number' => 'nullable|string',
+            'manufacture_date' => 'nullable|date_format:Y-m-d',
+            'work_hours' => 'nullable|integer',
+            'barcode' => 'nullable|string',
+            'description' => 'nullable|string|max:255',
+            'manual' => 'nullable|file|mimes:pdf|max:2048',
             'equipment_category_code' => [
                 'required',
                 'string',
@@ -36,6 +43,7 @@ class EquipmentRequest extends CustomRequest
             'trademark_code' => 'required|string|exists:trademarks,trademark_code',
             'trademark_model_code' => 'required|string|exists:trademark_models,trademark_model_code',
             'status_code' => 'required|string|exists:status,status_code',
+            'active' => 'required|boolean',
         ];
     }
 }

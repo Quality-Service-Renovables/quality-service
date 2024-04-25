@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('equipment_code');
             $table->string('equipment_image')->default('img/equipments/default.jpg');
             $table->string('serial_number')->nullable()->comment('Serial number or vin number');
-            $table->string('manufacture_date')->nullable()->comment('Manufacture date');
+            $table->date('manufacture_date')->nullable()->comment('Manufacture date');
             $table->unsignedBigInteger('work_hours')->nullable()->comment('Work hours');
-            $table->date('barcode')->nullable()->comment('Barcode');
+            $table->string('barcode')->nullable()->comment('Barcode');
             $table->longText('description')->nullable()->comment('General comments');
             $table->string('manual')->nullable();
             $table->unsignedBigInteger('equipment_category_id');
