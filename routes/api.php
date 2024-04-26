@@ -46,7 +46,11 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::resource('oil/categories', \App\Http\Controllers\Api\V1\Oils\CategoryController::class);
     //######################################################### TRADEMARKS ##########################################################
     Route::resource('trademarks', TrademarkController::class);
+    Route::resource('trademark/categories', \App\Http\Controllers\Api\V1\Trademarks\CategoryController::class);
     Route::resource('trademark/models', TrademarkModelController::class);
+    //----------------------------------------------------- Trademarks Resources ----------------------------------------------------
+    Route::get('trademarks/get-category/{category}', [TrademarkController::class, 'getCategory'])
+        ->name('trademarks.get-category')->where(['category' => '[0-9]+']);
     //######################################################## INSPECTIONS ##########################################################
     Route::resource('inspection/categories', CategoryController::class);
     //######################################################### EQUIPMENTS ##########################################################

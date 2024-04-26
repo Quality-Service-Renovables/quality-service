@@ -10,7 +10,7 @@ use App\Models\Trademarks\TrademarkModel;
 test('create', function () {
     $response = $this->post('/api/trademark/models', [
         'trademark_model' => 'Unit Test Trademark Model',
-        'trademark_code' => 'generic',
+        'trademark_code' => 'generic_equipment',
     ]);
     $response->assertStatus(201);
 });
@@ -28,7 +28,7 @@ test('update', function () {
 
     $response = $this->put('/api/trademark/models/'.$trademark->trademark_model_uuid, [
         'trademark_model' => 'Unit Test Trademark Model',
-        'trademark_code' => 'generic',
+        'trademark_code' => 'generic_equipment',
         'active' => false,
     ]);
 

@@ -63,12 +63,10 @@ class EquipmentService extends Service implements ServiceInterface
             );
             // Finaliza Transacción
             DB::commit();
-        } catch (Throwable $exception) {
+        } catch (Throwable $exceptions) {
             DB::rollBack();
             // Manejo del error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -116,12 +114,10 @@ class EquipmentService extends Service implements ServiceInterface
             );
             // Confirmación de transacción
             DB::commit();
-        } catch (Throwable $exception) {
+        } catch (Throwable $exceptions) {
             DB::rollBack();
             // Manejo del error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -146,11 +142,9 @@ class EquipmentService extends Service implements ServiceInterface
                 'Delete equipment request',
             );
             $this->response['message'] = 'Equipment deleted successfully';
-        } catch (Throwable $exception) {
+        } catch (Throwable $exceptions) {
             // Manejo del error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -172,11 +166,9 @@ class EquipmentService extends Service implements ServiceInterface
             ])->where('equipment_uuid', $uuid)->first();
             $this->response['message'] = $equipment === null ? 'Equipment not found' : 'Equipment found';
             $this->response['data'] = $equipment ?? [];
-        } catch (Throwable $exception) {
+        } catch (Throwable $exceptions) {
             // Manejo del error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
