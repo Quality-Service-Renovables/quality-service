@@ -60,6 +60,15 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         label="Categoría" variant="solo" hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
+                                                                    <v-select v-model="editedItem.models"
+                                                                        :items="trademarks_models"
+                                                                        item-title="trademark_model"
+                                                                        item-value="trademark_model_code"
+                                                                        label="Modelos" variant="solo" hide-details multiple
+                                                                        chips>
+                                                                        ></v-select>
+                                                                </v-col>
+                                                                <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
                                                                         color="primary"></v-switch>
                                                                 </v-col>
@@ -137,24 +146,27 @@ export default {
         headers: [
             { title: 'Marca', key: 'trademark' },
             { title: 'Estado', key: 'active' },
-            { title: 'Models', key: 'models' },
+            { title: 'Modelos', key: 'models' },
             { title: 'Categoría', key: 'category.trademark_category'},
-            { title: 'Actions', key: 'actions', sortable: false }
+            { title: 'Acciones', key: 'actions', sortable: false }
         ],
         editedIndex: -1,
         editedItem: {
             trademark_uuid: '',
             trademark: '',
             active: false,
-            trademark_category_code: ''
+            trademark_category_code: '',
+            models: []
         },
         defaultItem: {
             trademark_uuid: '',
             trademark: '',
             active: false,
-            trademark_category_code: ''
+            trademark_category_code: '',
+            models: []
         },
-        trademarks_categories: []
+        trademarks_categories: [],
+        trademarks_models: [],
     }),
     computed: {
         formTitle() {
@@ -220,7 +232,8 @@ export default {
                     return axios.put('api/trademarks/' + this.editedItem.trademark_uuid, {
                         trademark: this.editedItem.trademark,
                         active: this.editedItem.active,
-                        trademark_category_code: this.editedItem.trademark_category_code
+                        trademark_category_code: this.editedItem.trademark_category_code,
+                        models: this.editedItem.models
                     });
                 };
                 toast.promise(putRequest(), {
@@ -239,7 +252,8 @@ export default {
                     return axios.post('api/trademarks', {
                         trademark: this.editedItem.trademark,
                         active: this.editedItem.active,
-                        trademark_category_code: this.editedItem.trademark_category_code
+                        trademark_category_code: this.editedItem.trademark_category_code,
+                        models: this.editedItem.models
                     });
                 };
 
@@ -266,12 +280,22 @@ export default {
                 this.trademarks_categories = response.data.data;
             })
             .catch(error => {
-                console.log(error);
+                toast.error('Error al cargar las categorías de marcas');
+            });
+        },
+        getModels(){
+            axios.get('api/trademark/models')
+            .then(response => {
+                this.trademarks_models = response.data.data;
+            })
+            .catch(error => {
+                toast.error('Error al cargar los modelos de marcas');
             });
         },
     },
     mounted() {
         this.getTrademarkCategories();
+        this.getModels();
     }
 }
 </script>
