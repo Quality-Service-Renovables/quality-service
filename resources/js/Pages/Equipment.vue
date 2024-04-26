@@ -85,12 +85,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 <v-col cols="12">
                                                                     <v-file-input variant="solo" label="Manual"
                                                                         v-model="editedItem.manual"
-                                                                        accept=".pdf"></v-file-input>
+                                                                        accept=".pdf" prepend-icon="" prepend-inner-icon="mdi-file-upload"></v-file-input>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-file-input variant="solo" label="Imagen"
                                                                         v-model="editedItem.equipment_image"
-                                                                        accept="image/*"></v-file-input>
+                                                                        accept="image/*" prepend-icon="" prepend-inner-icon="mdi-image-plus"></v-file-input>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
