@@ -49,7 +49,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                             <v-row>
                                                                 <v-col cols="12">
                                                                     <v-text-field v-model="editedItem.equipment"
-                                                                        label="Nombre"></v-text-field>
+                                                                        label="Nombre" variant="solo" hide-details></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select
@@ -57,40 +57,40 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         :items="equipment_categories"
                                                                         item-title="equipment_category"
                                                                         item-value="equipment_category_code"
-                                                                        label="Categoría"></v-select>
+                                                                        label="Categoría" variant="solo" hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select v-model="editedItem.trademark_code"
                                                                         :items="trademarks" item-title="trademark"
                                                                         item-value="trademark_code" label="Marca"
-                                                                        @update:model-value="setTradermarkModels()"></v-select>
+                                                                        @update:model-value="setTradermarkModels()" variant="solo" hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select v-model="editedItem.trademark_model_code"
                                                                         :items="editedItem.models"
                                                                         item-title="trademark_model"
                                                                         item-value="trademark_model_code"
-                                                                        label="Modelo"></v-select>
+                                                                        label="Modelo" variant="solo" hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select v-model="editedItem.status_code"
                                                                         :items="status" item-title="status"
                                                                         item-value="status_code"
-                                                                        label="Estatus"></v-select>
+                                                                        label="Estatus" variant="solo" hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-text-field v-model="editedItem.serial_number"
-                                                                        label="Número de serie"></v-text-field>
+                                                                        label="Número de serie" variant="solo" hide-details></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-file-input variant="solo" label="Manual"
                                                                         v-model="editedItem.manual"
-                                                                        accept=".pdf" prepend-icon="" prepend-inner-icon="mdi-file-upload"></v-file-input>
+                                                                        accept=".pdf" prepend-icon="" prepend-inner-icon="mdi-file-upload" hide-details></v-file-input>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-file-input variant="solo" label="Imagen"
                                                                         v-model="editedItem.equipment_image"
-                                                                        accept="image/*" prepend-icon="" prepend-inner-icon="mdi-image-plus"></v-file-input>
+                                                                        accept="image/*" prepend-icon="" prepend-inner-icon="mdi-image-plus" hide-details></v-file-input>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
