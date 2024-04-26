@@ -1,5 +1,5 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import {Head} from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 </script>
 
@@ -114,6 +114,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
+                                        <a :href="item.manual" target="_blank">
+                                            <v-icon class="me-2" size="small">
+                                                mdi-file
+                                            </v-icon>
+                                        </a>
                                         <v-icon class="me-2" size="small" @click="editItem(item)">
                                             mdi-pencil
                                         </v-icon>
@@ -211,11 +216,12 @@ export default {
                 equipment: item.equipment,
                 equipment_image: item.equipment_image,
                 equipment_category_code: item.category.equipment_category_code,
+                equipmen_manual: item.manual,
                 trademark_code: item.trademark.trademark_code,
                 trademark_model_code: item.model.trademark_model_code,
                 status_code: item.status.status_code,
                 serial_number: item.serial_number,
-                models: this.trademarks.find(trademark => trademark.trademark_code === item.trademark.trademark_code).models
+                models: this.trademarks.find(trademark => trademark.trademark_code === item.trademark.trademark_code).models,
             }
         },
         editItem(item) {

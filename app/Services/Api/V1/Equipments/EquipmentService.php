@@ -53,13 +53,14 @@ class EquipmentService extends Service implements ServiceInterface
             // Registra los atributos de la solicitud al equipo
             $equipment = Equipment::create($input);
             $this->statusCode = 201;
+            $this->response['message'] = trans('api.created');
             $this->response['data'] = $equipment;
             // Registro en log
             $this->logService->create(
                 $this->nameService,
                 $request->all(),
                 $this->response,
-                'Create equipment request',
+                trans('api.message_log'),
             );
             // Finaliza Transacción
             DB::commit();
@@ -80,6 +81,7 @@ class EquipmentService extends Service implements ServiceInterface
      */
     public function read(): array
     {
+        $this->response['message'] = trans('api.readed');
         $this->response['data'] = Equipment::with([
             'category', 'status', 'trademark', 'model',
         ])->get();
@@ -104,13 +106,14 @@ class EquipmentService extends Service implements ServiceInterface
             Equipment::where('equipment_uuid', $request->equipment_uuid)->update($input);
             // Recupera Equipo Actualizado
             $equipmentUpdated = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
+            $this->response['message'] = trans('api.updated');
             $this->response['data'] = $equipmentUpdated;
             // Registro de log
             $this->logService->create(
                 $this->nameService,
                 $request->all(),
                 $this->response,
-                'Update equipment request',
+                trans('api.message_log'),
             );
             // Confirmación de transacción
             DB::commit();
@@ -139,9 +142,9 @@ class EquipmentService extends Service implements ServiceInterface
                 $this->nameService,
                 compact('uuid'),
                 $this->response,
-                'Delete equipment request',
+                trans('api.message_log'),
             );
-            $this->response['message'] = 'Equipment deleted successfully';
+            $this->response['message'] = trans('api.deleted');
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);
@@ -164,7 +167,9 @@ class EquipmentService extends Service implements ServiceInterface
             $equipment = Equipment::with([
                 'category', 'status', 'trademark', 'model',
             ])->where('equipment_uuid', $uuid)->first();
-            $this->response['message'] = $equipment === null ? 'Equipment not found' : 'Equipment found';
+            $this->response['message'] = $equipment === null
+                ? trans('api.not_found')
+                : trans('api.show');
             $this->response['data'] = $equipment ?? [];
         } catch (Throwable $exceptions) {
             // Manejo del error
@@ -269,11 +274,11 @@ class EquipmentService extends Service implements ServiceInterface
         // Guardar imagen o manual y obtener ruta
         $path = $request
             ->file($fileField)
-            ->store($storagePath, 'public');
+            ->store($storagePath, 'public_direct');
 
         // Agregar el atributo a la solicitud
         $request->merge([
-            $newField => $this->getApplicationPaths()->application.'/'.$path,
+            $newField => $this->getApplicationPaths()->application.$path,
         ]);
     }
 }

@@ -13,7 +13,13 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Throwable;
 
+/**
+ * Class StatusService
+ *
+ * A service class to handle status-related operations.
+ */
 class StatusService extends Service implements ServiceInterface
 {
     public string $nameService = 'status_service';
@@ -36,6 +42,7 @@ class StatusService extends Service implements ServiceInterface
             $status = Status::create($request->all());
             // Define parámetros de respuesta
             $this->statusCode = 201;
+            $this->response['message'] = trans('api.created');
             $this->response['data'] = $status;
             // Registro en log
             $this->logService->create(
@@ -46,12 +53,10 @@ class StatusService extends Service implements ServiceInterface
             );
             // Finaliza Transacción
             DB::commit();
-        } catch (Exception $exception) {
+        } catch (Throwable $exceptions) {
             DB::rollBack();
             // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -79,22 +84,21 @@ class StatusService extends Service implements ServiceInterface
             Status::where('status_uuid', $request->status_uuid)->update($request->all());
             // Recupera Estado Actualizado
             $equipmentUpdated = Status::where('status_uuid', $request->status_uuid)->first();
+            $this->response['message'] = trans('api.updated');
             $this->response['data'] = $equipmentUpdated;
             // Registro de log
             $this->logService->create(
                 $this->nameService,
                 $request->all(),
                 $this->response,
-                'Update status request',
+                trans('api.updated'),
             );
             // Confirmación de transacción
             DB::commit();
-        } catch (Exception $exception) {
+        } catch (Throwable $exceptions) {
             DB::rollBack();
             // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -108,6 +112,7 @@ class StatusService extends Service implements ServiceInterface
      */
     public function read(): array
     {
+        $this->response['message'] = trans('api.readed');
         $this->response['data'] = Status::all();
 
         // Respuesta del módulo
@@ -130,15 +135,13 @@ class StatusService extends Service implements ServiceInterface
                 $this->nameService,
                 compact('uuid'),
                 $this->response,
-                'Delete status request',
+                trans('api.message_log'),
             );
             // Parámetros de respuesta
-            $this->response['message'] = 'Status deleted successfully';
-        } catch (Exception $exception) {
+            $this->response['message'] = trans('api.deleted');
+        } catch (Throwable $exceptions) {
             // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -156,14 +159,14 @@ class StatusService extends Service implements ServiceInterface
         try {
             // Obtiene estado
             $status = Status::where('status_uuid', $uuid)->first();
-            $this->response['message'] = $status === null ? 'Status not found' : 'Status found';
+            $this->response['message'] = $status === null
+                ? trans('api.not_found')
+                : trans('api.show');
             $this->response['data'] = $status ?? [];
-        } catch (Exception $exception) {
+        } catch (Throwable $exceptions) {
             DB::rollBack();
             // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo

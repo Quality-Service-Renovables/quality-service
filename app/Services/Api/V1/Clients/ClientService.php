@@ -1,5 +1,15 @@
 <?php
-
+/**
+ * Client Service.
+ *
+ * Register clients
+ *
+ * @author   Luis Adrian Olvera Facio
+ *
+ * @version  1.0
+ *
+ * @since    2024.1
+ */
 /** @noinspection UnknownInspectionInspection */
 
 /** @noinspection PhpUndefinedMethodInspection */
@@ -9,11 +19,14 @@ namespace App\Services\Api\V1\Clients;
 use App\Models\Clients\Client;
 use App\Services\Api\ServiceInterface;
 use App\Services\Service;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Throwable;
 
+/**
+ * Class ClientService
+ */
 class ClientService extends Service implements ServiceInterface
 {
     public string $nameService = 'client_service';
@@ -36,22 +49,21 @@ class ClientService extends Service implements ServiceInterface
             $client = Client::create($request->all());
             // Define parámetros de respuesta
             $this->statusCode = 201;
+            $this->response['message'] = trans('api.created');
             $this->response['data'] = $client;
             // Registro en log
             $this->logService->create(
                 $this->nameService,
                 $request->all(),
                 $this->response,
-                'Create client request',
+                trans('api.message_log'),
             );
             // Finaliza Transacción
             DB::commit();
-        } catch (Exception $exception) {
+        } catch (Throwable $exceptions) {
             DB::rollBack();
             // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -83,16 +95,14 @@ class ClientService extends Service implements ServiceInterface
                 $this->nameService,
                 $request->all(),
                 $this->response,
-                'Update client request',
+                trans('api.message_log'),
             );
             // Confirmación de transacción
             DB::commit();
-        } catch (Exception $exception) {
+        } catch (Throwable $exceptions) {
             DB::rollBack();
             // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -106,6 +116,7 @@ class ClientService extends Service implements ServiceInterface
      */
     public function read(): array
     {
+        $this->response['message'] = trans('api.readed');
         $this->response['data'] = Client::all();
 
         // Respuesta del módulo
@@ -128,15 +139,13 @@ class ClientService extends Service implements ServiceInterface
                 $this->nameService,
                 compact('uuid'),
                 $this->response,
-                'Delete client category request',
+                trans('api.message_log'),
             );
             // Parámetros de respuesta
-            $this->response['message'] = 'Category deleted successfully';
-        } catch (Exception $exception) {
+            $this->response['message'] = trans('api.deleted');
+        } catch (Throwable $exceptions) {
             // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -154,14 +163,14 @@ class ClientService extends Service implements ServiceInterface
         try {
             // Obtiene client del equipo
             $client = Client::where('client_uuid', $uuid)->first();
-            $this->response['message'] = $client === null ? 'Category not found' : 'Category found';
+            $this->response['message'] = $client === null
+                ? trans('api.not_found')
+                : trans('api.show');
             $this->response['data'] = $client ?? [];
-        } catch (Exception $exception) {
+        } catch (Throwable $exceptions) {
             DB::rollBack();
             // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo

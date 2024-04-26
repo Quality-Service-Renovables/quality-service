@@ -25,15 +25,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
+/**
+ * The name of the service.
+ *
+ * @var string
+ */
 class CategoryService extends Service implements ServiceInterface
 {
     public string $nameService = 'equipment_category_service';
 
     /**
-     * Create a new equipment
+     * Create a new equipment category
      *
      * @param  Request  $request  The request object
-     * @return array Returns an array containing the created equipment data
+     * @return array Returns an array containing the response data
      */
     public function create(Request $request): array
     {
@@ -47,13 +52,14 @@ class CategoryService extends Service implements ServiceInterface
             $category = Category::create($request->all());
             // Define parámetros de respuesta
             $this->statusCode = 201;
+            $this->response['message'] = trans('api.created');
             $this->response['data'] = $category;
             // Registro en log
             $this->logService->create(
                 $this->nameService,
                 $request->all(),
                 $this->response,
-                'Create equipment request',
+                trans('api.message_log'),
             );
             // Finaliza Transacción
             DB::commit();
@@ -68,10 +74,10 @@ class CategoryService extends Service implements ServiceInterface
     }
 
     /**
-     * Update equipment data
+     * Update equipment
      *
-     * @param  Request  $request  The request object containing the updated data
-     * @return array Returns an array containing the updated equipment data
+     * @param  Request  $request  The request object containing the updated equipment data
+     * @return array Returns an array containing the updated equipment data or error response
      */
     public function update(Request $request): array
     {
@@ -84,17 +90,18 @@ class CategoryService extends Service implements ServiceInterface
             $request->merge([
                 'equipment_category_code' => $slug,
             ]);
-            // Actualiza Equipo
+            // Actualiza categoria de equipo
             Category::where('equipment_category_uuid', $request->equipment_category_uuid)->update($request->all());
-            // Recupera Equipo Actualizado
-            $equipmentUpdated = Category::where('equipment_category_uuid', $request->equipment_category_uuid)->first();
-            $this->response['data'] = $equipmentUpdated;
+            // Recupera categoria de equipo Actualizado
+            $categoryUpdated = Category::where('equipment_category_uuid', $request->equipment_category_uuid)->first();
+            $this->response['message'] = trans('api.updated');
+            $this->response['data'] = $categoryUpdated;
             // Registro de log
             $this->logService->create(
                 $this->nameService,
                 $request->all(),
                 $this->response,
-                'Update equipment request',
+                trans('api.message_log'),
             );
             // Confirmación de transacción
             DB::commit();
@@ -109,12 +116,13 @@ class CategoryService extends Service implements ServiceInterface
     }
 
     /**
-     * Retrieve all equipment data
+     * Read all categories from the database.
      *
-     * @return array Returns an array containing the equipment data
+     * @return array The response array containing the fetched categories.
      */
     public function read(): array
     {
+        $this->response['message'] = trans('api.readed');
         $this->response['data'] = Category::all();
 
         // Respuesta del módulo
@@ -122,15 +130,15 @@ class CategoryService extends Service implements ServiceInterface
     }
 
     /**
-     * Delete equipment by UUID.
+     * Delete a category from the database.
      *
-     * @param  string  $uuid  The UUID of the equipment to be deleted.
-     * @return array The response array with status, message, and data.
+     * @param  string  $uuid  The UUID of the category to delete.
+     * @return array The response array indicating the result of the delete operation.
      */
     public function delete(string $uuid): array
     {
         try {
-            // Aplica soft delete al equipo especificado por medio de su uuid
+            // Aplica soft delete a la categoria del equipo especificado por medio de su uuid
             Category::where('equipment_category_uuid', $uuid)->update(['deleted_at' => now()]);
             // Registro en Log
             $this->logService->create(
@@ -140,7 +148,7 @@ class CategoryService extends Service implements ServiceInterface
                 'Delete equipment category request',
             );
             // Parámetros de respuesta
-            $this->response['message'] = 'Category deleted successfully';
+            $this->response['message'] = trans('api.deleted');
         } catch (Exception $exceptions) {
             // Parámetros de respuesta en caso de error
             $this->setExceptions($exceptions);
@@ -151,17 +159,19 @@ class CategoryService extends Service implements ServiceInterface
     }
 
     /**
-     * Retrieves a category by UUID
+     * Show a specific category from the database based on its UUID.
      *
-     * @param  string  $uuid  The UUID of the category to retrieve
-     * @return array Returns an array containing the status, message, and data of the response
+     * @param  string  $uuid  The UUID of the category.
+     * @return array The response array containing the category information.
      */
     public function show(string $uuid): array
     {
         try {
             // Obtiene categoria del equipo
             $category = Category::where('equipment_category_uuid', $uuid)->first();
-            $this->response['message'] = $category === null ? 'Category not found' : 'Category found';
+            $this->response['message'] = $category === null
+                ? trans('api.not_found')
+                : trans('api.show');
             $this->response['data'] = $category ?? [];
         } catch (Exception $exceptions) {
             DB::rollBack();

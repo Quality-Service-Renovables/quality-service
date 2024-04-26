@@ -32,8 +32,8 @@ trait ApplicationPaths
         $paths = [
             'application' => $storagePath,
             'equipments' => [
-                'images' => '/images/equipments',
-                'documents' => '/documents/equipments',
+                'images' => 'img/equipments',
+                'documents' => 'docs/equipments',
             ],
         ];
         return json_decode(json_encode($paths, JSON_THROW_ON_ERROR), false, 512, JSON_THROW_ON_ERROR);
@@ -46,6 +46,6 @@ trait ApplicationPaths
      */
     private function getStoragePath(): string
     {
-        return 'storage';
+        return '';
     }
 }
