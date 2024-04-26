@@ -1,5 +1,5 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import {Head} from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 </script>
 
@@ -129,6 +129,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
+
+                                        <a v-if="item.manual" :href="item.manual" target="_blank" class="v-btn v-btn--depressed">
+                                            <v-icon class="me-2" size="small">
+                                                mdi-file
+                                            </v-icon>
+                                        </a>
                                         <v-icon class="me-2" size="small" @click="editItem(item)">
                                             mdi-pencil
                                         </v-icon>
