@@ -19,8 +19,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                             <v-col cols="12" sm="12">
                                 <v-data-table :headers="headers" :items="equipments" fixed-header :search="search">
                                     <template v-slot:item.equipment_image="{ item }">
-                                        <v-avatar :image="'../' + item.equipment_image" size="40"
-                                            class="ma-1"></v-avatar>
+                                        <v-avatar :image="'../../'+item.equipment_image" size="40"
+                                            class="ma-1 avatar" @click="showImage(item)"></v-avatar>
                                     </template>
                                     <template v-slot:item.active="{ value }">
                                         <v-icon :color="getColor(value)">mdi-circle-slice-8</v-icon>
@@ -121,10 +121,13 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
+                                        <v-icon v-if="item.manual" class="me-2" size="small" @click="downloadManual(item)">
+                                            mdi-download
+                                        </v-icon>
                                         <v-icon class="me-2" size="small" @click="editItem(item)">
                                             mdi-pencil
                                         </v-icon>
-                                        <v-icon size="small" @click="deleteItem(item)">
+                                        <v-icon class="me-2" size="small" @click="deleteItem(item)">
                                             mdi-delete
                                         </v-icon>
                                     </template>
@@ -158,7 +161,7 @@ export default {
         dialog: false,
         dialogDelete: false,
         headers: [
-            { title: '', key: 'equipment_image', value: 'equipment_image' },
+            { title: 'Foto', key: 'equipment_image', sortable: false},
             {
                 title: 'Equipo',
                 align: 'start',
@@ -368,6 +371,12 @@ export default {
                     toast.error('Error al cargar el catálogo de estatus');
                 });
         },
+        downloadManual(item){
+            window.open('../' + item.manual, '_blank');
+        },
+        showImage(item){
+            window.open('../' + item.equipment_image, '_blank');
+        },
     },
     mounted() {
         this.getTrademarks();
@@ -377,3 +386,9 @@ export default {
 
 }
 </script>
+
+<style scoped>
+.avatar {
+    cursor: pointer;
+}
+</style>
