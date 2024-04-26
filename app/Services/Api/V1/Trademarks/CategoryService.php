@@ -1,13 +1,23 @@
 <?php
-
+/**
+ * Trademarks Categories Service.
+ *
+ * CRUD Service
+ *
+ * @author   Luis Adrian Olvera Facio
+ *
+ * @version  1.0
+ *
+ * @since    2024.1
+ */
+/** @noinspection UnknownColumnInspection */
 /** @noinspection UnknownInspectionInspection */
 /** @noinspection PhpUndefinedClassInspection */
 /** @noinspection PhpUndefinedMethodInspection */
 
 namespace App\Services\Api\V1\Trademarks;
 
-use App\Models\Trademarks\Trademark;
-use App\Models\Trademarks\TrademarkModel;
+use App\Models\Trademarks\Category;
 use App\Services\Api\ServiceInterface;
 use App\Services\Service;
 use Illuminate\Http\Request;
@@ -15,33 +25,30 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Throwable;
 
-class TrademarkModelService extends Service implements ServiceInterface
+class CategoryService extends Service implements ServiceInterface
 {
-    public string $nameService = 'trademark_model_model_service';
+    public string $nameService = 'trademark_categories_service';
 
     /**
-     * Creates a new TrademarkModel record.
+     * Create a new trademark category
      *
-     * @param  Request  $request  The HTTP request object.
-     * @return array The array containing the response data.
+     * @param  \Illuminate\Http\Request  $request  The HTTP request instance
+     * @return array Returns an array containing the created trademark category
      */
     public function create(Request $request): array
     {
         try {
             // Control de transacciones
             DB::beginTransaction();
-            // Recupera el identificador de la marca
-            $trademark = Trademark::where('trademark_code', $request->trademark_code)->first();
             // Agrega atributos a la solicitud
-            $request->merge(['trademark_model_uuid' => Str::uuid()->toString()]);
-            $request->merge(['trademark_model_code' => create_slug($request->trademark_model)]);
-            $request->merge(['trademark_id' => $trademark->trademark_id]);
-            // Registra los atributos de la solicitud
-            $trademarkModel = TrademarkModel::create($request->all());
+            $request->merge(['trademark_category_uuid' => Str::uuid()->toString()]);
+            $request->merge(['trademark_category_code' => create_slug($request->trademark_category)]);
+            // Registra los atributos de la solicitud a la categoria
+            $category = Category::create($request->all());
             // Define parámetros de respuesta
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
-            $this->response['data'] = $trademarkModel;
+            $this->response['data'] = $category;
             // Registro en log
             $this->logService->create(
                 $this->nameService,
@@ -62,24 +69,24 @@ class TrademarkModelService extends Service implements ServiceInterface
     }
 
     /**
-     * Retrieves the list of TrademarkModels with their respective trademarks.
+     * Retrieves a list of categories and their associated trademarks.
      *
-     * @return array The array containing the response data.
+     * @return array The response containing the message and data.
      */
     public function read(): array
     {
         $this->response['message'] = trans('api.readed');
-        $this->response['data'] = TrademarkModel::with(['trademark'])->get();
+        $this->response['data'] = Category::with(['trademarks'])->get();
 
         // Respuesta del módulo
         return $this->response;
     }
 
     /**
-     * Updates a TrademarkModel based on the provided request data.
+     * Updates a category.
      *
-     * @param  \Illuminate\Http\Request  $request  The request data.
-     * @return array The array containing the response data.
+     * @param  Request  $request  The request containing the updated category information.
+     * @return array The response containing the message and data of the updated category.
      */
     public function update(Request $request): array
     {
@@ -87,17 +94,14 @@ class TrademarkModelService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Asignación de identificadores
-            $slug = create_slug($request->trademark_model);
-            // Agregar elementos al request
-            $request->merge(['trademark_model_code' => $slug]);
-            // Depura elementos incompatibles con la actualización
-            $request->offsetUnset('trademark_code');
-            // Actualiza model de marca
-            TrademarkModel::where('trademark_model_uuid', $request->trademark_model_uuid)->update($request->all());
-            // Recupera modelo Actualizado
-            $trademarkModelUpdated = TrademarkModel::where('trademark_model_uuid', $request->trademark_model_uuid)->first();
+            $request->merge(['trademark_category_code' => create_slug($request->trademark_category)]);
+            // Actualiza categoria de marca
+            Category::where('trademark_category_uuid', $request->trademark_category_uuid)
+                ->update($request->all());
+            // Recupera categoria de marca actualizada
+            $categoryUpdated = Category::where('trademark_category_uuid', $request->trademark_category_uuid)->first();
             $this->response['message'] = trans('api.updated');
-            $this->response['data'] = $trademarkModelUpdated;
+            $this->response['data'] = $categoryUpdated;
             // Registro de log
             $this->logService->create(
                 $this->nameService,
@@ -118,16 +122,16 @@ class TrademarkModelService extends Service implements ServiceInterface
     }
 
     /**
-     * Delete a trademark by UUID
+     * Delete a category
      *
-     * @param  string  $uuid  The UUID of the trademark to be deleted
-     * @return array Returns an array containing the response data
+     * @param  string  $uuid  The UUID of the category to delete
+     * @return array The response data
      */
     public function delete(string $uuid): array
     {
         try {
-            // Aplica soft delete al modelo especificado por medio de su uuid
-            TrademarkModel::where('trademark_model_uuid', $uuid)->update(['deleted_at' => now()]);
+            // Aplica soft delete a la categoria especificada por medio de su uuid
+            Category::where('trademark_category_uuid', $uuid)->update(['deleted_at' => now()]);
             // Registro en Log
             $this->logService->create(
                 $this->nameService,
@@ -147,21 +151,18 @@ class TrademarkModelService extends Service implements ServiceInterface
     }
 
     /**
-     * Show a trademark model by UUID
+     * Retrieves the category and its associated trademarks based on its UUID.
      *
-     * @param  string  $uuid  The UUID of the trademark model
-     * @return array Returns an array containing the trademark model data
+     * @param  string  $uuid  The UUID of the category.
+     * @return array The response containing the message and data.
      */
     public function show(string $uuid): array
     {
         try {
-            // Obtiene modelo de la marca
-            $trademarkModel = TrademarkModel::with(['trademark'])
-                ->where('trademark_model_uuid', $uuid)->first();
-            $this->response['message'] = $trademarkModel === null
-                ? trans('api.not_found')
-                : trans('api.show');
-            $this->response['data'] = $trademarkModel ?? [];
+            // Obtiene categoria de la marca
+            $category = Category::where('trademark_category_uuid', $uuid)->first();
+            $this->response['message'] = $category === null ? trans('api.not_found') : trans('api.show');
+            $this->response['data'] = $category ?? [];
         } catch (Throwable $exceptions) {
             DB::rollBack();
             // Parámetros de respuesta en caso de error

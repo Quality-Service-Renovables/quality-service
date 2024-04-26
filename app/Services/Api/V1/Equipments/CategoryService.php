@@ -1,4 +1,15 @@
 <?php
+/**
+ * Equipment Categories Service.
+ *
+ * Register equipment categories
+ *
+ * @author   Luis Adrian Olvera Facio
+ *
+ * @version  1.0
+ *
+ * @since    2024.1
+ */
 
 /** @noinspection UnknownInspectionInspection */
 
@@ -21,8 +32,7 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Create a new equipment
      *
-     * @param Request $request The request object
-     *
+     * @param  Request  $request  The request object
      * @return array Returns an array containing the created equipment data
      */
     public function create(Request $request): array
@@ -47,12 +57,10 @@ class CategoryService extends Service implements ServiceInterface
             );
             // Finaliza Transacción
             DB::commit();
-        } catch (Exception $exception) {
+        } catch (Exception $exceptions) {
             DB::rollBack();
             // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -62,8 +70,7 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Update equipment data
      *
-     * @param Request $request The request object containing the updated data
-     *
+     * @param  Request  $request  The request object containing the updated data
      * @return array Returns an array containing the updated equipment data
      */
     public function update(Request $request): array
@@ -91,13 +98,12 @@ class CategoryService extends Service implements ServiceInterface
             );
             // Confirmación de transacción
             DB::commit();
-        } catch (Exception $exception) {
+        } catch (Exception $exceptions) {
             DB::rollBack();
             // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
+
         // Respuesta del módulo
         return $this->response;
     }
@@ -118,8 +124,7 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Delete equipment by UUID.
      *
-     * @param string $uuid The UUID of the equipment to be deleted.
-     *
+     * @param  string  $uuid  The UUID of the equipment to be deleted.
      * @return array The response array with status, message, and data.
      */
     public function delete(string $uuid): array
@@ -136,11 +141,9 @@ class CategoryService extends Service implements ServiceInterface
             );
             // Parámetros de respuesta
             $this->response['message'] = 'Category deleted successfully';
-        } catch (Exception $exception) {
+        } catch (Exception $exceptions) {
             // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -150,8 +153,7 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Retrieves a category by UUID
      *
-     * @param string $uuid The UUID of the category to retrieve
-     *
+     * @param  string  $uuid  The UUID of the category to retrieve
      * @return array Returns an array containing the status, message, and data of the response
      */
     public function show(string $uuid): array
@@ -161,12 +163,10 @@ class CategoryService extends Service implements ServiceInterface
             $category = Category::where('equipment_category_uuid', $uuid)->first();
             $this->response['message'] = $category === null ? 'Category not found' : 'Category found';
             $this->response['data'] = $category ?? [];
-        } catch (Exception $exception) {
+        } catch (Exception $exceptions) {
             DB::rollBack();
             // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo

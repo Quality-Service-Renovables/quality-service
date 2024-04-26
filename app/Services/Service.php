@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Services\Applications\ApplicationPaths;
 use App\Services\Applications\LogService;
+use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class Service
 {
@@ -33,6 +35,22 @@ class Service
         ];
         $this->statusCode = 200;
         $this->logService = new LogService();
+    }
+
+    /**
+     * Set exceptions.
+     *
+     * Sets the response status to 'error'.
+     * Sets the response message to the exception message.
+     * Sets the status code to 500.
+     *
+     * @param  Throwable  $exceptions  The exception object.
+     */
+    public function setExceptions(Throwable $exceptions): void
+    {
+        $this->response['status'] = 'error';
+        $this->response['message'] = $exceptions->getMessage();
+        $this->statusCode = 500;
     }
 
     /**
