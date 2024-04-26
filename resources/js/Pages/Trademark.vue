@@ -53,6 +53,22 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         hide-details></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="12">
+                                                                    <v-select v-model="editedItem.trademark_category_code"
+                                                                        :items="trademarks_categories"
+                                                                        item-title="trademark_category"
+                                                                        item-value="trademark_category_code"
+                                                                        label="Categoría" variant="solo" hide-details></v-select>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-select v-model="editedItem.models"
+                                                                        :items="trademarks_models"
+                                                                        item-title="trademark_model"
+                                                                        item-value="trademark_model_code"
+                                                                        label="Modelos" variant="solo" hide-details multiple
+                                                                        chips>
+                                                                        ></v-select>
+                                                                </v-col>
+                                                                <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
                                                                         color="primary"></v-switch>
                                                                 </v-col>
@@ -130,20 +146,27 @@ export default {
         headers: [
             { title: 'Marca', key: 'trademark' },
             { title: 'Estado', key: 'active' },
-            { title: 'Models', key: 'models' },
-            { title: 'Actions', key: 'actions', sortable: false }
+            { title: 'Modelos', key: 'models' },
+            { title: 'Categoría', key: 'category.trademark_category'},
+            { title: 'Acciones', key: 'actions', sortable: false }
         ],
         editedIndex: -1,
         editedItem: {
             trademark_uuid: '',
             trademark: '',
             active: false,
+            trademark_category_code: '',
+            models: []
         },
         defaultItem: {
             trademark_uuid: '',
             trademark: '',
-            active: false
+            active: false,
+            trademark_category_code: '',
+            models: []
         },
+        trademarks_categories: [],
+        trademarks_models: [],
     }),
     computed: {
         formTitle() {
@@ -162,6 +185,7 @@ export default {
         editItem(item) {
             this.editedIndex = this.trademarks.indexOf(item)
             item.active = item.active == "1" ? true : false
+            item.trademark_category_code = item.category.trademark_category_code
             this.editedItem = Object.assign({}, item)
             this.dialog = true
         },
@@ -171,7 +195,6 @@ export default {
             this.dialogDelete = true
         },
         deleteItemConfirm(item) {
-            this.trademarks.splice(this.editedIndex, 1)
             const putRequest = () => {
                 return axios.delete('api/trademarks/' + item);
             };
@@ -179,6 +202,7 @@ export default {
                 loading: 'Procesando...',
                 success: (data) => {
                     this.closeDelete()
+                    this.$inertia.reload()
                     return 'Marca eliminada correctamente';
                 },
                 error: (data) => {
@@ -204,17 +228,19 @@ export default {
         },
         save() {
             if (this.editedIndex > -1) {
-                Object.assign(this.trademarks[this.editedIndex], this.editedItem)
                 const putRequest = () => {
                     return axios.put('api/trademarks/' + this.editedItem.trademark_uuid, {
                         trademark: this.editedItem.trademark,
-                        active: this.editedItem.active
+                        active: this.editedItem.active,
+                        trademark_category_code: this.editedItem.trademark_category_code,
+                        models: this.editedItem.models
                     });
                 };
                 toast.promise(putRequest(), {
                     loading: 'Procesando...',
                     success: (data) => {
                         this.close()
+                        this.$inertia.reload()
                         return 'Marca actualizada correctamente';
                     },
                     error: (data) => {
@@ -222,11 +248,12 @@ export default {
                     }
                 });
             } else {
-                this.trademarks.push(this.editedItem)
                 const postRequest = () => {
                     return axios.post('api/trademarks', {
                         trademark: this.editedItem.trademark,
-                        active: this.editedItem.active
+                        active: this.editedItem.active,
+                        trademark_category_code: this.editedItem.trademark_category_code,
+                        models: this.editedItem.models
                     });
                 };
 
@@ -234,6 +261,7 @@ export default {
                     loading: 'Procesando...',
                     success: (data) => {
                         this.close()
+                        this.$inertia.reload()
                         return 'Marca creada correctamente';
                     },
                     error: (data) => {
@@ -246,7 +274,28 @@ export default {
         getColor(value) {
             return value ? 'green' : 'red';
         },
+        getTrademarkCategories(){
+            axios.get('api/trademark/categories')
+            .then(response => {
+                this.trademarks_categories = response.data.data;
+            })
+            .catch(error => {
+                toast.error('Error al cargar las categorías de marcas');
+            });
+        },
+        getModels(){
+            axios.get('api/trademark/models')
+            .then(response => {
+                this.trademarks_models = response.data.data;
+            })
+            .catch(error => {
+                toast.error('Error al cargar los modelos de marcas');
+            });
+        },
     },
-
+    mounted() {
+        this.getTrademarkCategories();
+        this.getModels();
+    }
 }
 </script>

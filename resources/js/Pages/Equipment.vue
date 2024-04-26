@@ -1,5 +1,5 @@
 <script setup>
-import {Head} from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 </script>
 
@@ -19,8 +19,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                             <v-col cols="12" sm="12">
                                 <v-data-table :headers="headers" :items="equipments" fixed-header :search="search">
                                     <template v-slot:item.equipment_image="{ item }">
-                                        <v-avatar :image="'../' + item.equipment_image" size="40"
-                                            class="ma-1"></v-avatar>
+                                        <v-avatar :image="'../../' + item.equipment_image" size="40" class="ma-1 avatar"
+                                            @click="showImage(item)"></v-avatar>
                                     </template>
                                     <template v-slot:item.active="{ value }">
                                         <v-icon :color="getColor(value)">mdi-circle-slice-8</v-icon>
@@ -29,7 +29,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <v-toolbar flat>
                                             <v-toolbar-title class="ml-1">
                                                 <v-text-field v-model="search" label="Buscar" hide-details
-                                                    variant="solo" append-inner-icon="mdi-magnify" density="compact"></v-text-field>
+                                                    variant="solo" append-inner-icon="mdi-magnify"
+                                                    density="compact"></v-text-field>
                                             </v-toolbar-title>
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
@@ -48,7 +49,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                             <v-row>
                                                                 <v-col cols="12">
                                                                     <v-text-field v-model="editedItem.equipment"
-                                                                        label="Nombre"></v-text-field>
+                                                                        label="Nombre" variant="solo" hide-details></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select
@@ -56,30 +57,44 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         :items="equipment_categories"
                                                                         item-title="equipment_category"
                                                                         item-value="equipment_category_code"
-                                                                        label="Categoría"></v-select>
+                                                                        label="Categoría" variant="solo" hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select v-model="editedItem.trademark_code"
                                                                         :items="trademarks" item-title="trademark"
                                                                         item-value="trademark_code" label="Marca"
-                                                                        @update:model-value="setTradermarkModels()"></v-select>
+                                                                        @update:model-value="setTradermarkModels()" variant="solo" hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select v-model="editedItem.trademark_model_code"
                                                                         :items="editedItem.models"
                                                                         item-title="trademark_model"
                                                                         item-value="trademark_model_code"
-                                                                        label="Modelo"></v-select>
+                                                                        label="Modelo" variant="solo" hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select v-model="editedItem.status_code"
                                                                         :items="status" item-title="status"
                                                                         item-value="status_code"
-                                                                        label="Estatus"></v-select>
+                                                                        label="Estatus" variant="solo" hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-text-field v-model="editedItem.serial_number"
-                                                                        label="Número de serie"></v-text-field>
+                                                                        label="Número de serie" variant="solo" hide-details></v-text-field>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-file-input variant="solo" label="Manual"
+                                                                        v-model="editedItem.manual"
+                                                                        accept=".pdf" prepend-icon="" prepend-inner-icon="mdi-file-upload" hide-details></v-file-input>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-file-input variant="solo" label="Imagen"
+                                                                        v-model="editedItem.equipment_image"
+                                                                        accept="image/*" prepend-icon="" prepend-inner-icon="mdi-image-plus" hide-details></v-file-input>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-switch label="Activo" v-model="editedItem.active"
+                                                                        color="primary"></v-switch>
                                                                 </v-col>
                                                             </v-row>
                                                         </v-container>
@@ -114,15 +129,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
-                                        <a :href="item.manual" target="_blank">
-                                            <v-icon class="me-2" size="small">
-                                                mdi-file
-                                            </v-icon>
-                                        </a>
                                         <v-icon class="me-2" size="small" @click="editItem(item)">
                                             mdi-pencil
                                         </v-icon>
-                                        <v-icon size="small" @click="deleteItem(item)">
+                                        <v-icon class="me-2" size="small" @click="deleteItem(item)">
                                             mdi-delete
                                         </v-icon>
                                     </template>
@@ -156,7 +166,7 @@ export default {
         dialog: false,
         dialogDelete: false,
         headers: [
-            { title: '', key: 'equipment_image', value: 'equipment_image' },
+            { title: 'Foto', key: 'equipment_image', sortable: false },
             {
                 title: 'Equipo',
                 align: 'start',
@@ -167,6 +177,7 @@ export default {
             { title: 'No. Serie', key: 'serial_number' },
             { title: 'Categoría', key: 'category.equipment_category' },
             { title: 'Estado', key: 'status.status' },
+            { title: 'Activo', key: 'active' },
             { title: 'Actions', key: 'actions', sortable: false },
         ],
         editedIndex: -1,
@@ -179,6 +190,9 @@ export default {
             trademark_model_code: '',
             status_code: '',
             serial_number: '',
+            active: false,
+            manual: null,
+            equipment_image: null,
             models: [],
         },
         defaultItem: {
@@ -190,6 +204,9 @@ export default {
             trademark_model_code: '',
             status_code: '',
             serial_number: '',
+            active: false,
+            manual: null,
+            equipment_image: null,
             models: [],
         },
         trademarks: [],
@@ -216,12 +233,11 @@ export default {
                 equipment: item.equipment,
                 equipment_image: item.equipment_image,
                 equipment_category_code: item.category.equipment_category_code,
-                equipmen_manual: item.manual,
                 trademark_code: item.trademark.trademark_code,
                 trademark_model_code: item.model.trademark_model_code,
                 status_code: item.status.status_code,
                 serial_number: item.serial_number,
-                models: this.trademarks.find(trademark => trademark.trademark_code === item.trademark.trademark_code).models,
+                models: this.trademarks.find(trademark => trademark.trademark_code === item.trademark.trademark_code).models
             }
         },
         editItem(item) {
@@ -268,16 +284,23 @@ export default {
             })
         },
         save() {
+            let formData = new FormData();
+            formData.append('equipment', this.editedItem.equipment);
+            formData.append('equipment_category_code', this.editedItem.equipment_category_code);
+            formData.append('trademark_code', this.editedItem.trademark_code);
+            formData.append('trademark_model_code', this.editedItem.trademark_model_code);
+            formData.append('status_code', this.editedItem.status_code);
+            formData.append('serial_number', this.editedItem.serial_number);
+            formData.append('active', this.editedItem.active ? 1 : 0);
+            formData.append('manual_storage', this.editedItem.manual);
+            formData.append('equipment_image_storage', this.editedItem.equipment_image);
+
             if (this.editedIndex > -1) {
-                Object.assign(this.equipments[this.editedIndex], this.editedItem)
                 const putRequest = () => {
-                    return axios.put('api/equipments/' + this.editedItem.equipment_uuid, {
-                        equipment: this.editedItem.equipment,
-                        equipment_category_code: this.editedItem.equipment_category_code,
-                        trademark_code: this.editedItem.trademark_code,
-                        trademark_model_code: this.editedItem.trademark_model_code,
-                        status_code: this.editedItem.status_code,
-                        serial_number: this.editedItem.serial_number
+                    return axios.put('api/equipments/' + this.editedItem.equipment_uuid, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        }
                     });
                 };
                 toast.promise(putRequest(), {
@@ -292,15 +315,11 @@ export default {
                     }
                 });
             } else {
-                this.equipments.push(this.editedItem)
                 const postRequest = () => {
-                    return axios.post('api/equipments', {
-                        equipment: this.editedItem.equipment,
-                        equipment_category_code: this.editedItem.equipment_category_code,
-                        trademark_code: this.editedItem.trademark_code,
-                        trademark_model_code: this.editedItem.trademark_model_code,
-                        status_code: this.editedItem.status_code,
-                        serial_number: this.editedItem.serial_number
+                    return axios.post('api/equipments', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
                     });
                 };
 
@@ -351,7 +370,13 @@ export default {
                 .catch(error => {
                     toast.error('Error al cargar el catálogo de estatus');
                 });
-        }
+        },
+        downloadManual(item) {
+            window.open('../' + item.manual, '_blank');
+        },
+        showImage(item) {
+            window.open('../' + item.equipment_image, '_blank');
+        },
     },
     mounted() {
         this.getTrademarks();
@@ -361,3 +386,9 @@ export default {
 
 }
 </script>
+
+<style scoped>
+.avatar {
+    cursor: pointer;
+}
+</style>

@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
-use App\Http\Controllers\Api\V1\Equipments\CategoryController;
-use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
-use App\Http\Controllers\Api\V1\AppsController;
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Api\V1\AppsController;
+use App\Http\Controllers\Api\V1\Equipments\CategoryController;
+use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
+use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
+use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -34,6 +35,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/equipments-categories', [CategoryController::class, 'component'])->name('equipment_categories');
     //Trademarks
     Route::get('/trademarks', [TrademarkController::class, 'component'])->name('trademaks');
+    //Models
+    Route::get('/models', [TrademarkModelController::class, 'component'])->name('models');
 });
 
 require __DIR__.'/auth.php';
