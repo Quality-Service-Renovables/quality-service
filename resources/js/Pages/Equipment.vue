@@ -19,8 +19,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                             <v-col cols="12" sm="12">
                                 <v-data-table :headers="headers" :items="equipments" fixed-header :search="search">
                                     <template v-slot:item.equipment_image="{ item }">
-                                        <v-avatar :image="'../../'+item.equipment_image" size="40"
-                                            class="ma-1 avatar" @click="showImage(item)"></v-avatar>
+                                        <v-avatar :image="'../../' + item.equipment_image" size="40" class="ma-1 avatar"
+                                            @click="showImage(item)"></v-avatar>
                                     </template>
                                     <template v-slot:item.active="{ value }">
                                         <v-icon :color="getColor(value)">mdi-circle-slice-8</v-icon>
@@ -29,7 +29,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <v-toolbar flat>
                                             <v-toolbar-title class="ml-1">
                                                 <v-text-field v-model="search" label="Buscar" hide-details
-                                                    variant="solo" append-inner-icon="mdi-magnify" density="compact"></v-text-field>
+                                                    variant="solo" append-inner-icon="mdi-magnify"
+                                                    density="compact"></v-text-field>
                                             </v-toolbar-title>
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
@@ -82,7 +83,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         label="Número de serie"></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="12">
-                                                                    <v-file-input variant="solo" label="Manual" v-model="editedItem.manual" accept=".pdf"></v-file-input>
+                                                                    <v-file-input variant="solo" label="Manual"
+                                                                        v-model="editedItem.manual"
+                                                                        accept=".pdf"></v-file-input>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-file-input variant="solo" label="Imagen"
+                                                                        v-model="editedItem.equipment_image"
+                                                                        accept="image/*"></v-file-input>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
@@ -121,7 +129,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
-                                        <v-icon v-if="item.manual" class="me-2" size="small" @click="downloadManual(item)">
+                                        <v-icon v-if="item.manual" class="me-2" size="small"
+                                            @click="downloadManual(item)">
                                             mdi-download
                                         </v-icon>
                                         <v-icon class="me-2" size="small" @click="editItem(item)">
@@ -161,7 +170,7 @@ export default {
         dialog: false,
         dialogDelete: false,
         headers: [
-            { title: 'Foto', key: 'equipment_image', sortable: false},
+            { title: 'Foto', key: 'equipment_image', sortable: false },
             {
                 title: 'Equipo',
                 align: 'start',
@@ -187,6 +196,7 @@ export default {
             serial_number: '',
             active: false,
             manual: null,
+            equipment_image: null,
             models: [],
         },
         defaultItem: {
@@ -200,6 +210,7 @@ export default {
             serial_number: '',
             active: false,
             manual: null,
+            equipment_image: null,
             models: [],
         },
         trademarks: [],
@@ -232,6 +243,7 @@ export default {
                 serial_number: item.serial_number,
                 active: item.active,
                 manual: item.manual,
+                equipment_image: item.equipment_image,
                 models: this.trademarks.find(trademark => trademark.trademark_code === item.trademark.trademark_code).models
             }
         },
@@ -279,17 +291,23 @@ export default {
             })
         },
         save() {
+            let formData = new FormData();
+            formData.append('equipment', this.editedItem.equipment);
+            formData.append('equipment_category_code', this.editedItem.equipment_category_code);
+            formData.append('trademark_code', this.editedItem.trademark_code);
+            formData.append('trademark_model_code', this.editedItem.trademark_model_code);
+            formData.append('status_code', this.editedItem.status_code);
+            formData.append('serial_number', this.editedItem.serial_number);
+            formData.append('active', this.editedItem.active ? 1 : 0);
+            formData.append('manual_storage', this.editedItem.manual);
+            formData.append('equipment_image_storage', this.editedItem.equipment_image);
+
             if (this.editedIndex > -1) {
                 const putRequest = () => {
-                    return axios.put('api/equipments/' + this.editedItem.equipment_uuid, {
-                        equipment: this.editedItem.equipment,
-                        equipment_category_code: this.editedItem.equipment_category_code,
-                        trademark_code: this.editedItem.trademark_code,
-                        trademark_model_code: this.editedItem.trademark_model_code,
-                        status_code: this.editedItem.status_code,
-                        serial_number: this.editedItem.serial_number,
-                        active: this.editedItem.active ? 1 : 0,
-                        manual: this.editedItem.manual
+                    return axios.put('api/equipments/' + this.editedItem.equipment_uuid, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        }
                     });
                 };
                 toast.promise(putRequest(), {
@@ -304,17 +322,6 @@ export default {
                     }
                 });
             } else {
-                let formData = new FormData();
-                formData.append('equipment', this.editedItem.equipment);
-                formData.append('equipment_category_code', this.editedItem.equipment_category_code);
-                formData.append('trademark_code', this.editedItem.trademark_code);
-                formData.append('trademark_model_code', this.editedItem.trademark_model_code);
-                formData.append('status_code', this.editedItem.status_code);
-                formData.append('serial_number', this.editedItem.serial_number);
-                formData.append('active', this.editedItem.active ? 1 : 0);
-                formData.append('manual_storage', this.editedItem.manual);
-
-
                 const postRequest = () => {
                     return axios.post('api/equipments', formData, {
                         headers: {
@@ -371,10 +378,10 @@ export default {
                     toast.error('Error al cargar el catálogo de estatus');
                 });
         },
-        downloadManual(item){
+        downloadManual(item) {
             window.open('../' + item.manual, '_blank');
         },
-        showImage(item){
+        showImage(item) {
             window.open('../' + item.equipment_image, '_blank');
         },
     },
