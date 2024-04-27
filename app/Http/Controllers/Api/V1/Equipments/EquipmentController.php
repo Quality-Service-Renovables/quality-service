@@ -61,7 +61,12 @@ class EquipmentController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a resource in storage.
+     *
+     * @param Request $request
+     * @param string  $uuid
+     *
+     * @return JsonResponse
      */
     public function update(Request $request, string $uuid): JsonResponse
     {

@@ -34,6 +34,7 @@ use Throwable;
 class EquipmentService extends Service implements ServiceInterface
 {
     public string $nameService = 'equipment_service';
+    private string $imageDefault = 'img/equipments/default.png';
 
     /**
      * Create a new equipment
@@ -102,6 +103,8 @@ class EquipmentService extends Service implements ServiceInterface
             DB::beginTransaction();
             // Obtiene los identificadores de los códigos y depura atributos a la solicitud
             $input = $this->setRequest($request);
+            // En caso de que no se detecte una imágen se establece una por defecto
+            $input['equipment_image'] = $input['equipment_image'] ?? $this->imageDefault;
             // Actualiza Equipo
             Equipment::where('equipment_uuid', $request->equipment_uuid)->update($input);
             // Recupera Equipo Actualizado

@@ -29,6 +29,7 @@ class Equipment extends Model
         'equipment_image',
         'model',
         'serial_number',
+        'work_hours',
         'manufacture_date',
         'barcode',
         'description',
