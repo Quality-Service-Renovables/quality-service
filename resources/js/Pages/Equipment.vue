@@ -303,7 +303,7 @@ export default {
 
             if (this.editedIndex > -1) {
                 const putRequest = () => {
-                    return axios.put('api/equipments/' + this.editedItem.equipment_uuid, formData, {
+                    return axios.put('api/equipments/update/' + this.editedItem.equipment_uuid, formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         }
