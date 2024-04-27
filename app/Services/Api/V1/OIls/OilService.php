@@ -115,7 +115,7 @@ class OilService extends Service implements ServiceInterface
      */
     public function read(): array
     {
-        $this->response['data'] = Oil::all();
+        $this->response['data'] = Oil::with('category', 'trademark.model')->get();
 
         // Respuesta del módulo
         return $this->response;
