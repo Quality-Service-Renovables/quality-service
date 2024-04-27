@@ -22,9 +22,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     <template v-slot:item.active="{ value }">
                                         <v-icon :color="getColor(value)">mdi-circle-slice-8</v-icon>
                                     </template>
-                                    <template v-slot:item.models="{ value }">
-                                        {{ value.map(objeto => objeto.trademark_model).join(', ')}}
-                                    </template>
                                     <template v-slot:top>
                                         <v-toolbar flat>
                                             <v-toolbar-title class="ml-1">
@@ -58,15 +55,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         item-title="trademark_category"
                                                                         item-value="trademark_category_code"
                                                                         label="Categoría" variant="solo" hide-details></v-select>
-                                                                </v-col>
-                                                                <v-col cols="12">
-                                                                    <v-select v-model="editedItem.models"
-                                                                        :items="trademarks_models"
-                                                                        item-title="trademark_model"
-                                                                        item-value="trademark_model_code"
-                                                                        label="Modelos" variant="solo" hide-details multiple
-                                                                        chips>
-                                                                        ></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
@@ -146,7 +134,6 @@ export default {
         headers: [
             { title: 'Marca', key: 'trademark' },
             { title: 'Estado', key: 'active' },
-            { title: 'Modelos', key: 'models' },
             { title: 'Categoría', key: 'category.trademark_category'},
             { title: 'Acciones', key: 'actions', sortable: false }
         ],
@@ -156,17 +143,14 @@ export default {
             trademark: '',
             active: false,
             trademark_category_code: '',
-            models: []
         },
         defaultItem: {
             trademark_uuid: '',
             trademark: '',
             active: false,
             trademark_category_code: '',
-            models: []
         },
         trademarks_categories: [],
-        trademarks_models: [],
     }),
     computed: {
         formTitle() {
@@ -233,7 +217,6 @@ export default {
                         trademark: this.editedItem.trademark,
                         active: this.editedItem.active,
                         trademark_category_code: this.editedItem.trademark_category_code,
-                        models: this.editedItem.models
                     });
                 };
                 toast.promise(putRequest(), {
@@ -253,7 +236,6 @@ export default {
                         trademark: this.editedItem.trademark,
                         active: this.editedItem.active,
                         trademark_category_code: this.editedItem.trademark_category_code,
-                        models: this.editedItem.models
                     });
                 };
 
@@ -283,19 +265,9 @@ export default {
                 toast.error('Error al cargar las categorías de marcas');
             });
         },
-        getModels(){
-            axios.get('api/trademark/models')
-            .then(response => {
-                this.trademarks_models = response.data.data;
-            })
-            .catch(error => {
-                toast.error('Error al cargar los modelos de marcas');
-            });
-        },
     },
     mounted() {
         this.getTrademarkCategories();
-        this.getModels();
     }
 }
 </script>

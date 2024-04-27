@@ -177,14 +177,14 @@ export default {
             this.dialogDelete = true
         },
         deleteItemConfirm(item) {
-            this.models.splice(this.editedIndex, 1)
             const putRequest = () => {
-                return axios.delete('api/equipment/categories/' + item);
+                return axios.delete('api/trademark/models/' + item);
             };
             toast.promise(putRequest, {
                 loading: 'Procesando...',
                 success: (data) => {
                     this.closeDelete()
+                    this.$inertia.reload()
                     return 'Modelo eliminada correctamente';
                 },
                 error: (data) => {
