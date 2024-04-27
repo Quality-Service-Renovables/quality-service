@@ -136,7 +136,7 @@ export default {
         dialogDelete: false,
         headers: [
             { title: 'Aceite', key: 'oil' },
-            { title: 'Viscocidad', key: 'viscosity' },
+            { title: 'Viscosidad', key: 'viscosity' },
             { title: 'Descripción', key: 'description' },
             { title: 'Fecha producción', key: 'production_date' },
             { title: 'Fecha expiración', key: 'expiration_date' },
