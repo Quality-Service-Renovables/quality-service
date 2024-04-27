@@ -40,6 +40,8 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::resource('inspection/categories', CategoryController::class);
     //######################################################### EQUIPMENTS ##########################################################
     Route::resource('equipments', EquipmentController::class);
+    // Para envio de tipo multi form, el verbo PUT no es compatible, se ha remplazado por la llamada a este end point
+    Route::post('equipments/update/{uuid}', [EquipmentController::class, 'update'])->name('equipments.update');
     Route::resource('equipment/categories', \App\Http\Controllers\Api\V1\Equipments\CategoryController::class);
     //######################################################### OILS ##########################################################
     Route::resource('oils', OilController::class);

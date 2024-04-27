@@ -18,7 +18,7 @@ test('create', function () {
         'equipment_image_storage' => $image,
         'serial_number' => 'SN-0001',
         'manufacture_date' => '2024-04-25',
-        'work_hours' => '1200',
+        'work_hours' => 9,
         'barcode' => 'test-barcode',
         'description' => 'Unit test equipment register',
         'manual_storage' => $manual,
@@ -46,7 +46,7 @@ test('update', function () {
     $image = UploadedFile::fake()->image('equipment_image.jpg');
     $manual = UploadedFile::fake()->create('document.pdf');
 
-    $response = $this->put('/api/equipments/'.$equipment->equipment_uuid, [
+    $response = $this->put('/api/equipments/update'.$equipment->equipment_uuid, [
         'equipment' => 'Unit Test Equipment',
         'equipment_image_storage' => $image,
         'serial_number' => 'field_updated',
