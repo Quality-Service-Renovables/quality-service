@@ -190,7 +190,6 @@ export default {
         editedItem: {
             equipment_uuid: '',
             equipment: '',
-            equipment_image: '',
             equipment_category_code: '',
             trademark_code: '',
             trademark_model_code: '',
@@ -204,7 +203,6 @@ export default {
         defaultItem: {
             equipment_uuid: '',
             equipment: '',
-            equipment_image: '',
             equipment_category_code: '',
             trademark_code: '',
             trademark_model_code: '',
@@ -237,18 +235,22 @@ export default {
             return {
                 equipment_uuid: item.equipment_uuid,
                 equipment: item.equipment,
-                equipment_image: item.equipment_image,
                 equipment_category_code: item.category.equipment_category_code,
                 trademark_code: item.trademark.trademark_code,
                 trademark_model_code: item.model.trademark_model_code,
                 status_code: item.status.status_code,
                 serial_number: item.serial_number,
+                active: item.active,
+                manual: item.manual,
+                equipment_image: item.equipment_image,
                 models: this.trademarks.find(trademark => trademark.trademark_code === item.trademark.trademark_code).models
             }
         },
         editItem(item) {
             this.editedIndex = this.equipments.indexOf(item)
             item.active = item.active == "1" ? true : false
+            item.manual = null;
+            item.equipment_image = null;
             this.editedItem = Object.assign({}, this.getItem(item))
             this.dialog = true
         },
