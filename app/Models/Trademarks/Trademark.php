@@ -39,4 +39,14 @@ class Trademark extends Model
     {
         return $this->hasMany(TrademarkModel::class, 'trademark_id');
     }
+
+    /**
+     * Get the related model for this relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function model(): HasOne
+    {
+        return $this->hasOne(TrademarkModel::class, 'trademark_id');
+    }
 }
