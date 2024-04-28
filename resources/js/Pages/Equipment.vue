@@ -249,9 +249,9 @@ export default {
         editItem(item) {
             this.editedIndex = this.equipments.indexOf(item)
             item.active = item.active == "1" ? true : false
-            item.manual = null;
-            item.equipment_image = null;
             this.editedItem = Object.assign({}, this.getItem(item))
+            this.editedItem.manual = null
+            this.editedItem.equipment_image = null
             this.dialog = true
         },
         deleteItem(item) {
@@ -292,16 +292,17 @@ export default {
             })
         },
         save() {
-            let formData = new FormData();
-            formData.append('equipment', this.editedItem.equipment);
-            formData.append('equipment_category_code', this.editedItem.equipment_category_code);
-            formData.append('trademark_code', this.editedItem.trademark_code);
-            formData.append('trademark_model_code', this.editedItem.trademark_model_code);
-            formData.append('status_code', this.editedItem.status_code);
-            formData.append('serial_number', this.editedItem.serial_number);
-            formData.append('active', this.editedItem.active ? 1 : 0);
-            formData.append('manual_storage', this.editedItem.manual);
-            formData.append('equipment_image_storage', this.editedItem.equipment_image);
+            let formData = {
+                'equipment': this.editedItem.equipment,
+                'equipment_category_code': this.editedItem.equipment_category_code,
+                'trademark_code': this.editedItem.trademark_code,
+                'trademark_model_code': this.editedItem.trademark_model_code,
+                'status_code': this.editedItem.status_code,
+                'serial_number': this.editedItem.serial_number,
+                'active': this.editedItem.active ? 1 : 0,
+                'manual_storage': this.editedItem.manual,
+                'equipment_image_storage': this.editedItem.equipment_image,
+            };
 
             if (this.editedIndex > -1) {
                 const putRequest = () => {
