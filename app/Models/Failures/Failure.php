@@ -24,6 +24,7 @@ class Failure extends Model
         'failure_category_id',
     ];
 
+    protected $hidden = ['failure_category_id'];
     /**
      * Get the category that this model belongs to.
      *

@@ -20,4 +20,5 @@ class Category extends Model
         'level',
         'active',
     ];
+    protected $hidden = ['failure_category_id'];
 }

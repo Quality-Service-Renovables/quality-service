@@ -5,7 +5,7 @@ namespace App\Http\Requests\Api\Failures;
 use App\Http\Requests\CustomRequest;
 use Illuminate\Validation\Rule;
 
-class FailureRequest extends CustomRequest
+class CategoryRequest extends CustomRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,7 +15,7 @@ class FailureRequest extends CustomRequest
     public function rules(): array
     {
         return [
-            'failure' => [
+            'failure_category' => [
                 'required',
                 'string',
                 'min:1',
@@ -24,14 +24,8 @@ class FailureRequest extends CustomRequest
                     ->whereNull('deleted_at'),
             ],
             'description' => 'nullable|string|min:10|max:255',
-            'failure_category_code' => [
-                'required',
-                'string',
-                'min:1',
-                'max:255',
-                Rule::exists('failure_categories', 'failure_category_code')
-                    ->whereNull('deleted_at'),
-            ],
+            'is_default' => 'nullable|boolean',
+            'dependency' => 'nullable|integer',
             'active' => 'required|boolean',
         ];
     }

@@ -60,4 +60,5 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::resource('status', StatusController::class);
     //----------------------------------------------------- Failure Equipments ----------------------------------------------------
     Route::resource('failures', FailureController::class);
+    Route::resource('failure/categories', \App\Http\Controllers\Api\V1\Failures\CategoryController::class);
 });
