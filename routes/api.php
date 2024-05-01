@@ -3,12 +3,13 @@
 use App\Http\Controllers\Api\SessionController;
 use App\Http\Controllers\Api\V1\Clients\ClientController;
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
+use App\Http\Controllers\Api\V1\Failures\FailureController;
 use App\Http\Controllers\Api\V1\Inspections\CategoryController;
 use App\Http\Controllers\Api\V1\Oils\OilController;
 use App\Http\Controllers\Api\V1\Status\StatusController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
-use App\Http\Controllers\Api\V1\User\ApiController;
+use App\Http\Controllers\Api\V1\Users\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -57,4 +58,6 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::resource('inspection/categories', CategoryController::class);
     //######################################################### EQUIPMENTS ##########################################################
     Route::resource('status', StatusController::class);
+    //----------------------------------------------------- Failure Equipments ----------------------------------------------------
+    Route::resource('failures', FailureController::class);
 });

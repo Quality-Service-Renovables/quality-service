@@ -7,7 +7,8 @@
 namespace Database\Seeders;
 
 use App\Models\Clients\Client;
-use App\Models\User;
+use App\Models\Rols\Rol;
+use App\Models\Users\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -30,6 +31,7 @@ class UsersSeeder extends Seeder
     private function getUsers(): array
     {
         $client = Client::where('client_code', 'quality_service')->first();
+        $rol = Rol::where('guard_name', 'admin')->first();
 
         return [
             [
@@ -38,6 +40,7 @@ class UsersSeeder extends Seeder
                 'email' => 'admin@quality-service.com',
                 'password' => Hash::make('qsr.2024!'),
                 'client_id' => $client->client_id,
+                'rol_id' => $rol->id,
             ],
         ];
     }

@@ -12,6 +12,7 @@ class InitialSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            RolsSeeder::class,
             ClientsSeeder::class,
             StatusSeeder::class,
             UsersSeeder::class,
@@ -19,6 +20,7 @@ class InitialSeeder extends Seeder
             MaintenanceCategoriesSeeder::class,
             FixCategoriesSeeder::class,
             EquipmentCategorySeeder::class,
+            FailureCategoriesSeeder::class,
             InspectionCategoriesSeeder::class,
             TrademarkCategoriesSeeder::class,
             TrademarksSeeder::class,

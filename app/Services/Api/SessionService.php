@@ -3,7 +3,7 @@
 namespace App\Services\Api;
 
 use App\Http\Requests\Api\Sessions\SessionRequest;
-use App\Models\User;
+use App\Models\Users\User;
 use App\Services\Service;
 use Exception;
 use Illuminate\Support\Facades\Hash;
