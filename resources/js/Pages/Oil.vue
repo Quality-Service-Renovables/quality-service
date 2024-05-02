@@ -138,9 +138,12 @@ export default {
             { title: 'Aceite', key: 'oil' },
             { title: 'Viscosidad', key: 'viscosity' },
             { title: 'Descripción', key: 'description' },
+            { title: 'Cantidad', key: 'quantity' },
+            { title: 'Categoria', key: 'category.oil_category' },
+            { title: 'Marca', key: 'trademark.trademark' },
+            { title: 'Modelo', key: 'trademark.model.trademark_model' },
             { title: 'Fecha producción', key: 'production_date' },
             { title: 'Fecha expiración', key: 'expiration_date' },
-            { title: 'Cantidad', key: 'quantity' },
             { title: 'Estatus', key: 'active' },
             { title: 'Acciones', key: 'actions', sortable: false }
         ],
