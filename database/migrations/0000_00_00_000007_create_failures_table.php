@@ -16,6 +16,7 @@ return new class extends Migration
             $table->uuid('failure_uuid');
             $table->string('failure');
             $table->string('failure_code');
+            $table->longText('description')->nullable()->comment('Failure description');
             $table->boolean('active')->default(true);
             $table->unsignedBigInteger('failure_category_id');
             $table->timestamps();
