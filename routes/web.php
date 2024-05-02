@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Api\V1\AppsController;
 use App\Http\Controllers\Api\V1\Oils\OilController;
+use App\Http\Controllers\Api\V1\Failures\FailureController;
 use App\Http\Controllers\Api\V1\Equipments\CategoryController;
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
@@ -40,6 +41,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/models', [TrademarkModelController::class, 'component'])->name('models');
     //Oils
     Route::get('/oils', [OilController::class, 'component'])->name('oils');
+    //Failures
+    Route::get('/failures', [FailureController::class, 'component'])->name('failures');
 });
 
 require __DIR__.'/auth.php';

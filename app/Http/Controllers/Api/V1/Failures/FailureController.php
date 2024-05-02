@@ -131,8 +131,8 @@ class FailureController extends Controller
     {
         $this->service->read();
 
-        return Inertia::render('Equipment', [
-            'equipments' => $this->service->response['data'],
+        return Inertia::render('Failure', [
+            'failures' => $this->service->response['data'],
         ]);
     }
 
