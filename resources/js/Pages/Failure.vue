@@ -48,7 +48,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         label="Nombre" variant="solo"
                                                                         hide-details></v-text-field>
                                                                 </v-col>
+
                                                                 <v-col cols="12">
+                                                                    <div class="text-right">
+                                                                        <v-btn density="compact" prepend-icon="mdi-plus" class="mb-1 pr-0 text-none text-primary" variant="plain">Nueva categoría</v-btn>
+                                                                    </div>
                                                                     <v-select v-model="editedItem.failure_category_code"
                                                                         :items="failure_categories"
                                                                         item-title="failure_category"
