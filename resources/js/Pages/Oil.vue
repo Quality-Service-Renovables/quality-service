@@ -17,8 +17,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                     <v-card>
                         <v-row>
                             <v-col cols="12" sm="12">
-                                <v-data-table :headers="headers" :items="oils" fixed-header
-                                    :search="search">
+                                <v-data-table :headers="headers" :items="oils" fixed-header :search="search">
                                     <template v-slot:item.active="{ value }">
                                         <v-icon :color="getColor(value)">mdi-circle-slice-8</v-icon>
                                     </template>
@@ -26,7 +25,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <v-toolbar flat>
                                             <v-toolbar-title class="ml-1">
                                                 <v-text-field v-model="search" label="Buscar" hide-details
-                                                    variant="solo" append-inner-icon="mdi-magnify" density="compact"></v-text-field>
+                                                    variant="solo" append-inner-icon="mdi-magnify"
+                                                    density="compact"></v-text-field>
                                             </v-toolbar-title>
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
@@ -44,8 +44,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         <v-container>
                                                             <v-row>
                                                                 <v-col cols="12">
-                                                                    <v-text-field
-                                                                        v-model="editedItem.oil"
+                                                                    <v-text-field v-model="editedItem.oil"
                                                                         label="Nombre" variant="solo"
                                                                         hide-details></v-text-field>
                                                                 </v-col>
@@ -60,10 +59,46 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         hide-details></v-textarea>
                                                                 </v-col>
                                                                 <v-col cols="12">
+                                                                    <v-text-field v-model="editedItem.quantity"
+                                                                        label="Cantidad" variant="solo"
+                                                                        hide-details type="number"></v-text-field>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-select v-model="editedItem.oil_category_code"
+                                                                        :items="oil_categories" label="Categoria"
+                                                                        item-title="oil_category"
+                                                                        item-value="oil_category_code"
+                                                                        hide-details variant="solo"> </v-select>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-select v-model="editedItem.trademark_code"
+                                                                        :items="trademarks" label="Marca"
+                                                                        item-title="trademark"
+                                                                        item-value="trademark_code"
+                                                                        hide-details variant="solo"></v-select>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-select v-model="editedItem.trademark_model_code"
+                                                                        :items="trademark_models" label="Modelo"
+                                                                        item-title="trademark_model"
+                                                                        item-value="trademark_model_code"
+                                                                        hide-details variant="solo"></v-select>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-text-field v-model="editedItem.production_date"
+                                                                        label="Fecha producción" variant="solo"
+                                                                        hide-details type="date"></v-text-field>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-text-field v-model="editedItem.expiration_date"
+                                                                        label="Fecha expiración" variant="solo"
+                                                                        hide-details type="date"></v-text-field>
+                                                                </v-col>
+                                                                <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
                                                                         color="primary"></v-switch>
                                                                 </v-col>
-
+ 
                                                             </v-row>
                                                         </v-container>
                                                     </v-card-text>
@@ -157,6 +192,9 @@ export default {
             expiration_date: '',
             quantity: '',
             active: false,
+            oil_category_code: '',
+            trademark_code: '',
+            trademark_model_code: '',
         },
         defaultItem: {
             oil_uuid: '',
@@ -167,7 +205,13 @@ export default {
             expiration_date: '',
             quantity: '',
             active: false,
+            oil_category_code: '',
+            trademark_code: '',
+            trademark_model_code: '',
         },
+        oil_categories: [],
+        trademarks: [],
+        trademark_models: [],
     }),
     computed: {
         formTitle() {
@@ -186,6 +230,9 @@ export default {
         editItem(item) {
             this.editedIndex = this.oils.indexOf(item)
             item.active = item.active == "1" ? true : false
+            item.oil_category_code = item.category.oil_category_code;
+            item.trademark_code = item.trademark.trademark_code;
+            item.trademark_model_code = item.trademark.model.trademark_model_code;
             this.editedItem = Object.assign({}, item)
             this.dialog = true
         },
@@ -227,14 +274,23 @@ export default {
             })
         },
         save() {
+            
+            let formData = {
+                'oil': this.editedItem.oil,
+                'viscosity': this.editedItem.viscosity,
+                'description': this.editedItem.description,
+                'oil_category_code': this.editedItem.oil_category_code,
+                'trademark_code': this.editedItem.trademark_code,
+                'trademark_model_code': this.editedItem.trademark_model_code,
+                'production_date': this.editedItem.production_date,
+                'expiration_date': this.editedItem.expiration_date,
+                'quantity': this.editedItem.quantity,
+                'active': this.editedItem.active,
+            };
+
             if (this.editedIndex > -1) {
-                Object.assign(this.oils[this.editedIndex], this.editedItem)
                 const putRequest = () => {
-                    return axios.put('api/oils/' + this.editedItem.equipment_category_uuid, {
-                        equipment_category: this.editedItem.equipment_category,
-                        description: this.editedItem.description,
-                        active: this.editedItem.active
-                    });
+                    return axios.put('api/oils/' + this.editedItem.oil_uuid, formData);
                 };
                 toast.promise(putRequest(), {
                     loading: 'Procesando...',
@@ -248,13 +304,8 @@ export default {
                     }
                 });
             } else {
-                this.oils.push(this.editedItem)
                 const postRequest = () => {
-                    return axios.post('api/oils', {
-                        equipment_category: this.editedItem.equipment_category,
-                        description: this.editedItem.description,
-                        active: this.editedItem.active
-                    });
+                    return axios.post('api/oils', formData);
                 };
 
                 toast.promise(postRequest(), {
@@ -274,7 +325,38 @@ export default {
         getColor(value) {
             return value ? 'green' : 'red';
         },
+        getOilCategories() {
+            axios.get('api/oil/categories')
+                .then(response => {
+                    this.oil_categories = response.data.data;
+                })
+                .catch(error => {
+                    toast.error('Error al obtener las categorias de aceites');
+                })
+        },
+        getTrademarks() {
+            axios.get('api/trademarks')
+                .then(response => {
+                    this.trademarks = response.data.data;
+                })
+                .catch(error => {
+                    toast.error('Error al obtener las marcas');
+                })
+        },
+        getTrademarkModels() {
+            axios.get('api/trademark/models')
+                .then(response => {
+                    this.trademark_models = response.data.data;
+                })
+                .catch(error => {
+                    toast.error('Error al obtener los modelos de la marca');
+                })
+        },
     },
-
+    mounted() {
+        this.getOilCategories();
+        this.getTrademarks();
+        this.getTrademarkModels();
+    }
 }
 </script>
