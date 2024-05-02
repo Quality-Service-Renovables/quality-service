@@ -51,14 +51,21 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
                                                                 <v-col cols="12">
                                                                     <div class="text-right">
-                                                                        <v-btn density="compact" prepend-icon="mdi-plus" class="mb-1 pr-0 text-none text-primary" variant="plain">Nueva categoría</v-btn>
+                                                                        <v-btn v-if="!showCreateCategoryField" density="compact" prepend-icon="mdi-plus" class="mb-1 pr-0 text-none text-primary" variant="plain" @click="showCreateCategoryField = true">Nueva categoría</v-btn>
+                                                                        <v-btn v-if="showCreateCategoryField" density="compact" prepend-icon="mdi-close" class="mb-1 pr-0 text-none text-red" variant="plain" @click="showCreateCategoryField = false">Cancelar</v-btn>
+                                                                        <v-btn v-if="showCreateCategoryField" density="compact" prepend-icon="mdi-content-save-check-outline" class="mb-1 pr-0 text-none text-primary" variant="plain" @click="saveCategory()">Guardar</v-btn>
                                                                     </div>
                                                                     <v-select v-model="editedItem.failure_category_code"
                                                                         :items="failure_categories"
                                                                         item-title="failure_category"
                                                                         item-value="failure_category_code"
                                                                         label="Categoría" variant="solo"
-                                                                        hide-details></v-select>
+                                                                        hide-details v-if="!showCreateCategoryField"></v-select>
+                                                                    <v-text-field v-model="new_failure_category"
+                                                                        label="Categoría" variant="solo"
+                                                                        hide-details v-if="showCreateCategoryField">
+                                                                    </v-text-field>
+                                                                    
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
@@ -155,6 +162,8 @@ export default {
             failure_category_code: '',
         },
         failure_categories: [],
+        showCreateCategoryField: false,
+        new_failure_category: '',
     }),
     computed: {
         formTitle() {
