@@ -60,29 +60,30 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-text-field v-model="editedItem.quantity"
-                                                                        label="Cantidad" variant="solo"
-                                                                        hide-details type="number"></v-text-field>
+                                                                        label="Cantidad" variant="solo" hide-details
+                                                                        type="number"></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select v-model="editedItem.oil_category_code"
                                                                         :items="oil_categories" label="Categoria"
                                                                         item-title="oil_category"
-                                                                        item-value="oil_category_code"
-                                                                        hide-details variant="solo"> </v-select>
+                                                                        item-value="oil_category_code" hide-details
+                                                                        variant="solo">
+                                                                    </v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select v-model="editedItem.trademark_code"
                                                                         :items="trademarks" label="Marca"
                                                                         item-title="trademark"
-                                                                        item-value="trademark_code"
-                                                                        hide-details variant="solo"></v-select>
+                                                                        item-value="trademark_code" hide-details
+                                                                        variant="solo"></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select v-model="editedItem.trademark_model_code"
                                                                         :items="trademark_models" label="Modelo"
                                                                         item-title="trademark_model"
-                                                                        item-value="trademark_model_code"
-                                                                        hide-details variant="solo"></v-select>
+                                                                        item-value="trademark_model_code" hide-details
+                                                                        variant="solo"></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-text-field v-model="editedItem.production_date"
@@ -98,7 +99,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                     <v-switch label="Activo" v-model="editedItem.active"
                                                                         color="primary"></v-switch>
                                                                 </v-col>
- 
+
                                                             </v-row>
                                                         </v-container>
                                                     </v-card-text>
@@ -274,7 +275,7 @@ export default {
             })
         },
         save() {
-            
+
             let formData = {
                 'oil': this.editedItem.oil,
                 'viscosity': this.editedItem.viscosity,
