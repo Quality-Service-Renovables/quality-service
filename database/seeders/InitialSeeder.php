@@ -25,6 +25,7 @@ class InitialSeeder extends Seeder
             TrademarkCategoriesSeeder::class,
             TrademarksSeeder::class,
             OilsCategoriesSeeder::class,
+            EquipmentSeeder::class,
             VersionsSeeder::class,
         ]);
     }
