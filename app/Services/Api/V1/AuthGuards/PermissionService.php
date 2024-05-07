@@ -17,11 +17,14 @@
 
 /** @noinspection PhpUndefinedMethodInspection */
 
-namespace App\Services\Api\V1\Users;
+namespace App\Services\Api\V1\AuthGuards;
 
 use App\Models\Equipments\Category;
 use App\Models\Equipments\Equipment;
-use App\Models\Users\User;
+use App\Models\AuthGuards\Permission;
+use App\Models\Status\Status;
+use App\Models\Trademarks\Trademark;
+use App\Models\Trademarks\TrademarkModel;
 use App\Services\Api\ServiceInterface;
 use App\Services\Service;
 use Illuminate\Http\Request;
@@ -29,25 +32,33 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Throwable;
 
-class UserService extends Service implements ServiceInterface
+class PermissionService extends Service implements ServiceInterface
 {
-    public string $nameService = 'user_service';
-    private string $imageDefault = 'img/users/default.png';
+    public string $nameService = 'equipment_service';
+    private string $imageDefault = 'img/equipments/default.png';
 
+    /**
+     * Create a new equipment
+     *
+     * @param  Request  $request  The request object
+     * @return array Returns an array containing the created equipment data
+     */
     public function create(Request $request): array
     {
         try {
             // Control de transacciones
             DB::beginTransaction();
             // Agrega atributos a la solicitud
-            $request->merge(['uuid' => Str::uuid()->toString()]);
+            $request->merge(['equipment_uuid' => Str::uuid()->toString()]);
             // Obtiene los identificadores de los códigos y depura atributos a la solicitud
             $input = $this->setRequest($request);
-            // Registra los atributos de la solicitud al usuario
-            $user = User::create($input);
+            // En caso de que no se detecte una imágen se establece una por defecto
+            $input['equipment_image'] = $input['equipment_image'] ?? $this->imageDefault;
+            // Registra los atributos de la solicitud al equipo
+            $equipment = Equipment::create($input);
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
-            $this->response['data'] = $user;
+            $this->response['data'] = $equipment;
             // Registro en log
             $this->logService->create(
                 $this->nameService,
@@ -67,11 +78,15 @@ class UserService extends Service implements ServiceInterface
         return $this->response;
     }
 
-
+    /**
+     * Retrieve all equipment data
+     *
+     * @return array Returns an array containing the equipment data
+     */
     public function read(): array
     {
         $this->response['message'] = trans('api.readed');
-        $this->response['data'] = User::with(['client', 'role'])->get();
+        $this->response['data'] = Permission::all();
 
         return $this->response;
     }
@@ -91,6 +106,7 @@ class UserService extends Service implements ServiceInterface
             $input = $this->setRequest($request);
             // En caso de que no se detecte una imágen se establece una por defecto
             $input['equipment_image'] = $input['equipment_image'] ?? $this->imageDefault;
+            $input['equipment_diagram'] = $input['equipment_diagram'] ?? null;
             // Actualiza Equipo
             Equipment::where('equipment_uuid', $request->equipment_uuid)->update($input);
             // Recupera Equipo Actualizado
@@ -180,7 +196,10 @@ class UserService extends Service implements ServiceInterface
     private function setRequest(Request $request): array
     {
         // Obtiene identificadores de códigos
-        $rolId = Category::where('rol_code', $request->get('rol_code'))->first()->id;
+        $categoryId = Category::where('equipment_category_code', $request->get('equipment_category_code'))->first()->equipment_category_id;
+        $trademarkId = Trademark::where('trademark_code', $request->get('trademark_code'))->first()->trademark_id;
+        $trademarkModelId = TrademarkModel::where('trademark_model_code', $request->get('trademark_model_code'))->first()->trademark_model_id;
+        $statusId = Status::where('status_code', $request->get('status_code'))->first()->status_id;
         // Agrupa el contenido a insertar en la solicitud
         $extraAttributes = [
             'equipment_code' => create_slug($request->equipment),
@@ -228,12 +247,23 @@ class UserService extends Service implements ServiceInterface
             );
         }
 
+        // Si se ha seleccionado un diagrama para el equipo se guarda en el storage
+        if ($request->hasFile('equipment_diagram_storage')) {
+            $this->addFileToRequest(
+                $request,
+                'equipment_diagram_storage',
+                'equipment_diagram',
+                $paths->equipments->diagrams
+            );
+        }
+
         return $request->except([
             'equipment_category_code',
             'trademark_code',
             'trademark_model_code',
             'status_code',
             'equipment_image_storage',
+            'equipment_diagram_storage',
             'manual_storage',
         ]);
     }

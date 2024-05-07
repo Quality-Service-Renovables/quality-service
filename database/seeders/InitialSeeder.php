@@ -14,6 +14,7 @@ class InitialSeeder extends Seeder
         $this->call([
             RolsSeeder::class,
             ClientsSeeder::class,
+            PermissionSeeder::class,
             StatusSeeder::class,
             UsersSeeder::class,
             ServiceCategoriesSeeder::class,

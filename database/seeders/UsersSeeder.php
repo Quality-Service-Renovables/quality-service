@@ -7,7 +7,7 @@
 namespace Database\Seeders;
 
 use App\Models\Clients\Client;
-use App\Models\Rols\Rol;
+use App\Models\AuthGuards\Role;
 use App\Models\Users\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -31,7 +31,7 @@ class UsersSeeder extends Seeder
     private function getUsers(): array
     {
         $client = Client::where('client_code', 'quality_service')->first();
-        $rol = Rol::where('guard_name', 'admin')->first();
+        $rol = Role::where('guard_name', 'admin')->first();
 
         return [
             [
