@@ -6,10 +6,14 @@ use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
 use App\Http\Controllers\Api\V1\Failures\FailureController;
 use App\Http\Controllers\Api\V1\Inspections\CategoryController;
 use App\Http\Controllers\Api\V1\Oils\OilController;
+use App\Http\Controllers\Api\V1\AuthGuards\PermissionController;
+use App\Http\Controllers\Api\V1\AuthGuards\RoleController;
+use App\Http\Controllers\Api\V1\AuthGuards\RolePermissionController;
 use App\Http\Controllers\Api\V1\Status\StatusController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
 use App\Http\Controllers\Api\V1\Users\ApiController;
+use App\Http\Controllers\Api\V1\Users\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,7 +37,7 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::post('session/logout', [SessionController::class, 'logout']);
     //**************************** END SESSION *****************************
     //****************************** USER *******************************
-    Route::resource('user', ApiController::class);
+    Route::resource('users', UserController::class);
     //**************************** END USER *****************************
     //######################################################### CLIENTS ##########################################################
     Route::resource('clients', ClientController::class);
@@ -61,4 +65,8 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //----------------------------------------------------- Failure Equipments ----------------------------------------------------
     Route::resource('failures', FailureController::class);
     Route::resource('failure/categories', \App\Http\Controllers\Api\V1\Failures\CategoryController::class);
+    //######################################################## AUTH GUARDS ##########################################################
+    Route::resource('auth-guard/roles', RoleController::class);
+    Route::resource('auth-guard/permissions', PermissionController::class);
+    Route::resource('auth-guard/role-permissions', RolePermissionController::class);
 });

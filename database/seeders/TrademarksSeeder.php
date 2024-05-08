@@ -71,6 +71,32 @@ class TrademarksSeeder extends Seeder
                 'active' => true,
                 'models' => [],
             ],
+            [
+                'trademark_uuid' => Str::uuid()->toString(),
+                'trademark' => 'Gamesa',
+                'trademark_code' => 'gamesa',
+                'trademark_category_id' => $equipmentCategory,
+                'active' => true,
+                'models' => [
+                    [
+                        'trademark_model' => 'GE2000PL',
+                        'trademark_model_code' => 'ge2000pl',
+                    ],
+                ],
+            ],
+            [
+                'trademark_uuid' => Str::uuid()->toString(),
+                'trademark' => 'Indar',
+                'trademark_code' => 'indar',
+                'trademark_category_id' => $equipmentCategory,
+                'active' => true,
+                'models' => [
+                    [
+                        'trademark_model' => '  PLH-1100.3IT70',
+                        'trademark_model_code' => 'plh_1100_3it70',
+                    ],
+                ],
+            ],
         ];
     }
 

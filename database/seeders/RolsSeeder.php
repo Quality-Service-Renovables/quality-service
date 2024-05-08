@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Rols\Rol;
+use App\Models\AuthGuards\Role;
 use Illuminate\Database\Seeder;
 
 class RolsSeeder extends Seeder
@@ -13,7 +13,7 @@ class RolsSeeder extends Seeder
     public function run(): void
     {
         foreach ($this->getRols() as $rol) {
-            Rol::updateOrCreate(['guard_name' => $rol['guard_name']], $rol);
+            Role::updateOrCreate(['guard_name' => $rol['guard_name']], $rol);
         }
     }
 
@@ -30,7 +30,7 @@ class RolsSeeder extends Seeder
             ],
             [
                 'name' => 'Técnico',
-                'guard_name' => 'tecnic',
+                'guard_name' => 'technical',
             ],
         ];
     }

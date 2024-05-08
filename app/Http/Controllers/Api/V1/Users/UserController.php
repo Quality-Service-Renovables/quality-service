@@ -3,16 +3,25 @@
 namespace App\Http\Controllers\Api\V1\Users;
 
 use App\Http\Controllers\Controller;
+use App\Services\Api\V1\Users\UserService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    protected UserService $service;
+    public function __construct()
+    {
+        $this->service = new UserService();
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $this->service->read();
+
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Equipments;
+namespace App\Http\Controllers\Api\V1\AuthGuards;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Equipments\EquipmentRequest;
-use App\Services\Api\V1\Equipments\EquipmentService;
+use App\Services\Api\V1\AuthGuards\RolService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -12,16 +12,16 @@ use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class EquipmentController extends Controller
+class RoleController extends Controller
 {
-    protected EquipmentService $service;
+    protected RolService $service;
 
     /**
      * Constructor for the class.
      */
     public function __construct()
     {
-        $this->service = new EquipmentService();
+        $this->service = new RolService();
     }
 
     /**
