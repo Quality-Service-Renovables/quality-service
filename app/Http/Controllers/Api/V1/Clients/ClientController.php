@@ -158,8 +158,8 @@ class ClientController extends Controller
     {
         $this->service->read();
 
-        return Inertia::render('Equipment', [
-            'equipments' => $this->service->response['data'],
+        return Inertia::render('Customer', [
+            'customers' => $this->service->response['data'],
         ]);
     }
 
