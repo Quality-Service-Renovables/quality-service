@@ -34,7 +34,7 @@ Route::middleware('auth')->group(function () {
     //Equipments
     Route::get('/equipments', [EquipmentController::class, 'component'])->name('equipments');
     //Equipments category
-    Route::get('/equipments-categories', [CategoryController::class, 'component'])->name('equipment_categories');
+    Route::get('/equipments-categories', [CategoryController::class, 'component'])->name('ct_equipments');
     //Trademarks
     Route::get('/trademarks', [TrademarkController::class, 'component'])->name('trademaks');
     //Models

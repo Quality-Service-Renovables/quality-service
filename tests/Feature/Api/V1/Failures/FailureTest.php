@@ -11,7 +11,7 @@ test('create', function () {
     $response = $this->post('/api/failures', [
         'failure' => 'Unit Test Failure',
         'description' => 'unit test failure',
-        'failure_category_code' => 'general',
+        'ct_failure_code' => 'general',
         'active' => true
     ]);
 
@@ -31,7 +31,7 @@ test('update', function () {
     $response = $this->put('/api/failures/'.$failure->failure_uuid, [
         'failure' => 'Unit Test Failure',
         'description' => 'field_updated',
-        'failure_category_code' => 'general',
+        'ct_failure_code' => 'general',
         'active' => true
     ]);
 

@@ -60,7 +60,7 @@ class CategoryController extends Controller
      */
     public function show(string $uuid): JsonResponse
     {
-        $request = (['equipment_category_uuid' => $uuid]);
+        $request = (['ct_equipment_uuid' => $uuid]);
 
         if (!$this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
@@ -88,17 +88,17 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $uuid): JsonResponse
     {
-        $request->merge(['equipment_category_uuid' => $uuid]);
+        $request->merge(['ct_equipment_uuid' => $uuid]);
 
         $validated = Validator::make($request->all(), [
-            'equipment_category_uuid' => 'required|uuid|exists:equipment_categories,equipment_category_uuid',
-            'equipment_category' => [
+            'ct_equipment_uuid' => 'required|uuid|exists:ct_equipments,ct_equipment_uuid',
+            'ct_equipment' => [
                 'required',
                 'string',
                 'min:1',
                 'max:255',
-                Rule::unique('equipment_categories', 'equipment_category')
-                    ->whereNot('equipment_category_uuid', $uuid)
+                Rule::unique('ct_equipments', 'ct_equipment')
+                    ->whereNot('ct_equipment_uuid', $uuid)
                     ->whereNull('deleted_at'),
             ],
             'description' => 'required|string|min:3|max:255',
@@ -121,7 +121,7 @@ class CategoryController extends Controller
      */
     public function destroy(string $uuid): JsonResponse
     {
-        $request = ['equipment_category_uuid' => $uuid];
+        $request = ['ct_equipment_uuid' => $uuid];
 
         if (!$this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
@@ -140,7 +140,7 @@ class CategoryController extends Controller
         $this->service->read();
 
         return Inertia::render('EquipmentCategories', [
-            'equipment_categories' => $this->service->response['data'],
+            'ct_equipments' => $this->service->response['data'],
         ]);
     }
 
@@ -153,7 +153,7 @@ class CategoryController extends Controller
     private function commonValidation(array $request): bool
     {
         $validated = Validator::make($request, [
-            'equipment_category_uuid' => 'required|uuid|exists:equipment_categories,equipment_category_uuid',
+            'ct_equipment_uuid' => 'required|uuid|exists:ct_equipments,ct_equipment_uuid',
         ]);
 
         if ($validated->fails()) {

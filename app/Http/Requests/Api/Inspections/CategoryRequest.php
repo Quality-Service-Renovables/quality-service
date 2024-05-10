@@ -14,7 +14,7 @@ class CategoryRequest extends CustomRequest
     public function rules(): array
     {
         return [
-            'inspection_category' => 'required|string|min:10|max:255|unique:inspection_categories,inspection_category,NULL,inspection_category_uuid,deleted_at,NULL',
+            'ct_inspection' => 'required|string|min:10|max:255|unique:ct_inspections,ct_inspection,NULL,ct_inspection_uuid,deleted_at,NULL',
             'description' => 'required|string|min:10|max:255',
             'active' => 'required|bool',
         ];

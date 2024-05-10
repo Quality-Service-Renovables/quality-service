@@ -9,7 +9,7 @@ use App\Models\Equipments\Category;
 
 test('create', function () {
     $response = $this->post('/api/equipment/categories', [
-        'equipment_category' => 'Unit Test Equipment Category',
+        'ct_equipment' => 'Unit Test Equipment Category',
         'description' => 'unit test equipment category',
         'active' => true,
     ]);
@@ -23,17 +23,17 @@ test('read', function () {
 
 test('update', function () {
 
-    $category = Category::where('equipment_category_code', 'unit_test_equipment_category')->first();
+    $category = Category::where('ct_equipment_code', 'unit_test_ct_equipment')->first();
 
     $this->assertNotNull($category, 'Equipment category not found');
 
-    $response = $this->put('/api/equipment/categories/'.$category->equipment_category_uuid, [
-        'equipment_category' => 'Unit Test Equipment Category',
+    $response = $this->put('/api/equipment/categories/'.$category->ct_equipment_uuid, [
+        'ct_equipment' => 'Unit Test Equipment Category',
         'description' => 'field_updated',
         'active' => true,
     ]);
 
-    $categoryUpdated = Category::where('equipment_category_uuid', $category->equipment_category_uuid)->first();
+    $categoryUpdated = Category::where('ct_equipment_uuid', $category->ct_equipment_uuid)->first();
 
     $this->assertNotNull($categoryUpdated, 'Equipment category updated not found');
 
@@ -45,13 +45,13 @@ test('update', function () {
 
 test('delete', function () {
     // Obtiene equipo por uuid
-    $category = Category::where('equipment_category_code', 'unit_test_equipment_category')->first();
+    $category = Category::where('ct_equipment_code', 'unit_test_ct_equipment')->first();
     // Verifica si el equipo existe
-    $this->assertSame('unit_test_equipment_category', $category->equipment_category_code, 'Equipment category not found');
+    $this->assertSame('unit_test_ct_equipment', $category->ct_equipment_code, 'Equipment category not found');
     // Ejecuta proceso de eliminación
-    $response = $this->delete('/api/equipment/categories/'.$category->equipment_category_uuid);
+    $response = $this->delete('/api/equipment/categories/'.$category->ct_equipment_uuid);
     // Recupero registro de equipo eliminado
-    $categoryDeleted = Category::where('equipment_category_code', 'unit_test_equipment_category')->first();
+    $categoryDeleted = Category::where('ct_equipment_code', 'unit_test_ct_equipment')->first();
     // Prueba de equipo eliminado
     $this->assertNull($categoryDeleted, 'Equipment category cant be deleted');
     // Prueba código de estado

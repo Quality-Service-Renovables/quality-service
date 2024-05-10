@@ -10,17 +10,17 @@ class Category extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'inspection_categories';
-    protected $primaryKey = 'inspection_category_id';
+    protected $table = 'ct_inspections';
+    protected $primaryKey = 'ct_inspection_id';
     protected $fillable = [
-        'inspection_category_uuid',
-        'inspection_category',
-        'inspection_category_code',
+        'ct_inspection_uuid',
+        'ct_inspection',
+        'ct_inspection_code',
         'description',
         'is_default',
         'dependency',
         'level',
         'active',
     ];
-    protected $hidden = ['inspection_category_id'];
+    protected $hidden = ['ct_inspection_id'];
 }

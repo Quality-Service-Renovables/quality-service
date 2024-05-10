@@ -14,17 +14,17 @@ class Category extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'equipment_categories';
+    protected $table = 'ct_equipments';
 
-    protected $primaryKey = 'equipment_category_id';
+    protected $primaryKey = 'ct_equipment_id';
 
     protected $fillable = [
-        'equipment_category_uuid',
-        'equipment_category',
-        'equipment_category_code',
+        'ct_equipment_uuid',
+        'ct_equipment',
+        'ct_equipment_code',
         'description',
         'active',
     ];
 
-    protected $hidden = ['equipment_category_id'];
+    protected $hidden = ['ct_equipment_id'];
 }

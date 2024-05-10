@@ -15,7 +15,7 @@ class CategoryRequest extends CustomRequest
     public function rules(): array
     {
         return [
-            'failure_category' => [
+            'ct_failure' => [
                 'required',
                 'string',
                 'min:1',

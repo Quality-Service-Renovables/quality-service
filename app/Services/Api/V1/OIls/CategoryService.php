@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 
 class CategoryService extends Service implements ServiceInterface
 {
-    public string $nameService = 'oil_category_service';
+    public string $nameService = 'ct_oil_service';
 
     /**
      * Create a new oil category
@@ -30,8 +30,8 @@ class CategoryService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Agrega atributos a la solicitud
-            $request->merge(['oil_category_uuid' => Str::uuid()->toString()]);
-            $request->merge(['oil_category_code' => create_slug($request->get('oil_category'))]);
+            $request->merge(['ct_oil_uuid' => Str::uuid()->toString()]);
+            $request->merge(['ct_oil_code' => create_slug($request->get('ct_oil'))]);
             // Registra los atributos de la solicitud a la categoria
             $category = Category::create($request->all());
             // Define parámetros de respuesta
@@ -70,15 +70,15 @@ class CategoryService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Asignación de identificadores
-            $slug = create_slug($request->get('oil_category'));
+            $slug = create_slug($request->get('ct_oil'));
             // Agregar elementos al request
             $request->merge([
-                'oil_category_code' => $slug,
+                'ct_oil_code' => $slug,
             ]);
             // Actualiza categoria de aceite
-            Category::where('oil_category_uuid', $request->oil_category_uuid)->update($request->all());
+            Category::where('ct_oil_uuid', $request->ct_oil_uuid)->update($request->all());
             // Recupera categoria de aceite actualizada
-            $equipmentUpdated = Category::where('oil_category_uuid', $request->oil_category_uuid)->first();
+            $equipmentUpdated = Category::where('ct_oil_uuid', $request->ct_oil_uuid)->first();
             $this->response['data'] = $equipmentUpdated;
             // Registro de log
             $this->logService->create(
@@ -124,7 +124,7 @@ class CategoryService extends Service implements ServiceInterface
     {
         try {
             // Aplica soft delete a la categoria del aceite especificado por medio de su uuid
-            Category::where('oil_category_uuid', $uuid)->update(['deleted_at' => now()]);
+            Category::where('ct_oil_uuid', $uuid)->update(['deleted_at' => now()]);
             // Registro en Log
             $this->logService->create(
                 $this->nameService,
@@ -155,7 +155,7 @@ class CategoryService extends Service implements ServiceInterface
     {
         try {
             // Obtiene categoria del aceite
-            $category = Category::where('oil_category_uuid', $uuid)->first();
+            $category = Category::where('ct_oil_uuid', $uuid)->first();
             $this->response['message'] = $category === null ? 'Category not found' : 'Category found';
             $this->response['data'] = $category ?? [];
         } catch (Exception $exception) {

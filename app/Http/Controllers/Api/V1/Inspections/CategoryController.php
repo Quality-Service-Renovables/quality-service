@@ -81,17 +81,17 @@ class CategoryController extends Controller
     public function update(Request $request, string $uuid): JsonResponse
     {
         // Add elements to request
-        $request->request->add(['inspection_category_uuid' => $uuid]);
+        $request->request->add(['ct_inspection_uuid' => $uuid]);
         // Validate
         $validation = Validator::make($request->all(), [
-            'inspection_category_uuid' => 'required|string|min:10|max:255|exists:inspection_categories,inspection_category_uuid',
-            'inspection_category' => [
+            'ct_inspection_uuid' => 'required|string|min:10|max:255|exists:ct_inspections,ct_inspection_uuid',
+            'ct_inspection' => [
                 'required',
                 'string',
                 'min:1',
                 'max:255',
-                Rule::unique('inspection_categories', 'inspection_category')
-                    ->whereNot('inspection_category_uuid', $uuid)
+                Rule::unique('ct_inspections', 'ct_inspection')
+                    ->whereNot('ct_inspection_uuid', $uuid)
                     ->whereNull('deleted_at'),
             ],
             'description' => 'required|string|min:10|max:255',
@@ -139,10 +139,10 @@ class CategoryController extends Controller
      */
     private function commonValidation(string $uuid): bool
     {
-        $request = ['inspection_category_uuid' => $uuid];
+        $request = ['ct_inspection_uuid' => $uuid];
 
         $validated = Validator::make($request, [
-            'inspection_category_uuid' => 'required|string|min:10|max:255|exists:inspection_categories,inspection_category_uuid',
+            'ct_inspection_uuid' => 'required|string|min:10|max:255|exists:ct_inspections,ct_inspection_uuid',
         ]);
 
         if ($validated->fails()) {

@@ -16,7 +16,7 @@ class EquipmentRequest extends CustomRequest
     {
         return [
             //'equipment' => 'required|string',
-            //'equipment_category_code' => 'required|string|exists:equipment_categories,equipment_category_code',
+            //'ct_equipment_code' => 'required|string|exists:ct_equipments,ct_equipment_code',
             'equipment' => [
                 'required',
                 'string',
@@ -35,12 +35,12 @@ class EquipmentRequest extends CustomRequest
             'description' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
             'manual' => 'nullable|file|mimes:pdf|max:2048',
-            'equipment_category_code' => [
+            'ct_equipment_code' => [
                 'required',
                 'string',
                 'min:1',
                 'max:255',
-                Rule::exists('equipment_categories', 'equipment_category_code')
+                Rule::exists('ct_equipments', 'ct_equipment_code')
                     ->whereNull('deleted_at'),
             ],
             'trademark_code' => 'required|string|exists:trademarks,trademark_code',

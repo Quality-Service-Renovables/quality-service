@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('equipment_failures', static function (Blueprint $table) {
             $table->id('equipment_failure_id');
             $table->uuid('equipment_failure_uuid');
-            $table->unsignedBigInteger('equipment_id');
-            $table->unsignedBigInteger('failure_id');
+            $table->unsignedBigInteger('equipment_id')->comment('Relation with equipment');
+            $table->unsignedBigInteger('failure_id')->comment('Relation with failure');
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();

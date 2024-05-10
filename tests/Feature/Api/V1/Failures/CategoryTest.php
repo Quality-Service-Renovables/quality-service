@@ -9,7 +9,7 @@ use App\Models\Failures\Category;
 
 test('create', function () {
     $response = $this->post('/api/failure/categories', [
-        'failure_category' => 'Unit Test Failure Category',
+        'ct_failure' => 'Unit Test Failure Category',
         'description' => 'Unit Test Failure Category',
         'active' => true
     ]);
@@ -23,17 +23,17 @@ test('read', function () {
 });
 
 test('update', function () {
-    $failure= Category::where('failure_category_code', 'unit_test_failure_category')->first();
+    $failure= Category::where('ct_failure_code', 'unit_test_ct_failure')->first();
 
     $this->assertNotNull($failure, 'Failure category not found');
 
-    $response = $this->put('/api/failure/categories/'.$failure->failure_category_uuid, [
-        'failure_category' => 'Unit Test Failure Category',
+    $response = $this->put('/api/failure/categories/'.$failure->ct_failure_uuid, [
+        'ct_failure' => 'Unit Test Failure Category',
         'description' => 'field_updated',
         'active' => true
     ]);
 
-    $failureUpdated = Category::where('failure_category_uuid', $failure->failure_category_uuid)->first();
+    $failureUpdated = Category::where('ct_failure_uuid', $failure->ct_failure_uuid)->first();
 
     $this->assertNotNull($failureUpdated, 'Failure category updated not found');
 
@@ -45,14 +45,14 @@ test('update', function () {
 
 test('delete', function () {
     // Obtiene la falla por uuid
-    $failure= Category::where('failure_category_code', 'unit_test_failure_category')->first();
+    $failure= Category::where('ct_failure_code', 'unit_test_ct_failure')->first();
 
     // Verifica si la falla existe
-    $this->assertSame('unit_test_failure_category', $failure->failure_category_code, 'Failure category not found');
+    $this->assertSame('unit_test_ct_failure', $failure->ct_failure_code, 'Failure category not found');
     // Ejecuta proceso de eliminación
-    $response = $this->delete('/api/failure/categories/'.$failure->failure_category_uuid);
+    $response = $this->delete('/api/failure/categories/'.$failure->ct_failure_uuid);
     // Recupero registro de falla eliminada
-    $failureDeleted = Category::where('failure_category_code', 'unit_test_failure_category')->first();
+    $failureDeleted = Category::where('ct_failure_code', 'unit_test_ct_failure')->first();
     // Prueba de falla eliminada
     $this->assertNull($failureDeleted, 'Failure category cant be deleted');
     // Prueba código de estado

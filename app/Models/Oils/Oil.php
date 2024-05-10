@@ -21,7 +21,7 @@ class Oil extends Model
         'oil_code',
         'viscosity',
         'description',
-        'oil_category_id',
+        'ct_oil_id',
         'trademark_id',
         'trademark_model_id',
         'production_date',
@@ -29,7 +29,7 @@ class Oil extends Model
         'quantity',
         'active',
     ];
-    protected $hidden = ['oil_id', 'oil_category_id', 'trademark_id', 'trademark_model_id'];
+    protected $hidden = ['oil_id', 'ct_oil_id', 'trademark_id', 'trademark_model_id'];
 
     /**
      * Get the category that this model belongs to.
@@ -38,7 +38,7 @@ class Oil extends Model
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'oil_category_id');
+        return $this->belongsTo(Category::class, 'ct_oil_id');
     }
 
     public function trademark(): BelongsTo

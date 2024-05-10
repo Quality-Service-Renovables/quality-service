@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 
 class CategoryService extends Service
 {
-    public string $nameService = 'inspection_category';
+    public string $nameService = 'ct_inspection';
 
     /**
      * Create a new category.
@@ -31,12 +31,12 @@ class CategoryService extends Service
             DB::beginTransaction();
             // Complement Request
             $data = $request->all();
-            $data['inspection_category_uuid'] = Str::uuid()->toString();
-            $data['inspection_category_code'] = create_slug($request->get('inspection_category'));
+            $data['ct_inspection_uuid'] = Str::uuid()->toString();
+            $data['ct_inspection_code'] = create_slug($request->get('ct_inspection'));
             // Create Register
             Category::create($data);
             // Recover Register
-            $category = Category::where('inspection_category_uuid', $data['inspection_category_uuid'])->first();
+            $category = Category::where('ct_inspection_uuid', $data['ct_inspection_uuid'])->first();
             // Set Response
             $this->statusCode = 201;
             $this->response['message'] = 'Category created';
@@ -98,12 +98,12 @@ class CategoryService extends Service
             DB::beginTransaction();
             // Complement Request
             $data = $request->all();
-            $data['inspection_category_code'] = create_slug($request->get('inspection_category'));
+            $data['ct_inspection_code'] = create_slug($request->get('ct_inspection'));
             // Create Register
-            Category::where('inspection_category_uuid', $request->inspection_category_uuid)
+            Category::where('ct_inspection_uuid', $request->ct_inspection_uuid)
                 ->update($data);
             // Recover Register
-            $category = Category::where('inspection_category_uuid', $request->inspection_category_uuid)->first();
+            $category = Category::where('ct_inspection_uuid', $request->ct_inspection_uuid)->first();
             // Set Response
             $this->response['message'] = 'Category updated';
             $this->response['data'] = $category;
@@ -143,7 +143,7 @@ class CategoryService extends Service
             // Control Transaction
             DB::beginTransaction();
             // Delete Register
-            Category::where('inspection_category_uuid', $uuid)
+            Category::where('ct_inspection_uuid', $uuid)
                 ->update([
                     'deleted_at' => now(),
                 ]);
@@ -176,7 +176,7 @@ class CategoryService extends Service
         try {
             $this->response['message'] = 'Show Category';
             $category = Category::where([
-                'inspection_category_uuid' => $uuid,
+                'ct_inspection_uuid' => $uuid,
                 'deleted_at' => null,
             ])->first();
             $this->response['data'] = compact('category');

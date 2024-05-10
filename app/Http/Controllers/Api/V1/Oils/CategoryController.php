@@ -84,11 +84,11 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $uuid): JsonResponse
     {
-        $request->merge(['oil_category_uuid' => $uuid]);
+        $request->merge(['ct_oil_uuid' => $uuid]);
 
         $validated = Validator::make($request->all(), [
-            'oil_category_uuid' => 'required|uuid|exists:oil_categories,oil_category_uuid',
-            'oil_category' => 'required|string',
+            'ct_oil_uuid' => 'required|uuid|exists:ct_oils,ct_oil_uuid',
+            'ct_oil' => 'required|string',
             'description' => 'required|string|min:12|max:255',
             'active' => 'required|bool',
         ]);
@@ -138,10 +138,10 @@ class CategoryController extends Controller
      */
     private function commonValidation(string $uuid): bool
     {
-        $request = ['oil_category_uuid' => $uuid];
+        $request = ['ct_oil_uuid' => $uuid];
 
         $validated = Validator::make($request, [
-            'oil_category_uuid' => 'required|uuid|exists:oil_categories,oil_category_uuid',
+            'ct_oil_uuid' => 'required|uuid|exists:ct_oils,ct_oil_uuid',
         ]);
 
         if ($validated->fails()) {

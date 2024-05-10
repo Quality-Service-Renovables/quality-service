@@ -17,9 +17,9 @@ class OilsCategoriesSeeder extends Seeder
     public function run(): void
     {
         foreach ($this->getOils() as $oilCategory) {
-            Category::updateOrCreate(['oil_category_code' => $oilCategory['oil_category_code']], [
-                'oil_category_uuid' => $oilCategory['oil_category_uuid'],
-                'oil_category' => $oilCategory['oil_category'],
+            Category::updateOrCreate(['ct_oil_code' => $oilCategory['ct_oil_code']], [
+                'ct_oil_uuid' => $oilCategory['ct_oil_uuid'],
+                'ct_oil' => $oilCategory['ct_oil'],
                 'description' => $oilCategory['description'],
             ]);
         }
@@ -34,57 +34,57 @@ class OilsCategoriesSeeder extends Seeder
     {
         return [
             [
-                'oil_category_uuid' => Str::uuid()->toString(),
-                'oil_category' => 'Motor',
-                'oil_category_code' => 'motor',
+                'ct_oil_uuid' => Str::uuid()->toString(),
+                'ct_oil' => 'Motor',
+                'ct_oil_code' => 'motor',
                 'description' => 'Aceite de Motor',
             ],
             [
-                'oil_category_uuid' => Str::uuid()->toString(),
-                'oil_category' => 'Hidráulico',
-                'oil_category_code' => 'hidraulico',
+                'ct_oil_uuid' => Str::uuid()->toString(),
+                'ct_oil' => 'Hidráulico',
+                'ct_oil_code' => 'hidraulico',
                 'description' => 'Aceite Hidráulico',
             ],
             [
-                'oil_category_uuid' => Str::uuid()->toString(),
-                'oil_category' => 'Sintético',
-                'oil_category_code' => 'sintetico',
+                'ct_oil_uuid' => Str::uuid()->toString(),
+                'ct_oil' => 'Sintético',
+                'ct_oil_code' => 'sintetico',
                 'description' => 'Aceite Sintético',
             ],
             [
-                'oil_category_uuid' => Str::uuid()->toString(),
-                'oil_category' => 'Transmisión',
-                'oil_category_code' => 'transmision',
+                'ct_oil_uuid' => Str::uuid()->toString(),
+                'ct_oil' => 'Transmisión',
+                'ct_oil_code' => 'transmision',
                 'description' => 'Aceite para Transmisión',
             ],
             [
-                'oil_category_uuid' => Str::uuid()->toString(),
-                'oil_category' => 'Vegetal',
-                'oil_category_code' => 'vegetal',
+                'ct_oil_uuid' => Str::uuid()->toString(),
+                'ct_oil' => 'Vegetal',
+                'ct_oil_code' => 'vegetal',
                 'description' => 'Aceite Vegetal',
             ],
             [
-                'oil_category_uuid' => Str::uuid()->toString(),
-                'oil_category' => 'Diesel',
-                'oil_category_code' => 'diesel',
+                'ct_oil_uuid' => Str::uuid()->toString(),
+                'ct_oil' => 'Diesel',
+                'ct_oil_code' => 'diesel',
                 'description' => 'Aceite para Motores Diesel',
             ],
             [
-                'oil_category_uuid' => Str::uuid()->toString(),
-                'oil_category' => '2 Tiempos',
-                'oil_category_code' => '2tiempos',
+                'ct_oil_uuid' => Str::uuid()->toString(),
+                'ct_oil' => '2 Tiempos',
+                'ct_oil_code' => '2tiempos',
                 'description' => 'Aceite para Motores de 2 Tiempos',
             ],
             [
-                'oil_category_uuid' => Str::uuid()->toString(),
-                'oil_category' => 'Compresor',
-                'oil_category_code' => 'compresor',
+                'ct_oil_uuid' => Str::uuid()->toString(),
+                'ct_oil' => 'Compresor',
+                'ct_oil_code' => 'compresor',
                 'description' => 'Aceite para Compresores',
             ],
             [
-                'oil_category_uuid' => Str::uuid()->toString(),
-                'oil_category' => 'Engranajes',
-                'oil_category_code' => 'engranajes',
+                'ct_oil_uuid' => Str::uuid()->toString(),
+                'ct_oil' => 'Engranajes',
+                'ct_oil_code' => 'engranajes',
                 'description' => 'Aceite para Engranajes',
             ],
         ];

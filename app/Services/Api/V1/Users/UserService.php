@@ -184,7 +184,7 @@ class UserService extends Service implements ServiceInterface
         // Agrupa el contenido a insertar en la solicitud
         $extraAttributes = [
             'equipment_code' => create_slug($request->equipment),
-            'equipment_category_id' => $categoryId,
+            'ct_equipment_id' => $categoryId,
             'trademark_id' => $trademarkId,
             'trademark_model_id' => $trademarkModelId,
             'status_id' => $statusId,
@@ -229,7 +229,7 @@ class UserService extends Service implements ServiceInterface
         }
 
         return $request->except([
-            'equipment_category_code',
+            'ct_equipment_code',
             'trademark_code',
             'trademark_model_code',
             'status_code',

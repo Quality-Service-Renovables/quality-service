@@ -21,10 +21,10 @@ class Failure extends Model
         'failure_code',
         'description',
         'active',
-        'failure_category_id',
+        'ct_failure_id',
     ];
 
-    protected $hidden = ['failure_category_id'];
+    protected $hidden = ['ct_failure_id'];
     /**
      * Get the category that this model belongs to.
      *
@@ -32,6 +32,6 @@ class Failure extends Model
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'failure_category_id', 'failure_category_id');
+        return $this->belongsTo(Category::class, 'ct_failure_id', 'ct_failure_id');
     }
 }

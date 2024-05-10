@@ -96,12 +96,12 @@ class PermissionController extends Controller
             'location' => 'nullable|string|max:255',
             'manual' => 'nullable|string',
             'manual_storage' => 'nullable|file|mimes:pdf|max:2048',
-            'equipment_category_code' => [
+            'ct_equipment_code' => [
                 'required',
                 'string',
                 'min:1',
                 'max:255',
-                Rule::exists('equipment_categories', 'equipment_category_code')
+                Rule::exists('ct_equipments', 'ct_equipment_code')
                     ->whereNull('deleted_at'),
             ],
             'trademark_code' => 'required|string|exists:trademarks,trademark_code',

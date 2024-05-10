@@ -197,14 +197,14 @@ class EquipmentService extends Service implements ServiceInterface
     private function setRequest(Request $request): array
     {
         // Obtiene identificadores de códigos
-        $categoryId = Category::where('equipment_category_code', $request->get('equipment_category_code'))->first()->equipment_category_id;
+        $categoryId = Category::where('ct_equipment_code', $request->get('ct_equipment_code'))->first()->ct_equipment_id;
         $trademarkId = Trademark::where('trademark_code', $request->get('trademark_code'))->first()->trademark_id;
         $trademarkModelId = TrademarkModel::where('trademark_model_code', $request->get('trademark_model_code'))->first()->trademark_model_id;
         $statusId = Status::where('status_code', $request->get('status_code'))->first()->status_id;
         // Agrupa el contenido a insertar en la solicitud
         $extraAttributes = [
             'equipment_code' => create_slug($request->equipment),
-            'equipment_category_id' => $categoryId,
+            'ct_equipment_id' => $categoryId,
             'trademark_id' => $trademarkId,
             'trademark_model_id' => $trademarkModelId,
             'status_id' => $statusId,
@@ -259,7 +259,7 @@ class EquipmentService extends Service implements ServiceInterface
         }
 
         return $request->except([
-            'equipment_category_code',
+            'ct_equipment_code',
             'trademark_code',
             'trademark_model_code',
             'status_code',

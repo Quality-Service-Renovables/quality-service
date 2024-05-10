@@ -100,7 +100,7 @@ class OilController extends Controller
             ],
             'viscosity' => 'nullable|string',
             'description' => 'required|string',
-            'oil_category_code' => 'required|string|exists:oil_categories,oil_category_code',
+            'ct_oil_code' => 'required|string|exists:ct_oils,ct_oil_code',
             'trademark_code' => 'required|string|exists:trademarks,trademark_code',
             'trademark_model_code' => 'required|string|exists:trademark_models,trademark_model_code',
             'production_date' => 'nullable|date',

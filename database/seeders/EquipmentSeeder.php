@@ -49,11 +49,11 @@ class EquipmentSeeder extends Seeder
                 'description' => 'Turbina 07',
                 'location' => 'Espinal, OAX.',
                 'manual' => null,
-                'equipment_category_id' => $equipmentCategories
-                    ->where('equipment_category_code',
+                'ct_equipment_id' => $equipmentCategories
+                    ->where('ct_equipment_code',
                         '=',
                         'multiplicador'
-                    )->first()->equipment_category_id,
+                    )->first()->ct_equipment_id,
                 'trademark_id' => $trademarks
                     ->where('trademark_code',
                         '=',
@@ -85,11 +85,11 @@ class EquipmentSeeder extends Seeder
                 'description' => 'Turbina A1.1',
                 'location' => 'Santo Domingo Ingenio, OAX.',
                 'manual' => null,
-                'equipment_category_id' => $equipmentCategories
-                    ->where('equipment_category_code',
+                'ct_equipment_id' => $equipmentCategories
+                    ->where('ct_equipment_code',
                         '=',
                         'multiplicador'
-                    )->first()->equipment_category_id,
+                    )->first()->ct_equipment_id,
                 'trademark_id' => $trademarks
                     ->where('trademark_code',
                         '=',

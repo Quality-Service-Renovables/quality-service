@@ -32,7 +32,7 @@ use Illuminate\Support\Str;
  */
 class CategoryService extends Service implements ServiceInterface
 {
-    public string $nameService = 'equipment_category_service';
+    public string $nameService = 'ct_equipment_service';
 
     /**
      * Create a new equipment category
@@ -46,8 +46,8 @@ class CategoryService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Agrega atributos a la solicitud
-            $request->merge(['equipment_category_uuid' => Str::uuid()->toString()]);
-            $request->merge(['equipment_category_code' => create_slug($request->get('equipment_category'))]);
+            $request->merge(['ct_equipment_uuid' => Str::uuid()->toString()]);
+            $request->merge(['ct_equipment_code' => create_slug($request->get('ct_equipment'))]);
             // Registra los atributos de la solicitud a la categoria
             $category = Category::create($request->all());
             // Define parámetros de respuesta
@@ -85,15 +85,15 @@ class CategoryService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Asignación de identificadores
-            $slug = create_slug($request->get('equipment_category'));
+            $slug = create_slug($request->get('ct_equipment'));
             // Agregar elementos al request
             $request->merge([
-                'equipment_category_code' => $slug,
+                'ct_equipment_code' => $slug,
             ]);
             // Actualiza categoria de equipo
-            Category::where('equipment_category_uuid', $request->equipment_category_uuid)->update($request->all());
+            Category::where('ct_equipment_uuid', $request->ct_equipment_uuid)->update($request->all());
             // Recupera categoria de equipo Actualizado
-            $categoryUpdated = Category::where('equipment_category_uuid', $request->equipment_category_uuid)->first();
+            $categoryUpdated = Category::where('ct_equipment_uuid', $request->ct_equipment_uuid)->first();
             $this->response['message'] = trans('api.updated');
             $this->response['data'] = $categoryUpdated;
             // Registro de log
@@ -139,7 +139,7 @@ class CategoryService extends Service implements ServiceInterface
     {
         try {
             // Aplica soft delete a la categoria del equipo especificado por medio de su uuid
-            Category::where('equipment_category_uuid', $uuid)->update(['deleted_at' => now()]);
+            Category::where('ct_equipment_uuid', $uuid)->update(['deleted_at' => now()]);
             // Registro en Log
             $this->logService->create(
                 $this->nameService,
@@ -168,7 +168,7 @@ class CategoryService extends Service implements ServiceInterface
     {
         try {
             // Obtiene categoria del equipo
-            $category = Category::where('equipment_category_uuid', $uuid)->first();
+            $category = Category::where('ct_equipment_uuid', $uuid)->first();
             $this->response['message'] = $category === null
                 ? trans('api.not_found')
                 : trans('api.show');

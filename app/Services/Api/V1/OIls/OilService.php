@@ -36,11 +36,11 @@ class OilService extends Service implements ServiceInterface
             $request->merge(['oil_uuid' => Str::uuid()->toString()]);
             $request->merge(['oil_code' => create_slug($request->oil)]);
             // Obtiene los identificadores de los códigos
-            $request->merge(['oil_category_id' => Category::where('oil_category_code', $request->oil_category_code)->first()->oil_category_id]);
+            $request->merge(['ct_oil_id' => Category::where('ct_oil_code', $request->ct_oil_code)->first()->ct_oil_id]);
             $request->merge(['trademark_id' => Trademark::where('trademark_code', $request->trademark_code)->first()->trademark_id]);
             $request->merge(['trademark_model_id' => TrademarkModel::where('trademark_model_code', $request->trademark_model_code)->first()->trademark_model_id]);
             // Registra los atributos de la solicitud a la categoria
-            $category = Oil::create($request->except(['oil_category_code', 'trademark_code', 'trademark_model_code']));
+            $category = Oil::create($request->except(['ct_oil_code', 'trademark_code', 'trademark_model_code']));
             // Define parámetros de respuesta
             $this->statusCode = 201;
             $this->response['data'] = $category;
@@ -79,11 +79,11 @@ class OilService extends Service implements ServiceInterface
             // Agrega atributos a la solicitud
             $request->merge(['oil_code' => create_slug($request->oil)]);
             // Obtiene los identificadores de los códigos
-            $request->merge(['oil_category_id' => Category::where('oil_category_code', $request->oil_category_code)->first()->oil_category_id]);
+            $request->merge(['ct_oil_id' => Category::where('ct_oil_code', $request->ct_oil_code)->first()->ct_oil_id]);
             $request->merge(['trademark_id' => Trademark::where('trademark_code', $request->trademark_code)->first()->trademark_id]);
             $request->merge(['trademark_model_id' => TrademarkModel::where('trademark_model_code', $request->trademark_model_code)->first()->trademark_model_id]);
             // Actualiza aceite
-            Oil::where('oil_uuid', $request->oil_uuid)->update($request->except(['oil_category_code', 'trademark_code', 'trademark_model_code']));
+            Oil::where('oil_uuid', $request->oil_uuid)->update($request->except(['ct_oil_code', 'trademark_code', 'trademark_model_code']));
             // Recupera aceite actualizado
             $oilUpdated = Oil::where('oil_uuid', $request->oil_uuid)->first();
             $this->response['data'] = $oilUpdated;

@@ -37,21 +37,21 @@ class Equipment extends Model
         'description',
         'location',
         'manual',
-        'equipment_category_id',
+        'ct_equipment_id',
         'trademark_id',
         'trademark_model_id',
         'status_id',
         'active',
     ];
 
-    protected $hidden = ['equipment_id', 'equipment_category_id', 'trademark_id', 'trademark_model_id', 'status_id'];
+    protected $hidden = ['equipment_id', 'ct_equipment_id', 'trademark_id', 'trademark_model_id', 'status_id'];
 
     /**
      * Get the category that this equipment belongs to.
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'equipment_category_id', 'equipment_category_id');
+        return $this->belongsTo(Category::class, 'ct_equipment_id', 'ct_equipment_id');
     }
 
     /**

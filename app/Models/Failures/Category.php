@@ -9,16 +9,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Category extends Model
 {
     use HasFactory, softDeletes;
-    protected $table = 'failure_categories';
-    protected $primaryKey = 'failure_category_id';
+    protected $table = 'ct_failures';
+    protected $primaryKey = 'ct_failure_id';
     protected $fillable = [
-        'failure_category_uuid',
-        'failure_category',
-        'failure_category_code',
+        'ct_failure_uuid',
+        'ct_failure',
+        'ct_failure_code',
         'is_default',
         'dependency',
         'level',
         'active',
     ];
-    protected $hidden = ['failure_category_id'];
+    protected $hidden = ['ct_failure_id'];
 }

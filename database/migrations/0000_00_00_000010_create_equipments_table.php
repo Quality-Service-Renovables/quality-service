@@ -26,22 +26,22 @@ return new class extends Migration
             $table->longText('description')->nullable()->comment('General comments');
             $table->longText('location')->nullable()->comment('Describe equipment location');
             $table->string('manual')->nullable();
-            $table->unsignedBigInteger('equipment_category_id');
-            $table->unsignedBigInteger('trademark_id');
-            $table->unsignedBigInteger('trademark_model_id');
-            $table->unsignedBigInteger('status_id');
+            $table->unsignedBigInteger('ct_equipment_id')->comment('Relation with equipment category');
+            $table->unsignedBigInteger('trademark_id')->comment('Relation with trademark');
+            $table->unsignedBigInteger('trademark_model_id')->comment('Relation with trademark model');
+            $table->unsignedBigInteger('status_id')->comment('Relation with equipment status');
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();
             //INDEX
             $table->index('equipment_uuid');
-            $table->index('equipment_category_id');
+            $table->index('ct_equipment_id');
             $table->index('trademark_id');
             $table->index('trademark_model_id');
             $table->index('status_id');
             //FOREIGN KEYS
-            $table->foreign('equipment_category_id', 'fk_equipment_category')
-                ->references('equipment_category_id')->on('equipment_categories');
+            $table->foreign('ct_equipment_id', 'fk_ct_equipment')
+                ->references('ct_equipment_id')->on('ct_equipments');
             $table->foreign('trademark_id', 'fk_equipment_trademark')
                 ->references('trademark_id')->on('trademarks');
             $table->foreign('trademark_model_id', 'fk_equipment_trademark_model')

@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('equipment_categories', static function (Blueprint $table) {
-            $table->id('equipment_category_id');
-            $table->uuid('equipment_category_uuid');
-            $table->string('equipment_category');
-            $table->string('equipment_category_code');
+        Schema::create('ct_equipments', static function (Blueprint $table) {
+            $table->id('ct_equipment_id');
+            $table->uuid('ct_equipment_uuid');
+            $table->string('ct_equipment');
+            $table->string('ct_equipment_code');
             $table->string('description')->nullable();
             $table->boolean('is_default')->default(false);
             $table->boolean('active')->default(true);
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('equipment_categories');
+        Schema::dropIfExists('ct_equipments');
     }
 };

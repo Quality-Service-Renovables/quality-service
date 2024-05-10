@@ -15,12 +15,12 @@ class CategoryRequest extends CustomRequest
     public function rules(): array
     {
         return [
-            'equipment_category' => [
+            'ct_equipment' => [
                 'required',
                 'string',
                 'min:1',
                 'max:255',
-                Rule::unique('equipment_categories', 'equipment_category')
+                Rule::unique('ct_equipments', 'ct_equipment')
                     ->whereNull('deleted_at'),
             ],
             'description' => 'required|string|min:3|max:255',

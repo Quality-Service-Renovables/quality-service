@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('failure_categories', static function (Blueprint $table) {
-            $table->id('failure_category_id');
-            $table->uuid('failure_category_uuid');
-            $table->string('failure_category');
-            $table->string('failure_category_code');
-            $table->longText('description')->nullable()->comment('Failure description');
+        Schema::create('ct_oils', static function (Blueprint $table) {
+            $table->id('ct_oil_id');
+            $table->uuid('ct_oil_uuid');
+            $table->string('ct_oil');
+            $table->string('ct_oil_code');
+            $table->longText('description')->nullable()->comment('Oil Category Description');
             $table->boolean('is_default')->default(false);
             $table->unsignedBigInteger('dependency')->nullable();
             $table->bigInteger('level')->default(1);
@@ -24,7 +24,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             //INDEX
-            $table->index(['failure_category_uuid']);
+            $table->index('ct_oil_uuid');
+            $table->index('dependency');
         });
     }
 
@@ -33,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('failures_categories');
+        Schema::dropIfExists('ct_oils');
     }
 };

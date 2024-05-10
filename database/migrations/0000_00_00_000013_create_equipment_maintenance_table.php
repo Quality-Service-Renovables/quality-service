@@ -14,23 +14,23 @@ return new class extends Migration
         Schema::create('equipment_maintenance', static function (Blueprint $table) {
             $table->id('equipment_maintenance_id');
             $table->uuid('equipment_maintenance_uuid');
-            $table->unsignedBigInteger('equipment_id');
             $table->longText('description');
             $table->boolean('maintenance_apply')->default(true);
             $table->dateTime('maintenance_date');
             $table->dateTime('maintenance_scheduled');
-            $table->unsignedBigInteger('maintenance_category_id');
+            $table->unsignedBigInteger('equipment_id')->comment('Relation with equipment');
+            $table->unsignedBigInteger('ct_maintenance_id')->comment('Relation with maintenance category');
             $table->timestamps();
             $table->softDeletes();
             //INDEX
             $table->index('equipment_maintenance_uuid');
             $table->index('equipment_id');
-            $table->index('maintenance_category_id');
+            $table->index('ct_maintenance_id');
             //FOREIGN KEYS
-            $table->foreign('equipment_id', 'fk_equipment_maintenance_equipment')
+            $table->foreign('equipment_id', 'fk_maintenance_equipment')
                 ->references('equipment_id')->on('equipments');
-            $table->foreign('maintenance_category_id', 'fk_equipment_maintenance_maintenance_categories')
-                ->references('maintenance_category_id')->on('maintenance_categories');
+            $table->foreign('ct_maintenance_id', 'fk_maintenance_category')
+                ->references('ct_maintenance_id')->on('ct_maintenances');
         });
     }
 

@@ -48,7 +48,7 @@ class CategoryController extends Controller
      */
     public function show(string $uuid): JsonResponse
     {
-        $request = (['failure_category_uuid' => $uuid]);
+        $request = (['ct_failure_uuid' => $uuid]);
 
         if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
@@ -69,10 +69,10 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $uuid): JsonResponse
     {
-        $request->merge(['failure_category_uuid' => $uuid]);
+        $request->merge(['ct_failure_uuid' => $uuid]);
         $validated = Validator::make($request->all(), [
-            'failure_category_uuid' => 'required|uuid|exists:failure_categories,failure_category_uuid',
-            'failure_category' => [
+            'ct_failure_uuid' => 'required|uuid|exists:ct_failures,ct_failure_uuid',
+            'ct_failure' => [
                 'required',
                 'string',
                 'min:1',
@@ -101,7 +101,7 @@ class CategoryController extends Controller
      */
     public function destroy(string $uuid): JsonResponse
     {
-        $request = ['failure_category_uuid' => $uuid];
+        $request = ['ct_failure_uuid' => $uuid];
 
         if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
@@ -123,7 +123,7 @@ class CategoryController extends Controller
     private function commonValidation(array $request): bool
     {
         $validated = Validator::make($request, [
-            'failure_category_uuid' => 'required|uuid|exists:failure_categories,failure_category_uuid',
+            'ct_failure_uuid' => 'required|uuid|exists:ct_failures,ct_failure_uuid',
         ]);
 
         if ($validated->fails()) {

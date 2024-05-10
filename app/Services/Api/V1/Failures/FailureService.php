@@ -53,11 +53,11 @@ class FailureService extends Service implements ServiceInterface
             $request->merge([
                 'failure_uuid' => Str::uuid()->toString(),
                 'failure_code' => create_slug($request->failure),
-                'failure_category_id' => Category::where('failure_category_code', $request->failure_category_code)
-                ->first()->failure_category_id
+                'ct_failure_id' => Category::where('ct_failure_code', $request->ct_failure_code)
+                ->first()->ct_failure_id
             ]);
             // Registra los atributos de la solicitud de la falla
-            $failure = Failure::create($request->except('failure_category_code'));
+            $failure = Failure::create($request->except('ct_failure_code'));
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
             $this->response['data'] = $failure;
@@ -106,12 +106,12 @@ class FailureService extends Service implements ServiceInterface
             DB::beginTransaction();
             $request->failure_code = create_slug($request->failure);
             $request->merge([
-                'failure_category_id' => Category::where('failure_category_code', $request->failure_category_code)
-                    ->first()->failure_category_id
+                'ct_failure_id' => Category::where('ct_failure_code', $request->ct_failure_code)
+                    ->first()->ct_failure_id
             ]);
             // Actualiza falla
             Failure::where('failure_uuid', $request->failure_uuid)
-                ->update($request->except(['failure_category_code']));
+                ->update($request->except(['ct_failure_code']));
             // Recupera Equipo Actualizado
             $failureUpdated = Failure::where('failure_uuid', $request->failure_uuid)->first();
             $this->response['message'] = trans('api.updated');

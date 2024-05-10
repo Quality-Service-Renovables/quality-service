@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('oil_code');
             $table->string('viscosity')->nullable()->comment('Viscosity');
             $table->string('description')->nullable()->comment('Oil description technical details');
-            $table->unsignedBigInteger('oil_category_id');
+            $table->unsignedBigInteger('ct_oil_id');
             $table->unsignedBigInteger('trademark_id');
             $table->unsignedBigInteger('trademark_model_id');
             $table->date('production_date')->nullable();
@@ -29,12 +29,12 @@ return new class extends Migration
             $table->softDeletes();
             //INDEX
             $table->index('oil_uuid');
-            $table->index('oil_category_id');
+            $table->index('ct_oil_id');
             $table->index('trademark_id');
             $table->index('trademark_model_id');
             //FOREIGN KEYS
-            $table->foreign('oil_category_id', 'fk_oil_category')
-                ->references('oil_category_id')->on('oil_categories');
+            $table->foreign('ct_oil_id', 'fk_ct_oil')
+                ->references('ct_oil_id')->on('ct_oils');
             $table->foreign('trademark_id', 'fk_oil_trademark')
                 ->references('trademark_id')->on('trademarks');
             $table->foreign('trademark_model_id', 'fk_oil_trademark_model')

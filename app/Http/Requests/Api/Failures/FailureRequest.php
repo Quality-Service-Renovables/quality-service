@@ -24,12 +24,12 @@ class FailureRequest extends CustomRequest
                     ->whereNull('deleted_at'),
             ],
             'description' => 'nullable|string|min:10|max:255',
-            'failure_category_code' => [
+            'ct_failure_code' => [
                 'required',
                 'string',
                 'min:1',
                 'max:255',
-                Rule::exists('failure_categories', 'failure_category_code')
+                Rule::exists('ct_failures', 'ct_failure_code')
                     ->whereNull('deleted_at'),
             ],
             'active' => 'required|boolean',

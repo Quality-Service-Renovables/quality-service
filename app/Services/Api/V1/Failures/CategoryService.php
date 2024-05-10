@@ -29,7 +29,7 @@ use Throwable;
 
 class CategoryService extends Service implements ServiceInterface
 {
-    public string $nameService = 'failure_category_service';
+    public string $nameService = 'ct_failure_service';
 
     /**
      * Create a new equipment
@@ -44,8 +44,8 @@ class CategoryService extends Service implements ServiceInterface
             DB::beginTransaction();
             // Agrega atributos a la solicitud
             $request->merge([
-                'failure_category_uuid' => Str::uuid()->toString(),
-                'failure_category_code' => create_slug($request->failure_category)
+                'ct_failure_uuid' => Str::uuid()->toString(),
+                'ct_failure_code' => create_slug($request->ct_failure)
             ]);
             // Registra los atributos de la solicitud a la categoría de la falla
             $failureCategory = Category::create($request->all());
@@ -95,13 +95,13 @@ class CategoryService extends Service implements ServiceInterface
         try {
             // Control de transacciones
             DB::beginTransaction();
-            $request->merge(['failure_category_code' => create_slug($request->failure_category)]);
+            $request->merge(['ct_failure_code' => create_slug($request->ct_failure)]);
             // Actualiza la categoría de falla
-            Category::where('failure_category_uuid', $request->failure_category_uuid)
+            Category::where('ct_failure_uuid', $request->ct_failure_uuid)
                 ->update($request->all());
             // Recupera la categoría de falla actualizada
             $failureCategoryUpdated = Category::where(
-                'failure_category_uuid', $request->failure_category_uuid
+                'ct_failure_uuid', $request->ct_failure_uuid
             )->first();
             $this->response['message'] = trans('api.updated');
             $this->response['data'] = $failureCategoryUpdated;
@@ -134,7 +134,7 @@ class CategoryService extends Service implements ServiceInterface
     {
         try {
             // Aplica soft delete al equipo especificado por medio de su uuid
-            Category::where('failure_category_uuid', $uuid)
+            Category::where('ct_failure_uuid', $uuid)
                 ->update(['deleted_at' => now()]);
             $this->logService->create(
                 $this->nameService,
@@ -162,7 +162,7 @@ class CategoryService extends Service implements ServiceInterface
     {
         try {
             // Obtiene categoria del equipo
-            $failureCategory = Category::where('failure_category_uuid', $uuid)->first();
+            $failureCategory = Category::where('ct_failure_uuid', $uuid)->first();
             $this->response['message'] = $failureCategory === null
                 ? trans('api.not_found')
                 : trans('api.show');

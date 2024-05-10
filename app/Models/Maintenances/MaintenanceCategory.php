@@ -10,12 +10,12 @@ class MaintenanceCategory extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'maintenance_categories';
-    protected $primaryKey = 'maintenance_category_id';
+    protected $table = 'ct_maintenances';
+    protected $primaryKey = 'ct_maintenance_id';
     protected $fillable = [
-        'maintenance_category_uuid',
-        'maintenance_category',
-        'maintenance_category_code',
+        'ct_maintenance_uuid',
+        'ct_maintenance',
+        'ct_maintenance_code',
         'description',
         'is_default',
         'dependency',

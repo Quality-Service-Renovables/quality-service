@@ -12,17 +12,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Category extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $table = 'oil_categories';
-    protected $primaryKey = 'oil_category_id';
+    protected $table = 'ct_oils';
+    protected $primaryKey = 'ct_oil_id';
     protected $fillable = [
-        'oil_category_uuid',
-        'oil_category',
-        'oil_category_code',
+        'ct_oil_uuid',
+        'ct_oil',
+        'ct_oil_code',
         'description',
         'is_default',
         'dependency',
         'level',
         'active',
     ];
-    protected $hidden = ['oil_category_id'];
+    protected $hidden = ['ct_oil_id'];
 }

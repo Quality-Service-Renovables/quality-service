@@ -9,7 +9,7 @@ use App\Models\Oils\Category;
 
 test('create', function () {
     $response = $this->post('/api/oil/categories', [
-        'oil_category' => 'Unit Test Oil Category',
+        'ct_oil' => 'Unit Test Oil Category',
         'description' => 'Unit Test Oil Category',
         'active' => true,
     ]);
@@ -23,17 +23,17 @@ test('read', function () {
 
 test('update', function () {
 
-    $category = Category::where('oil_category_code', 'unit_test_oil_category')->first();
+    $category = Category::where('ct_oil_code', 'unit_test_ct_oil')->first();
 
     $this->assertNotNull($category, 'Oil category not found');
 
-    $response = $this->put('/api/oil/categories/'.$category->oil_category_uuid, [
-        'oil_category' => 'Unit Test Oil Category',
+    $response = $this->put('/api/oil/categories/'.$category->ct_oil_uuid, [
+        'ct_oil' => 'Unit Test Oil Category',
         'description' => 'field_updated',
         'active' => true,
     ]);
 
-    $categoryUpdated = Category::where('oil_category_uuid', $category->oil_category_uuid)->first();
+    $categoryUpdated = Category::where('ct_oil_uuid', $category->ct_oil_uuid)->first();
 
     $this->assertNotNull($categoryUpdated, 'Oil category updated not found');
 
@@ -45,13 +45,13 @@ test('update', function () {
 
 test('delete', function () {
     // Obtiene categoria del aceite por uuid
-    $category = Category::where('oil_category_code', 'unit_test_oil_category')->first();
+    $category = Category::where('ct_oil_code', 'unit_test_ct_oil')->first();
     // Verifica si la categoria del aceite existe
-    $this->assertSame('unit_test_oil_category', $category->oil_category_code, 'Oil category not found');
+    $this->assertSame('unit_test_ct_oil', $category->ct_oil_code, 'Oil category not found');
     // Ejecuta proceso de eliminación
-    $response = $this->delete('/api/oil/categories/'.$category->oil_category_uuid);
+    $response = $this->delete('/api/oil/categories/'.$category->ct_oil_uuid);
     // Recupera registro de la categoria del aceite eliminado
-    $categoryDeleted = Category::where('oil_category_code', 'unit_test_oil_category')->first();
+    $categoryDeleted = Category::where('ct_oil_code', 'unit_test_ct_oil')->first();
     // Prueba de categoria del aceite eliminado
     $this->assertNull($categoryDeleted, 'Oil category cant be deleted');
     // Prueba código de estado
