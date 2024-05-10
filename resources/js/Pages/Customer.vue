@@ -307,23 +307,23 @@ export default {
             })
         },
         save() {
-            let formData = new FormData();
-            formData.append('client', this.editedItem.client);
-            formData.append('logo', this.editedItem.logo);
-            formData.append('legal_name', this.editedItem.legal_name);
-            formData.append('address', this.editedItem.address);
-            formData.append('zip_code', this.editedItem.zip_code);
-            formData.append('phone', this.editedItem.phone);
-            formData.append('phone_office', this.editedItem.phone_office);
-            formData.append('open_time', this.editedItem.open_time);
-            formData.append('close_time', this.editedItem.close_time);
-            formData.append('office_days', this.editedItem.office_days);
-            formData.append('website', this.editedItem.website);
-            formData.append('email', this.editedItem.email);
-            formData.append('active', this.editedItem.active ? 1 : 0);
+            let formData = {
+                client: this.editedItem.client,
+                logo: this.editedItem.logo,
+                legal_name: this.editedItem.legal_name,
+                address: this.editedItem.address,
+                zip_code: this.editedItem.zip_code,
+                phone: this.editedItem.phone,
+                phone_office: this.editedItem.phone_office,
+                open_time: moment(this.editedItem.open_time, 'HH:mm:ss').format('HH:mm'),
+                close_time: moment(this.editedItem.close_time, 'HH:mm:ss').format('HH:mm'),
+                office_days: this.editedItem.office_days,
+                website: this.editedItem.website,
+                email: this.editedItem.email,
+                active: this.editedItem.active ? 1 : 0
+            };
 
             if (this.editedIndex > -1) {
-                Object.assign(this.customers[this.editedIndex], this.editedItem)
                 const putRequest = () => {
                     return axios.put('api/clients/' + this.editedItem.client_uuid, formData);
                 };
