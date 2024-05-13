@@ -51,21 +51,37 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
                                                                 <v-col cols="12">
                                                                     <div class="text-right">
-                                                                        <v-btn v-if="!showCreateCategoryField" density="compact" prepend-icon="mdi-plus" class="mb-1 pr-0 text-none text-primary" variant="plain" @click="showCreateCategoryField = true">Nueva categoría</v-btn>
-                                                                        <v-btn v-if="showCreateCategoryField" density="compact" prepend-icon="mdi-close" class="mb-1 pr-0 text-none text-red" variant="plain" @click="showCreateCategoryField = false">Cancelar</v-btn>
-                                                                        <v-btn v-if="showCreateCategoryField" density="compact" prepend-icon="mdi-content-save-check-outline" class="mb-1 pr-0 text-none text-primary" variant="plain" @click="saveCategory()">Guardar</v-btn>
+                                                                        <v-btn v-if="!showCreateCategoryField"
+                                                                            density="compact" prepend-icon="mdi-plus"
+                                                                            class="mb-1 pr-0 text-none text-primary"
+                                                                            variant="plain"
+                                                                            @click="showCreateCategoryField = true">Nueva
+                                                                            categoría</v-btn>
+                                                                        <v-btn
+                                                                            v-if="showCreateCategoryField && !loading_creating_category"
+                                                                            density="compact" prepend-icon="mdi-close"
+                                                                            class="mb-1 pr-0 text-none text-red"
+                                                                            variant="plain"
+                                                                            @click="showCreateCategoryField = false">Cancelar</v-btn>
+                                                                        <v-btn v-if="showCreateCategoryField"
+                                                                            density="compact"
+                                                                            prepend-icon="mdi-content-save-check-outline"
+                                                                            class="mb-1 pr-0 text-none text-primary"
+                                                                            variant="plain" @click="saveCategory()"
+                                                                            :loading="loading_creating_category"
+                                                                            :disabled="!new_failure_category">Guardar</v-btn>
                                                                     </div>
                                                                     <v-select v-model="editedItem.failure_category_code"
                                                                         :items="failure_categories"
                                                                         item-title="failure_category"
                                                                         item-value="failure_category_code"
-                                                                        label="Categoría" variant="solo"
-                                                                        hide-details v-if="!showCreateCategoryField"></v-select>
+                                                                        label="Categoría" variant="solo" hide-details
+                                                                        v-if="!showCreateCategoryField"></v-select>
                                                                     <v-text-field v-model="new_failure_category"
-                                                                        label="Categoría" variant="solo"
-                                                                        hide-details v-if="showCreateCategoryField">
+                                                                        label="Categoría" variant="solo" hide-details
+                                                                        v-if="showCreateCategoryField">
                                                                     </v-text-field>
-                                                                    
+
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
@@ -81,7 +97,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         <v-btn color="blue-darken-1" variant="text" @click="close">
                                                             Cancelar
                                                         </v-btn>
-                                                        <v-btn color="blue-darken-1" variant="text" @click="save">
+                                                        <v-btn color="blue-darken-1" variant="text" @click="save"
+                                                            :disabled="showCreateCategoryField">
                                                             Guardar
                                                         </v-btn>
                                                     </v-card-actions>
@@ -164,6 +181,7 @@ export default {
         failure_categories: [],
         showCreateCategoryField: false,
         new_failure_category: '',
+        loading_creating_category: false,
     }),
     computed: {
         formTitle() {
@@ -276,6 +294,27 @@ export default {
                 })
                 .catch(error => {
                     toast.error('Error al cargar las categorías de fallas');
+                });
+        },
+        saveCategory() {
+            this.loading_creating_category = true;
+            axios.post('api/failure/categories', {
+                failure_category: this.new_failure_category,
+                active: true
+            })
+                .then(async response => {
+                    let data = response.data.data;
+                    this.loading_creating_category = false;
+                    this.showCreateCategoryField = false;
+                    await this.getfailureCategories();
+                    this.new_failure_category = '';
+                    console.log("failure_category_code: " + data.failure_category_code);
+                    this.editedItem.failure_category_code = data.failure_category_code
+                    toast.success('Categoría creada correctamente');
+                })
+                .catch(error => {
+                    this.loading_creating_category = false;
+                    this.handleErrors(error);
                 });
         },
     },

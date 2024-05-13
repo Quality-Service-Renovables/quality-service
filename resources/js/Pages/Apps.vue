@@ -24,7 +24,7 @@ defineProps({
                         <div class="d-flex align-start flex-wrap">
                             <App path="dashboard" title="Dashboard" icon="mdi-monitor-dashboard"/>
                             <App path="#" title="Proyectos" icon="mdi-folder-text-outline"/>
-                            <App path="" title="Usuarios y permisos" icon="mdi-account-group"/>
+                            <App path="#" title="Usuarios y permisos" icon="mdi-account-group"/>
                             <App path="profile" title="Perfil" icon="mdi-face-man-profile"/>
                         </div>
                     </v-col>
@@ -33,8 +33,8 @@ defineProps({
                         <div class="d-flex align-start flex-wrap">
                             <App path="equipments" title="Equipos" icon="mdi-clipboard-list-outline"/>
                             <App path="equipments-categories" title="Categorias" icon="mdi-list-box-outline"/>
-                            <App path="" title="Clientes" icon="mdi-format-list-checkbox"/>
-                            <App path="" title="Inspecciones" icon="mdi-table-cog"/>
+                            <App path="customers" title="Clientes" icon="mdi-format-list-checkbox"/>
+                            <App path="#" title="Inspecciones" icon="mdi-table-cog"/>
                             <App path="failures" title="Fallas" icon="mdi-playlist-remove"/>
                             <App path="trademarks" title="Marcas" icon="mdi-playlist-star"/>
                             <App path="models" title="Modelos" icon="mdi-format-list-text"/>

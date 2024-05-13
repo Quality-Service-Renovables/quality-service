@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Api\V1\AppsController;
 use App\Http\Controllers\Api\V1\Oils\OilController;
+use App\Http\Controllers\Api\V1\Clients\ClientController;
 use App\Http\Controllers\Api\V1\Failures\FailureController;
 use App\Http\Controllers\Api\V1\Equipments\CategoryController;
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
@@ -43,6 +44,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/oils', [OilController::class, 'component'])->name('oils');
     //Failures
     Route::get('/failures', [FailureController::class, 'component'])->name('failures');
+    //Failures
+    Route::get('/customers', [ClientController::class, 'component'])->name('clients');
 });
 
 require __DIR__.'/auth.php';
