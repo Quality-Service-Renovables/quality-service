@@ -16,17 +16,17 @@ return new class extends Migration
             $table->uuid('trademark_uuid');
             $table->string('trademark');
             $table->string('trademark_code');
-            $table->unsignedBigInteger('trademark_category_id');
+            $table->unsignedBigInteger('ct_trademark_id');
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();
             //INDEX
             $table->index(['trademark_uuid']);
-            $table->index(['trademark_category_id']);
+            $table->index(['ct_trademark_id']);
             //FOREIGN KEYS
-            $table->foreign('trademark_category_id', 'fk_trademark_category')
-                ->references('trademark_category_id')
-                ->on('trademark_categories');
+            $table->foreign('ct_trademark_id', 'fk_ct_trademark')
+                ->references('ct_trademark_id')
+                ->on('ct_trademarks');
         });
     }
 

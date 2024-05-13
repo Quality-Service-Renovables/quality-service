@@ -17,9 +17,9 @@ class TrademarkCategoriesSeeder extends Seeder
     public function run(): void
     {
         foreach ($this->getTrademarks() as $category) {
-            Category::updateOrCreate(['trademark_category_code' => $category['trademark_category_code']], [
-                'trademark_category_uuid' => $category['trademark_category_uuid'],
-                'trademark_category' => $category['trademark_category'],
+            Category::updateOrCreate(['ct_trademark_code' => $category['ct_trademark_code']], [
+                'ct_trademark_uuid' => $category['ct_trademark_uuid'],
+                'ct_trademark' => $category['ct_trademark'],
                 'active' => $category['active'],
             ]);
         }
@@ -34,15 +34,15 @@ class TrademarkCategoriesSeeder extends Seeder
     {
         return [
             [
-                'trademark_category_uuid' => Str::uuid()->toString(),
-                'trademark_category' => 'Equipos',
-                'trademark_category_code' => 'equipos',
+                'ct_trademark_uuid' => Str::uuid()->toString(),
+                'ct_trademark' => 'Equipos',
+                'ct_trademark_code' => 'equipos',
                 'active' => true,
             ],
             [
-                'trademark_category_uuid' => Str::uuid()->toString(),
-                'trademark_category' => 'Aceites',
-                'trademark_category_code' => 'aceites',
+                'ct_trademark_uuid' => Str::uuid()->toString(),
+                'ct_trademark' => 'Aceites',
+                'ct_trademark_code' => 'aceites',
                 'active' => true,
             ],
         ];

@@ -45,8 +45,9 @@ class ClientService extends Service implements ServiceInterface
             // Agrega atributos a la solicitud
             $request->merge(['client_uuid' => Str::uuid()->toString()]);
             $request->merge(['client_code' => create_slug($request->client)]);
+            $this->storeFile($request, 'logo_store', 'logo', 'clients');
             // Registra los atributos de la solicitud al cliente
-            $client = Client::create($request->all());
+            $client = Client::create($request->except(['logo_store']));
             // Define parámetros de respuesta
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
@@ -85,8 +86,13 @@ class ClientService extends Service implements ServiceInterface
             $slug = create_slug($request->get('client'));
             // Agregar elementos al request
             $request->merge(['client_code' => $slug]);
-            // Actualiza Equipo
-            Client::where('client_uuid', $request->client_uuid)->update($request->all());
+            // Si se detecta que se requiere actualizar el logo, se procede a guardar el nuevo logo.
+            if ($request->logo_store) {
+                $this->storeFile($request, 'logo_store', 'logo', 'clients');
+            }
+            // Actualiza el cliente
+            Client::where('client_uuid', $request->client_uuid)
+                ->update($request->except(['logo_store']));
             // Recupera Cliente Actualizado
             $clientUpdated = Client::where('client_uuid', $request->client_uuid)->first();
             $this->response['data'] = $clientUpdated;

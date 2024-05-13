@@ -29,7 +29,7 @@ return new class extends Migration
             //FOREIGN KEYS
             $table->foreign('equipment_id', 'fk_maintenance_equipment')
                 ->references('equipment_id')->on('equipments');
-            $table->foreign('ct_maintenance_id', 'fk_maintenance_category')
+            $table->foreign('ct_maintenance_id', 'fk_ct_maintenance')
                 ->references('ct_maintenance_id')->on('ct_maintenances');
         });
     }

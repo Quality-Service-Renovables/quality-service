@@ -7,15 +7,15 @@
 namespace App\Services\Api\V1\Inspections;
 
 use App\Models\Inspections\Category;
+use App\Models\Inspections\Inspection;
 use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Throwable;
 
-class CategoryService extends Service
+class InspectionService extends Service
 {
-    public string $nameService = 'ct_inspection';
+    public string $nameService = 'inspection';
 
     /**
      * Create a new category.
@@ -29,22 +29,24 @@ class CategoryService extends Service
         try {
             // Control Transaction
             DB::beginTransaction();
+            $category = Category::where('ct_inspection_code', $request->ct_inspection_code)->first();
+            // Establecer atributos para registro
             $request->merge([
-                'ct_inspection_uuid' => Str::uuid()->toString(),
-                'ct_inspection_code' => create_slug($request->ct_inspection),
+                'inspection_uuid' => Str::uuid()->toString(),
+                'ct_inspection_id' => $category->ct_inspection_id,
             ]);
             // Create Register
-            $category = Category::create($request->all());
+            $inspection = Inspection::create($request->all());
             // Set Response
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
-            $this->response['data'] = $category;
+            $this->response['data'] = $inspection;
             // Set Log
             $this->logService->create(
                 $this->nameService,
                 $request->all(),
                 $this->response,
-                'Create new category inspection',
+                'Create new inspection',
                 $request->user()->id,
             );
             // Commit Transaction
@@ -70,7 +72,7 @@ class CategoryService extends Service
     {
         try {
             $this->response['message'] = trans('api.readed');
-            $this->response['data'] = ['categories' => Category::all()];
+            $this->response['data'] = ['inspections' => Inspection::with(['category'])->get()];
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);
@@ -95,10 +97,10 @@ class CategoryService extends Service
             DB::beginTransaction();
 
             $request->merge([
-                'ct_inspection_code' => create_slug($request->get('ct_inspection')),
+                'inspection_code' => create_slug($request->inspection),
             ]);
             // Update Register
-            $category = Category::where('ct_inspection_uuid', $request->ct_inspection_uuid)->first();
+            $category = Inspection::where('inspection_uuid', $request->inspection_uuid)->first();
             // Si el $category existe (no es nulo), actualízalo con todos los datos de la solicitud.
             $category?->update($request->all());
             // Set Response
@@ -109,7 +111,7 @@ class CategoryService extends Service
                 $this->nameService,
                 $request->all(),
                 $this->response,
-                'Update new category inspection',
+                'Update new inspection',
                 $request->user()->id,
             );
             // Commit Transaction
@@ -139,7 +141,7 @@ class CategoryService extends Service
             // Control Transaction
             DB::beginTransaction();
             // Delete Register
-            Category::where('ct_inspection_uuid', $uuid)
+            Inspection::where('inspection_uuid', $uuid)
                 ->update([
                     'deleted_at' => now(),
                 ]);
@@ -170,11 +172,11 @@ class CategoryService extends Service
     {
         try {
             $this->response['message'] = trans('api.show');
-            $category = Category::where([
-                'ct_inspection_uuid' => $uuid,
+            $category = Inspection::where([
+                'inspection_uuid' => $uuid,
                 'deleted_at' => null,
             ])->first();
-            $this->response['data'] = $category;
+            $this->response['data'] = compact('category');
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);

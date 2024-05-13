@@ -20,15 +20,15 @@ class Trademark extends Model
         'trademark_uuid',
         'trademark',
         'trademark_code',
-        'trademark_category_id',
+        'ct_trademark_id',
         'active',
     ];
 
-    protected $hidden = ['trademark_id', 'trademark_category_id'];
+    protected $hidden = ['trademark_id', 'ct_trademark_id'];
 
     public function category(): HasOne
     {
-        return $this->hasOne(Category::class, 'trademark_category_id', 'trademark_category_id');
+        return $this->hasOne(Category::class, 'ct_trademark_id', 'ct_trademark_id');
     }
     /**
      * Retrieve all models associated with this trademark.

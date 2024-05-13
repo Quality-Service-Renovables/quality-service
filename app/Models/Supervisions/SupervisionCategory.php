@@ -10,12 +10,12 @@ class SupervisionCategory extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'service_categories';
-    protected $primaryKey = 'service_category_id';
+    protected $table = 'ct_services';
+    protected $primaryKey = 'ct_service_id';
     protected $fillable = [
-        'service_category_uuid',
-        'service_category',
-        'service_category_code',
+        'ct_service_uuid',
+        'ct_service',
+        'ct_service_code',
         'description',
         'is_default',
         'dependency',

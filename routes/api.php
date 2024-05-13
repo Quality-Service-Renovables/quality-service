@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Clients\ClientController;
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
 use App\Http\Controllers\Api\V1\Failures\FailureController;
 use App\Http\Controllers\Api\V1\Inspections\CategoryController;
+use App\Http\Controllers\Api\V1\Inspections\InspectionController;
 use App\Http\Controllers\Api\V1\Oils\OilController;
 use App\Http\Controllers\Api\V1\AuthGuards\PermissionController;
 use App\Http\Controllers\Api\V1\AuthGuards\RoleController;
@@ -41,7 +42,9 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //**************************** END USER *****************************
     //######################################################### CLIENTS ##########################################################
     Route::resource('clients', ClientController::class);
+    Route::post('clients/update/{uuid}', [ClientController::class, 'update'])->name('clients.update');
     //######################################################## INSPECTIONS #########################################################
+    Route::resource('inspections', InspectionController::class);
     Route::resource('inspection/categories', CategoryController::class);
     //######################################################### EQUIPMENTS ##########################################################
     Route::resource('equipments', EquipmentController::class);

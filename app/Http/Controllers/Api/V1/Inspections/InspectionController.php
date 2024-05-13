@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api\V1\Inspections;
 
 use App\Http\Controllers\Controller;
-use App\Services\Api\V1\Inspections\Inspectionservice;
+use App\Http\Requests\Api\Inspections\InspectionRequest;
+use App\Services\Api\V1\Inspections\InspectionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class InspectionController extends Controller
 {
@@ -13,63 +16,135 @@ class InspectionController extends Controller
 
     public function __construct()
     {
-        $this->service = new Inspectionservice();
+        $this->service = new InspectionService();
     }
 
     /**
      * Display a listing of the resource.
+     *
+     * @throws \Exception
      */
     public function index(): JsonResponse
     {
         $this->service->read();
-        return response()->json($this->service->response, $this->service->status_code);
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request): JsonResponse
+    public function create(InspectionRequest $request): JsonResponse
     {
-        return response()->json($this->service->response, $this->service->status_code);
+        $this->service->create($request);
+
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(InspectionRequest $request): JsonResponse
     {
-        return response()->json($this->service->response, $this->service->status_code);
+        $this->service->create($request);
+
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
      * Display the specified resource.
+     *
+     * @throws \Exception
      */
-    public function show(string $id): JsonResponse
+    public function show(string $uuid): JsonResponse
     {
-        return response()->json($this->service->response, $this->service->status_code);
-    }
+        $request = (['inspection_uuid' => $uuid]);
 
+        if (! $this->commonValidation($request)) {
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->show($uuid);
+
+        return response()->json($this->service->response, $this->service->statusCode);
+    }
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id): JsonResponse
+    public function edit(string $uuid): JsonResponse
     {
-        return response()->json($this->service->response, $this->service->status_code);
+        $this->service->response['message'] = 'Api edit request not available: '.$uuid;
+
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * @throws \Exception
      */
-    public function update(Request $request, string $id): JsonResponse
+    public function update(Request $request, string $uuid): JsonResponse
     {
-        return response()->json($this->service->response, $this->service->status_code);
+        $request->merge(['inspection_uuid' => $uuid]);
+        $validated = Validator::make($request->all(), [
+            'inspection_uuid' => 'required|uuid|exists:inspections,inspection_uuid',
+            'resume' => 'required|string',
+            'conclusion' => 'required|string',
+            'recomendations' => 'nullable|string',
+            'ct_inspection_code' => [
+                'required',
+                'string',
+                'min:1',
+                'max:255',
+                Rule::exists('ct_inspections', 'ct_inspection_code')
+                    ->whereNot('ct_inspection_uuid', $uuid)
+                    ->whereNull('deleted_at'),
+            ],
+        ]);
+
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->update($request);
+
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id): JsonResponse
+    public function destroy(string $uuid): JsonResponse
     {
-        return response()->json($this->service->response, $this->service->status_code);
+        $request = ['inspection_uuid' => $uuid];
+
+        if (! $this->commonValidation($request)) {
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->delete($uuid);
+
+        return response()->json($this->service->response, $this->service->statusCode);
+    }
+
+    /**
+     * Perform common validation for the request data.
+     *
+     *
+     * @return bool Returns true if validation passes, false otherwise.
+     */
+    private function commonValidation(array $request): bool
+    {
+        $validated = Validator::make($request, [
+            'inspection_uuid' => 'required|uuid|exists:inspections,inspection_uuid',
+        ]);
+
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+
+            return false;
+        }
+
+        return true;
     }
 }

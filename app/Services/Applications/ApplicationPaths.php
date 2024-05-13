@@ -36,6 +36,9 @@ trait ApplicationPaths
                 'documents' => 'docs/equipments',
                 'diagrams' => 'img/equipments/diagrams',
             ],
+            'clients' => [
+                'logos' => 'img/clients/logos',
+            ],
         ];
         return json_decode(json_encode($paths, JSON_THROW_ON_ERROR), false, 512, JSON_THROW_ON_ERROR);
     }

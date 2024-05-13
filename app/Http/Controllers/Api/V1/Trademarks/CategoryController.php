@@ -70,7 +70,7 @@ class CategoryController extends Controller
      */
     public function show(string $uuid): JsonResponse
     {
-        $request = (['trademark_category_uuid' => $uuid]);
+        $request = (['ct_trademark_uuid' => $uuid]);
 
         if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
@@ -86,17 +86,17 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $uuid): JsonResponse
     {
-        $request->merge(['trademark_category_uuid' => $uuid]);
+        $request->merge(['ct_trademark_uuid' => $uuid]);
 
         $validated = Validator::make($request->all(), [
-            'trademark_category_uuid' => 'required|uuid|exists:trademark_categories,trademark_category_uuid',
-            'trademark_category' => [
+            'ct_trademark_uuid' => 'required|uuid|exists:ct_trademarks,ct_trademark_uuid',
+            'ct_trademark' => [
                 'required',
                 'string',
                 'min:1',
                 'max:255',
-                Rule::unique('trademark_categories', 'trademark_category')
-                    ->whereNot('trademark_category_uuid', $uuid)
+                Rule::unique('ct_trademarks', 'ct_trademark')
+                    ->whereNot('ct_trademark_uuid', $uuid)
                     ->whereNull('deleted_at'),
             ],
             'active' => 'required|boolean',
@@ -117,7 +117,7 @@ class CategoryController extends Controller
      */
     public function destroy(string $uuid): JsonResponse
     {
-        $request = ['trademark_category_uuid' => $uuid];
+        $request = ['ct_trademark_uuid' => $uuid];
 
         if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
@@ -149,7 +149,7 @@ class CategoryController extends Controller
     private function commonValidation(array $request): bool
     {
         $validated = Validator::make($request, [
-            'trademark_category_uuid' => 'required|uuid|exists:trademark_categories,trademark_category_uuid',
+            'ct_trademark_uuid' => 'required|uuid|exists:ct_trademarks,ct_trademark_uuid',
         ]);
 
         if ($validated->fails()) {

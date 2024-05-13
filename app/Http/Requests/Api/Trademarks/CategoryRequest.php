@@ -15,12 +15,12 @@ class CategoryRequest extends CustomRequest
     public function rules(): array
     {
         return [
-            'trademark_category' => [
+            'ct_trademark' => [
                 'required',
                 'string',
                 'min:1',
                 'max:255',
-                Rule::unique('trademark_categories', 'trademark_category')
+                Rule::unique('ct_trademarks', 'ct_trademark')
                     ->whereNull('deleted_at'),
             ],
         ];

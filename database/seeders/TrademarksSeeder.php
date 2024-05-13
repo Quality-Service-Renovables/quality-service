@@ -24,7 +24,7 @@ class TrademarksSeeder extends Seeder
                 'trademark_uuid' => $trademark['trademark_uuid'],
                 'trademark' => $trademark['trademark'],
                 'trademark_code' => $trademark['trademark_code'],
-                'trademark_category_id' => $trademark['trademark_category_id'],
+                'ct_trademark_id' => $trademark['ct_trademark_id'],
                 'active' => $trademark['active'],
             ]);
             foreach ($trademark['models'] as $model) {
@@ -47,14 +47,14 @@ class TrademarksSeeder extends Seeder
 
     private function getEquipmentsTrademarks(): array
     {
-        $equipmentCategory = Category::where('trademark_category_code', 'equipos')->first()->trademark_category_id;
+        $equipmentCategory = Category::where('ct_trademark_code', 'equipos')->first()->ct_trademark_id;
 
         return [
             [
                 'trademark_uuid' => Str::uuid()->toString(),
                 'trademark' => 'Marca Genérica',
                 'trademark_code' => 'generic_equipment',
-                'trademark_category_id' => $equipmentCategory,
+                'ct_trademark_id' => $equipmentCategory,
                 'active' => true,
                 'models' => [
                     [
@@ -67,7 +67,7 @@ class TrademarksSeeder extends Seeder
                 'trademark_uuid' => Str::uuid()->toString(),
                 'trademark' => 'Winergy',
                 'trademark_code' => 'winergy',
-                'trademark_category_id' => $equipmentCategory,
+                'ct_trademark_id' => $equipmentCategory,
                 'active' => true,
                 'models' => [],
             ],
@@ -75,7 +75,7 @@ class TrademarksSeeder extends Seeder
                 'trademark_uuid' => Str::uuid()->toString(),
                 'trademark' => 'Gamesa',
                 'trademark_code' => 'gamesa',
-                'trademark_category_id' => $equipmentCategory,
+                'ct_trademark_id' => $equipmentCategory,
                 'active' => true,
                 'models' => [
                     [
@@ -88,7 +88,7 @@ class TrademarksSeeder extends Seeder
                 'trademark_uuid' => Str::uuid()->toString(),
                 'trademark' => 'Indar',
                 'trademark_code' => 'indar',
-                'trademark_category_id' => $equipmentCategory,
+                'ct_trademark_id' => $equipmentCategory,
                 'active' => true,
                 'models' => [
                     [
@@ -102,14 +102,14 @@ class TrademarksSeeder extends Seeder
 
     private function getOilTrademarks(): array
     {
-        $oilCategory = Category::where('trademark_category_code', 'aceites')->first()->trademark_category_id;
+        $oilCategory = Category::where('ct_trademark_code', 'aceites')->first()->ct_trademark_id;
 
         return [
             [
                 'trademark_uuid' => Str::uuid()->toString(),
                 'trademark' => 'Aceite Genérico',
                 'trademark_code' => 'generic_oil',
-                'trademark_category_id' => $oilCategory,
+                'ct_trademark_id' => $oilCategory,
                 'active' => true,
                 'models' => [
                     [
@@ -122,7 +122,7 @@ class TrademarksSeeder extends Seeder
                 'trademark_uuid' => Str::uuid()->toString(),
                 'trademark' => 'Castrol',
                 'trademark_code' => 'castrol',
-                'trademark_category_id' => $oilCategory,
+                'ct_trademark_id' => $oilCategory,
                 'active' => true,
                 'models' => [],
             ],
@@ -130,7 +130,7 @@ class TrademarksSeeder extends Seeder
                 'trademark_uuid' => Str::uuid()->toString(),
                 'trademark' => 'Mobil',
                 'trademark_code' => 'mobil',
-                'trademark_category_id' => $oilCategory,
+                'ct_trademark_id' => $oilCategory,
                 'active' => true,
                 'models' => [],
             ],
@@ -138,7 +138,7 @@ class TrademarksSeeder extends Seeder
                 'trademark_uuid' => Str::uuid()->toString(),
                 'trademark' => 'Shell',
                 'trademark_code' => 'shell',
-                'trademark_category_id' => $oilCategory,
+                'ct_trademark_id' => $oilCategory,
                 'active' => true,
                 'models' => [],
             ],
@@ -146,7 +146,7 @@ class TrademarksSeeder extends Seeder
                 'trademark_uuid' => Str::uuid()->toString(),
                 'trademark' => 'Valvoline',
                 'trademark_code' => 'valvoline',
-                'trademark_category_id' => $oilCategory,
+                'ct_trademark_id' => $oilCategory,
                 'active' => true,
                 'models' => [],
             ],

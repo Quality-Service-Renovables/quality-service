@@ -285,7 +285,6 @@ class EquipmentService extends Service implements ServiceInterface
         if ($request->$newField) {
             $this->purgeFile($request->$newField);
         }
-
         // Eliminar atributo
         $request->offsetUnset($newField);
         // Guardar imagen o manual y obtener ruta

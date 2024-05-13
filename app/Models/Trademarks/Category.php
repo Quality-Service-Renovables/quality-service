@@ -20,15 +20,15 @@ class Category extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'trademark_categories';
-    protected $primaryKey = 'trademark_category_id';
+    protected $table = 'ct_trademarks';
+    protected $primaryKey = 'ct_trademark_id';
     protected $fillable = [
-        'trademark_category_uuid',
-        'trademark_category',
-        'trademark_category_code',
+        'ct_trademark_uuid',
+        'ct_trademark',
+        'ct_trademark_code',
         'active',
     ];
-    protected $hidden = ['trademark_category_id'];
+    protected $hidden = ['ct_trademark_id'];
 
     /**
      * Get the trademarks associated with the application.
@@ -37,6 +37,6 @@ class Category extends Model
      */
     public function trademarks(): HasMany
     {
-        return $this->hasMany(Trademark::class, 'trademark_category_id', 'trademark_category_id');
+        return $this->hasMany(Trademark::class, 'ct_trademark_id', 'ct_trademark_id');
     }
 }

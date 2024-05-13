@@ -37,8 +37,8 @@ class TrademarkService extends Service implements ServiceInterface
             $request->merge(['trademark_code' => create_slug($request->trademark)]);
             // Obtiene identificador de la categoria de la marca
             $request->merge([
-                'trademark_category_id' => Category::where('trademark_category_code', $request->trademark_category_code)
-                    ->first()->trademark_category_id,
+                'ct_trademark_id' => Category::where('ct_trademark_code', $request->ct_trademark_code)
+                    ->first()->ct_trademark_id,
             ]);
             // Registra los atributos de la solicitud a la marca
             $trademark = Trademark::create($request->all());
@@ -94,12 +94,12 @@ class TrademarkService extends Service implements ServiceInterface
             $request->merge(['trademark_code' => create_slug($request->trademark)]);
             // Obtiene identificador de categoria de la marca
             $request->merge([
-                'trademark_category_id' => Category::where('trademark_category_code', $request->trademark_category_code)
-                    ->first()->trademark_category_id,
+                'ct_trademark_id' => Category::where('ct_trademark_code', $request->ct_trademark_code)
+                    ->first()->ct_trademark_id,
             ]);
             // Actualiza marca
             Trademark::where('trademark_uuid', $request->trademark_uuid)
-                ->update($request->except(['trademark_category_code']));
+                ->update($request->except(['ct_trademark_code']));
             // Recupera marca actualizada
             $trademarkUpdated = Trademark::with(['category'])
                 ->where('trademark_uuid', $request->trademark_uuid)->first();

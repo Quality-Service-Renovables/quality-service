@@ -16,7 +16,7 @@ class ServiceCategoriesSeeder extends Seeder
     public function run(): void
     {
         foreach ($this->getCategories() as $category) {
-            ServiceCategory::updateOrCreate(['service_category_code' => $category['service_category_code']], $category);
+            ServiceCategory::updateOrCreate(['ct_service_code' => $category['ct_service_code']], $category);
         }
     }
 
@@ -29,36 +29,36 @@ class ServiceCategoriesSeeder extends Seeder
     {
         return [
             [
-                'service_category_uuid' => Str::uuid()->toString(),
-                'service_category' => 'Operación y Mantenimiento',
-                'service_category_code' => 'mantenimiento',
+                'ct_service_uuid' => Str::uuid()->toString(),
+                'ct_service' => 'Operación y Mantenimiento',
+                'ct_service_code' => 'mantenimiento',
                 'description' => 'Operación y Mantenimiento',
                 'is_default' => true,
                 'dependency' => null,
                 'active' => true,
             ],
             [
-                'service_category_uuid' => Str::uuid()->toString(),
-                'service_category' => 'Reparaciones',
-                'service_category_code' => 'reparacion',
+                'ct_service_uuid' => Str::uuid()->toString(),
+                'ct_service' => 'Reparaciones',
+                'ct_service_code' => 'reparacion',
                 'description' => 'Reparaciones',
                 'is_default' => true,
                 'dependency' => null,
                 'active' => true,
             ],
             [
-                'service_category_uuid' => Str::uuid()->toString(),
-                'service_category' => 'Inspecciones',
-                'service_category_code' => 'inspeccion',
+                'ct_service_uuid' => Str::uuid()->toString(),
+                'ct_service' => 'Inspecciones',
+                'ct_service_code' => 'inspeccion',
                 'description' => 'Inspecciones',
                 'is_default' => true,
                 'dependency' => null,
                 'active' => true,
             ],
             [
-                'service_category_uuid' => Str::uuid()->toString(),
-                'service_category' => 'Supervisión',
-                'service_category_code' => 'supervision',
+                'ct_service_uuid' => Str::uuid()->toString(),
+                'ct_service' => 'Supervisión',
+                'ct_service_code' => 'supervision',
                 'description' => 'Supervisión',
                 'is_default' => true,
                 'dependency' => null,

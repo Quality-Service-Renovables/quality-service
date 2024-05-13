@@ -27,7 +27,7 @@ use Throwable;
 
 class CategoryService extends Service implements ServiceInterface
 {
-    public string $nameService = 'trademark_categories_service';
+    public string $nameService = 'ct_trademarks_service';
 
     /**
      * Create a new trademark category
@@ -41,8 +41,8 @@ class CategoryService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Agrega atributos a la solicitud
-            $request->merge(['trademark_category_uuid' => Str::uuid()->toString()]);
-            $request->merge(['trademark_category_code' => create_slug($request->trademark_category)]);
+            $request->merge(['ct_trademark_uuid' => Str::uuid()->toString()]);
+            $request->merge(['ct_trademark_code' => create_slug($request->ct_trademark)]);
             // Registra los atributos de la solicitud a la categoria
             $category = Category::create($request->all());
             // Define parámetros de respuesta
@@ -94,12 +94,12 @@ class CategoryService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Asignación de identificadores
-            $request->merge(['trademark_category_code' => create_slug($request->trademark_category)]);
+            $request->merge(['ct_trademark_code' => create_slug($request->ct_trademark)]);
             // Actualiza categoria de marca
-            Category::where('trademark_category_uuid', $request->trademark_category_uuid)
+            Category::where('ct_trademark_uuid', $request->ct_trademark_uuid)
                 ->update($request->all());
             // Recupera categoria de marca actualizada
-            $categoryUpdated = Category::where('trademark_category_uuid', $request->trademark_category_uuid)->first();
+            $categoryUpdated = Category::where('ct_trademark_uuid', $request->ct_trademark_uuid)->first();
             $this->response['message'] = trans('api.updated');
             $this->response['data'] = $categoryUpdated;
             // Registro de log
@@ -131,7 +131,7 @@ class CategoryService extends Service implements ServiceInterface
     {
         try {
             // Aplica soft delete a la categoria especificada por medio de su uuid
-            Category::where('trademark_category_uuid', $uuid)->update(['deleted_at' => now()]);
+            Category::where('ct_trademark_uuid', $uuid)->update(['deleted_at' => now()]);
             // Registro en Log
             $this->logService->create(
                 $this->nameService,
@@ -160,7 +160,7 @@ class CategoryService extends Service implements ServiceInterface
     {
         try {
             // Obtiene categoria de la marca
-            $category = Category::where('trademark_category_uuid', $uuid)->first();
+            $category = Category::where('ct_trademark_uuid', $uuid)->first();
             $this->response['message'] = $category === null ? trans('api.not_found') : trans('api.show');
             $this->response['data'] = $category ?? [];
         } catch (Throwable $exceptions) {

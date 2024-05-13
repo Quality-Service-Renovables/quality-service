@@ -9,7 +9,7 @@ use App\Models\Trademarks\Category;
 
 test('create', function () {
     $response = $this->post('/api/trademark/categories', [
-        'trademark_category' => 'Unit Test Trademark Category',
+        'ct_trademark' => 'Unit Test Trademark Category',
     ]);
 
     $jsonResponse = json_decode($response->content(), true, 512, JSON_THROW_ON_ERROR);
@@ -28,16 +28,16 @@ test('read', function () {
 
 test('update', function () {
 
-    $category = Category::where('trademark_category_code', 'unit_test_trademark_category')->first();
+    $category = Category::where('ct_trademark_code', 'unit_test_ct_trademark')->first();
 
     $this->assertNotNull($category, 'Trademark category not found');
 
-    $response = $this->put('/api/trademark/categories/'.$category->trademark_category_uuid, [
-        'trademark_category' => 'Unit Test Trademark Category',
+    $response = $this->put('/api/trademark/categories/'.$category->ct_trademark_uuid, [
+        'ct_trademark' => 'Unit Test Trademark Category',
         'active' => false,
     ]);
 
-    $categoryUpdated = Category::where('trademark_category_uuid', $category->trademark_category_uuid)->first();
+    $categoryUpdated = Category::where('ct_trademark_uuid', $category->ct_trademark_uuid)->first();
 
     $this->assertNotNull($categoryUpdated, 'Trademark category updated not found');
 
@@ -53,13 +53,13 @@ test('update', function () {
 
 test('delete', function () {
     // Obtiene la marca por uuid
-    $trademark = Category::where('trademark_category_code', 'unit_test_trademark_category')->first();
+    $trademark = Category::where('ct_trademark_code', 'unit_test_ct_trademark')->first();
     // Verifica si la marca existe
-    $this->assertSame('unit_test_trademark_category', $trademark->trademark_category_code, 'Trademark not found');
+    $this->assertSame('unit_test_ct_trademark', $trademark->ct_trademark_code, 'Trademark not found');
     // Ejecuta proceso de eliminación
-    $response = $this->delete('/api/trademark/categories/'.$trademark->trademark_category_uuid);
+    $response = $this->delete('/api/trademark/categories/'.$trademark->ct_trademark_uuid);
     // Recupera registro de marca
-    $trademarkDeleted = Category::where('trademark_category_code', 'unit_test_trademark_category')->first();
+    $trademarkDeleted = Category::where('ct_trademark_code', 'unit_test_ct_trademark')->first();
     // Prueba de marca eliminada
     $this->assertNull($trademarkDeleted, 'Trademark category cant be deleted');
 

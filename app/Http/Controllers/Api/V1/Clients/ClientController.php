@@ -98,7 +98,8 @@ class ClientController extends Controller
                     ->whereNot('client_uuid', $request->client_uuid)
                     ->whereNull('deleted_at'),
             ],
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo' => 'nullable|string',
+            'logo_store' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'legal_name' => 'nullable|string',
             'address' => 'nullable|string',
             'zipcode' => 'nullable|string',

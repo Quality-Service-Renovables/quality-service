@@ -10,12 +10,12 @@ class FixCategory extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'fix_categories';
-    protected $primaryKey = 'fix_category_id';
+    protected $table = 'ct_fixs';
+    protected $primaryKey = 'ct_fix_id';
     protected $fillable = [
-        'fix_category_uuid',
-        'fix_category',
-        'fix_category_code',
+        'ct_fix_uuid',
+        'ct_fix',
+        'ct_fix_code',
         'description',
         'is_default',
         'dependency',
