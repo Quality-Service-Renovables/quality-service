@@ -17,7 +17,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                     <v-card>
                         <v-row>
                             <v-col cols="12" sm="12">
-                                <v-data-table :headers="headers" :items="equipment_categories" fixed-header
+                                <v-data-table :headers="headers" :items="ct_equipments" fixed-header
                                     :search="search">
                                     <template v-slot:item.active="{ value }">
                                         <v-icon :color="getColor(value)">mdi-circle-slice-8</v-icon>
@@ -45,7 +45,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                             <v-row>
                                                                 <v-col cols="12">
                                                                     <v-text-field
-                                                                        v-model="editedItem.equipment_category"
+                                                                        v-model="editedItem.ct_equipment"
                                                                         label="Nombre" variant="solo"
                                                                         hide-details></v-text-field>
                                                                 </v-col>
@@ -83,7 +83,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         <v-btn color="blue-darken-1" variant="text"
                                                             @click="closeDelete">Cancel</v-btn>
                                                         <v-btn color="blue-darken-1" variant="text"
-                                                            @click="deleteItemConfirm(editedItem.equipment_category_uuid)">Si,
+                                                            @click="deleteItemConfirm(editedItem.ct_equipment_uuid)">Si,
                                                             eliminar</v-btn>
                                                         <v-spacer></v-spacer>
                                                     </v-card-actions>
@@ -120,7 +120,7 @@ export default {
         Toaster,
     },
     props: {
-        equipment_categories: {
+        ct_equipments: {
             type: Array,
             required: true
         }
@@ -130,21 +130,21 @@ export default {
         dialog: false,
         dialogDelete: false,
         headers: [
-            { title: 'Categoria', key: 'equipment_category' },
+            { title: 'Categoria', key: 'ct_equipment' },
             { title: 'Descripción', key: 'description' },
             { title: 'Estado', key: 'active' },
             { title: 'Actions', key: 'actions', sortable: false }
         ],
         editedIndex: -1,
         editedItem: {
-            equipment_category_uuid: '',
-            equipment_category: '',
+            ct_equipment_uuid: '',
+            ct_equipment: '',
             description: '',
             active: false,
         },
         defaultItem: {
-            equipment_category_uuid: '',
-            equipment_category: '',
+            ct_equipment_uuid: '',
+            ct_equipment: '',
             description: '',
             active: false
         },
@@ -164,18 +164,18 @@ export default {
     },
     methods: {
         editItem(item) {
-            this.editedIndex = this.equipment_categories.indexOf(item)
+            this.editedIndex = this.ct_equipments.indexOf(item)
             item.active = item.active == "1" ? true : false
             this.editedItem = Object.assign({}, item)
             this.dialog = true
         },
         deleteItem(item) {
-            this.editedIndex = this.equipment_categories.indexOf(item)
+            this.editedIndex = this.ct_equipments.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
         },
         deleteItemConfirm(item) {
-            this.equipment_categories.splice(this.editedIndex, 1)
+            this.ct_equipments.splice(this.editedIndex, 1)
             const putRequest = () => {
                 return axios.delete('api/equipment/categories/' + item);
             };
@@ -208,10 +208,10 @@ export default {
         },
         save() {
             if (this.editedIndex > -1) {
-                Object.assign(this.equipment_categories[this.editedIndex], this.editedItem)
+                Object.assign(this.ct_equipments[this.editedIndex], this.editedItem)
                 const putRequest = () => {
-                    return axios.put('api/equipment/categories/' + this.editedItem.equipment_category_uuid, {
-                        equipment_category: this.editedItem.equipment_category,
+                    return axios.put('api/equipment/categories/' + this.editedItem.ct_equipment_uuid, {
+                        ct_equipment: this.editedItem.ct_equipment,
                         description: this.editedItem.description,
                         active: this.editedItem.active
                     });
@@ -228,10 +228,10 @@ export default {
                     }
                 });
             } else {
-                this.equipment_categories.push(this.editedItem)
+                this.ct_equipments.push(this.editedItem)
                 const postRequest = () => {
                     return axios.post('api/equipment/categories', {
-                        equipment_category: this.editedItem.equipment_category,
+                        ct_equipment: this.editedItem.ct_equipment,
                         description: this.editedItem.description,
                         active: this.editedItem.active
                     });

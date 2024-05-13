@@ -50,10 +50,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         hide-details></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="12">
-                                                                    <v-select v-model="editedItem.trademark_category_code"
-                                                                        :items="trademarks_categories"
-                                                                        item-title="trademark_category"
-                                                                        item-value="trademark_category_code"
+                                                                    <v-select v-model="editedItem.ct_trademark_code"
+                                                                        :items="ct_trademarks"
+                                                                        item-title="ct_trademark"
+                                                                        item-value="ct_trademark_code"
                                                                         label="Categoría" variant="solo" hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
@@ -134,7 +134,7 @@ export default {
         headers: [
             { title: 'Marca', key: 'trademark' },
             { title: 'Estado', key: 'active' },
-            { title: 'Categoría', key: 'category.trademark_category'},
+            { title: 'Categoría', key: 'category.ct_trademark'},
             { title: 'Acciones', key: 'actions', sortable: false }
         ],
         editedIndex: -1,
@@ -142,15 +142,15 @@ export default {
             trademark_uuid: '',
             trademark: '',
             active: false,
-            trademark_category_code: '',
+            ct_trademark_code: '',
         },
         defaultItem: {
             trademark_uuid: '',
             trademark: '',
             active: false,
-            trademark_category_code: '',
+            ct_trademark_code: '',
         },
-        trademarks_categories: [],
+        ct_trademarks: [],
     }),
     computed: {
         formTitle() {
@@ -169,7 +169,7 @@ export default {
         editItem(item) {
             this.editedIndex = this.trademarks.indexOf(item)
             item.active = item.active == "1" ? true : false
-            item.trademark_category_code = item.category.trademark_category_code
+            item.ct_trademark_code = item.category.ct_trademark_code
             this.editedItem = Object.assign({}, item)
             this.dialog = true
         },
@@ -216,7 +216,7 @@ export default {
                     return axios.put('api/trademarks/' + this.editedItem.trademark_uuid, {
                         trademark: this.editedItem.trademark,
                         active: this.editedItem.active,
-                        trademark_category_code: this.editedItem.trademark_category_code,
+                        ct_trademark_code: this.editedItem.ct_trademark_code,
                     });
                 };
                 toast.promise(putRequest(), {
@@ -235,7 +235,7 @@ export default {
                     return axios.post('api/trademarks', {
                         trademark: this.editedItem.trademark,
                         active: this.editedItem.active,
-                        trademark_category_code: this.editedItem.trademark_category_code,
+                        ct_trademark_code: this.editedItem.ct_trademark_code,
                     });
                 };
 
@@ -259,7 +259,7 @@ export default {
         getTrademarkCategories(){
             axios.get('api/trademark/categories')
             .then(response => {
-                this.trademarks_categories = response.data.data;
+                this.ct_trademarks = response.data.data;
             })
             .catch(error => {
                 toast.error('Error al cargar las categorías de marcas');

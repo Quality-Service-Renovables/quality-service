@@ -53,10 +53,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select
-                                                                        v-model="editedItem.equipment_category_code"
-                                                                        :items="equipment_categories"
-                                                                        item-title="equipment_category"
-                                                                        item-value="equipment_category_code"
+                                                                        v-model="editedItem.ct_equipment_code"
+                                                                        :items="ct_equipments"
+                                                                        item-title="ct_equipment"
+                                                                        item-value="ct_equipment_code"
                                                                         label="Categoría" variant="solo" hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
@@ -181,7 +181,7 @@ export default {
             { title: 'Marca', key: 'trademark.trademark' },
             { title: 'Modelo', key: 'model.trademark_model' },
             { title: 'No. Serie', key: 'serial_number' },
-            { title: 'Categoría', key: 'category.equipment_category' },
+            { title: 'Categoría', key: 'category.ct_equipment' },
             { title: 'Estado', key: 'status.status' },
             { title: 'Activo', key: 'active' },
             { title: 'Actions', key: 'actions', sortable: false },
@@ -190,7 +190,7 @@ export default {
         editedItem: {
             equipment_uuid: '',
             equipment: '',
-            equipment_category_code: '',
+            ct_equipment_code: '',
             trademark_code: '',
             trademark_model_code: '',
             status_code: '',
@@ -203,7 +203,7 @@ export default {
         defaultItem: {
             equipment_uuid: '',
             equipment: '',
-            equipment_category_code: '',
+            ct_equipment_code: '',
             trademark_code: '',
             trademark_model_code: '',
             status_code: '',
@@ -214,7 +214,7 @@ export default {
             models: [],
         },
         trademarks: [],
-        equipment_categories: [],
+        ct_equipments: [],
         status: [],
     }),
     computed: {
@@ -235,7 +235,7 @@ export default {
             return {
                 equipment_uuid: item.equipment_uuid,
                 equipment: item.equipment,
-                equipment_category_code: item.category.equipment_category_code,
+                ct_equipment_code: item.category.ct_equipment_code,
                 trademark_code: item.trademark.trademark_code,
                 trademark_model_code: item.model.trademark_model_code,
                 status_code: item.status.status_code,
@@ -294,7 +294,7 @@ export default {
         save() {
             let formData = {
                 'equipment': this.editedItem.equipment,
-                'equipment_category_code': this.editedItem.equipment_category_code,
+                'ct_equipment_code': this.editedItem.ct_equipment_code,
                 'trademark_code': this.editedItem.trademark_code,
                 'trademark_model_code': this.editedItem.trademark_model_code,
                 'status_code': this.editedItem.status_code,
@@ -365,7 +365,7 @@ export default {
         getCategories() {
             axios.get('api/equipment/categories')
                 .then(response => {
-                    this.equipment_categories = response.data.data;
+                    this.ct_equipments = response.data.data;
                 })
                 .catch(error => {
                     toast.error('Error al cargar el catálogo de categorías');

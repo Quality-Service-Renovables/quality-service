@@ -4,7 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import App from '@/Components/App.vue';
 
 defineProps({
-    equipment_categories: Object,
+    ct_equipments: Object,
 });
 
 </script>

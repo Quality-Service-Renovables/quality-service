@@ -64,10 +64,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         type="number"></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="12">
-                                                                    <v-select v-model="editedItem.oil_category_code"
-                                                                        :items="oil_categories" label="Categoria"
-                                                                        item-title="oil_category"
-                                                                        item-value="oil_category_code" hide-details
+                                                                    <v-select v-model="editedItem.ct_oil_code"
+                                                                        :items="ct_oils" label="Categoria"
+                                                                        item-title="ct_oil"
+                                                                        item-value="ct_oil_code" hide-details
                                                                         variant="solo">
                                                                     </v-select>
                                                                 </v-col>
@@ -175,7 +175,7 @@ export default {
             { title: 'Viscosidad', key: 'viscosity' },
             { title: 'Descripción', key: 'description' },
             { title: 'Cantidad', key: 'quantity' },
-            { title: 'Categoria', key: 'category.oil_category' },
+            { title: 'Categoria', key: 'category.ct_oil' },
             { title: 'Marca', key: 'trademark.trademark' },
             { title: 'Modelo', key: 'trademark.model.trademark_model' },
             { title: 'Fecha producción', key: 'production_date' },
@@ -193,7 +193,7 @@ export default {
             expiration_date: '',
             quantity: '',
             active: false,
-            oil_category_code: '',
+            ct_oil_code: '',
             trademark_code: '',
             trademark_model_code: '',
         },
@@ -206,11 +206,11 @@ export default {
             expiration_date: '',
             quantity: '',
             active: false,
-            oil_category_code: '',
+            ct_oil_code: '',
             trademark_code: '',
             trademark_model_code: '',
         },
-        oil_categories: [],
+        ct_oils: [],
         trademarks: [],
         trademark_models: [],
     }),
@@ -231,7 +231,7 @@ export default {
         editItem(item) {
             this.editedIndex = this.oils.indexOf(item)
             item.active = item.active == "1" ? true : false
-            item.oil_category_code = item.category.oil_category_code;
+            item.ct_oil_code = item.category.ct_oil_code;
             item.trademark_code = item.trademark.trademark_code;
             item.trademark_model_code = item.trademark.model.trademark_model_code;
             this.editedItem = Object.assign({}, item)
@@ -280,7 +280,7 @@ export default {
                 'oil': this.editedItem.oil,
                 'viscosity': this.editedItem.viscosity,
                 'description': this.editedItem.description,
-                'oil_category_code': this.editedItem.oil_category_code,
+                'ct_oil_code': this.editedItem.ct_oil_code,
                 'trademark_code': this.editedItem.trademark_code,
                 'trademark_model_code': this.editedItem.trademark_model_code,
                 'production_date': this.editedItem.production_date,
@@ -329,7 +329,7 @@ export default {
         getOilCategories() {
             axios.get('api/oil/categories')
                 .then(response => {
-                    this.oil_categories = response.data.data;
+                    this.ct_oils = response.data.data;
                 })
                 .catch(error => {
                     toast.error('Error al obtener las categorias de aceites');

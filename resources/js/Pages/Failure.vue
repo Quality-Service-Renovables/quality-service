@@ -69,15 +69,15 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                             class="mb-1 pr-0 text-none text-primary"
                                                                             variant="plain" @click="saveCategory()"
                                                                             :loading="loading_creating_category"
-                                                                            :disabled="!new_failure_category">Guardar</v-btn>
+                                                                            :disabled="!new_ct_failure">Guardar</v-btn>
                                                                     </div>
-                                                                    <v-select v-model="editedItem.failure_category_code"
-                                                                        :items="failure_categories"
-                                                                        item-title="failure_category"
-                                                                        item-value="failure_category_code"
+                                                                    <v-select v-model="editedItem.ct_failure_code"
+                                                                        :items="ct_failures"
+                                                                        item-title="ct_failure"
+                                                                        item-value="ct_failure_code"
                                                                         label="Categoría" variant="solo" hide-details
                                                                         v-if="!showCreateCategoryField"></v-select>
-                                                                    <v-text-field v-model="new_failure_category"
+                                                                    <v-text-field v-model="new_ct_failure"
                                                                         label="Categoría" variant="solo" hide-details
                                                                         v-if="showCreateCategoryField">
                                                                     </v-text-field>
@@ -162,7 +162,7 @@ export default {
         headers: [
             { title: 'Falla', key: 'failure' },
             { title: 'Estado', key: 'active' },
-            { title: 'Categoría', key: 'category.failure_category' },
+            { title: 'Categoría', key: 'category.ct_failure' },
             { title: 'Acciones', key: 'actions', sortable: false }
         ],
         editedIndex: -1,
@@ -170,17 +170,17 @@ export default {
             failure_uuid: '',
             failure: '',
             active: false,
-            failure_category_code: '',
+            ct_failure_code: '',
         },
         defaultItem: {
             failure_uuid: '',
             failure: '',
             active: false,
-            failure_category_code: '',
+            ct_failure_code: '',
         },
-        failure_categories: [],
+        ct_failures: [],
         showCreateCategoryField: false,
-        new_failure_category: '',
+        new_ct_failure: '',
         loading_creating_category: false,
     }),
     computed: {
@@ -200,7 +200,7 @@ export default {
         editItem(item) {
             this.editedIndex = this.failures.indexOf(item)
             item.active = item.active == "1" ? true : false
-            item.failure_category_code = item.category.failure_category_code
+            item.ct_failure_code = item.category.ct_failure_code
             this.editedItem = Object.assign({}, item)
             this.dialog = true
         },
@@ -247,7 +247,7 @@ export default {
                     return axios.put('api/failures/' + this.editedItem.failure_uuid, {
                         failure: this.editedItem.failure,
                         active: this.editedItem.active,
-                        failure_category_code: this.editedItem.failure_category_code,
+                        ct_failure_code: this.editedItem.ct_failure_code,
                     });
                 };
                 toast.promise(putRequest(), {
@@ -266,7 +266,7 @@ export default {
                     return axios.post('api/failures', {
                         failure: this.editedItem.failure,
                         active: this.editedItem.active,
-                        failure_category_code: this.editedItem.failure_category_code,
+                        ct_failure_code: this.editedItem.ct_failure_code,
                     });
                 };
 
@@ -290,7 +290,7 @@ export default {
         getfailureCategories() {
             axios.get('api/failure/categories')
                 .then(response => {
-                    this.failure_categories = response.data.data;
+                    this.ct_failures = response.data.data;
                 })
                 .catch(error => {
                     toast.error('Error al cargar las categorías de fallas');
@@ -299,7 +299,7 @@ export default {
         saveCategory() {
             this.loading_creating_category = true;
             axios.post('api/failure/categories', {
-                failure_category: this.new_failure_category,
+                ct_failure: this.new_ct_failure,
                 active: true
             })
                 .then(async response => {
@@ -307,9 +307,9 @@ export default {
                     this.loading_creating_category = false;
                     this.showCreateCategoryField = false;
                     await this.getfailureCategories();
-                    this.new_failure_category = '';
-                    console.log("failure_category_code: " + data.failure_category_code);
-                    this.editedItem.failure_category_code = data.failure_category_code
+                    this.new_ct_failure = '';
+                    console.log("ct_failure_code: " + data.ct_failure_code);
+                    this.editedItem.ct_failure_code = data.ct_failure_code
                     toast.success('Categoría creada correctamente');
                 })
                 .catch(error => {
