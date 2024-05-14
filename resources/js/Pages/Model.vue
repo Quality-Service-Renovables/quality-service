@@ -51,7 +51,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 <v-col cols="12">
                                                                     <v-select v-model="editedItem.trademark_code"
                                                                         :items="trademarks" item-title="trademark"
-                                                                        item-value="trademark_code" label="Categoría"
+                                                                        item-value="trademark_code" label="Marca"
                                                                         variant="solo" hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
@@ -222,7 +222,7 @@ export default {
                     success: (data) => {
                         this.$inertia.reload()
                         this.close()
-                        return 'Categoria actualizada correctamente';
+                        return 'Modelo actualizada correctamente';
                     },
                     error: (data) => {
                         this.handleErrors(data);
@@ -242,7 +242,7 @@ export default {
                     success: (data) => {
                         this.$inertia.reload()
                         this.close()
-                        return 'Categoria creada correctamente';
+                        return 'Modelo creada correctamente';
                     },
                     error: (data) => {
                         this.handleErrors(data);
