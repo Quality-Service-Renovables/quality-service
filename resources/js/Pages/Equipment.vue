@@ -20,7 +20,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                 <v-data-table :headers="headers" :items="equipments" fixed-header :search="search">
                                     <template v-slot:item.equipment_image="{ item }">
                                         <v-avatar :image="'../../' + item.equipment_image" size="40" class="ma-1 avatar"
-                                            @click="showImage(item)"></v-avatar>
+                                            @click="showImage(item.equipment_image)"></v-avatar>
+                                    </template>
+                                    <template v-slot:item.equipment_diagram="{ item }">
+                                        <v-avatar :image="'../../' + item.equipment_diagram" size="40" class="ma-1 avatar"
+                                            @click="showImage(item.equipment_diagram)"></v-avatar>
                                     </template>
                                     <template v-slot:item.active="{ value }">
                                         <v-icon :color="getColor(value)">mdi-circle-slice-8</v-icon>
@@ -90,6 +94,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 <v-col cols="12">
                                                                     <v-file-input variant="solo" label="Imagen"
                                                                         v-model="editedItem.equipment_image"
+                                                                        accept="image/*" prepend-icon="" prepend-inner-icon="mdi-image-plus" hide-details></v-file-input>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-file-input variant="solo" label="Diagrama"
+                                                                        v-model="editedItem.equipment_diagram"
                                                                         accept="image/*" prepend-icon="" prepend-inner-icon="mdi-image-plus" hide-details></v-file-input>
                                                                 </v-col>
                                                                 <v-col cols="12">
@@ -183,6 +192,7 @@ export default {
             { title: 'No. Serie', key: 'serial_number' },
             { title: 'Categoría', key: 'category.ct_equipment' },
             { title: 'Estado', key: 'status.status' },
+            { title: 'Diagrama', key: 'equipment_diagram' },
             { title: 'Activo', key: 'active' },
             { title: 'Actions', key: 'actions', sortable: false },
         ],
@@ -198,6 +208,7 @@ export default {
             active: false,
             manual: null,
             equipment_image: null,
+            equipment_diagram: null,
             models: [],
         },
         defaultItem: {
@@ -211,6 +222,7 @@ export default {
             active: false,
             manual: null,
             equipment_image: null,
+            equipment_diagram: null,
             models: [],
         },
         trademarks: [],
@@ -243,6 +255,7 @@ export default {
                 active: item.active,
                 manual: item.manual,
                 equipment_image: item.equipment_image,
+                equipment_diagram: item.equipment_diagram,
                 models: this.trademarks.find(trademark => trademark.trademark_code === item.trademark.trademark_code).models
             }
         },
@@ -252,6 +265,7 @@ export default {
             this.editedItem = Object.assign({}, this.getItem(item))
             this.editedItem.manual = null
             this.editedItem.equipment_image = null
+            this.editedItem.equipment_diagram = null
             this.dialog = true
         },
         deleteItem(item) {
@@ -302,6 +316,7 @@ export default {
                 'active': this.editedItem.active ? 1 : 0,
                 'manual_storage': this.editedItem.manual,
                 'equipment_image_storage': this.editedItem.equipment_image,
+                'equipment_diagram_storage': this.editedItem.equipment_diagram,
             };
 
             if (this.editedIndex > -1) {
@@ -383,8 +398,8 @@ export default {
         downloadManual(item) {
             window.open('../' + item.manual, '_blank');
         },
-        showImage(item) {
-            window.open('../' + item.equipment_image, '_blank');
+        showImage(url) {
+            window.open('../' + url, '_blank');
         },
     },
     mounted() {

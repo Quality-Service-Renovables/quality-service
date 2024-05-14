@@ -64,6 +64,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         <v-container>
                                                             <v-row>
                                                                 <v-col cols="12" md="4">
+                                                                    <v-file-input variant="solo" label="Imagen"
+                                                                        v-model="editedItem.logo"
+                                                                        accept="image/*" prepend-icon="" prepend-inner-icon="mdi-image-plus" hide-details></v-file-input>
+                                                                </v-col>
+                                                                <v-col cols="12" md="4">
                                                                     <v-text-field v-model="editedItem.client"
                                                                         label="Cliente" hide-details
                                                                         variant="solo"></v-text-field>
@@ -219,7 +224,7 @@ export default {
         editedItem: {
             client_uuid: '',
             client: '',
-            logo: '',
+            logo: null,
             legal_name: '',
             address: '',
             zip_code: '',
@@ -235,7 +240,7 @@ export default {
         defaultItem: {
             client_uuid: '',
             client: '',
-            logo: '',
+            logo: null,
             legal_name: '',
             address: '',
             zip_code: '',
@@ -267,6 +272,7 @@ export default {
             this.editedIndex = this.customers.indexOf(item)
             item.active = item.active == "1" ? true : false
             this.editedItem = Object.assign({}, item)
+            this.editedItem.logo = null
             this.dialog = true
         },
         deleteItem(item) {
@@ -309,7 +315,7 @@ export default {
         save() {
             let formData = {
                 client: this.editedItem.client,
-                logo: this.editedItem.logo,
+                logo_store: this.editedItem.logo,
                 legal_name: this.editedItem.legal_name,
                 address: this.editedItem.address,
                 zip_code: this.editedItem.zip_code,
@@ -325,7 +331,11 @@ export default {
 
             if (this.editedIndex > -1) {
                 const putRequest = () => {
-                    return axios.put('api/clients/' + this.editedItem.client_uuid, formData);
+                    return axios.post('api/clients/update/' + this.editedItem.client_uuid, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
                 };
                 toast.promise(putRequest(), {
                     loading: 'Procesando...',
@@ -341,7 +351,11 @@ export default {
             } else {
                 this.customers.push(this.editedItem)
                 const postRequest = () => {
-                    return axios.post('api/clients', formData);
+                    return axios.post('api/clients', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
                 };
 
                 toast.promise(postRequest(), {
