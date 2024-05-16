@@ -27,14 +27,8 @@ class ClientRequest extends CustomRequest
             'legal_name' => 'nullable|string',
             'address' => 'nullable|string',
             'zipcode' => 'nullable|string',
-            'phone' => [
-                'nullable',
-                'regex:/^(\+\d{1,3}[- ]?)?\d{10}$/',
-            ],
-            'phone_office' => [
-                'nullable',
-                'regex:/^(\+\d{1,3}[- ]?)?\d{10}$/',
-            ],
+            'phone' => 'nullable|string',
+            'phone_office' => 'nullable|string',
             'open_time' => 'nullable|date_format:H:i',
             'close_time' => 'nullable|date_format:H:i',
             'office_days' => 'nullable|string',

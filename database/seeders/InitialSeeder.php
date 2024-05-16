@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Inspections\Categories\InspectionExternals;
+use App\Models\Inspections\Categories\InspectionInternals;
 use Illuminate\Database\Seeder;
 
 class InitialSeeder extends Seeder
@@ -28,6 +30,10 @@ class InitialSeeder extends Seeder
             OilsCategoriesSeeder::class,
             EquipmentSeeder::class,
             VersionsSeeder::class,
+            //Catalogos
+            InspectionSectionsSeeder::class,
+            InspectionInternalsSeeder::class,
+            InspectionExternalsSeeder::class,
         ]);
     }
 }

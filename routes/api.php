@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
 use App\Http\Controllers\Api\V1\Failures\FailureController;
 use App\Http\Controllers\Api\V1\Inspections\CategoryController;
 use App\Http\Controllers\Api\V1\Inspections\InspectionController;
+use App\Http\Controllers\Api\V1\Inspections\Resources\ResourceController;
 use App\Http\Controllers\Api\V1\Oils\OilController;
 use App\Http\Controllers\Api\V1\AuthGuards\PermissionController;
 use App\Http\Controllers\Api\V1\AuthGuards\RoleController;
@@ -46,6 +47,8 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //######################################################## INSPECTIONS #########################################################
     Route::resource('inspections', InspectionController::class);
     Route::resource('inspection/categories', CategoryController::class);
+    Route::get('inspection/resources/get-inspection-details/{ct_inspection_uuid}', [ResourceController::class, 'getInspectionDetail'])
+        ->name('inspection.resources.get-inspection-details');
     //######################################################### EQUIPMENTS ##########################################################
     Route::resource('equipments', EquipmentController::class);
     // Para envio de tipo multi form, el verbo PUT no es compatible, se ha remplazado por la llamada a este end point

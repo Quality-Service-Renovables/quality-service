@@ -50,11 +50,11 @@ class EquipmentService extends Service implements ServiceInterface
             // Agrega atributos a la solicitud
             $request->merge(['equipment_uuid' => Str::uuid()->toString()]);
             // Obtiene los identificadores de los códigos y depura atributos a la solicitud
-            $input = $this->setRequest($request);
+            $this->setRequest($request);
             // En caso de que no se detecte una imágen se establece una por defecto
-            $input['equipment_image'] = $input['equipment_image'] ?? $this->imageDefault;
+            $request->equipment_image = $request->equipment_image ?? $this->imageDefault;
             // Registra los atributos de la solicitud al equipo
-            $equipment = Equipment::create($input);
+            $equipment = Equipment::create($request->all());
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
             $this->response['data'] = $equipment;
@@ -104,16 +104,12 @@ class EquipmentService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Obtiene los identificadores de los códigos y depura atributos a la solicitud
-            $input = $this->setRequest($request);
-            // En caso de que no se detecte una imágen se establece una por defecto
-            $input['equipment_image'] = $input['equipment_image'] ?? $this->imageDefault;
-            $input['equipment_diagram'] = $input['equipment_diagram'] ?? null;
+            $this->setRequest($request);
             // Actualiza Equipo
-            Equipment::where('equipment_uuid', $request->equipment_uuid)->update($input);
-            // Recupera Equipo Actualizado
-            $equipmentUpdated = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
+            $equipment = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
+            $equipment?->update($request->all());
             $this->response['message'] = trans('api.updated');
-            $this->response['data'] = $equipmentUpdated;
+            $this->response['data'] = $equipment;
             // Registro de log
             $this->logService->create(
                 $this->nameService,
@@ -190,11 +186,11 @@ class EquipmentService extends Service implements ServiceInterface
      * Sets the request data for the equipment.
      *
      * @param  Request  $request  The request object.
-     * @return array The formatted request data.
+     * @return void The formatted request data.
      *
      * @throws \JsonException
      */
-    private function setRequest(Request $request): array
+    private function setRequest(Request $request): void
     {
         // Obtiene identificadores de códigos
         $categoryId = Category::where('ct_equipment_code', $request->get('ct_equipment_code'))->first()->ct_equipment_id;
@@ -213,18 +209,18 @@ class EquipmentService extends Service implements ServiceInterface
         $request->merge($extraAttributes);
 
         // Omite contenido de la solicitud
-        return $this->setFields($request);
+        $this->setFields($request);
     }
 
     /**
-     * Sets the fields for the equipment.
+     * Sets the request fields for the equipment.
      *
-     * @param  Request  $request  The request object.
-     * @return array The formatted request data.
+     * @param Request $request The request object.
      *
+     * @return void
      * @throws \JsonException
      */
-    private function setFields(Request $request): array
+    private function setFields(Request $request): void
     {
         $paths = $this->getApplicationPaths();
 
@@ -258,7 +254,7 @@ class EquipmentService extends Service implements ServiceInterface
             );
         }
 
-        return $request->except([
+        $removeAttributes = [
             'ct_equipment_code',
             'trademark_code',
             'trademark_model_code',
@@ -266,7 +262,11 @@ class EquipmentService extends Service implements ServiceInterface
             'equipment_image_storage',
             'equipment_diagram_storage',
             'manual_storage',
-        ]);
+        ];
+
+        foreach ($removeAttributes as $removeAttribute) {
+            $request->request->remove($removeAttribute);
+        }
     }
 
     /**

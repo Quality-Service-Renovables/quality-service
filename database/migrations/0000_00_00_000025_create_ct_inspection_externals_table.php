@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('ct_inspection_externals', static function (Blueprint $table) {
             $table->id('ct_inspection_external_id');
             $table->uuid('ct_inspection_external_uuid');
-            $table->string('inspection_external')->comment('External inspection description');
+            $table->string('ct_inspection_external')->comment('External inspection description');
+            $table->string('ct_inspection_external_code')->unique()->comment('External inspection description');
             $table->unsignedBigInteger('ct_inspection_id')->comment('Relation with inspection category');
             $table->unsignedBigInteger('ct_inspection_section_id')->comment('Relation with inspection section');
             $table->timestamps();
@@ -25,7 +26,7 @@ return new class extends Migration
             //FOREIGN KEYS
             $table->foreign('ct_inspection_id', 'fk_external_category')
                 ->references('ct_inspection_id')->on('ct_inspections');
-            $table->foreign('ct_inspection_section_id', 'fk_external_section')
+            $table->foreign('ct_inspection_section_id', 'fk_internal_section_ext')
                 ->references('ct_inspection_section_id')->on('ct_inspection_sections');
         });
     }

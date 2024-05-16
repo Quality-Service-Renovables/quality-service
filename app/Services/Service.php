@@ -50,7 +50,7 @@ class Service
     public function setExceptions(Throwable $exceptions): void
     {
         $this->response['status'] = 'error';
-        $this->response['message'] = $exceptions->getMessage();
+        $this->response['message'] = $exceptions->getMessage().' Line: '.$exceptions->getLine();
         $this->statusCode = 500;
     }
 

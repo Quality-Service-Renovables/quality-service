@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inspection_internals', static function (Blueprint $table) {
-            $table->id('inspections_external_id');
-            $table->uuid('inspections_external_uuid');
-            $table->string('inspection_external')->comment('Internal inspection description');
-            $table->longText('inspection_state')->comment('Internal inspection status');
+            $table->id('inspection_internal_id');
+            $table->uuid('inspection_internal_uuid');
+            $table->string('evaluation')->comment('Internal inspection evaluation');
+            $table->longText('notes')->comment('Internal inspection notes');
             $table->unsignedBigInteger('inspection_id')->comment('Relation with inspection');
             $table->unsignedBigInteger('ct_inspection_section_id')->comment('Relation with inspection section');
             $table->unsignedBigInteger('ct_inspection_internal_id')->comment('Relation with inspection internal');
             $table->timestamps();
             $table->softDeletes();
             //INDEX
-            $table->index('inspections_external_uuid');
+            $table->index('inspection_internal_uuid');
             $table->index('ct_inspection_section_id');
             $table->index('ct_inspection_internal_id');
             $table->index('inspection_id');

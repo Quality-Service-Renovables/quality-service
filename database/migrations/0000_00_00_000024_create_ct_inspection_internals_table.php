@@ -15,13 +15,14 @@ return new class extends Migration
             $table->id('ct_inspection_internal_id');
             $table->uuid('ct_inspection_internal_uuid');
             $table->string('ct_inspection_internal');
+            $table->string('ct_inspection_internal_code')->unique();
             $table->unsignedBigInteger('ct_inspection_id')->comment('Relation with inspection category');
             $table->unsignedBigInteger('ct_inspection_section_id')->comment('Relation with inspection section');
             $table->timestamps();
             $table->softDeletes();
             //INDEX
             $table->index('ct_inspection_id');
-            //FOREIGN KEYS
+            $table->index('ct_inspection_section_id');
             //FOREIGN KEYS
             $table->foreign('ct_inspection_id', 'fk_internal_category')
                 ->references('ct_inspection_id')->on('ct_inspections');
