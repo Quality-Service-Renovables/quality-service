@@ -29,7 +29,7 @@ import { createPinia } from "pinia";
 
 const pinia = createPinia();
 
-const appName = import.meta.env.VITE_APP_NAME || "Laravel";
+const appName = import.meta.env.VITE_APP_NAME || "Quality Service";
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,

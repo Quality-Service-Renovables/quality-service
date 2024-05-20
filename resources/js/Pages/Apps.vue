@@ -25,7 +25,7 @@ defineProps({
                             <App path="dashboard" title="Dashboard" icon="mdi-monitor-dashboard"/>
                             <App path="#" title="Proyectos" icon="mdi-folder-text-outline"/>
                             <App path="#" title="Usuarios" icon="mdi-account-group"/>
-                            <App path="#" title="Roles y permisos" icon="mdi-account-lock"/>
+                            <App path="roles-permissions" title="Roles y permisos" icon="mdi-account-lock"/>
                             <App path="profile" title="Perfil" icon="mdi-face-man-profile"/>
                             <App path="https://www.qualityservicerenovables.com.mx" title="Landing page" icon="mdi-monitor"/>
                         </div>
