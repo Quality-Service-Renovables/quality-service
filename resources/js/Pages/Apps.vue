@@ -19,13 +19,15 @@ defineProps({
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
                 <v-row>
-                    <v-col xs="12" sm="12" md="12" lg="4" class="text-center pt-0">
+                    <v-col xs="12" sm="12" md="12" lg="6" class="text-center pt-0">
                         <h4 class="text-grey-darken-1">Administración</h4>
                         <div class="d-flex align-start flex-wrap">
                             <App path="dashboard" title="Dashboard" icon="mdi-monitor-dashboard"/>
                             <App path="#" title="Proyectos" icon="mdi-folder-text-outline"/>
-                            <App path="#" title="Usuarios y permisos" icon="mdi-account-group"/>
+                            <App path="#" title="Usuarios" icon="mdi-account-group"/>
+                            <App path="#" title="Roles y permisos" icon="mdi-account-lock"/>
                             <App path="profile" title="Perfil" icon="mdi-face-man-profile"/>
+                            <App path="https://www.qualityservicerenovables.com.mx" title="Landing page" icon="mdi-monitor"/>
                         </div>
                     </v-col>
                     <v-col xs="12" sm="12" md="12" lg="6" class="text-center pt-0">
