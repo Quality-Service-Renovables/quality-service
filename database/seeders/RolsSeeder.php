@@ -25,7 +25,7 @@ class RolsSeeder extends Seeder
                 'guard_name' => 'admin',
             ],
             [
-                'name' => 'Client',
+                'name' => 'Cliente',
                 'guard_name' => 'client',
             ],
             [
