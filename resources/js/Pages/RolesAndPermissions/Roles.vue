@@ -1,8 +1,9 @@
 <template>
+    <Toaster position="top-right" richColors :visibleToasts="10" />
 
     <v-row>
         <v-col cols="12" sm="12">
-            <v-data-table :headers="headers" :items="roles" fixed-header :search="search">
+            <v-data-table :headers="headers" :items="roles" fixed-header :search="search" :loading="loadingRoles">
                 <template v-slot:top>
                     <v-toolbar flat>
                         <v-toolbar-title class="ml-1">
@@ -11,7 +12,7 @@
                         </v-toolbar-title>
                         <v-divider class="mx-4" inset vertical></v-divider>
                         <v-spacer></v-spacer>
-                        <v-dialog v-model="dialog" max-width="500px">
+                        <v-dialog v-model="dialog" max-width="1000px">
                             <template v-slot:activator="{ props }">
                                 <v-btn class="mb-2" color="primary" dark v-bind="props" icon="mdi-plus"></v-btn>
                             </template>
@@ -26,6 +27,24 @@
                                             <v-col cols="12">
                                                 <v-text-field v-model="editedItem.name" label="Nombre" variant="solo"
                                                     hide-details></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-divider></v-divider>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <h1 class="text-h5">Permisos</h1>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-row>
+                                                    <v-col cols="6" md="6" v-for="permission in permissions"
+                                                        :key="permission.id">
+                                                        <h1 class="text-h6">{{ permission.name }}</h1>
+                                                        <v-checkbox label="Ver" hide-details class="py-0"></v-checkbox>
+                                                        <v-checkbox label="Crear" hide-details class="py-0"></v-checkbox>
+                                                        <v-checkbox label="Editar" hide-details class="py-0"></v-checkbox>
+                                                        <v-checkbox label="Eliminar" hide-details class="py-0"></v-checkbox>
+                                                    </v-col>
+                                                </v-row>
                                             </v-col>
                                         </v-row>
                                     </v-container>
@@ -74,19 +93,11 @@
 
 
 <script>
-import { router } from '@inertiajs/vue3'
 import { Toaster, toast } from 'vue-sonner'
-import Swal from 'sweetalert2';
 
 export default {
     components: {
         Toaster,
-    },
-    props: {
-        roles: {
-            type: Array,
-            required: true
-        }
     },
     data: () => ({
         search: '',
@@ -106,7 +117,9 @@ export default {
             id: '',
             name: '',
         },
-        tab: null,
+        loadingRoles: false,
+        roles: [],
+        permissions: [],
     }),
     computed: {
         formTitle() {
@@ -204,7 +217,27 @@ export default {
             }
 
         },
+        fetchRoles() {
+            this.loadingRoles = true;
+            return axios.get('api/auth-guard/roles').then(response => {
+                this.roles = response.data.data;
+                this.loadingRoles = false;
+            }).catch(error => {
+                this.loadingRoles = false;
+                toast.error('Error al cargar el catálogo de roles');
+            });
+        },
+        fetchPermissions() {
+            return axios.get('api/auth-guard/permissions').then(response => {
+                this.permissions = response.data.data;
+            }).catch(error => {
+                toast.error('Error al cargar el catálogo de permisos');
+            });
+        }
     },
-
+    mounted() {
+        this.fetchRoles();
+        this.fetchPermissions();
+    }
 }
 </script>

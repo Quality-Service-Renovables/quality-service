@@ -4,8 +4,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 </script>
 
 <template>
-    <Toaster position="top-right" richColors :visibleToasts="10" />
-
     <Head title="Equipments" />
     <AuthenticatedLayout>
         <template #header>
@@ -22,11 +20,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                         <v-card-text>
                             <v-tabs-window v-model="tab">
                                 <v-tabs-window-item v-if="tab == 'roles'">
-                                    <Roles :roles="roles" />
+                                    <Roles />
                                 </v-tabs-window-item>
 
                                 <v-tabs-window-item v-if="tab == 'permissions'">
-                                    <Permissions :permissions="permissions" />
+                                    <Permissions />
                                 </v-tabs-window-item>
                             </v-tabs-window>
                         </v-card-text>
@@ -39,50 +37,17 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 </template>
 
 <script>
-import { Toaster, toast } from 'vue-sonner'
 import Roles from '@/Pages/RolesAndPermissions/Roles.vue'
 import Permissions from '@/Pages/RolesAndPermissions/Permissions.vue'
-//import { useRolAndPermissionStore } from '@/Stores/RolAndPermissionStore'
-//const store = useRolAndPermissionStore()
 
 export default {
     components: {
-        Toaster,
         Roles,
-       // Permissions
+        Permissions
     },
     data: () => ({
         tab: null,
-        roles: [],
-        permissions: [],
     }),
-    methods: {
-        fetchRoles() {
-            return axios.get('api/auth-guard/roles').then(response => {
-                this.roles = response.data.data;
-            }).catch(error => {
-                toast.error('Error al cargar el catálogo de roles');
-            });
 
-        },
-        fetchPermissions() {
-            return axios.get('api/auth-guard/permissions').then(response => {
-                this.permissions = response.data.data;
-            }).catch(error => {
-                toast.error('Error al cargar el catálogo de permisos');
-            });
-
-        }
-    },
-    watch: {
-        tab() {
-            this.fetchRoles();
-            this.fetchPermissions();
-        }
-    },
-    mounted() {
-        this.fetchRoles();
-        this.fetchPermissions();
-    }
 }
 </script>

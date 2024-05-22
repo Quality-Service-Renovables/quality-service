@@ -1,8 +1,9 @@
 <template>
+    <Toaster position="top-right" richColors :visibleToasts="10" />
 
     <v-row>
         <v-col cols="12" sm="12">
-            <v-data-table :headers="headers" :items="permissions" fixed-header :search="search">
+            <v-data-table :headers="headers" :items="permissions" fixed-header :search="search" :loading="loadingPermissions">
                 <template v-slot:top>
                     <v-toolbar flat>
                         <v-toolbar-title class="ml-1">
@@ -74,19 +75,11 @@
 
 
 <script>
-import { router } from '@inertiajs/vue3'
 import { Toaster, toast } from 'vue-sonner'
-import Swal from 'sweetalert2';
 
 export default {
     components: {
         Toaster,
-    },
-    props: {
-        permissions: {
-            type: Array,
-            required: true
-        }
     },
     data: () => ({
         search: '',
@@ -106,7 +99,8 @@ export default {
             id: '',
             name: '',
         },
-        tab: null,
+        loadingPermissions: false,
+        permissions: [],
     }),
     computed: {
         formTitle() {
@@ -204,7 +198,20 @@ export default {
             }
 
         },
+        fetchPermissions() {
+            this.loadingPermissions = true;
+            return axios.get('api/auth-guard/permissions').then(response => {
+                this.permissions = response.data.data;
+                this.loadingPermissions = false;
+            }).catch(error => {
+                this.loadingPermissions = false;
+                toast.error('Error al cargar el catálogo de permisos');
+            });
+        }
     },
+    mounted() {
+        this.fetchPermissions();
+    }
 
 }
 </script>
