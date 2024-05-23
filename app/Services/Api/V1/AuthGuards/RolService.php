@@ -19,18 +19,18 @@
 
 namespace App\Services\Api\V1\AuthGuards;
 
-use App\Models\AuthGuards\Role;
+use Throwable;
+use App\Services\Service;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\Status\Status;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 use App\Models\Equipments\Category;
 use App\Models\Equipments\Equipment;
-use App\Models\Status\Status;
 use App\Models\Trademarks\Trademark;
-use App\Models\Trademarks\TrademarkModel;
 use App\Services\Api\ServiceInterface;
-use App\Services\Service;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Throwable;
+use App\Models\Trademarks\TrademarkModel;
 
 class RolService extends Service implements ServiceInterface
 {
@@ -85,7 +85,7 @@ class RolService extends Service implements ServiceInterface
     public function read(): array
     {
         $this->response['message'] = trans('api.readed');
-        $this->response['data'] = Role::all();
+        $this->response['data'] = Role::with('permissions')->get();
 
         return $this->response;
     }

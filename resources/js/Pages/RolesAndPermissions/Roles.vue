@@ -12,7 +12,7 @@
                         </v-toolbar-title>
                         <v-divider class="mx-4" inset vertical></v-divider>
                         <v-spacer></v-spacer>
-                        <v-dialog v-model="dialog" max-width="1000px">
+                        <v-dialog v-model="dialog" max-width="1200px">
                             <template v-slot:activator="{ props }">
                                 <v-btn class="mb-2" color="primary" dark v-bind="props" icon="mdi-plus"></v-btn>
                             </template>
@@ -25,24 +25,23 @@
                                     <v-container>
                                         <v-row>
                                             <v-col cols="12">
-                                                <v-text-field v-model="editedItem.name" label="Nombre" variant="solo"
+                                                <v-text-field v-model="editedItem.name" label="Nombre del rol" variant="solo"
                                                     hide-details></v-text-field>
                                             </v-col>
                                             <v-col cols="12">
                                                 <v-divider></v-divider>
                                             </v-col>
                                             <v-col cols="12">
-                                                <h1 class="text-h5">Permisos</h1>
+                                                <h1 class="text-h5">Permisos del rol "{{ editedItem.name }}"</h1>
                                             </v-col>
                                             <v-col cols="12">
                                                 <v-row>
-                                                    <v-col cols="6" md="6" v-for="permission in permissions"
+                                                    <v-col cols="4" md="4" v-for="permission in permissions"
                                                         :key="permission.id">
                                                         <h1 class="text-h6">{{ permission.name }}</h1>
-                                                        <v-checkbox label="Ver" hide-details class="py-0"></v-checkbox>
-                                                        <v-checkbox label="Crear" hide-details class="py-0"></v-checkbox>
-                                                        <v-checkbox label="Editar" hide-details class="py-0"></v-checkbox>
-                                                        <v-checkbox label="Eliminar" hide-details class="py-0"></v-checkbox>
+                                                        <v-checkbox v-for="perm in permission.permissions"
+                                                            :key="perm.id" :label="perm.name" hide-details class="py-0"
+                                                            v-model="perm.checked"></v-checkbox>
                                                     </v-col>
                                                 </v-row>
                                             </v-col>
@@ -139,6 +138,19 @@ export default {
             this.editedIndex = this.roles.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialog = true
+            this.checkPermissions();
+        },
+        checkPermissions(){
+            this.editedItem.permissions.forEach(perm => {
+                this.permissions.map(permission => {
+                    permission.permissions.map(p => {
+                        //console.log("Comparando " + p.id + " con " + perm.id + " " + (p.id == perm.id));
+                        if (p.id == perm.id) {
+                            p.checked = true;
+                        }
+                    });
+                });
+            });
         },
         deleteItem(item) {
             this.editedIndex = this.roles.indexOf(item)
@@ -228,12 +240,25 @@ export default {
             });
         },
         fetchPermissions() {
-            return axios.get('api/auth-guard/permissions').then(response => {
+            return axios.get('api/auth-guard/permissions-grouped').then(response => {
                 this.permissions = response.data.data;
+                //this.permissionsIds = this.permissions.map(permission => permission.id);
+
+                //let permissionsIds = this.permissions.map(permission => permission.id);
+
+
+
             }).catch(error => {
                 toast.error('Error al cargar el catálogo de permisos');
             });
-        }
+        },
+        /*checkActive(permissionId) {
+            this.editedItem.permissions.forEach(element => {
+                if(element.id == permissionId) {
+                    return true;
+                }
+            });
+        }*/
     },
     mounted() {
         this.fetchRoles();

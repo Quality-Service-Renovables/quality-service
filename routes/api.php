@@ -74,5 +74,6 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //######################################################## AUTH GUARDS ##########################################################
     Route::resource('auth-guard/roles', RoleController::class);
     Route::resource('auth-guard/permissions', PermissionController::class);
+    Route::get('auth-guard/permissions-grouped', [PermissionController::class, 'grouped']);
     Route::resource('auth-guard/role-permissions', RolePermissionController::class);
 });

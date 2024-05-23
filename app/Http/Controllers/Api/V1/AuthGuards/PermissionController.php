@@ -36,6 +36,17 @@ class PermissionController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     */
+    public function grouped(): JsonResponse
+    {
+        $this->service->readGrouped();
+
+        return response()->json($this->service->response, $this->service->statusCode);
+    }
+
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(EquipmentRequest $request): JsonResponse
