@@ -19,6 +19,7 @@ class Section extends Model
         'ct_inspection_section',
         'ct_inspection_section_code',
         'ct_inspection_id',
+        'ct_inspection_relation_id'
     ];
     protected $hidden = ['ct_inspection_id'];
 

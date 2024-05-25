@@ -51,6 +51,7 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
         ->name('inspection.resources.get-inspection-details');
     //---------------------------------------------------------   FORMS    ----------------------------------------------------------
     Route::get('inspection/forms/get-form/{ct_inspection_uuid}', [FormController::class, 'getForm']);
+    Route::post('inspection/forms/set-form', [FormController::class, 'setForm']);
     //######################################################### EQUIPMENTS ##########################################################
     Route::resource('equipments', EquipmentController::class);
     // Para envio de tipo multi form, el verbo PUT no es compatible, se ha remplazado por la llamada a este end point

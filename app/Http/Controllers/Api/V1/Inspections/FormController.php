@@ -16,19 +16,21 @@ class FormController extends Controller
     {
         $this->service = new FormService();
     }
-    public function createSection(Request $request): JsonResponse
+
+    public function setForm(Request $request): JsonResponse
     {
-        $this->service->createSection($request);
+        $this->service->setForm($request);
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
 
     public function getForm(string $uuid): JsonResponse
     {
-        if (!$this->commonValidation($uuid)) {
+        if (! $this->commonValidation($uuid)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
         $this->service->getForm($uuid);
+
         return response()->json($this->service->response, $this->service->statusCode);
     }
 

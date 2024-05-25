@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Models\Inspections\Categories;
+namespace App\Models\Inspections;
 
-use App\Models\Inspections\Category;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Form extends Model
+class CategoryForm extends Model
 {
     use HasFactory, SoftDeletes;
 

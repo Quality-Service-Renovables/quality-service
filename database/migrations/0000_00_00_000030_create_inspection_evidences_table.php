@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('inspections_evidence_id');
             $table->uuid('inspections_evidence_uuid');
             $table->string('inspection_evidence');
+            $table->string('inspection_evidence_secondary');
             $table->string('title')->nullable();
             $table->string('description')->nullable();
             $table->unsignedBigInteger('inspection_id')->comment('Relation with inspection');

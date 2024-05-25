@@ -6,9 +6,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Inspections\Categories\Form;
 use App\Models\Inspections\Categories\Section;
 use App\Models\Inspections\Category;
+use App\Models\Inspections\CategoryForm;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -36,12 +36,12 @@ class InspectionSectionsSeeder extends Seeder
                     'ct_inspection_section_uuid' => $subSection['ct_inspection_section_uuid'],
                     'ct_inspection_section' => $subSection['ct_inspection_section'],
                     'ct_inspection_id' => $subSection['ct_inspection_id'],
-                    'section_relation_id' => $inspectionSection->ct_inspection_section_id,
+                    'ct_inspection_relation_id' => $inspectionSection->ct_inspection_section_id,
                 ]);
                 // FIELDS
                 foreach ($subSection['fields'] as $field) {
                     $field['ct_inspection_section_id'] = $inspectionSubSection->ct_inspection_section_id;
-                    Form::updateOrCreate([
+                    CategoryForm::updateOrCreate([
                         'ct_inspection_form_code' => $field['ct_inspection_form_code'],
                     ], $field);
                 }
