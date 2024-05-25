@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class InspectionSections extends Model
+class Section extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -20,7 +20,7 @@ class InspectionSections extends Model
         'ct_inspection_section_code',
         'ct_inspection_id',
     ];
-    protected $hidden = ['ct_inspection_id', 'ct_inspection_section_id'];
+    protected $hidden = ['ct_inspection_id'];
 
     /**
      * Get the category that belongs to this model.
