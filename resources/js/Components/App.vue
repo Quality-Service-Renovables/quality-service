@@ -32,6 +32,10 @@ export default {
     },
     methods: {
         redirecTo(path) {
+            if (path.includes('http')) {
+                window.open(path, '_blank');
+                return;
+            }
             router.visit(path);
         }
     },

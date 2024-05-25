@@ -7,10 +7,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Api\V1\AppsController;
 use App\Http\Controllers\Api\V1\Oils\OilController;
 use App\Http\Controllers\Api\V1\Clients\ClientController;
+use App\Http\Controllers\Api\V1\AuthGuards\RoleController;
 use App\Http\Controllers\Api\V1\Failures\FailureController;
 use App\Http\Controllers\Api\V1\Equipments\CategoryController;
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
+use App\Http\Controllers\Api\V1\AuthGuards\RolePermissionController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
 
 Route::get('/', function () {
@@ -46,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/failures', [FailureController::class, 'component'])->name('failures');
     //Failures
     Route::get('/customers', [ClientController::class, 'component'])->name('clients');
+    //Roles
+    Route::get('/roles-permissions', [RolePermissionController::class, 'component'])->name('roles');
 });
 
 require __DIR__.'/auth.php';
