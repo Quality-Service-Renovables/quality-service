@@ -82,7 +82,6 @@ export default {
         dialog: false,
         headers: [
             { title: 'Nombre', key: 'name' },
-            { title: 'Usuarios', key: 'users' },
             { title: 'Acciones', key: 'actions', sortable: false }
         ],
         editedIndex: -1,
