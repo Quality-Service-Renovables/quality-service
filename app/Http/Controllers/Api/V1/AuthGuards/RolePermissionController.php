@@ -34,29 +34,19 @@ class RolePermissionController extends Controller
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(RolePermissionRequest $request): JsonResponse
-    {
-        $this->service->create($request);
-
-        return response()->json($this->service->response, $this->service->statusCode);
-    }
-
+   
     /**
      * Display the specified resource.
      */
-    public function show(string $uuid): JsonResponse
+    public function show(string $id): JsonResponse
     {
-        $request = (['equipment_uuid' => $uuid]);
+        $request = (['id' => $id]);
 
         if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
-        $this->service->show($uuid);
+        $this->service->show($id);
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
@@ -65,49 +55,24 @@ class RolePermissionController extends Controller
      * Update a resource in storage.
      *
      * @param Request $request
-     * @param string  $uuid
+     * @param string  $id
      *
      * @return JsonResponse
      */
-    public function update(Request $request, string $uuid): JsonResponse
+    public function update(Request $request, string $id): JsonResponse
     {
-        $request->merge(['equipment_uuid' => $uuid]);
+        $request->merge(['id' => $id]);
         $validated = Validator::make($request->all(), [
-            'equipment_uuid' => 'required|uuid|exists:equipments,equipment_uuid',
-            'equipment' => [
+            'id' => 'required|exists:roles,id',
+            'name' => [
                 'required',
                 'string',
                 'min:1',
                 'max:255',
-                Rule::unique('equipments', 'equipment')
-                    ->whereNot('equipment_uuid', $uuid)
-                    ->whereNull('deleted_at'),
+                Rule::unique('roles', 'name')
+                    ->whereNot('id', $id)
             ],
-            'equipment_image' => 'nullable|string',
-            'equipment_image_storage' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'equipment_diagram' => 'nullable|string',
-            'equipment_diagram_storage' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'serial_number' => 'nullable|string',
-            'manufacture_date' => 'nullable|date_format:Y-m-d',
-            'work_hours' => 'nullable|integer',
-            'energy_produced' => 'nullable|integer',
-            'barcode' => 'nullable|string',
-            'description' => 'nullable|string|max:255',
-            'location' => 'nullable|string|max:255',
-            'manual' => 'nullable|string',
-            'manual_storage' => 'nullable|file|mimes:pdf|max:2048',
-            'ct_equipment_code' => [
-                'required',
-                'string',
-                'min:1',
-                'max:255',
-                Rule::exists('ct_equipments', 'ct_equipment_code')
-                    ->whereNull('deleted_at'),
-            ],
-            'trademark_code' => 'required|string|exists:trademarks,trademark_code',
-            'trademark_model_code' => 'required|string|exists:trademark_models,trademark_model_code',
-            'status_code' => 'required|string|exists:status,status_code',
-            'active' => 'required|boolean',
+            'permissions' => 'required|array',
         ]);
 
         if ($validated->fails()) {
@@ -119,23 +84,7 @@ class RolePermissionController extends Controller
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $uuid): JsonResponse
-    {
-        $request = ['equipment_uuid' => $uuid];
-
-        if (! $this->commonValidation($request)) {
-            return response()->json($this->service->response, $this->service->statusCode);
-        }
-
-        $this->service->delete($uuid);
-
-        return response()->json($this->service->response, $this->service->statusCode);
-    }
-
+   
     /**
      * Render the equipment component.
      */
@@ -157,7 +106,7 @@ class RolePermissionController extends Controller
     private function commonValidation(array $request): bool
     {
         $validated = Validator::make($request, [
-            'equipment_uuid' => 'required|uuid|exists:equipments,equipment_uuid',
+            'id' => 'required|exists:roles,id',
         ]);
 
         if ($validated->fails()) {

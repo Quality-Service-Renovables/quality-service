@@ -146,17 +146,20 @@ export default {
         },
         save() {
             console.log("Guardando...");
-            console.log(this.extractPermissions());
-            /*if (this.editedIndex > -1) {
+            let permissionsAux = this.extractPermissions();
+            console.log(permissionsAux);
+            if (this.editedIndex > -1) {
                 const putRequest = () => {
-                    return axios.put('api/auth-guard/roles/' + this.editedItem.id, {
+                    return axios.put('api/auth-guard/role-permissions/' + this.editedItem.id, {
                         name: this.editedItem.name,
+                        permissions: permissionsAux
                     });
                 };
                 toast.promise(putRequest(), {
                     loading: 'Procesando...',
                     success: (data) => {
                         this.$inertia.reload()
+                        this.fetchRoles();
                         this.close()
                         return 'Rol actualizado correctamente';
                     },
@@ -164,8 +167,7 @@ export default {
                         this.handleErrors(data);
                     }
                 });
-            } */
-
+            }
         },
         fetchRoles() {
             this.loadingRoles = true;

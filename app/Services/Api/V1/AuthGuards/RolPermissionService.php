@@ -19,10 +19,9 @@
 
 namespace App\Services\Api\V1\AuthGuards;
 
+use App\Models\AuthGuards\RolePermissions;
 use App\Models\Equipments\Category;
 use App\Models\Equipments\Equipment;
-use App\Models\AuthGuards\Permission;
-use App\Models\AuthGuards\RolePermissions;
 use App\Models\Status\Status;
 use App\Models\Trademarks\Trademark;
 use App\Models\Trademarks\TrademarkModel;
@@ -31,52 +30,14 @@ use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 use Throwable;
 
 class RolPermissionService extends Service implements ServiceInterface
 {
     public string $nameService = 'rol_permission_service';
 
-    /**
-     * Create a new equipment
-     *
-     * @param  Request  $request  The request object
-     * @return array Returns an array containing the created equipment data
-     */
-    public function create(Request $request): array
-    {
-        try {
-            // Control de transacciones
-            DB::beginTransaction();
-            // Agrega atributos a la solicitud
-            $request->merge(['equipment_uuid' => Str::uuid()->toString()]);
-            // Obtiene los identificadores de los códigos y depura atributos a la solicitud
-            $input = $this->setRequest($request);
-            // En caso de que no se detecte una imágen se establece una por defecto
-            $input['equipment_image'] = $input['equipment_image'] ?? $this->imageDefault;
-            // Registra los atributos de la solicitud al equipo
-            $equipment = Equipment::create($input);
-            $this->statusCode = 201;
-            $this->response['message'] = trans('api.created');
-            $this->response['data'] = $equipment;
-            // Registro en log
-            $this->logService->create(
-                $this->nameService,
-                $request->all(),
-                $this->response,
-                trans('api.message_log'),
-            );
-            // Finaliza Transacción
-            DB::commit();
-        } catch (Throwable $exceptions) {
-            DB::rollBack();
-            // Manejo del error
-            $this->setExceptions($exceptions);
-        }
-
-        // Respuesta del módulo
-        return $this->response;
-    }
+    public function create(Request $request): array {}
 
     /**
      * Retrieve all equipment data
@@ -90,7 +51,7 @@ class RolPermissionService extends Service implements ServiceInterface
                 $query->select(['id', 'name']);
             }, 'permission' => function ($queryAlt) {
                 $queryAlt->select(['id', 'name']);
-            }
+            },
         ])->get();
 
         $rolesGroup = $roles->makeHidden(['role_id', 'permission_id'])->groupBy(['role.name']);
@@ -112,30 +73,42 @@ class RolPermissionService extends Service implements ServiceInterface
         try {
             // Control de transacciones
             DB::beginTransaction();
-            // Obtiene los identificadores de los códigos y depura atributos a la solicitud
-            $input = $this->setRequest($request);
-            // En caso de que no se detecte una imágen se establece una por defecto
-            $input['equipment_image'] = $input['equipment_image'] ?? $this->imageDefault;
-            $input['equipment_diagram'] = $input['equipment_diagram'] ?? null;
-            // Actualiza Equipo
-            Equipment::where('equipment_uuid', $request->equipment_uuid)->update($input);
-            // Recupera Equipo Actualizado
-            $equipmentUpdated = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
-            $this->response['message'] = trans('api.updated');
-            $this->response['data'] = $equipmentUpdated;
+
+            // Actualizamos el rol
+            Role::where("id", $request->id)->update(["name" => $request->name]);
+
+            // Eliminamos permisos actuales del rol y asociamos los nuveos permisos
+            RolePermissions::where("role_id", $request->id)->delete();
+
+            foreach ($request->permissions as $permissionId) {
+                RolePermissions::create(
+                    [
+                        "role_id" => $request->id,
+                        "permission_id" => $permissionId,
+                    ]
+                );
+            }
+
+            // Recupera aceite actualizado
+            $roleUpdated = Role::where('id', $request->id)->with("permissions")->first();
+            $this->response['data'] = $roleUpdated;
+
             // Registro de log
             $this->logService->create(
                 $this->nameService,
                 $request->all(),
                 $this->response,
-                trans('api.message_log'),
+                'Update rol request',
             );
+
             // Confirmación de transacción
             DB::commit();
-        } catch (Throwable $exceptions) {
+        } catch (Exception $exception) {
             DB::rollBack();
-            // Manejo del error
-            $this->setExceptions($exceptions);
+            // Parámetros de respuesta en caso de error
+            $this->response['status'] = 'error';
+            $this->response['message'] = $exception->getMessage();
+            $this->statusCode = 500;
         }
 
         // Respuesta del módulo
@@ -183,8 +156,8 @@ class RolPermissionService extends Service implements ServiceInterface
                 'category', 'status', 'trademark', 'model',
             ])->where('equipment_uuid', $uuid)->first();
             $this->response['message'] = $equipment === null
-                ? trans('api.not_found')
-                : trans('api.show');
+            ? trans('api.not_found')
+            : trans('api.show');
             $this->response['data'] = $equipment ?? [];
         } catch (Throwable $exceptions) {
             // Manejo del error
@@ -304,7 +277,7 @@ class RolPermissionService extends Service implements ServiceInterface
 
         // Agregar el atributo a la solicitud
         $request->merge([
-            $newField => $this->getApplicationPaths()->application.$path,
+            $newField => $this->getApplicationPaths()->application . $path,
         ]);
     }
 }
