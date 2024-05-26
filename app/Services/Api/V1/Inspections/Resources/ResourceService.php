@@ -32,9 +32,9 @@ class ResourceService extends Service
             $inspection = [];
             if ($inspectionCategory) {
                 // Sections
-                $inspection['sections'] = InspectionSections::
+/*                $inspection['sections'] = InspectionSections::
                     where(['ct_inspection_id' => $inspectionCategory->ct_inspection_id,])
-                    ->get();
+                    ->get();*/
                 // Internals
                 $inspection['internals'] = InspectionInternals::with(['section'])
                     ->where(['ct_inspection_id' => $inspectionCategory->ct_inspection_id,])

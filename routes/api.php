@@ -1,20 +1,20 @@
 <?php
 
 use App\Http\Controllers\Api\SessionController;
+use App\Http\Controllers\Api\V1\AuthGuards\PermissionController;
+use App\Http\Controllers\Api\V1\AuthGuards\RoleController;
+use App\Http\Controllers\Api\V1\AuthGuards\RolePermissionController;
 use App\Http\Controllers\Api\V1\Clients\ClientController;
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
 use App\Http\Controllers\Api\V1\Failures\FailureController;
 use App\Http\Controllers\Api\V1\Inspections\CategoryController;
+use App\Http\Controllers\Api\V1\Inspections\FormController;
 use App\Http\Controllers\Api\V1\Inspections\InspectionController;
 use App\Http\Controllers\Api\V1\Inspections\Resources\ResourceController;
 use App\Http\Controllers\Api\V1\Oils\OilController;
-use App\Http\Controllers\Api\V1\AuthGuards\PermissionController;
-use App\Http\Controllers\Api\V1\AuthGuards\RoleController;
-use App\Http\Controllers\Api\V1\AuthGuards\RolePermissionController;
 use App\Http\Controllers\Api\V1\Status\StatusController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
-use App\Http\Controllers\Api\V1\Users\ApiController;
 use App\Http\Controllers\Api\V1\Users\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +49,9 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::resource('inspection/categories', CategoryController::class);
     Route::get('inspection/resources/get-inspection-details/{ct_inspection_uuid}', [ResourceController::class, 'getInspectionDetail'])
         ->name('inspection.resources.get-inspection-details');
+    //---------------------------------------------------------   FORMS    ----------------------------------------------------------
+    Route::get('inspection/forms/get-form/{ct_inspection_uuid}', [FormController::class, 'getForm']);
+    Route::post('inspection/forms/set-form', [FormController::class, 'setForm']);
     //######################################################### EQUIPMENTS ##########################################################
     Route::resource('equipments', EquipmentController::class);
     // Para envio de tipo multi form, el verbo PUT no es compatible, se ha remplazado por la llamada a este end point
@@ -64,8 +67,6 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //----------------------------------------------------- Trademarks Resources ----------------------------------------------------
     Route::get('trademarks/get-category/{category}', [TrademarkController::class, 'getCategory'])
         ->name('trademarks.get-category')->where(['category' => '[0-9]+']);
-    //######################################################## INSPECTIONS ##########################################################
-    Route::resource('inspection/categories', CategoryController::class);
     //######################################################### EQUIPMENTS ##########################################################
     Route::resource('status', StatusController::class);
     //----------------------------------------------------- Failure Equipments ----------------------------------------------------

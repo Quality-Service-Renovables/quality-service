@@ -32,8 +32,6 @@ class InitialSeeder extends Seeder
             VersionsSeeder::class,
             //Catalogos
             InspectionSectionsSeeder::class,
-            InspectionInternalsSeeder::class,
-            InspectionExternalsSeeder::class,
         ]);
     }
 }

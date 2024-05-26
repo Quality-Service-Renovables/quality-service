@@ -17,10 +17,12 @@ return new class extends Migration
             $table->string('ct_inspection_section');
             $table->string('ct_inspection_section_code')->unique();
             $table->unsignedBigInteger('ct_inspection_id')->comment('Relation with inspection categories');
+            $table->unsignedBigInteger('ct_inspection_relation_id')->nullable()->comment('section inspection dependency');
             $table->timestamps();
             $table->softDeletes();
             //INDEX
             $table->index('ct_inspection_id');
+            $table->index('ct_inspection_relation_id');
             //FOREIGN KEYS
             $table->foreign('ct_inspection_id', 'fk_section_category')
                 ->references('ct_inspection_id')->on('ct_inspections');
