@@ -13,9 +13,6 @@
                         <v-divider class="mx-4" inset vertical></v-divider>
                         <v-spacer></v-spacer>
                         <v-dialog v-model="dialog" max-width="1200px">
-                            <template v-slot:activator="{ props }">
-                                <v-btn class="mb-2" color="primary" dark v-bind="props" icon="mdi-plus"></v-btn>
-                            </template>
                             <v-card>
                                 <v-card-title>
                                     <span class="text-h5">{{ formTitle }}</span>
@@ -25,8 +22,8 @@
                                     <v-container>
                                         <v-row>
                                             <v-col cols="12">
-                                                <v-text-field v-model="editedItem.name" label="Nombre del rol" variant="solo"
-                                                    hide-details></v-text-field>
+                                                <v-text-field v-model="editedItem.name" label="Nombre del rol"
+                                                    variant="solo" hide-details></v-text-field>
                                             </v-col>
                                             <v-col cols="12">
                                                 <v-divider></v-divider>
@@ -60,29 +57,11 @@
                                 </v-card-actions>
                             </v-card>
                         </v-dialog>
-                        <v-dialog v-model="dialogDelete" max-width="500px">
-                            <v-card>
-                                <v-card-title class="text-h5 text-center">¿Estás seguro
-                                    de
-                                    eliminar?</v-card-title>
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancel</v-btn>
-                                    <v-btn color="blue-darken-1" variant="text"
-                                        @click="deleteItemConfirm(editedItem.id)">Si,
-                                        eliminar</v-btn>
-                                    <v-spacer></v-spacer>
-                                </v-card-actions>
-                            </v-card>
-                        </v-dialog>
                     </v-toolbar>
                 </template>
                 <template v-slot:item.actions="{ item }">
                     <v-icon class="me-2" size="small" @click="editItem(item)">
                         mdi-pencil
-                    </v-icon>
-                    <v-icon size="small" @click="deleteItem(item)">
-                        mdi-delete
                     </v-icon>
                 </template>
             </v-data-table>
@@ -101,11 +80,10 @@ export default {
     data: () => ({
         search: '',
         dialog: false,
-        dialogDelete: false,
         headers: [
             { title: 'Nombre', key: 'name' },
             { title: 'Usuarios', key: 'users' },
-            { title: 'Actions', key: 'actions', sortable: false }
+            { title: 'Acciones', key: 'actions', sortable: false }
         ],
         editedIndex: -1,
         editedItem: {
@@ -129,18 +107,16 @@ export default {
         dialog(val) {
             val || this.close()
         },
-        dialogDelete(val) {
-            val || this.closeDelete()
-        },
     },
     methods: {
         editItem(item) {
             this.editedIndex = this.roles.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialog = true
+            this.restorePermissions();
             this.checkPermissions();
         },
-        checkPermissions(){
+        checkPermissions() {
             this.editedItem.permissions.forEach(perm => {
                 this.permissions.map(permission => {
                     permission.permissions.map(p => {
@@ -152,25 +128,12 @@ export default {
                 });
             });
         },
-        deleteItem(item) {
-            this.editedIndex = this.roles.indexOf(item)
-            this.editedItem = Object.assign({}, item)
-            this.dialogDelete = true
-        },
-        deleteItemConfirm(item) {
-            this.roles.splice(this.editedIndex, 1)
-            const putRequest = () => {
-                return axios.delete('api/auth-guard/roles/' + item);
-            };
-            toast.promise(putRequest, {
-                loading: 'Procesando...',
-                success: (data) => {
-                    this.closeDelete()
-                    return 'Rol eliminada correctamente';
-                },
-                error: (data) => {
-                    this.handleErrors(data);
-                }
+        restorePermissions() {
+            this.permissions.forEach(permission => {
+                permission.checked = false;
+                permission.permissions.forEach(perm => {
+                    perm.checked = false;
+                });
             });
         },
         close() {
@@ -181,16 +144,10 @@ export default {
                 this.editedIndex = -1
             })
         },
-        closeDelete() {
-            this.dialogDelete = false
-            this.$nextTick(() => {
-                console.log("Cambiando estatus en closeDelete");
-                this.editedItem = Object.assign({}, this.defaultItem)
-                this.editedIndex = -1
-            })
-        },
         save() {
-            if (this.editedIndex > -1) {
+            console.log("Guardando...");
+            console.log(this.extractPermissions());
+            /*if (this.editedIndex > -1) {
                 const putRequest = () => {
                     return axios.put('api/auth-guard/roles/' + this.editedItem.id, {
                         name: this.editedItem.name,
@@ -207,26 +164,7 @@ export default {
                         this.handleErrors(data);
                     }
                 });
-            } else {
-                this.roles.push(this.editedItem)
-                const postRequest = () => {
-                    return axios.post('api/auth-guard/roles', {
-                        name: this.editedItem.name,
-                    });
-                };
-
-                toast.promise(postRequest(), {
-                    loading: 'Procesando...',
-                    success: (data) => {
-                        this.$inertia.reload()
-                        this.close()
-                        return 'Rol creado correctamente';
-                    },
-                    error: (data) => {
-                        this.handleErrors(data);
-                    }
-                });
-            }
+            } */
 
         },
         fetchRoles() {
@@ -242,23 +180,26 @@ export default {
         fetchPermissions() {
             return axios.get('api/auth-guard/permissions-grouped').then(response => {
                 this.permissions = response.data.data;
-                //this.permissionsIds = this.permissions.map(permission => permission.id);
-
-                //let permissionsIds = this.permissions.map(permission => permission.id);
-
-
-
             }).catch(error => {
                 toast.error('Error al cargar el catálogo de permisos');
             });
         },
-        /*checkActive(permissionId) {
-            this.editedItem.permissions.forEach(element => {
-                if(element.id == permissionId) {
-                    return true;
-                }
+        extractPermissions() {
+            let permissionsSet = new Set();
+
+            this.permissions.forEach(permission => {
+                permission.permissions.forEach(perm => {
+                    if (perm.checked) {
+                        permissionsSet.add(perm.id);
+                        permissionsSet.add(permission.id); // Se agrega el ID del permiso principal
+                    }
+                });
             });
-        }*/
+
+            // Convertimos el conjunto a un array y lo retornamos
+            return Array.from(permissionsSet);
+        }
+
     },
     mounted() {
         this.fetchRoles();

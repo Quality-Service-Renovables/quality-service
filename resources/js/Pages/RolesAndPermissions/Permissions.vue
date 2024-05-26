@@ -87,8 +87,8 @@ export default {
         dialogDelete: false,
         headers: [
             { title: 'Nombre', key: 'name' },
-            { title: 'Code', key: 'guard_name' },
-            { title: 'Actions', key: 'actions', sortable: false }
+            { title: 'Código', key: 'guard_name' },
+            { title: 'Acciones', key: 'actions', sortable: false }
         ],
         editedIndex: -1,
         editedItem: {
