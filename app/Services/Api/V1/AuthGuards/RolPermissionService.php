@@ -128,5 +128,4 @@ class RolPermissionService extends Service implements ServiceInterface
      */
     public function show(string $uuid): array
     {}
-
 }
