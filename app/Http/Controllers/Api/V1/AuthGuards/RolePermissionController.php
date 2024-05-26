@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Api\V1\AuthGuards;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\AuthGuards\RolePermissionRequest;
-use App\Http\Requests\Api\Equipments\EquipmentRequest;
 use App\Services\Api\V1\AuthGuards\RolPermissionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -34,22 +32,6 @@ class RolePermissionController extends Controller
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
-   
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id): JsonResponse
-    {
-        $request = (['id' => $id]);
-
-        if (! $this->commonValidation($request)) {
-            return response()->json($this->service->response, $this->service->statusCode);
-        }
-
-        $this->service->show($id);
-
-        return response()->json($this->service->response, $this->service->statusCode);
-    }
 
     /**
      * Update a resource in storage.
@@ -70,7 +52,7 @@ class RolePermissionController extends Controller
                 'min:1',
                 'max:255',
                 Rule::unique('roles', 'name')
-                    ->whereNot('id', $id)
+                    ->whereNot('id', $id),
             ],
             'permissions' => 'required|array',
         ]);
@@ -84,7 +66,7 @@ class RolePermissionController extends Controller
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
-   
+
     /**
      * Render the equipment component.
      */
@@ -95,26 +77,5 @@ class RolePermissionController extends Controller
         return Inertia::render('RolesAndPermissions/index', [
             'roles-permissions' => $this->service->response['data'],
         ]);
-    }
-
-    /**
-     * Perform common validation for the request data.
-     *
-     *
-     * @return bool Returns true if validation passes, false otherwise.
-     */
-    private function commonValidation(array $request): bool
-    {
-        $validated = Validator::make($request, [
-            'id' => 'required|exists:roles,id',
-        ]);
-
-        if ($validated->fails()) {
-            $this->service->setFailValidation($validated->errors());
-
-            return false;
-        }
-
-        return true;
     }
 }
