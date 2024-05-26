@@ -2,10 +2,12 @@
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import App from '@/Components/App.vue';
+import Dashboard from '@/Pages/Dashboard.vue';
 
 defineProps({
     ct_equipments: Object,
 });
+
 
 </script>
 
@@ -14,11 +16,14 @@ defineProps({
     <Head title="Equipments" />
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Mis Apps</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
                 <v-row>
+                    <!--<v-col cols="12" class="text-center pt-0 mb-5 pb-5">
+                        <Dashboard></Dashboard>
+                    </v-col>-->
                     <v-col xs="12" sm="12" md="12" lg="6" class="text-center pt-0">
                         <h4 class="text-grey-darken-1">Administración</h4>
                         <div class="d-flex align-start flex-wrap">
