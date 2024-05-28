@@ -14,15 +14,19 @@ return new class extends Migration
         Schema::create('clients', static function (Blueprint $table) {
             $table->id('client_id');
             $table->uuid('client_uuid');
-            $table->string('client')->unique();
-            $table->string('client_code')->unique();
+            $table->string('client');
+            $table->string('client_code');
             $table->string('logo')->nullable();
-            $table->string('legal_name')->unique()->nullable();
+            $table->string('legal_name')->nullable();
             $table->string('address')->nullable();
             $table->string('zip_code')->nullable();
             $table->string('phone')->nullable();
+            $table->string('phone_office')->nullable();
+            $table->time('open_time')->nullable();
+            $table->time('close_time')->nullable();
+            $table->string('office_days')->nullable();
             $table->string('website')->nullable();
-            $table->string('email')->unique()->nullable();
+            $table->string('email')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();

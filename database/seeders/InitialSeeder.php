@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Inspections\Categories\InspectionExternals;
+use App\Models\Inspections\Categories\InspectionInternals;
 use Illuminate\Database\Seeder;
 
 class InitialSeeder extends Seeder
@@ -13,9 +14,24 @@ class InitialSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            RolsSeeder::class,
             ClientsSeeder::class,
+            PermissionSeeder::class,
             StatusSeeder::class,
             UsersSeeder::class,
+            ServiceCategoriesSeeder::class,
+            MaintenanceCategoriesSeeder::class,
+            FixCategoriesSeeder::class,
+            EquipmentCategorySeeder::class,
+            FailureCategoriesSeeder::class,
+            InspectionCategoriesSeeder::class,
+            TrademarkCategoriesSeeder::class,
+            TrademarksSeeder::class,
+            OilsCategoriesSeeder::class,
+            EquipmentSeeder::class,
+            VersionsSeeder::class,
+            //Catalogos
+            InspectionSectionsSeeder::class,
         ]);
     }
 }

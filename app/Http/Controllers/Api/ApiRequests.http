@@ -1,0 +1,7 @@
+### Obtiene una lista de inspecciones
+###
+### GET http://localhost/api/inspections
+### Headers:
+### Accept: application/json
+GET http://localhost/api/inspections
+Accept: application/json

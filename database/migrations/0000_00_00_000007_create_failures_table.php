@@ -14,19 +14,20 @@ return new class extends Migration
         Schema::create('failures', static function (Blueprint $table) {
             $table->id('failure_id');
             $table->uuid('failure_uuid');
-            $table->string('failure')->unique();
-            $table->string('failure_code')->unique();
-            $table->boolean('active')->default(1);
-            $table->unsignedBigInteger('failure_category_id');
+            $table->string('failure');
+            $table->string('failure_code');
+            $table->longText('description')->nullable()->comment('Failure description');
+            $table->boolean('active')->default(true);
+            $table->unsignedBigInteger('ct_failure_id')->comment('Relation with failure category');
             $table->timestamps();
             $table->softDeletes();
             //INDEX
             $table->index('failure_uuid');
-            $table->index('failure_category_id');
+            $table->index('ct_failure_id');
             //FOREIGN KEYS
-            $table->foreign('failure_category_id', 'fk_failure_failure_category')
-                ->references('failure_category_id')
-                ->on('failure_categories');
+            $table->foreign('ct_failure_id', 'fk_ct_failure')
+                ->references('ct_failure_id')
+                ->on('ct_failures');
         });
     }
 

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('status', static function (Blueprint $table) {
             $table->id('status_id');
             $table->uuid('status_uuid');
-            $table->string('status')->unique();
-            $table->string('status_code')->unique();
+            $table->string('status');
+            $table->string('status_code');
             $table->longText('description');
             $table->boolean('active')->default(true);
             $table->timestamps();
