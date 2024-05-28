@@ -113,6 +113,8 @@ class InspectionController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @throws \Exception
      */
     public function destroy(string $uuid): JsonResponse
     {
