@@ -27,13 +27,25 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request)
     {
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        //return redirect()->intended(route('dashboard', absolute: false));
+        // Obtener el usuario autenticado con sus permisos
+        $user = Auth::user();
+        $permissions = $user->permissions()->pluck('name')->toArray();
+
+        // Devolver la respuesta con los permisos
+        return Inertia::location(
+            route('dashboard', [], false), // false para que devuelva la URL relativa
+            302,
+            [
+                'permissions' => $permissions
+            ]
+        );
     }
 
     /**
