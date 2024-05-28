@@ -24,7 +24,7 @@ defineProps({
                     <!--<v-col cols="12" class="text-center pt-0 mb-5 pb-5">
                         <Dashboard></Dashboard>
                     </v-col>-->
-                    <v-col xs="12" sm="12" md="12" lg="6" class="text-center pt-0">
+                    <v-col cols="12" lg="6" class="text-center pt-0">
                         <h4 class="text-grey-darken-1">Administración</h4>
                         <div class="d-flex align-start flex-wrap">
                             <App path="dashboard" title="Dashboard" icon="mdi-monitor-dashboard"/>
@@ -35,7 +35,7 @@ defineProps({
                             <App path="https://www.qualityservicerenovables.com.mx" title="Landing page" icon="mdi-monitor"/>
                         </div>
                     </v-col>
-                    <v-col xs="12" sm="12" md="12" lg="6" class="text-center pt-0">
+                    <v-col cols="12" lg="6" class="text-center pt-0">
                         <h4 class="text-grey-darken-1">Mantenedores</h4>
                         <div class="d-flex align-start flex-wrap">
                             <App path="equipments" title="Equipos" icon="mdi-clipboard-list-outline"/>
