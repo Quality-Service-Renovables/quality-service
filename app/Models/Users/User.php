@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, softDeletes;
+    use HasApiTokens, HasFactory, Notifiable, softDeletes, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -36,9 +37,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'id',
-        'rol_id',
-        'client_id',
+        //'id',
+        //'rol_id',
+        //'client_id',
     ];
 
     /**

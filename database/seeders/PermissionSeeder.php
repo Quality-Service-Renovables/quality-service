@@ -235,6 +235,49 @@ class PermissionSeeder extends Seeder
                 'name' => 'Módulo de aceites - Eliminar',
                 'guard_name' => 'oils.delete',
             ],
+            // Proyectos
+            [
+                'name' => 'Módulo de proyectos',
+                'guard_name' => 'projects',
+            ],
+            [
+                'name' => 'Módulo de proyectos - Crear',
+                'guard_name' => 'projects.create',
+            ],
+            [
+                'name' => 'Módulo de proyectos - Leer',
+                'guard_name' => 'projects.read',
+            ],
+            [
+                'name' => 'Módulo de proyectos - Editar',
+                'guard_name' => 'projects.update',
+            ],
+            [
+                'name' => 'Módulo de proyectos - Eliminar',
+                'guard_name' => 'projects.delete',
+            ],
+
+            // Roles y permisos
+            [
+                'name' => 'Módulo de roles y permisos',
+                'guard_name' => 'roles',
+            ],
+            [
+                'name' => 'Módulo de roles y permisos - Crear',
+                'guard_name' => 'roles.create',
+            ],
+            [
+                'name' => 'Módulo de roles y permisos - Leer',
+                'guard_name' => 'roles.read',
+            ],
+            [
+                'name' => 'Módulo de roles y permisos - Editar',
+                'guard_name' => 'roles.update',
+            ],
+            [
+                'name' => 'Módulo de roles y permisos - Eliminar',
+                'guard_name' => 'roles.delete',
+            ],
         ];
     }
 
@@ -287,6 +330,16 @@ class PermissionSeeder extends Seeder
                     'oils.read',
                     'oils.update',
                     'oils.delete',
+                    'projects', 
+                    'projects.create',
+                    'projects.read',
+                    'projects.update',
+                    'projects.delete',
+                    'roles',
+                    'roles.create',
+                    'roles.read',
+                    'roles.update',
+                    'roles.delete',
                 ],
                 'technical' => [
                     'inspections', 
@@ -295,10 +348,12 @@ class PermissionSeeder extends Seeder
                     'trademarks.read',
                     'failures',
                     'failures.read',
+                    'projects', 
+                    'projects.read',
                 ],
                 'client' => [
-                    'inspections',
-                    'inspections.read',
+                    'projects', 
+                    'projects.read',
                 ],
             ];
     }
