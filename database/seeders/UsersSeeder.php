@@ -31,16 +31,34 @@ class UsersSeeder extends Seeder
     private function getUsers(): array
     {
         $client = Client::where('client_code', 'quality_service')->first();
-        $rol = Role::where('guard_name', 'admin')->first();
+        $rolAdmin = Role::where('guard_name', 'admin')->first();
+        $rolClient = Role::where('guard_name', 'client')->first();
+        $rolTechnical = Role::where('guard_name', 'technical')->first();
 
         return [
             [
                 'uuid' => Str::uuid()->toString(),
                 'name' => 'Quality Service',
-                'email' => 'admin@quality-service.com',
+                'email' => 'admin@qsr.mx',
                 'password' => Hash::make('qsr.2024!'),
                 'client_id' => $client->client_id,
-                'rol_id' => $rol->id,
+                'rol_id' => $rolAdmin->id,
+            ],
+            [
+                'uuid' => Str::uuid()->toString(),
+                'name' => 'Cliente',
+                'email' => 'cliente@qsr.mx',
+                'password' => Hash::make('qsr.2024!'),
+                'client_id' => $client->client_id,
+                'rol_id' => $rolClient->id,
+            ],
+            [
+                'uuid' => Str::uuid()->toString(),
+                'name' => 'Técnico',
+                'email' => 'tecnico@qsr.mx',
+                'password' => Hash::make('qsr.2024!'),
+                'client_id' => $client->client_id,
+                'rol_id' => $rolTechnical->id,
             ],
         ];
     }

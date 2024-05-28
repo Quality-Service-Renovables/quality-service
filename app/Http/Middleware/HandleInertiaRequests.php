@@ -31,6 +31,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = null;
         $permissions = [];
         if($request->user()){
             $user = User::where("id", $request->user()->id)->with("role.permissions")->first();
@@ -41,6 +42,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+                'role' => $user ? $user->role : null,
                 'permissions' => $permissions,
             ],
             'ziggy' => fn () => [
