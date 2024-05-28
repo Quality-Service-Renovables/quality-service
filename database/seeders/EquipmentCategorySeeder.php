@@ -45,7 +45,7 @@ class EquipmentCategorySeeder extends Seeder
             ],
             [
                 'ct_equipment_uuid' => Str::uuid()->toString(),
-                'ct_equipment' => 'Transforamadores',
+                'ct_equipment' => 'Transformadores',
                 'ct_equipment_code' => 'transformador',
                 'description' => 'Transformadores',
                 'is_default' => true,
