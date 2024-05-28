@@ -2,7 +2,6 @@
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import App from '@/Components/App.vue';
-import Dashboard from '@/Pages/Dashboard.vue';
 
 </script>
 
@@ -28,29 +27,29 @@ import Dashboard from '@/Pages/Dashboard.vue';
                             </button>
                         </div>
                     </v-col>
-                    <v-col cols="12" :lg="searchTerm ? '12' :'6'" :class="searchTerm ? 'text-left pt-0' :'text-center pt-0'">
+                    <v-col cols="12" :lg="searchTerm ? '12' :'6'" class="text-left">
                         <h4 class="text-grey-darken-1" v-if="!hideTittleSection">Administración</h4>
                         <div class="d-flex align-start flex-wrap">
-                            <App path="dashboard" title="Dashboard" icon="mdi-monitor-dashboard" v-if="checkVisivility('Dashboard', 'admon')"/>
-                            <App path="#" title="Proyectos" icon="mdi-folder-text-outline" v-if="checkVisivility('Proyectos', 'admon')"/>
-                            <App path="#" title="Usuarios" icon="mdi-account-group" v-if="checkVisivility('Usuarios', 'admon')"/>
-                            <App path="roles-permissions" title="Roles y permisos" icon="mdi-account-lock" v-if="checkVisivility('Roles y permisos', 'admon')"/>
-                            <App path="profile" title="Perfil" icon="mdi-face-man-profile" v-if="checkVisivility('perfil', 'admon')"/>
+                            <App path="dashboard" title="Dashboard" icon="mdi-monitor-dashboard"/>
+                            <App path="#" title="Proyectos" icon="mdi-folder-text-outline"/>
+                            <App path="#" title="Usuarios" icon="mdi-account-group" v-if="checkVisivility('Usuarios', 'users')"/>
+                            <App path="roles-permissions" title="Roles y permisos" icon="mdi-account-lock"/>
+                            <App path="profile" title="Perfil" icon="mdi-face-man-profile"/>
                             <App path="https://www.qualityservicerenovables.com.mx" title="Landing page"
-                                icon="mdi-monitor" v-if="checkVisivility('Landing page', 'admon')"/>
+                                icon="mdi-monitor"/>
                         </div>
                     </v-col>
-                    <v-col cols="12" :lg="searchTerm ? '12' :'6'" :class="searchTerm ? 'text-left pt-0' :'text-center pt-0'">
+                    <v-col cols="12" :lg="searchTerm ? '12' :'6'" class="text-left">
                         <h4 class="text-grey-darken-1" v-if="!hideTittleSection">Mantenedores</h4>
                         <div class="d-flex align-start flex-wrap">
-                            <App path="equipments" title="Equipos" icon="mdi-clipboard-list-outline" v-if="checkVisivility('Equipos', 'mant')"/>
-                            <App path="equipments-categories" title="Categorias" icon="mdi-list-box-outline" v-if="checkVisivility('Categorias', 'mant')"/>
-                            <App path="customers" title="Clientes" icon="mdi-format-list-checkbox" v-if="checkVisivility('Clientes', 'mant')"/>
-                            <App path="#" title="Inspecciones" icon="mdi-table-cog" v-if="checkVisivility('Inspecciones', 'mant')"/>
-                            <App path="failures" title="Fallas" icon="mdi-playlist-remove" v-if="checkVisivility('Fallas', 'mant')"/>
-                            <App path="trademarks" title="Marcas" icon="mdi-playlist-star" v-if="checkVisivility('Marcas', 'mant')"/>
-                            <App path="models" title="Modelos" icon="mdi-format-list-text" v-if="checkVisivility('Modelos', 'mant')"/>
-                            <App path="oils" title="Aceites" icon="mdi-barrel" v-if="checkVisivility('Aceites', 'mant')"/>
+                            <App path="equipments" title="Equipos" icon="mdi-clipboard-list-outline" v-if="checkVisivility('Equipos', 'equipments')"/>
+                            <App path="equipments-categories" title="Categorias" icon="mdi-list-box-outline" v-if="checkVisivility('Categorias', 'equipments_categories')"/>
+                            <App path="customers" title="Clientes" icon="mdi-format-list-checkbox" v-if="checkVisivility('Clientes', 'clients')"/>
+                            <App path="#" title="Inspecciones" icon="mdi-table-cog" v-if="checkVisivility('Inspecciones', 'inspections')"/>
+                            <App path="failures" title="Fallas" icon="mdi-playlist-remove" v-if="checkVisivility('Fallas', 'failures')"/>
+                            <App path="trademarks" title="Marcas" icon="mdi-playlist-star" v-if="checkVisivility('Marcas', 'trademarks')"/>
+                            <App path="models" title="Modelos" icon="mdi-format-list-text" v-if="checkVisivility('Modelos', 'models')"/>
+                            <App path="oils" title="Aceites" icon="mdi-barrel" v-if="checkVisivility('Aceites', 'oils')"/>
                         </div>
                     </v-col>
                 </v-row>
@@ -81,9 +80,12 @@ export default {
         // Aquí puedes manejar la lógica de búsqueda según lo necesites
             console.log("Búsqueda:", this.searchTerm);
         },
-        checkVisivility(path, label) {
+        checkVisivility(path, guard) {
             this.hideTittleSection = this.searchTerm != "" ? true : false;
-            return path.toLowerCase().includes(this.searchTerm.toLowerCase());
+            console.log(this.$page.props.auth.permissions);
+            if(this.$page.props.auth.permissions.includes(guard)){
+                return path.toLowerCase().includes(this.searchTerm.toLowerCase());
+            }
         }
     }
 };
