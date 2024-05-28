@@ -75,10 +75,6 @@ export default {
     },
     methods: {
         getPermissions() {
-            // Accede a los permisos de la respuesta Inertia
-            this.permissions = this.$page.props.permissions;
-            console.log("Permisos:");
-            console.log(this.permissions);
             // Puedes hacer cualquier otra lógica necesaria con los permisos aquí
         },
         handleInput() {

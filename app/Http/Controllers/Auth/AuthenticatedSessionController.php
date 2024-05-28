@@ -33,19 +33,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        //return redirect()->intended(route('dashboard', absolute: false));
-        // Obtener el usuario autenticado con sus permisos
-        $user = Auth::user();
-        $permissions = $user->permissions()->pluck('name')->toArray();
-
-        // Devolver la respuesta con los permisos
-        return Inertia::location(
-            route('dashboard', [], false), // false para que devuelva la URL relativa
-            302,
-            [
-                'permissions' => $permissions
-            ]
-        );
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**
