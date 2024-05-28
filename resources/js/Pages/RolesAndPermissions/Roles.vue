@@ -33,7 +33,7 @@
                                             </v-col>
                                             <v-col cols="12">
                                                 <v-row>
-                                                    <v-col cols="4" md="4" v-for="permission in permissions"
+                                                    <v-col cols="12" lg="4" md="4" sm="12" v-for="permission in permissions"
                                                         :key="permission.id">
                                                         <h1 class="text-h6">{{ permission.name }}</h1>
                                                         <v-checkbox v-for="perm in permission.permissions"
