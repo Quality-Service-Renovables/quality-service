@@ -29,7 +29,7 @@ import Dashboard from '@/Pages/Dashboard.vue';
                         </div>
                     </v-col>
                     <v-col cols="12" :lg="searchTerm ? '12' :'6'" :class="searchTerm ? 'text-left pt-0' :'text-center pt-0'">
-                        <h4 class="text-grey-darken-1" v-if="showAdmonLabel">Administración</h4>
+                        <h4 class="text-grey-darken-1" v-if="!hideTittleSection">Administración</h4>
                         <div class="d-flex align-start flex-wrap">
                             <App path="dashboard" title="Dashboard" icon="mdi-monitor-dashboard" v-if="checkVisivility('Dashboard', 'admon')"/>
                             <App path="#" title="Proyectos" icon="mdi-folder-text-outline" v-if="checkVisivility('Proyectos', 'admon')"/>
@@ -41,7 +41,7 @@ import Dashboard from '@/Pages/Dashboard.vue';
                         </div>
                     </v-col>
                     <v-col cols="12" :lg="searchTerm ? '12' :'6'" :class="searchTerm ? 'text-left pt-0' :'text-center pt-0'">
-                        <h4 class="text-grey-darken-1" v-if="showMantLabel">Mantenedores</h4>
+                        <h4 class="text-grey-darken-1" v-if="!hideTittleSection">Mantenedores</h4>
                         <div class="d-flex align-start flex-wrap">
                             <App path="equipments" title="Equipos" icon="mdi-clipboard-list-outline" v-if="checkVisivility('Equipos', 'mant')"/>
                             <App path="equipments-categories" title="Categorias" icon="mdi-list-box-outline" v-if="checkVisivility('Categorias', 'mant')"/>
@@ -66,8 +66,7 @@ export default {
         return {
             permissions: [], // Variable para almacenar los permisos
             searchTerm: "",
-            showAdmonLabel: true,
-            showMantLabel: true
+            hideTittleSection: false,
         };
     },
     mounted() {
@@ -87,21 +86,8 @@ export default {
             console.log("Búsqueda:", this.searchTerm);
         },
         checkVisivility(path, label) {
-            if(this.searchTerm == ""){
-                this.showAdmonLabel = true;
-                this.showMantLabel = true;
-                return true;
-            } 
-            if(path.toLowerCase().includes(this.searchTerm.toLowerCase())){
-                if(label == 'admon'){
-                    this.showAdmonLabel = true;
-                    this.showMantLabel = false;
-                } else if(label == 'mant'){
-                    this.showAdmonLabel = false;
-                    this.showMantLabel = true;
-                }
-                return true;
-            }
+            this.hideTittleSection = this.searchTerm != "" ? true : false;
+            return path.toLowerCase().includes(this.searchTerm.toLowerCase());
         }
     }
 };
@@ -121,7 +107,7 @@ export default {
   border: 1px solid #ccc;
   border-radius: 20px;
   outline: none;
-  height: 2.5em;
+  height: 2.1em;
 }
 
 .search-button {
