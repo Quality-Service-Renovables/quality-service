@@ -6,7 +6,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 <template>
     <Toaster position="top-right" richColors :visibleToasts="10" />
 
-    <Head title="Equipments" />
+    <Head title="Categorias de Equipos" />
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Categorias de Equipos</h2>
