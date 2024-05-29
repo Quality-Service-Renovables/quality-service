@@ -41,7 +41,7 @@ import { mdiCheckBold } from '@mdi/js';
                         </div>
                     </v-col>
                     <v-col cols="12" :lg="searchTerm ? '12' :'6'" class="text-left" v-if="checkRole(['admin', 'technical'])">
-                        <h4 class="text-grey-darken-1" v-if="!hideTittleSection">Mantenedores</h4>
+                        <h4 class="text-grey-darken-1" v-if="!hideTittleSection">Configuración</h4>
                         <div class="d-flex align-start flex-wrap">
                             <App path="equipments" title="Equipos" icon="mdi-clipboard-list-outline" v-if="checkVisivility('Equipos') && checkPermission('equipments')"/>
                             <App path="equipments-categories" title="Categorias" icon="mdi-list-box-outline" v-if="checkVisivility('Categorias') && checkPermission('equipments_categories')"/>
