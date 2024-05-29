@@ -78,16 +78,17 @@ class Service
      *
      * @throws \JsonException
      */
-    public function storeFile(Request $request, string $fileRequest, string $fileDatabase, string $module, bool $deleteAttribute=false): array
+    public function storeFile(Request $request, string $fileRequest, string $fileDatabase, string $module, bool $deleteAttribute = false): array
     {
         $paths = $this->getApplicationPaths();
         // Establece la ruta de guardado
         $storagePath = match ($module) {
-            "clients" => $paths->clients->logos,
+            'clients' => $paths->clients->logos,
             'equipments' => $paths->equipments->images,
+            'evidences' => $paths->evidences->inspections,
             default => 'tmp',
         };
-        // Si se ha seleccionado una imagen para el equipo se guarda en el storage
+        // Si se ha seleccionado una imagen se guarda en el storage
         if ($request->hasFile($fileRequest)) {
             $this->addFileToRequest(
                 $request,
@@ -100,6 +101,7 @@ class Service
         if ($deleteAttribute) {
             $request->offsetUnset($fileRequest);
         }
+
         return $request->all();
     }
 
