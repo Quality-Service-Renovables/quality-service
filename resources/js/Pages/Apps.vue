@@ -19,7 +19,7 @@ import { mdiCheckBold } from '@mdi/js';
                     <!--<v-col cols="12" class="text-center pt-0 mb-5 pb-5">
                         <Dashboard></Dashboard>
                     </v-col>-->
-                    <v-col cols="12" class="text-center pt-0 mb-5 pb-5">
+                    <v-col cols="12" class="text-left pt-0 mb-5 pb-5">
                         <div class="search-wrapper">
                             <input type="text" class="search-input" placeholder="Buscar App" v-model="searchTerm"
                                 @input="handleInput" />
