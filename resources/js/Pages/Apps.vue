@@ -19,7 +19,7 @@ import { mdiCheckBold } from '@mdi/js';
                     <!--<v-col cols="12" class="text-center pt-0 mb-5 pb-5">
                         <Dashboard></Dashboard>
                     </v-col>-->
-                    <v-col cols="12" class="text-center pt-0 mb-5 pb-5">
+                    <v-col cols="12" class="text-left pt-0 mb-5 pb-5">
                         <div class="search-wrapper">
                             <input type="text" class="search-input" placeholder="Buscar App" v-model="searchTerm"
                                 @input="handleInput" />
@@ -41,7 +41,7 @@ import { mdiCheckBold } from '@mdi/js';
                         </div>
                     </v-col>
                     <v-col cols="12" :lg="searchTerm ? '12' :'6'" class="text-left" v-if="checkRole(['admin', 'technical'])">
-                        <h4 class="text-grey-darken-1" v-if="!hideTittleSection">Mantenedores</h4>
+                        <h4 class="text-grey-darken-1" v-if="!hideTittleSection">Configuración</h4>
                         <div class="d-flex align-start flex-wrap">
                             <App path="equipments" title="Equipos" icon="mdi-clipboard-list-outline" v-if="checkVisivility('Equipos') && checkPermission('equipments')"/>
                             <App path="equipments-categories" title="Categorias" icon="mdi-list-box-outline" v-if="checkVisivility('Categorias') && checkPermission('equipments_categories')"/>
@@ -84,9 +84,6 @@ export default {
         checkVisivility(path) {
             this.hideTittleSection = this.searchTerm != "" ? true : false;
             return this.searchTerm != "" ? path.toLowerCase().includes(this.searchTerm.toLowerCase()) : true;
-        },
-        checkPermission(permission) {
-            return this.$page.props.auth.permissions.includes(permission);
         },
         checkRole(roles) {
             return roles.includes(this.$page.props.auth.role.guard_name);
