@@ -12,7 +12,9 @@ class Inspection extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'inspections';
+
     protected $primaryKey = 'inspection_id';
+
     protected $fillable = [
         'inspection_uuid',
         'resume',
@@ -20,12 +22,11 @@ class Inspection extends Model
         'recomendations',
         'ct_inspection_id',
     ];
-    protected $hidden = ['ct_inspection_id'];
+
+    protected $hidden = ['inspection_id','ct_inspection_id'];
 
     /**
      * Get the category that belongs to this model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function category(): BelongsTo
     {
