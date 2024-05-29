@@ -26,8 +26,13 @@ function handleErrors(data) {
     }
 }
 
+function checkPermission(permission) {
+    return this.$page.props.auth.permissions.includes(permission);
+}
+
 export default {
     methods: {
         handleErrors,
+        checkPermission,
     },
 };
