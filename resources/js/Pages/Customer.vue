@@ -50,8 +50,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             </v-toolbar-title>
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
-                                            <v-dialog v-model="dialog">
-                                                <template v-slot:activator="{ props }">
+                                            <v-dialog v-model="dialog" v-if="checkPermission('clients.create') || checkPermission('clients.update')">
+                                                <template v-slot:activator="{ props }" v-if="checkPermission('clients.create')">
                                                     <v-btn class="mb-2" color="primary" dark v-bind="props"
                                                         icon="mdi-plus"></v-btn>
                                                 </template>
@@ -170,10 +170,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
-                                        <v-icon class="me-2" size="small" @click="editItem(item)">
+                                        <v-icon class="me-2" size="small" @click="editItem(item)" v-if="checkPermission('clients.update')">
                                             mdi-pencil
                                         </v-icon>
-                                        <v-icon size="small" @click="deleteItem(item)">
+                                        <v-icon size="small" @click="deleteItem(item)" v-if="checkPermission('clients.delete')">
                                             mdi-delete
                                         </v-icon>
                                     </template>

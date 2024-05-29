@@ -12,7 +12,7 @@
                         </v-toolbar-title>
                         <v-divider class="mx-4" inset vertical></v-divider>
                         <v-spacer></v-spacer>
-                        <v-dialog v-model="dialog" max-width="1200px">
+                        <v-dialog v-model="dialog" max-width="1200px" v-if="checkPermission('roles.update')">
                             <v-card>
                                 <v-card-title>
                                     <span class="text-h5">{{ formTitle }}</span>
@@ -60,7 +60,7 @@
                     </v-toolbar>
                 </template>
                 <template v-slot:item.actions="{ item }">
-                    <v-icon class="me-2" size="small" @click="editItem(item)">
+                    <v-icon class="me-2" size="small" @click="editItem(item)" v-if="checkPermission('roles.update')">
                         mdi-pencil
                     </v-icon>
                 </template>

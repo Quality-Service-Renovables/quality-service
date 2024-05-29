@@ -85,9 +85,6 @@ export default {
             this.hideTittleSection = this.searchTerm != "" ? true : false;
             return this.searchTerm != "" ? path.toLowerCase().includes(this.searchTerm.toLowerCase()) : true;
         },
-        checkPermission(permission) {
-            return this.$page.props.auth.permissions.includes(permission);
-        },
         checkRole(roles) {
             return roles.includes(this.$page.props.auth.role.guard_name);
         },
