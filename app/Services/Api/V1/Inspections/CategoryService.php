@@ -70,7 +70,7 @@ class CategoryService extends Service
     {
         try {
             $this->response['message'] = trans('api.readed');
-            $this->response['data'] = ['categories' => Category::all()];
+            $this->response['data'] = Category::all();
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);

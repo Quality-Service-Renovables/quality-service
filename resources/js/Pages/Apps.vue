@@ -32,7 +32,7 @@ import { mdiCheckBold } from '@mdi/js';
                         <h4 class="text-grey-darken-1" v-if="!hideTittleSection">Administración</h4>
                         <div class="d-flex align-start flex-wrap">
                             <App path="dashboard" title="Dashboard" icon="mdi-monitor-dashboard" v-if="checkVisivility('Dashboard')"/>
-                            <App path="#" title="Proyectos" icon="mdi-folder-text-outline" v-if="checkVisivility('Proyectos') && hasPermissionTo('projects')"/>
+                            <App path="projects" title="Proyectos" icon="mdi-folder-text-outline" v-if="checkVisivility('Proyectos') && hasPermissionTo('projects')"/>
                             <App path="#" title="Usuarios" icon="mdi-account-group" v-if="checkVisivility('Usuarios') && hasPermissionTo('users')"/>
                             <App path="roles-permissions" title="Roles y permisos" icon="mdi-account-lock" v-if="checkVisivility('Roles y permisos') && hasPermissionTo('roles')"/>
                             <App path="profile" title="Perfil" icon="mdi-face-man-profile" v-if="checkVisivility('Perfil')"/>
@@ -46,7 +46,7 @@ import { mdiCheckBold } from '@mdi/js';
                             <App path="equipments" title="Equipos" icon="mdi-clipboard-list-outline" v-if="checkVisivility('Equipos') && hasPermissionTo('equipments')"/>
                             <App path="equipments-categories" title="Categorias" icon="mdi-list-box-outline" v-if="checkVisivility('Categorias') && hasPermissionTo('equipments_categories')"/>
                             <App path="customers" title="Clientes" icon="mdi-format-list-checkbox" v-if="checkVisivility('Clientes') && hasPermissionTo('clients')"/>
-                            <App path="#" title="Inspecciones" icon="mdi-table-cog" v-if="checkVisivility('Inspecciones') && hasPermissionTo('inspections')"/>
+                            <App path="inspections-categories" title="Inspecciones" icon="mdi-table-cog" v-if="checkVisivility('Inspecciones') && hasPermissionTo('inspections')"/>
                             <App path="failures" title="Fallas" icon="mdi-playlist-remove" v-if="checkVisivility('Fallas') && hasPermissionTo('failures')"/>
                             <App path="trademarks" title="Marcas" icon="mdi-playlist-star" v-if="checkVisivility('Marcas') && hasPermissionTo('trademarks')"/>
                             <App path="models" title="Modelos" icon="mdi-format-list-text" v-if="checkVisivility('Modelos') && hasPermissionTo('models')"/>

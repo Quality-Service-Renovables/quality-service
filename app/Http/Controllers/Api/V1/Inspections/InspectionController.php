@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1\Inspections;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Inspections\InspectionRequest;
-use App\Services\Api\V1\Inspections\InspectionService;
-use Illuminate\Http\JsonResponse;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
+use App\Services\Api\V1\Inspections\InspectionService;
+use App\Http\Requests\Api\Inspections\InspectionRequest;
+use Inertia\Response;
 
 class InspectionController extends Controller
 {
@@ -127,6 +129,18 @@ class InspectionController extends Controller
         $this->service->delete($uuid);
 
         return response()->json($this->service->response, $this->service->statusCode);
+    }
+
+    /**
+     * Render the project component.
+     */
+    public function component(): Response
+    {
+        $this->service->read();
+
+        return Inertia::render('Projects', [
+            'projects' => $this->service->response['data'],
+        ]);
     }
 
     /**

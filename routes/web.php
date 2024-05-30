@@ -3,6 +3,7 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
+use \Illuminate\Auth\Middleware\Authorize;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Api\V1\AppsController;
 use App\Http\Controllers\Api\V1\Oils\OilController;
@@ -12,9 +13,10 @@ use App\Http\Controllers\Api\V1\Failures\FailureController;
 use App\Http\Controllers\Api\V1\Equipments\CategoryController;
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
+use App\Http\Controllers\Api\V1\Inspections\InspectionController;
 use App\Http\Controllers\Api\V1\AuthGuards\RolePermissionController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
-use \Illuminate\Auth\Middleware\Authorize;
+use App\Http\Controllers\Api\V1\Inspections\CategoryController as InspectionCategoryController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -64,14 +66,24 @@ Route::middleware('auth')->group(function () {
         Route::get('/failures', [FailureController::class, 'component'])->name('failures');
     });
 
-    //Clientes
+    //Clients
     Route::group(['middleware' => ['permission:clients']], function () {
         Route::get('/customers', [ClientController::class, 'component'])->name('clients');
     });
 
-    //Roles y permisos
+    //Roles and permissions
     Route::group(['middleware' => ['permission:roles']], function () {
         Route::get('/roles-permissions', [RolePermissionController::class, 'component'])->name('roles');
+    });
+
+    // Inspections categories
+    Route::group(['middleware' => ['permission:inspections']], function () {
+        Route::get('/inspections-categories', [InspectionCategoryController::class, 'component'])->name('inspections-categories');
+    });
+
+    //Projects
+    Route::group(['middleware' => ['permission:projects']], function () {
+        Route::get('/projects', [InspectionController::class, 'component'])->name('projects');
     });
    
 });
