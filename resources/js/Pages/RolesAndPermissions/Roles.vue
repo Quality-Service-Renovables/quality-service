@@ -12,7 +12,7 @@
                         </v-toolbar-title>
                         <v-divider class="mx-4" inset vertical></v-divider>
                         <v-spacer></v-spacer>
-                        <v-dialog v-model="dialog" max-width="1200px" v-if="checkPermission('roles.update')">
+                        <v-dialog v-model="dialog" max-width="1200px" v-if="hasPermissionTo('roles.update')">
                             <v-card>
                                 <v-card-title>
                                     <span class="text-h5">{{ formTitle }}</span>
@@ -64,7 +64,7 @@
                     </v-toolbar>
                 </template>
                 <template v-slot:item.actions="{ item }">
-                    <v-icon class="me-2" size="small" @click="editItem(item)" v-if="checkPermission('roles.update')">
+                    <v-icon class="me-2" size="small" @click="editItem(item)" v-if="hasPermissionTo('roles.update')">
                         mdi-pencil
                     </v-icon>
                 </template>
@@ -118,9 +118,9 @@ export default {
             this.editedItem = Object.assign({}, item)
             this.dialog = true
             this.restorePermissions();
-            this.checkPermissions();
+            this.hasPermissionTos();
         },
-        checkPermissions() {
+        hasPermissionTos() {
             this.editedItem.permissions.forEach(perm => {
                 this.permissions.map(permission => {
                     permission.permissions.map(p => {
@@ -155,7 +155,7 @@ export default {
             if (this.editedIndex > -1) {
                 const putRequest = () => {
                     return axios.put('api/auth-guard/role-permissions/' + this.editedItem.id, {
-                        name: this.editedItem.name,
+                        description: this.editedItem.description,
                         permissions: permissionsAux
                     });
                 };

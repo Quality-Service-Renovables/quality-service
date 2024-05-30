@@ -46,12 +46,12 @@ class RolePermissionController extends Controller
         $request->merge(['id' => $id]);
         $validated = Validator::make($request->all(), [
             'id' => 'required|exists:roles,id',
-            'name' => [
+            'description' => [
                 'required',
                 'string',
                 'min:1',
                 'max:255',
-                Rule::unique('roles', 'name')
+                Rule::unique('roles', 'description')
                     ->whereNot('id', $id),
             ],
             'permissions' => 'required|array',
