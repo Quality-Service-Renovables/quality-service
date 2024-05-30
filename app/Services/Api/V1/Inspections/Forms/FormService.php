@@ -6,9 +6,12 @@
 
 namespace App\Services\Api\V1\Inspections\Forms;
 
+use App\Models\Inspections\Categories\FormInspection as CtFormInspection;
 use App\Models\Inspections\Categories\Section;
 use App\Models\Inspections\Category;
 use App\Models\Inspections\CategoryForm;
+use App\Models\Inspections\FormInspection;
+use App\Models\Inspections\Inspection;
 use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -188,5 +191,47 @@ class FormService extends Service
         }
 
         return $form;
+    }
+
+    public function setFormInspection(Request $request): array
+    {
+        try {
+            // Control de transacciones
+            DB::beginTransaction();
+            $inspection = Inspection::where('inspection_uuid', $request->inspection_uuid)->first();
+            $categoryForm = CtFormInspection::all();
+            $inspectionForms = [];
+            foreach ($request->form as $formInspection) {
+                $categoryFormId = $categoryForm->where(
+                    'ct_inspection_form_uuid', '=', $formInspection['ct_inspection_form_uuid'])
+                    ->first()->ct_inspection_form_id;
+
+                $formInspection['inspection_form_uuid'] = Str::uuid()->toString();
+                $formInspection['inspection_id'] = $inspection->inspection_id;
+                $formInspection['ct_inspection_form_id'] = $categoryFormId;
+
+                $inspectionForms[] = FormInspection::create($formInspection);
+            }
+
+            $this->statusCode = 201;
+            $this->response['message'] = trans('api.created');
+            $this->response['data'] = $inspectionForms;
+            // Registro en log
+            $this->logService->create(
+                $this->nameService,
+                $request->all(),
+                $this->response,
+                trans('api.message_log'),
+            );
+            // Finaliza Transacción
+            DB::commit();
+        } catch (Throwable $exceptions) {
+            DB::rollBack();
+            // Manejo del error
+            $this->setExceptions($exceptions);
+        }
+
+        // Respuesta del módulo
+        return $this->response;
     }
 }
