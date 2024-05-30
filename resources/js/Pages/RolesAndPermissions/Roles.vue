@@ -22,7 +22,11 @@
                                     <v-container>
                                         <v-row>
                                             <v-col cols="12">
-                                                <v-text-field v-model="editedItem.name" label="Nombre del rol"
+                                                <v-text-field v-model="editedItem.name" label="Rol"
+                                                    variant="solo" hide-details disabled></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-text-field v-model="editedItem.description" label="Descripción"
                                                     variant="solo" hide-details></v-text-field>
                                             </v-col>
                                             <v-col cols="12">
@@ -35,9 +39,9 @@
                                                 <v-row>
                                                     <v-col cols="12" lg="4" md="4" sm="12" v-for="permission in permissions"
                                                         :key="permission.id">
-                                                        <h1 class="text-h6">{{ permission.name }}</h1>
+                                                        <h1 class="text-h6">{{ permission.description }}</h1>
                                                         <v-checkbox v-for="perm in permission.permissions"
-                                                            :key="perm.id" :label="perm.name" hide-details class="py-0"
+                                                            :key="perm.id" :label="perm.description" hide-details class="py-0"
                                                             v-model="perm.checked"></v-checkbox>
                                                     </v-col>
                                                 </v-row>
@@ -82,6 +86,7 @@ export default {
         dialog: false,
         headers: [
             { title: 'Nombre', key: 'name' },
+            { title: 'Descripción', key: 'description' },
             { title: 'Acciones', key: 'actions', sortable: false }
         ],
         editedIndex: -1,

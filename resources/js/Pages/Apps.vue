@@ -86,7 +86,7 @@ export default {
             return this.searchTerm != "" ? path.toLowerCase().includes(this.searchTerm.toLowerCase()) : true;
         },
         checkRole(roles) {
-            return roles.includes(this.$page.props.auth.role.name);
+            return roles.includes(this.$page.props.auth.role);
         },
     }
 };

@@ -53,7 +53,7 @@ const showingNavigationDropdown = ref(false);
                                             </button>
                                         </span>
                                         <p class="text-right"><v-chip size="x-small" variant="flat">
-                                                {{ $page.props.auth.role.name }}
+                                                {{ $page.props.auth.role.description }}
                                             </v-chip></p>
                                     </template>
                                     <template #content>

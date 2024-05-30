@@ -26,7 +26,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        //'rol_id'
     ];
 
     /**
@@ -37,9 +36,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        //'id',
-        //'rol_id',
-        //'client_id',
     ];
 
     /**
@@ -59,8 +55,4 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Client::class, 'client_id', 'client_id');
     }
-    /*public function role()
-    {
-        return $this->belongsTo(Role::class, 'rol_id', 'id');
-    }*/
 }
