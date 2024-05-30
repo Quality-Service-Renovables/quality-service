@@ -6,7 +6,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 <template>
     <Toaster position="top-right" richColors :visibleToasts="10" />
 
-    <Head title="Equipments" />
+    <Head title="Categorias de Equipos" />
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Categorias de Equipos</h2>
@@ -30,8 +30,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             </v-toolbar-title>
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
-                                            <v-dialog v-model="dialog" max-width="500px" v-if="checkPermission('equipments_categories.create') || checkPermission('equipments_categories.update')">
-                                                <template v-slot:activator="{ props }" v-if="checkPermission('equipments_categories.create')">
+                                            <v-dialog v-model="dialog" max-width="500px" v-if="hasPermissionTo('equipments_categories.create') || hasPermissionTo('equipments_categories.update')">
+                                                <template v-slot:activator="{ props }" v-if="hasPermissionTo('equipments_categories.create')">
                                                     <v-btn class="mb-2" color="primary" dark v-bind="props"
                                                         icon="mdi-plus"></v-btn>
                                                 </template>
@@ -92,10 +92,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
-                                        <v-icon class="me-2" size="small" @click="editItem(item)" v-if="checkPermission('equipments_categories.update')">
+                                        <v-icon class="me-2" size="small" @click="editItem(item)" v-if="hasPermissionTo('equipments_categories.update')">
                                             mdi-pencil
                                         </v-icon>
-                                        <v-icon size="small" @click="deleteItem(item)" v-if="checkPermission('equipments_categories.delete')">
+                                        <v-icon size="small" @click="deleteItem(item)" v-if="hasPermissionTo('equipments_categories.delete')">
                                             mdi-delete
                                         </v-icon>
                                     </template>

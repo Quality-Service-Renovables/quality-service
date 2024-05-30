@@ -31,8 +31,8 @@ export default {
     data: () => ({
         search: '',
         headers: [
-            { title: 'Nombre', key: 'name' },
-            { title: 'Código', key: 'guard_name' },
+            { title: 'Nombre', key: 'description' },
+            { title: 'Código', key: 'name' },
         ],
         loadingPermissions: false,
         permissions: [],

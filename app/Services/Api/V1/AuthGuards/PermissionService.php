@@ -19,14 +19,14 @@
 
 namespace App\Services\Api\V1\AuthGuards;
 
-use App\Models\AuthGuards\Permission;
+use App\Services\Service;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\Status\Status;
 use App\Models\Equipments\Category;
 use App\Models\Equipments\Equipment;
-use App\Models\Status\Status;
 use App\Services\Api\ServiceInterface;
-use App\Services\Service;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
 
 class PermissionService extends Service implements ServiceInterface
 {
@@ -64,11 +64,11 @@ class PermissionService extends Service implements ServiceInterface
         $this->response['message'] = trans('api.readed');
 
         // Obtenemos los permisos padre (aquellos que no tienen un punto))
-        $data = Permission::where('guard_name', 'NOT LIKE', '%.%')->get();
+        $data = Permission::where('name', 'NOT LIKE', '%.%')->get();
 
         // Iteramos sobre los permisos padre para obtener sus permisos hijos
         foreach ($data as $val) {
-            $val->permissions = Permission::where('guard_name', 'LIKE', $val->guard_name . '.%')->get();
+            $val->permissions = Permission::where('name', 'LIKE', $val->name . '.%')->get();
         }
         $this->response['data'] = $data;
         return $this->response;

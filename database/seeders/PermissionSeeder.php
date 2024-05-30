@@ -5,9 +5,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\AuthGuards\Permission;
-use App\Models\AuthGuards\Role;
-use App\Models\AuthGuards\RolePermissions;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Seeder;
 
 class PermissionSeeder extends Seeder
@@ -17,24 +16,15 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
+        // Creamos los permisos
         foreach ($this->getPermissions() as $permission) {
-            Permission::updateOrCreate(['guard_name' => $permission['guard_name']], $permission);
+            Permission::updateOrCreate(['name' => $permission['name'], 'description' => $permission['description']]);
         }
 
-        $permissions = Permission::all();
-        $rols = Role::all();
-
-        foreach ($this->getUserPermissions() as $rol => $userPermissions) {
-            foreach ($userPermissions as $userPermission) {
-                $permissionId = $permissions->where('guard_name', '=', $userPermission)->first()->id;
-                $rolId = $rols->where('guard_name', '=', $rol)->first()->id;
-                if($userPermission) {
-                    RolePermissions::updateOrCreate([
-                        'permission_id' => $permissionId,
-                        'role_id' => $rolId,
-                    ]);
-                }
-            }
+        // Asignamos los permisos a los roles
+        foreach ($this->getPermissionsByRol() as $rol => $permissions) {
+            $role = Role::where('name', $rol)->first();
+            $role->syncPermissions($permissions);
         }
     }
 
@@ -48,240 +38,240 @@ class PermissionSeeder extends Seeder
         return [
             // Usuarios
             [
-                'name' => 'Módulo de usuarios',
-                'guard_name' => 'users',
+                'description' => 'Módulo de usuarios',
+                'name' => 'users',
             ],
             [
-                'name' => 'Módulo de usuarios - Crear',
-                'guard_name' => 'users.create',
+                'description' => 'Módulo de usuarios - Crear',
+                'name' => 'users.create',
             ],
             [
-                'name' => 'Módulo de usuarios - Leer',
-                'guard_name' => 'users.read',
+                'description' => 'Módulo de usuarios - Leer',
+                'name' => 'users.read',
             ],
             [
-                'name' => 'Módulo de usuarios - Editar',
-                'guard_name' => 'users.update',
+                'description' => 'Módulo de usuarios - Editar',
+                'name' => 'users.update',
             ],
             [
-                'name' => 'Módulo de usuarios - Eliminar',
-                'guard_name' => 'users.delete',
+                'description' => 'Módulo de usuarios - Eliminar',
+                'name' => 'users.delete',
             ],
             // Equipos
             [
-                'name' => 'Módulo de Equipos',
-                'guard_name' => 'equipments',
+                'description' => 'Módulo de Equipos',
+                'name' => 'equipments',
             ],
             [
-                'name' => 'Módulo de Equipos - Crear',
-                'guard_name' => 'equipments.create',
+                'description' => 'Módulo de Equipos - Crear',
+                'name' => 'equipments.create',
             ],
             [
-                'name' => 'Módulo de Equipos - Leer',
-                'guard_name' => 'equipments.read',
+                'description' => 'Módulo de Equipos - Leer',
+                'name' => 'equipments.read',
             ],
             [
-                'name' => 'Módulo de Equipos - Editar',
-                'guard_name' => 'equipments.update',
+                'description' => 'Módulo de Equipos - Editar',
+                'name' => 'equipments.update',
             ],
             [
-                'name' => 'Módulo de Equipos - Eliminar',
-                'guard_name' => 'equipments.delete',
+                'description' => 'Módulo de Equipos - Eliminar',
+                'name' => 'equipments.delete',
             ],
             // Categorias de equipos
             [
-                'name' => 'Módulo de Categorías de Equipos',
-                'guard_name' => 'equipments_categories',
+                'description' => 'Módulo de Categorías de Equipos',
+                'name' => 'equipments_categories',
             ],
             [
-                'name' => 'Módulo de Categorías de Equipos - Crear',
-                'guard_name' => 'equipments_categories.create',
+                'description' => 'Módulo de Categorías de Equipos - Crear',
+                'name' => 'equipments_categories.create',
             ],
             [
-                'name' => 'Módulo de Categorías de Equipos - Leer',
-                'guard_name' => 'equipments_categories.read',
+                'description' => 'Módulo de Categorías de Equipos - Leer',
+                'name' => 'equipments_categories.read',
             ],
             [
-                'name' => 'Módulo de Categorías de Equipos - Editar',
-                'guard_name' => 'equipments_categories.update',
+                'description' => 'Módulo de Categorías de Equipos - Editar',
+                'name' => 'equipments_categories.update',
             ],
             [
-                'name' => 'Módulo de Categorías de Equipos - Eliminar',
-                'guard_name' => 'equipments_categories.delete',
+                'description' => 'Módulo de Categorías de Equipos - Eliminar',
+                'name' => 'equipments_categories.delete',
             ],
             // Clientes
             [
-                'name' => 'Módulo de clientes',
-                'guard_name' => 'clients',
+                'description' => 'Módulo de clientes',
+                'name' => 'clients',
             ],
             [
-                'name' => 'Módulo de clientes - Crear',
-                'guard_name' => 'clients.create',
+                'description' => 'Módulo de clientes - Crear',
+                'name' => 'clients.create',
             ],
             [
-                'name' => 'Módulo de clientes - Leer',
-                'guard_name' => 'clients.read',
+                'description' => 'Módulo de clientes - Leer',
+                'name' => 'clients.read',
             ],
             [
-                'name' => 'Módulo de clientes - Editar',
-                'guard_name' => 'clients.update',
+                'description' => 'Módulo de clientes - Editar',
+                'name' => 'clients.update',
             ],
             [
-                'name' => 'Módulo de clientes - Eliminar',
-                'guard_name' => 'clients.delete',
+                'description' => 'Módulo de clientes - Eliminar',
+                'name' => 'clients.delete',
             ],
             // Inspecciones
             [
-                'name' => 'Módulo de Inspecciones',
-                'guard_name' => 'inspections',
+                'description' => 'Módulo de Inspecciones',
+                'name' => 'inspections',
             ],
             [
-                'name' => 'Módulo de Inspecciones - Crear',
-                'guard_name' => 'inspections.create',
+                'description' => 'Módulo de Inspecciones - Crear',
+                'name' => 'inspections.create',
             ],
             [
-                'name' => 'Módulo de Inspecciones - Leer',
-                'guard_name' => 'inspections.read',
+                'description' => 'Módulo de Inspecciones - Leer',
+                'name' => 'inspections.read',
             ],
             [
-                'name' => 'Módulo de Inspecciones - Editar',
-                'guard_name' => 'inspections.update',
+                'description' => 'Módulo de Inspecciones - Editar',
+                'name' => 'inspections.update',
             ],
             [
-                'name' => 'Módulo de Inspecciones - Eliminar',
-                'guard_name' => 'inspections.delete',
+                'description' => 'Módulo de Inspecciones - Eliminar',
+                'name' => 'inspections.delete',
             ],
             // Fallas
             [
-                'name' => 'Módulo de Fallas',
-                'guard_name' => 'failures',
+                'description' => 'Módulo de Fallas',
+                'name' => 'failures',
             ],
             [
-                'name' => 'Módulo de Fallas - Crear',
-                'guard_name' => 'failures.create',
+                'description' => 'Módulo de Fallas - Crear',
+                'name' => 'failures.create',
             ],
             [
-                'name' => 'Módulo de Fallas - Leer',
-                'guard_name' => 'failures.read',
+                'description' => 'Módulo de Fallas - Leer',
+                'name' => 'failures.read',
             ],
             [
-                'name' => 'Módulo de Fallas - Editar',
-                'guard_name' => 'failures.update',
+                'description' => 'Módulo de Fallas - Editar',
+                'name' => 'failures.update',
             ],
             [
-                'name' => 'Módulo de Fallas - Eliminar',
-                'guard_name' => 'failures.delete',
+                'description' => 'Módulo de Fallas - Eliminar',
+                'name' => 'failures.delete',
             ],
             // Marcas
             [
-                'name' => 'Módulo de marcas y modelos comerciales',
-                'guard_name' => 'trademarks',
+                'description' => 'Módulo de marcas y modelos comerciales',
+                'name' => 'trademarks',
             ],
             [
-                'name' => 'Módulo de marcas y modelos comerciales - Crear',
-                'guard_name' => 'trademarks.create',
+                'description' => 'Módulo de marcas y modelos comerciales - Crear',
+                'name' => 'trademarks.create',
             ],
             [
-                'name' => 'Módulo de marcas y modelos comerciales - Leer',
-                'guard_name' => 'trademarks.read',
+                'description' => 'Módulo de marcas y modelos comerciales - Leer',
+                'name' => 'trademarks.read',
             ],
             [
-                'name' => 'Módulo de marcas y modelos comerciales - Editar',
-                'guard_name' => 'trademarks.update',
+                'description' => 'Módulo de marcas y modelos comerciales - Editar',
+                'name' => 'trademarks.update',
             ],
             [
-                'name' => 'Módulo de marcas y modelos comerciales - Eliminar',
-                'guard_name' => 'trademarks.delete',
+                'description' => 'Módulo de marcas y modelos comerciales - Eliminar',
+                'name' => 'trademarks.delete',
             ],
             // Modelos
             [
-                'name' => 'Módulo de modelos',
-                'guard_name' => 'models',
+                'description' => 'Módulo de modelos',
+                'name' => 'models',
             ],
             [
-                'name' => 'Módulo de modelos - Crear',
-                'guard_name' => 'models.create',
+                'description' => 'Módulo de modelos - Crear',
+                'name' => 'models.create',
             ],
             [
-                'name' => 'Módulo de modelos - Leer',
-                'guard_name' => 'models.read',
+                'description' => 'Módulo de modelos - Leer',
+                'name' => 'models.read',
             ],
             [
-                'name' => 'Módulo de modelos - Editar',
-                'guard_name' => 'models.update',
+                'description' => 'Módulo de modelos - Editar',
+                'name' => 'models.update',
             ],
             [
-                'name' => 'Módulo de modelos - Eliminar',
-                'guard_name' => 'models.delete',
+                'description' => 'Módulo de modelos - Eliminar',
+                'name' => 'models.delete',
             ],
             // Aceites
             [
-                'name' => 'Módulo de aceites',
-                'guard_name' => 'oils',
+                'description' => 'Módulo de aceites',
+                'name' => 'oils',
             ],
             [
-                'name' => 'Módulo de aceites - Crear',
-                'guard_name' => 'oils.create',
+                'description' => 'Módulo de aceites - Crear',
+                'name' => 'oils.create',
             ],
             [
-                'name' => 'Módulo de aceites - Leer',
-                'guard_name' => 'oils.read',
+                'description' => 'Módulo de aceites - Leer',
+                'name' => 'oils.read',
             ],
             [
-                'name' => 'Módulo de aceites - Editar',
-                'guard_name' => 'oils.update',
+                'description' => 'Módulo de aceites - Editar',
+                'name' => 'oils.update',
             ],
             [
-                'name' => 'Módulo de aceites - Eliminar',
-                'guard_name' => 'oils.delete',
+                'description' => 'Módulo de aceites - Eliminar',
+                'name' => 'oils.delete',
             ],
             // Proyectos
             [
-                'name' => 'Módulo de proyectos',
-                'guard_name' => 'projects',
+                'description' => 'Módulo de proyectos',
+                'name' => 'projects',
             ],
             [
-                'name' => 'Módulo de proyectos - Crear',
-                'guard_name' => 'projects.create',
+                'description' => 'Módulo de proyectos - Crear',
+                'name' => 'projects.create',
             ],
             [
-                'name' => 'Módulo de proyectos - Leer',
-                'guard_name' => 'projects.read',
+                'description' => 'Módulo de proyectos - Leer',
+                'name' => 'projects.read',
             ],
             [
-                'name' => 'Módulo de proyectos - Editar',
-                'guard_name' => 'projects.update',
+                'description' => 'Módulo de proyectos - Editar',
+                'name' => 'projects.update',
             ],
             [
-                'name' => 'Módulo de proyectos - Eliminar',
-                'guard_name' => 'projects.delete',
+                'description' => 'Módulo de proyectos - Eliminar',
+                'name' => 'projects.delete',
             ],
 
             // Roles y permisos
             [
-                'name' => 'Módulo de roles y permisos',
-                'guard_name' => 'roles',
+                'description' => 'Módulo de roles y permisos',
+                'name' => 'roles',
             ],
             [
-                'name' => 'Módulo de roles y permisos - Crear',
-                'guard_name' => 'roles.create',
+                'description' => 'Módulo de roles y permisos - Crear',
+                'name' => 'roles.create',
             ],
             [
-                'name' => 'Módulo de roles y permisos - Leer',
-                'guard_name' => 'roles.read',
+                'description' => 'Módulo de roles y permisos - Leer',
+                'name' => 'roles.read',
             ],
             [
-                'name' => 'Módulo de roles y permisos - Editar',
-                'guard_name' => 'roles.update',
+                'description' => 'Módulo de roles y permisos - Editar',
+                'name' => 'roles.update',
             ],
             [
-                'name' => 'Módulo de roles y permisos - Eliminar',
-                'guard_name' => 'roles.delete',
+                'description' => 'Módulo de roles y permisos - Eliminar',
+                'name' => 'roles.delete',
             ],
         ];
     }
 
-    private function getUserPermissions(): array
+    private function getPermissionsByRol(): array
     {
         return [
                 'admin' => [
@@ -341,7 +331,7 @@ class PermissionSeeder extends Seeder
                     'roles.update',
                     'roles.delete',
                 ],
-                'technical' => [
+                'tecnico' => [
                     'inspections', 
                     'inspections.read',
                     'trademarks', 
@@ -351,7 +341,7 @@ class PermissionSeeder extends Seeder
                     'projects', 
                     'projects.read',
                 ],
-                'client' => [
+                'cliente' => [
                     'projects', 
                     'projects.read',
                 ],
