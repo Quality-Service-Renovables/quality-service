@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\AuthGuards\Role;
+use Spatie\Permission\Models\Role;
 use Illuminate\Database\Seeder;
 
 class RolsSeeder extends Seeder
@@ -12,27 +12,8 @@ class RolsSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach ($this->getRols() as $rol) {
-            Role::updateOrCreate(['guard_name' => $rol['guard_name']], $rol);
-        }
+        Role::create(['name' => 'admin', 'description' => 'Administrador']);
+        Role::create(['name' => 'tecnico', 'description' => 'Técnico']);
+        Role::create(['name' => 'cliente', 'description' => 'Cliente']);
     }
-
-    private function getRols(): array
-    {
-        return [
-            [
-                'name' => 'Admin',
-                'guard_name' => 'admin',
-            ],
-            [
-                'name' => 'Cliente',
-                'guard_name' => 'client',
-            ],
-            [
-                'name' => 'Técnico',
-                'guard_name' => 'technical',
-            ],
-        ];
-    }
-
 }

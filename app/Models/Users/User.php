@@ -3,7 +3,7 @@
 namespace App\Models\Users;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\AuthGuards\Role;
+//use App\Models\AuthGuards\Role;
 use App\Models\Clients\Client;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -26,7 +26,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'rol_id'
+        //'rol_id'
     ];
 
     /**
@@ -59,8 +59,8 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Client::class, 'client_id', 'client_id');
     }
-    public function role()
+    /*public function role()
     {
         return $this->belongsTo(Role::class, 'rol_id', 'id');
-    }
+    }*/
 }

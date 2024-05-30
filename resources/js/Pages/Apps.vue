@@ -28,7 +28,7 @@ import { mdiCheckBold } from '@mdi/js';
                             </button>
                         </div>
                     </v-col>
-                    <v-col cols="12" :lg="searchTerm ? '12' :'6'" class="text-left" v-if="checkRole(['admin', 'technical', 'client'])">
+                    <v-col cols="12" :lg="searchTerm ? '12' :'6'" class="text-left" v-if="checkRole(['admin', 'tecnico', 'cliente'])">
                         <h4 class="text-grey-darken-1" v-if="!hideTittleSection">Administración</h4>
                         <div class="d-flex align-start flex-wrap">
                             <App path="dashboard" title="Dashboard" icon="mdi-monitor-dashboard" v-if="checkVisivility('Dashboard')"/>
@@ -40,7 +40,7 @@ import { mdiCheckBold } from '@mdi/js';
                                 icon="mdi-monitor" v-if="checkVisivility('Landing page')"/>
                         </div>
                     </v-col>
-                    <v-col cols="12" :lg="searchTerm ? '12' :'6'" class="text-left" v-if="checkRole(['admin', 'technical'])">
+                    <v-col cols="12" :lg="searchTerm ? '12' :'6'" class="text-left" v-if="checkRole(['admin', 'tecnico'])">
                         <h4 class="text-grey-darken-1" v-if="!hideTittleSection">Configuración</h4>
                         <div class="d-flex align-start flex-wrap">
                             <App path="equipments" title="Equipos" icon="mdi-clipboard-list-outline" v-if="checkVisivility('Equipos') && checkPermission('equipments')"/>
@@ -86,7 +86,7 @@ export default {
             return this.searchTerm != "" ? path.toLowerCase().includes(this.searchTerm.toLowerCase()) : true;
         },
         checkRole(roles) {
-            return roles.includes(this.$page.props.auth.role.guard_name);
+            return roles.includes(this.$page.props.auth.role.name);
         },
     }
 };

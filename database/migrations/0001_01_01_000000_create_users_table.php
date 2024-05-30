@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('password');
             $table->boolean('active')->default(true);
             $table->unsignedBigInteger('client_id')->nullable();
-            $table->unsignedBigInteger('rol_id')->nullable();
+            //$table->unsignedBigInteger('rol_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
@@ -33,9 +33,9 @@ return new class extends Migration
             $table->foreign('client_id', 'fk_user_client')
                 ->references('client_id')
                 ->on('clients');
-            $table->foreign('rol_id', 'fk_user_rol')
+            /*$table->foreign('rol_id', 'fk_user_rol')
                 ->references('id')
-                ->on('roles');
+                ->on('roles');*/
         });
 
         Schema::create('password_reset_tokens', static function (Blueprint $table) {
