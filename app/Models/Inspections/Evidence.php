@@ -12,7 +12,9 @@ class Evidence extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'inspection_evidences';
+
     protected $primaryKey = 'inspection_evidence_id';
+
     protected $fillable = [
         'inspection_evidence_uuid',
         'inspection_evidence',
@@ -21,12 +23,11 @@ class Evidence extends Model
         'description',
         'inspection_id',
     ];
-    protected $hidden = ['inspection_evidence_id','inspection_id'];
+
+    protected $hidden = ['inspection_evidence_id', 'inspection_id'];
 
     /**
      * Get the inspection associated with the model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function inspection(): BelongsTo
     {

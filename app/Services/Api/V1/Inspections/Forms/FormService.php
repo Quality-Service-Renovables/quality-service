@@ -132,7 +132,6 @@ class FormService extends Service
             $inspectionCategory = Category::where([
                 'ct_inspection_uuid' => $uuid,
             ])->first();
-
             if ($inspectionCategory) {
                 $sections = Section::where([
                     'ct_inspection_id' => $inspectionCategory->ct_inspection_id,

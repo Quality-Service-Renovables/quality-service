@@ -32,16 +32,16 @@ class ResourceService extends Service
             $inspection = [];
             if ($inspectionCategory) {
                 // Sections
-/*                $inspection['sections'] = InspectionSections::
-                    where(['ct_inspection_id' => $inspectionCategory->ct_inspection_id,])
-                    ->get();*/
+                /*                $inspection['sections'] = InspectionSections::
+                                    where(['ct_inspection_id' => $inspectionCategory->ct_inspection_id,])
+                                    ->get();*/
                 // Internals
                 $inspection['internals'] = InspectionInternals::with(['section'])
-                    ->where(['ct_inspection_id' => $inspectionCategory->ct_inspection_id,])
-                    ->get()->groupBy('section.ct_inspection_section_code');;
+                    ->where(['ct_inspection_id' => $inspectionCategory->ct_inspection_id])
+                    ->get()->groupBy('section.ct_inspection_section_code');
                 // Externals
                 $inspection['externals'] = InspectionExternals::with(['section'])
-                    ->where(['ct_inspection_id' => $inspectionCategory->ct_inspection_id,])
+                    ->where(['ct_inspection_id' => $inspectionCategory->ct_inspection_id])
                     ->get()->groupBy('section.ct_inspection_section_code');
 
             }
