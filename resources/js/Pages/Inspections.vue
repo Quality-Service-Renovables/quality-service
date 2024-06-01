@@ -85,101 +85,19 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         </v-card-title>
                                                         <v-card-text>
                                                             <v-container v-if="template">
-                                                                <v-chip
-                                                                    class="mb-2"
-                                                                    color="primary"
-                                                                    label
-                                                                >
-                                                                    <v-icon icon="mdi-file-tree-outline" start></v-icon>
-                                                                    Secciones
-                                                                </v-chip>
+                                                                <v-btn class="text-none text-subtitle-1 me-1 mb-2"
+                                                                    color="primary" size="small">
+                                                                    Agregar sección
+                                                                </v-btn>
                                                                 <v-divider class="border"></v-divider>
-                                                                <v-expansion-panels>
-                                                                    <v-expansion-panel
-                                                                    v-for="(section, index) in template.sections" :key="section"
-                                                                    >
-                                                                        <v-expansion-panel-title>
-                                                                            {{ 'Sección: ' + index.replaceAll('_', ' ').toUpperCase() }}
-                                                                            <template v-slot:actions="{ expanded }">
-                                                                                <v-icon class="me-2 text-blue" size="small"
-                                                                                    v-if="hasPermissionTo('inspections.create')">
-                                                                                    mdi-plus
-                                                                                </v-icon>
-                                                                                <v-icon class="me-2" size="small"
-                                                                                    v-if="hasPermissionTo('inspections.update')">
-                                                                                    mdi-pencil
-                                                                                </v-icon>
-                                                                                <v-icon class="me-2 text-red" size="small"
-                                                                                    v-if="hasPermissionTo('inspections.delete')">
-                                                                                    mdi-delete
-                                                                                </v-icon>
-                                                                                <v-icon icon="mdi-chevron-down"></v-icon>
-                                                                            </template>
-                                                                        </v-expansion-panel-title>
-                                                                        <v-expansion-panel-text>
-                                                                            <div v-if="section.fields != ''">
-                                                                                <v-chip
-                                                                                    class="mb-2"
-                                                                                    label
-                                                                                >
-                                                                                    <v-icon icon="mdi-file-tree-outline" start></v-icon>
-                                                                                    Campos
-                                                                                </v-chip>
-                                                                                <v-list>
-                                                                                    <v-list-item v-for="field in section.fields" :key="field" class="border rounded">
-                                                                                        <div class="text-right">
-                                                                                                        <v-icon icon="mdi mdi-square-edit-outline" class="text-grey"></v-icon>
-                                                                                                        <v-icon icon="mdi mdi-delete" class="text-red"></v-icon>
-                                                                                                    </div>
-                                                                                        <v-list-item-title>{{ field.ct_inspection_form }}</v-list-item-title>
-                                                                                    </v-list-item>
-                                                                                </v-list>
-                                                                            </div>
-                                                                            <div v-if="section.sub_sections">
-                                                                                <v-chip
-                                                                                    class="mb-2"
-                                                                                    label
-                                                                                >
-                                                                                    <v-icon icon="mdi-file-tree-outline" start></v-icon>
-                                                                                    Sub-secciones
-                                                                                </v-chip>
-                                                                                <v-expansion-panels>
-                                                                                    <v-expansion-panel
-                                                                                        v-for="subsection in section.sub_sections" :key="subsection"
-                                                                                        :title="subsection.ct_inspection_section"
-                                                                                    >
-                                                                                    <v-expansion-panel-text>
-                                                                                        <div v-if="subsection.fields">
-                                                                                            <v-chip
-                                                                                    class="mb-2"
-                                                                                    label
-                                                                                >
-                                                                                    <v-icon icon="mdi-file-tree-outline" start></v-icon>
-                                                                                    Campos
-                                                                                </v-chip>
-                                                                                            <v-list>
-                                                                                                <v-list-item v-for="f in subsection.fields" :key="f" class="border rounded">
-                                                                                                    <div class="text-right">
-                                                                                                        <v-icon icon="mdi mdi-square-edit-outline" class="text-grey"></v-icon>
-                                                                                                        <v-icon icon="mdi mdi-delete" class="text-red"></v-icon>
-                                                                                                    </div>
-                                                                                                    <v-list-item-title>{{ f.ct_inspection_form }}</v-list-item-title>
-                                                                                                    <v-list-item-subtitle>Requerido: {{ f.required ? "SI" : "NO" }}</v-list-item-subtitle>
-                                                                                                </v-list-item>
-                                                                                            </v-list>
-                                                                                        </div>
-                                                                                    </v-expansion-panel-text>
-                                                                                    </v-expansion-panel>
-                                                                                </v-expansion-panels>
-                                                                            </div>
-                                                                        </v-expansion-panel-text>
-                                                                    </v-expansion-panel>
-                                                                </v-expansion-panels>
+
+                                                                <Template :template="template"></Template>
+
                                                             </v-container>
                                                         </v-card-text>
                                                         <v-card-actions>
                                                             <v-spacer></v-spacer>
-                                                            <v-btn color="blue-darken-1" variant="text" @click="close">
+                                                            <v-btn color="blue-darken-1" variant="text" @click="closeTemplate">
                                                                 Cancelar
                                                             </v-btn>
                                                             <v-btn color="blue-darken-1" variant="text" @click="save">
@@ -236,10 +154,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { router } from '@inertiajs/vue3'
 import { Toaster, toast } from 'vue-sonner'
 import Swal from 'sweetalert2';
+import Template from './Template.vue';
 
 export default {
     components: {
         Toaster,
+        Template
     },
     props: {
         ct_inspections: {
