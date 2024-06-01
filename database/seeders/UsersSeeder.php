@@ -21,7 +21,16 @@ class UsersSeeder extends Seeder
     public function run(): void
     {
         foreach ($this->getUsers() as $user) {
-            User::updateOrCreate(['email' => $user['email']], $user);
+            User::updateOrCreate(
+                ['email' => $user['email']], 
+                [
+                    'uuid' => $user['uuid'],
+                    'name' => $user['name'],
+                    'email' => $user['email'],
+                    'password' => $user['password'],
+                    'client_id' => $user['client_id'],
+                ]
+            )->assignRole($user['rol']);
         }
     }
 
@@ -31,9 +40,6 @@ class UsersSeeder extends Seeder
     private function getUsers(): array
     {
         $client = Client::where('client_code', 'quality_service')->first();
-        $rolAdmin = Role::where('guard_name', 'admin')->first();
-        $rolClient = Role::where('guard_name', 'client')->first();
-        $rolTechnical = Role::where('guard_name', 'technical')->first();
 
         return [
             [
@@ -42,7 +48,7 @@ class UsersSeeder extends Seeder
                 'email' => 'admin@qsr.mx',
                 'password' => Hash::make('qsr.2024!'),
                 'client_id' => $client->client_id,
-                'rol_id' => $rolAdmin->id,
+                'rol' => 'admin'
             ],
             [
                 'uuid' => Str::uuid()->toString(),
@@ -50,7 +56,7 @@ class UsersSeeder extends Seeder
                 'email' => 'cliente@qsr.mx',
                 'password' => Hash::make('qsr.2024!'),
                 'client_id' => $client->client_id,
-                'rol_id' => $rolClient->id,
+                'rol' => 'cliente'
             ],
             [
                 'uuid' => Str::uuid()->toString(),
@@ -58,7 +64,7 @@ class UsersSeeder extends Seeder
                 'email' => 'tecnico@qsr.mx',
                 'password' => Hash::make('qsr.2024!'),
                 'client_id' => $client->client_id,
-                'rol_id' => $rolTechnical->id,
+                'rol' => 'tecnico'
             ],
         ];
     }

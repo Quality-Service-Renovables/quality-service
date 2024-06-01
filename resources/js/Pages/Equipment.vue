@@ -6,7 +6,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 <template>
     <Toaster position="top-right" richColors :visibleToasts="10" />
 
-    <Head title="Equipments" />
+    <Head title="Equipos" />
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Equipos</h2>
@@ -38,8 +38,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             </v-toolbar-title>
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
-                                            <v-dialog v-model="dialog" max-width="500px" v-if="checkPermission('equipments.create') || checkPermission('equipments.update')">
-                                                <template v-slot:activator="{ props }" v-if="checkPermission('equipments.create')">
+                                            <v-dialog v-model="dialog" max-width="500px" v-if="hasPermissionTo('equipments.create') || hasPermissionTo('equipments.update')">
+                                                <template v-slot:activator="{ props }" v-if="hasPermissionTo('equipments.create')">
                                                     <v-btn class="mb-2" color="primary" dark v-bind="props"
                                                         icon="mdi-plus"></v-btn>
                                                 </template>
@@ -144,10 +144,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 mdi-file
                                             </v-icon>
                                         </a>
-                                        <v-icon class="me-2" size="small" @click="editItem(item)" v-if="checkPermission('equipments.update')">
+                                        <v-icon class="me-2" size="small" @click="editItem(item)" v-if="hasPermissionTo('equipments.update')">
                                             mdi-pencil
                                         </v-icon>
-                                        <v-icon class="me-2" size="small" @click="deleteItem(item)" v-if="checkPermission('equipments.delete')">
+                                        <v-icon class="me-2" size="small" @click="deleteItem(item)" v-if="hasPermissionTo('equipments.delete')">
                                             mdi-delete
                                         </v-icon>
                                     </template>

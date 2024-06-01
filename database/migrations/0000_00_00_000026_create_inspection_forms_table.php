@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('inspection_forms', static function (Blueprint $table) {
             $table->id('inspection_form_id');
             $table->uuid('inspection_form_uuid');
-            $table->string('inspection_form_code')->unique();
             $table->string('inspection_form_value');
             $table->string('inspection_form_comments')->nullable();
             $table->unsignedBigInteger('inspection_id')->comment('Relation with inspection');

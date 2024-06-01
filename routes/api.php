@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\Clients\ClientController;
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
 use App\Http\Controllers\Api\V1\Failures\FailureController;
 use App\Http\Controllers\Api\V1\Inspections\CategoryController;
+use App\Http\Controllers\Api\V1\Inspections\EvidenceController;
 use App\Http\Controllers\Api\V1\Inspections\FormController;
 use App\Http\Controllers\Api\V1\Inspections\InspectionController;
 use App\Http\Controllers\Api\V1\Inspections\Resources\ResourceController;
@@ -46,12 +47,17 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::post('clients/update/{uuid}', [ClientController::class, 'update'])->name('clients.update');
     //######################################################## INSPECTIONS #########################################################
     Route::resource('inspections', InspectionController::class);
+    Route::resource('inspection/equipments', \App\Http\Controllers\Api\V1\Inspections\EquipmentController::class);
+    Route::resource('inspection/evidences', EvidenceController::class);
     Route::resource('inspection/categories', CategoryController::class);
+
+    Route::post('inspection/evidences/update/{uuid}', [EvidenceController::class, 'update'])->name('inspections.update');
     Route::get('inspection/resources/get-inspection-details/{ct_inspection_uuid}', [ResourceController::class, 'getInspectionDetail'])
         ->name('inspection.resources.get-inspection-details');
     //---------------------------------------------------------   FORMS    ----------------------------------------------------------
     Route::get('inspection/forms/get-form/{ct_inspection_uuid}', [FormController::class, 'getForm']);
     Route::post('inspection/forms/set-form', [FormController::class, 'setForm']);
+    Route::post('inspection/forms/set-form-inspection', [FormController::class, 'setFormInspection']);
     //######################################################### EQUIPMENTS ##########################################################
     Route::resource('equipments', EquipmentController::class);
     // Para envio de tipo multi form, el verbo PUT no es compatible, se ha remplazado por la llamada a este end point

@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inspection_evidences', static function (Blueprint $table) {
-            $table->id('inspections_evidence_id');
-            $table->uuid('inspections_evidence_uuid');
+            $table->id('inspection_evidence_id');
+            $table->uuid('inspection_evidence_uuid');
             $table->string('inspection_evidence');
             $table->string('inspection_evidence_secondary');
             $table->string('title')->nullable();

@@ -19,16 +19,16 @@
 
 namespace App\Services\Api\V1\AuthGuards;
 
-use App\Models\AuthGuards\RolePermissions;
+use App\Services\Service;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\Status\Status;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 use App\Models\Equipments\Category;
 use App\Models\Equipments\Equipment;
-use App\Models\Status\Status;
 use App\Services\Api\ServiceInterface;
-use App\Services\Service;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RolPermissionService extends Service implements ServiceInterface
 {
@@ -44,18 +44,10 @@ class RolPermissionService extends Service implements ServiceInterface
      */
     public function read(): array
     {
-        $roles = RolePermissions::with([
-            'role' => function ($query) {
-                $query->select(['id', 'name']);
-            }, 'permission' => function ($queryAlt) {
-                $queryAlt->select(['id', 'name']);
-            },
-        ])->get();
-
-        $rolesGroup = $roles->makeHidden(['role_id', 'permission_id'])->groupBy(['role.name']);
+        $roles = Role::with("permissions")->get();
 
         $this->response['message'] = trans('api.readed');
-        $this->response['data'] = $rolesGroup;
+        $this->response['data'] = $roles;
 
         return $this->response;
     }
@@ -73,17 +65,13 @@ class RolPermissionService extends Service implements ServiceInterface
             DB::beginTransaction();
 
             // Actualizamos el rol
-            Role::where("id", $request->id)->update(["name" => $request->name]);
+            Role::where("id", $request->id)->update(["description" => $request->description]);
+            $permissions = Permission::whereIn('id', $request->permissions)->get();
 
-            // Eliminamos permisos actuales del rol y asociamos los nuveos permisos
-            RolePermissions::where("role_id", $request->id)->delete();
-
-            foreach ($request->permissions as $permissionId) {
-                RolePermissions::create([
-                    "role_id" => $request->id,
-                    "permission_id" => $permissionId,
-                ]);
-            }
+            // Eliminamos permisos actuales del rol y Asignamos los permisos al rol
+            $role = Role::where('id', $request->id)->first();
+            $role->revokePermissionTo($role->permissions);
+            $role->syncPermissions($permissions);
 
             // Recupera el rol actualizado
             $roleUpdated = Role::where('id', $request->id)->with("permissions")->first();
