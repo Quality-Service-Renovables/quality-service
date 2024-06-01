@@ -1,0 +1,1 @@
+import{_ as o}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{o as e,e as r}from"./app-K-shZ7NT.js";const c={},t={src:"/img/qsr-logo.png",alt:"Laravel"};function n(s,a){return e(),r("img",t)}const m=o(c,[["render",n]]);export{m as A};
