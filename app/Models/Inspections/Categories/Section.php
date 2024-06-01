@@ -24,7 +24,7 @@ class Section extends Model
         'ct_inspection_relation_id',
     ];
 
-    protected $hidden = ['ct_inspection_id'];
+    protected $hidden = ['ct_inspection_section_id','ct_inspection_id'];
 
     /**
      * Get the category that belongs to this model.

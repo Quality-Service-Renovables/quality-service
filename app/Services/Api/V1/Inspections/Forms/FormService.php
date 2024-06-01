@@ -173,6 +173,8 @@ class FormService extends Service
             if ($section->ct_inspection_relation_id) {
                 $currentSection = $section->where('ct_inspection_section_id', '=', $section->ct_inspection_relation_id)->first();
                 $sectionCode = $currentSection->ct_inspection_section_code;
+                // Set section details
+                $form['sections'][$sectionCode]['section_details'] = $currentSection;
                 // Set fields
                 $form['sections'][$sectionCode]['fields'] = $fields->where('ct_inspection_section_id', $section->ct_inspection_relation_id);
                 $section['fields'] = $fields->collect($section['fields'])->mapWithKeys(function ($item) {
@@ -182,6 +184,7 @@ class FormService extends Service
                 $form['sections'][$sectionCode]['sub_sections'][] = $section;
             } else {
                 // Tratamiento exclusivo para secciones principales o raices
+                $form['sections'][$section->ct_inspection_section_code]['section_details'] = $section;
                 $form['sections'][$section->ct_inspection_section_code]['fields'] = $fields->where('ct_inspection_section_id', $section->ct_inspection_section_id);
                 $section['fields'] = $fields->collect($section['fields'])->mapWithKeys(function ($item) {
                     return [$item['ct_inspection_form_code'] => $item];

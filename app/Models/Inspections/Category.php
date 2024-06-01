@@ -2,8 +2,10 @@
 
 namespace App\Models\Inspections;
 
+use App\Models\Inspections\Categories\Section;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
@@ -23,4 +25,9 @@ class Category extends Model
         'active',
     ];
     protected $hidden = ['ct_inspection_id'];
+
+    public function sections()
+    {
+        return $this->belongsTo(Section::class, 'ct_inspection_id', 'ct_inspection_id');
+    }
 }

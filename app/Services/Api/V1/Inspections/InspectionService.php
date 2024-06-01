@@ -169,8 +169,8 @@ class InspectionService extends Service
         try {
             $this->response['message'] = trans('api.show');
             $inspection = Inspection::with([
+                'category.sections',
                 'equipments.equipment',
-                'forms',
                 'evidences',
             ])
                 ->where([
