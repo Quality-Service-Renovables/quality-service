@@ -91,7 +91,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 </v-btn>
                                                                 <v-divider class="border"></v-divider>
 
-                                                                <Template :template="template"></Template>
+                                                                <TemplateInspectionCategory :template="template"></TemplateInspectionCategory>
 
                                                             </v-container>
                                                         </v-card-text>
@@ -154,12 +154,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { router } from '@inertiajs/vue3'
 import { Toaster, toast } from 'vue-sonner'
 import Swal from 'sweetalert2';
-import Template from './Template.vue';
+import TemplateInspectionCategory from './InspectionCategory/Template.vue';
 
 export default {
     components: {
         Toaster,
-        Template
+        TemplateInspectionCategory
     },
     props: {
         ct_inspections: {

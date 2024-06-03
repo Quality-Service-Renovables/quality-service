@@ -70,7 +70,7 @@
 
             <p class="text-h5 font-weight-black m-4" v-if="sub_section.fields">Campos</p>
 
-            <v-card class="ma-4 border" rounded="lg" variant="flat" v-for="f in sub_section.fields" :key="field">
+            <v-card class="ma-4 border" rounded="lg" variant="flat" v-for="f in sub_section.fields" :key="f">
                 <v-card-item>
                     <v-card-title class="text-body-2 d-flex align-center">
                         <v-btn class="text-none text-subtitle-1 me-1" size="small" variant="tonal">
