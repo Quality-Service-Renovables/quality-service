@@ -78,32 +78,23 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 </v-dialog>
                                                 <!-- Dialog for create and update -->
                                                 <!-- Dialog for show and edit template -->
-                                                <v-dialog v-model="dialogTemplate" max-width="1200px">
+                                                <v-dialog v-model="dialogTemplate" transition="dialog-bottom-transition"
+                                                    fullscreen>
                                                     <v-card>
-                                                        <v-card-title>
-                                                            <span class="text-h5">Template</span>
-                                                        </v-card-title>
+                                                        <v-toolbar>
+                                                            <v-btn icon="mdi-close" @click="closeTemplate"></v-btn>
+                                                            <v-toolbar-title>Template</v-toolbar-title>
+                                                            <v-spacer></v-spacer>
+                                                            <v-toolbar-items>
+                                                                <v-btn text="Guardar" variant="text" @click="save"></v-btn>
+                                                            </v-toolbar-items>
+                                                        </v-toolbar>
                                                         <v-card-text>
                                                             <v-container v-if="template">
-                                                                <v-btn class="text-none text-subtitle-1 me-1 mb-2"
-                                                                    color="primary" size="small">
-                                                                    Agregar sección
-                                                                </v-btn>
-                                                                <v-divider class="border"></v-divider>
-
-                                                                <TemplateInspectionCategory :template="template"></TemplateInspectionCategory>
-
+                                                                <TemplateInspectionCategory :template="template">
+                                                                </TemplateInspectionCategory>
                                                             </v-container>
                                                         </v-card-text>
-                                                        <v-card-actions>
-                                                            <v-spacer></v-spacer>
-                                                            <v-btn color="blue-darken-1" variant="text" @click="closeTemplate">
-                                                                Cancelar
-                                                            </v-btn>
-                                                            <v-btn color="blue-darken-1" variant="text" @click="save">
-                                                                Guardar
-                                                            </v-btn>
-                                                        </v-card-actions>
                                                     </v-card>
                                                 </v-dialog>
                                                 <!-- Dialog for show and edit template -->
@@ -306,7 +297,7 @@ export default {
             console.log("Consultando template de inspección " + item.ct_inspection_uuid);
             return axios.get('api/inspection/forms/get-form/' + item.ct_inspection_uuid)
                 .then(response => {
-                    console.log(response.data.data);
+                    //console.log(response.data.data);
                     this.template = response.data.data;
                 })
                 .catch(error => {
