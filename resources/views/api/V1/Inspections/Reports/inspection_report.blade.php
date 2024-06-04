@@ -22,6 +22,15 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <style>
+        table{
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        table tr td {
+            border: 1px solid black;
+        }
+    </style>
 </head>
 
 <body class="font-sans antialiased">
@@ -33,12 +42,16 @@
     <small>{{$inspection->equipment->equipment->equipment}}</small>
     {{--  EQUIPO  --}}
     <h3>Equipo</h3>
-    <small>{{$inspection->equipment->equipment->equipment}}</small>
     <table>
         <tr>
-            <td>Fabricante del equipo</td>
+            <td><strong>Fabricante del equipo: </strong></td>
             <td>{{$inspection->equipment->equipment->model->trademark->trademark}}</td>
-            <td>Año: </td>
+            <td><strong>Año: </strong>{{$inspection->equipment->equipment->manufacture_date}}</td>
+        </tr>
+        <tr>
+            <td><strong>Datos del equipo: </strong></td>
+            <td><strong>Modelo: </strong>{{$inspection->equipment->equipment->model->trademark_model}}</td>
+            <td><strong>Serie: </strong>{{$inspection->equipment->equipment->serial_number}}</td>
         </tr>
     </table>
     <h3>Digrama Esquemático</h3>

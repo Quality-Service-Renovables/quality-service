@@ -87,7 +87,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/projects', [InspectionController::class, 'component'])->name('projects');
     });
 
-    Route::get('/inspections/{uuid}', [ReportController::class, 'getDocument'])->name('document-get');
+    Route::get('/inspection/get-document/{uuid}', [ReportController::class, 'getDocument'])->name('document-get');
 
 });
 
