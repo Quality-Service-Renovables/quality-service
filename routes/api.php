@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\Inspections\CategoryController;
 use App\Http\Controllers\Api\V1\Inspections\EvidenceController;
 use App\Http\Controllers\Api\V1\Inspections\FormController;
 use App\Http\Controllers\Api\V1\Inspections\InspectionController;
+use App\Http\Controllers\Api\V1\Inspections\Reports\ReportController;
 use App\Http\Controllers\Api\V1\Inspections\Resources\ResourceController;
 use App\Http\Controllers\Api\V1\Oils\OilController;
 use App\Http\Controllers\Api\V1\Status\StatusController;
@@ -54,6 +55,9 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::post('inspection/evidences/update/{uuid}', [EvidenceController::class, 'update'])->name('inspections.update');
     Route::get('inspection/resources/get-inspection-details/{ct_inspection_uuid}', [ResourceController::class, 'getInspectionDetail'])
         ->name('inspection.resources.get-inspection-details');
+
+    Route::get('inspection/get-document/{inspection_uuid}', [ReportController::class, 'getDocument'])
+        ->name('inspection.resources.get-document');
     //---------------------------------------------------------   FORMS    ----------------------------------------------------------
     Route::get('inspection/forms/get-form/{ct_inspection_uuid}', [FormController::class, 'getForm']);
     Route::post('inspection/forms/set-form', [FormController::class, 'setForm']);

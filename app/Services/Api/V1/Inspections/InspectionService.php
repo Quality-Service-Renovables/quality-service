@@ -6,6 +6,7 @@
 
 namespace App\Services\Api\V1\Inspections;
 
+use App\Models\Inspections\Categories\Section;
 use App\Models\Inspections\Category;
 use App\Models\Inspections\Inspection;
 use App\Services\Service;
@@ -16,6 +17,8 @@ use Illuminate\Support\Str;
 class InspectionService extends Service
 {
     public string $nameService = 'inspection';
+
+    public object $inspection;
 
     /**
      * Create a new category.
@@ -167,22 +170,30 @@ class InspectionService extends Service
     public function show(string $uuid): array
     {
         try {
-            $this->response['message'] = trans('api.show');
             $inspection = Inspection::with([
-                'category.sections',
-                'equipments.equipment',
+                'equipment.equipment.model.trademark',
+                'category.sections.subSections.fields.result',
+                'equipmentsInspection.equipment',
                 'evidences',
-            ])
-                ->where([
-                    'inspection_uuid' => $uuid,
-                    'deleted_at' => null,
-                ])->first();
-            $this->response['data'] = compact('inspection');
+            ])->where('inspection_uuid', $uuid)->first();
+            $this->response['message'] = trans('api.show');
+            $this->response['data'] = $inspection;
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);
         }
 
         return $this->response;
+    }
+
+    public function setSections($inspection)
+    {
+        foreach ($inspection->category->sections as $section) {
+            dd($section);
+            $section->sub_sections = Section::where([
+                'ct_inspection_id' => $section->ct_inspection_relation_id,
+                'ct_inspection_relation_id' => null,
+            ])->get();
+        }
     }
 }

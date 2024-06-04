@@ -11,7 +11,9 @@ class FormInspection extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'ct_inspection_forms';
+
     protected $primaryKey = 'ct_inspection_form_id';
+
     protected $fillable = [
         'ct_inspection_form_uuid',
         'ct_inspection_form',
@@ -19,5 +21,11 @@ class FormInspection extends Model
         'ct_inspection_section_id',
         'required',
     ];
-    protected $hidden = ['ct_inspection_form_id','ct_inspection_section_id'];
+
+    protected $hidden = ['ct_inspection_form_id', 'ct_inspection_section_id'];
+
+    public function result()
+    {
+        return $this->belongsTo(\App\Models\Inspections\FormInspection::class, 'ct_inspection_form_id', 'ct_inspection_form_id');
+    }
 }

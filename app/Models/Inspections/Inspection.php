@@ -34,9 +34,16 @@ class Inspection extends Model
         return $this->belongsTo(Category::class, 'ct_inspection_id', 'ct_inspection_id');
     }
 
-    public function equipments(): HasMany
+    public function equipment(): BelongsTo
     {
-        return $this->hasMany(Equipment::class, 'inspection_id', 'inspection_id');
+        return $this->belongsTo(Equipment::class, 'inspection_id', 'inspection_id')
+            ->where('is_inspection_equipment', false);
+    }
+
+    public function equipmentsInspection(): HasMany
+    {
+        return $this->hasMany(Equipment::class, 'inspection_id', 'inspection_id')
+            ->where('is_inspection_equipment', true);
     }
 
     public function forms(): HasMany

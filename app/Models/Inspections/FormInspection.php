@@ -4,6 +4,7 @@ namespace App\Models\Inspections;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FormInspection extends Model
@@ -24,4 +25,9 @@ class FormInspection extends Model
     ];
 
     protected $hidden = ['inspection_id', 'ct_inspection_form_id'];
+
+    public function field(): BelongsTo
+    {
+        return $this->belongsTo(Categories\FormInspection::class, 'ct_inspection_form_id', 'ct_inspection_form_id');
+    }
 }
