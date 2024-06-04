@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Inspections\Reports\ReportController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
@@ -35,7 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     //Equipments
     Route::group(['middleware' => ['permission:equipments']], function () {
         Route::get('/equipments', [EquipmentController::class, 'component'])->name('equipments');
@@ -85,7 +86,9 @@ Route::middleware('auth')->group(function () {
     Route::group(['middleware' => ['permission:projects']], function () {
         Route::get('/projects', [InspectionController::class, 'component'])->name('projects');
     });
-   
+
+    Route::get('/inspection/get-document/{uuid}', [ReportController::class, 'getDocument'])->name('document-get');
+
 });
 
 require __DIR__.'/auth.php';

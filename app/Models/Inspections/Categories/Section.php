@@ -33,4 +33,12 @@ class Section extends Model
     {
         return $this->belongsTo(Category::class, 'ct_inspection_id', 'ct_inspection_id');
     }
+    public function subSections()
+    {
+        return $this->hasMany(__CLASS__, 'ct_inspection_relation_id', 'ct_inspection_section_id');
+    }
+    public function fields()
+    {
+        return $this->hasMany(FormInspection::class, 'ct_inspection_section_id', 'ct_inspection_section_id');
+    }
 }
