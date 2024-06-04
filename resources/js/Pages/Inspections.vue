@@ -90,8 +90,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                             </v-toolbar-items>
                                                         </v-toolbar>
                                                         <v-card-text>
-                                                            <v-container v-if="template">
-                                                                <TemplateInspectionCategory :template="template">
+                                                            <v-container v-if="editedItem.template">
+                                                                <TemplateInspectionCategory :item="editedItem">
                                                                 </TemplateInspectionCategory>
                                                             </v-container>
                                                         </v-card-text>
@@ -172,18 +172,21 @@ export default {
         ],
         editedIndex: -1,
         editedItem: {
+            ct_inspection_code: '',
             ct_inspection_uuid: '',
             ct_inspection: '',
             description: '',
             active: false,
+            template: {}
         },
         defaultItem: {
+            ct_inspection_code: '',
             ct_inspection_uuid: '',
             ct_inspection: '',
             description: '',
             active: false,
+            template: {}
         },
-        template: {}
     }),
     computed: {
         formTitle() {
@@ -244,7 +247,7 @@ export default {
         },
         closeTemplate() {
             this.dialogTemplate = false
-            this.template = {}
+            this.editedItem.template = {}
         },
         save() {
             if (this.editedIndex > -1) {
@@ -293,12 +296,12 @@ export default {
             return value ? 'green' : 'red';
         },
         showTemplate(item) {
-            this.dialogTemplate = true;
+            this.editedItem = Object.assign({}, item)
             console.log("Consultando template de inspección " + item.ct_inspection_uuid);
             return axios.get('api/inspection/forms/get-form/' + item.ct_inspection_uuid)
                 .then(response => {
-                    //console.log(response.data.data);
-                    this.template = response.data.data;
+                    this.editedItem.template = response.data.data;
+                    this.dialogTemplate = true;
                 })
                 .catch(error => {
                     console.log(error);
