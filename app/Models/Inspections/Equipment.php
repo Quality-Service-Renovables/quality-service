@@ -17,6 +17,7 @@ class Equipment extends Model
         'inspection_equipment_uuid',
         'inspection_id',
         'equipment_id',
+        'is_inspection_equipment',
     ];
     protected $hidden = ['inspection_equipment_id', 'inspection_id', 'equipment_id'];
 
