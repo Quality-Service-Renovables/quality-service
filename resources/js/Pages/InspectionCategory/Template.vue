@@ -6,7 +6,7 @@
     </v-btn>
     <p class="text-h6 font-weight-black my-2" v-if="item.template.sections">Secciones</p>
     <SectionCard v-for="(section, index) in item.template.sections" :key="section.id" :section="section"
-      :title="index.replaceAll('_', ' ').toUpperCase()" />
+      :title="section.section_details.ct_inspection_section" />
     <v-dialog v-model="dialog" width="auto">
       <v-card min-width="400" prepend-icon="mdi-plus" title="Nueva sección">
         <v-card-text>
@@ -18,7 +18,7 @@
         </v-card-text>
         <template v-slot:actions>
           <v-btn class="ms-auto" text="Cancelar" @click="dialog = false"></v-btn>
-          <v-btn color="primary" text @click="save()">Guardar</v-btn>
+          <v-btn color="primary" text @click="saveSection()">Guardar</v-btn>
         </template>
       </v-card>
     </v-dialog>
@@ -42,22 +42,16 @@ export default {
   },
   data() {
     return {
-      dialog: false,
-      types: [
-        { id: 'campo', name: 'Campo' },
-        { id: 'section', name: 'Sección' },
-      ],
       sectionForm: {
         name: ''
       },
     }
   },
   methods: {
-    save() {
+    saveSection() {
       // Guardamos la sección con axios
       const postRequest = () => {
         return axios.post('api/inspection/forms/set-form', {
-
           ct_inspection_code: this.item.ct_inspection_code,
           sections: [{
             ct_inspection_section: this.sectionForm.name,
