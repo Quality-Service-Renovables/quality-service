@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('inspection_equipment_uuid');
             $table->unsignedBigInteger('inspection_id')->comment('Relation with inspection');
             $table->unsignedBigInteger('equipment_id')->comment('Relation with equipment');
-            $table->boolean('is_inspection_equipment')->comment('Is equipment used in inspection');
+            $table->boolean('is_inspection_equipment')->default(false)->comment('Is equipment used in inspection');
             $table->timestamps();
             $table->softDeletes();
             //INDEX

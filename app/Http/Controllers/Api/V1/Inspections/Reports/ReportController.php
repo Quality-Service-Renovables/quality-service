@@ -42,18 +42,7 @@ class ReportController extends Controller
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
-        $inspection = Inspection::with([
-            'equipment.equipment',
-            'category.sections.subSections.fields.result',
-            'equipmentsInspection.equipment',
-            'evidences',
-        ])->where('inspection_uuid', $uuid)->first();
-
-        $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
-
-        return $document->download();
-
-        //return $this->service->getDocument($uuid);
+        return $this->service->getDocument($uuid);
     }
 
     /**

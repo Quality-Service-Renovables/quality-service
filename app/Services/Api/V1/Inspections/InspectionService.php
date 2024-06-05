@@ -170,12 +170,19 @@ class InspectionService extends Service
     public function show(string $uuid): array
     {
         try {
+            $user = auth()->user()->load('client');
             $inspection = Inspection::with([
+                'client',
                 'equipment.equipment.model.trademark',
                 'category.sections.subSections.fields.result',
                 'equipmentsInspection.equipment',
                 'evidences',
             ])->where('inspection_uuid', $uuid)->first();
+
+            if ($inspection) {
+                $inspection->provider = $user->client;
+            }
+
             $this->response['message'] = trans('api.show');
             $this->response['data'] = $inspection;
         } catch (Throwable $exceptions) {

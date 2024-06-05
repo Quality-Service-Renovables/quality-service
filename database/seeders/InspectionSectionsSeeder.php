@@ -56,7 +56,7 @@ class InspectionSectionsSeeder extends Seeder
     {
         $category = Category::all();
         $multiplicator = $category
-            ->where('ct_inspection_code', '=', 'inspeccion_integral_estado_turbinas')
+            ->where('ct_inspection_code', '=', 'inspeccion_multiplicadora')
             ->first()->ct_inspection_id;
 
         return [

@@ -18,13 +18,17 @@ return new class extends Migration
             $table->longText('conclusion')->nullable()->comment('Technical conclusion');
             $table->longText('recomendations')->nullable()->comment('Recomendations');
             $table->unsignedBigInteger('ct_inspection_id')->comment('Relation with inspection category');
+            $table->unsignedBigInteger('client_id')->comment('Relation with client');
             $table->timestamps();
             $table->softDeletes();
             //INDEX
             $table->index('ct_inspection_id');
+            $table->index('client_id');
             //FOREIGN KEYS
             $table->foreign('ct_inspection_id', 'fk_ct_inspection')
                 ->references('ct_inspection_id')->on('ct_inspections');
+            $table->foreign('client_id', 'fk_clients')
+                ->references('client_id')->on('clients');
         });
     }
 

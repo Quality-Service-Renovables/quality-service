@@ -2,6 +2,7 @@
 
 namespace App\Models\Inspections;
 
+use App\Models\Clients\Client;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,6 +26,11 @@ class Inspection extends Model
     ];
 
     protected $hidden = ['inspection_id', 'ct_inspection_id'];
+
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class, 'client_id', 'client_id');
+    }
 
     /**
      * Get the category that belongs to this model.

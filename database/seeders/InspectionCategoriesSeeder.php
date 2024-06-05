@@ -118,6 +118,15 @@ class InspectionCategoriesSeeder extends Seeder
                 'dependency' => null,
                 'active' => true,
             ],
+            [
+                'ct_inspection_uuid' => Str::uuid()->toString(),
+                'ct_inspection' => 'Inspección de multiplicadora',
+                'ct_inspection_code' => 'inspeccion_multiplicadora',
+                'description' => 'Esta inspección incluye verificar el estado de los engranajes, rodamientos, lubricación, posibles desgastes o daños y asegurarse de que todos los componentes estén funcionando correctamente y sin vibraciones anormales.',
+                'is_default' => true,
+                'dependency' => null,
+                'active' => true,
+            ],
         ];
     }
 }

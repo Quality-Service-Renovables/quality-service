@@ -6,19 +6,15 @@
 
 namespace App\Services\Api\V1\Inspections\Reports;
 
-use App\Models\Equipments\Equipment;
-use App\Models\Inspections\Equipment as InspectionEquipment;
 use App\Models\Inspections\Inspection;
 use App\Services\Api\V1\Inspections\Throwable;
 use App\Services\Service;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportService extends Service
 {
     public string $nameService = 'inspection_equipment';
+
     /**
      * Retrieve the list of categories.
      *
@@ -53,19 +49,30 @@ class ReportService extends Service
      *
      * @throws \Exception If there is an error retrieving the list of categories.
      */
-    public function getDocument(string $uuid): array
+    public function getDocument(string $uuid)
     {
         try {
+            $user = auth()->user()->load('client');
+
+            $document = response();
             $inspection = Inspection::with([
+                'client',
                 'equipment.equipment.model.trademark',
                 'category.sections.subSections.fields.result',
                 'equipmentsInspection.equipment',
                 'evidences',
             ])->where('inspection_uuid', $uuid)->first();
 
-            $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
+            if ($inspection) {
+                $inspection->provider = $user->client;
+                $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
+                $filename = $inspection->category->ct_inspection_code.'_'.now()->format('Y-m-d H:i:s');
 
-            return $document->download();
+                return $document->download($filename);
+            }
+
+            return $document;
+
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);

@@ -1,31 +1,45 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-<head>
-    <meta charset="utf-8">
-
-    <title inertia>{{ config('app.name', 'Quality Service Renovables') }}</title>
-
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
-    <meta name="theme-color" content="#c40000" />
-    <meta NAME="keywords" CONTENT="quality, service, renovables, eólico, energía" />
-    <meta NAME="description" CONTENT="Servicios profesionales técnicos industriales, especializados en mecatrónica dentro de sector eólico y las nuevas fuentes de energías renovables" />
-    <!-- Add to homescreen for Chrome on Android -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <!-- Add to homescreen for Safari on iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="#c40000">
-    <meta name="apple-mobile-web-app-title" content="QSR App">
-    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-</head>
-
-<body class="font-sans antialiased">
-
-</body>
-
-</html>
+<h3>Equipo</h3>
+<table class="inspection-table">
+    <tr>
+        <td><strong>Nombre: </strong></td>
+        <td colspan="2">{{$inspection->equipment->equipment->equipment}}</td>
+    </tr>
+    <tr>
+        <td><strong>Descripción: </strong></td>
+        <td colspan="2">{{$inspection->equipment->equipment->description}}</td>
+    </tr>
+    <tr>
+        <td><strong>Ubicación: </strong></td>
+        <td colspan="2">{{$inspection->equipment->equipment->location}}</td>
+    </tr>
+    <tr>
+        <td><strong>Fabricante del equipo: </strong></td>
+        <td>{{$inspection->equipment->equipment->model->trademark->trademark}}</td>
+        <td><strong>Año: </strong>{{$inspection->equipment->equipment->manufacture_date}}</td>
+    </tr>
+    <tr>
+        <td rowspan="2"><strong>Datos del equipo: </strong></td>
+        <td><strong>Modelo: </strong>{{$inspection->equipment->equipment->model->trademark_model}}</td>
+        <td><strong>Serie: </strong>{{$inspection->equipment->equipment->serial_number}}</td>
+    </tr>
+    <tr>
+        <td><strong>Horas Operación: </strong>{{$inspection->equipment->equipment->work_hours}}</td>
+        <td><strong>Energía Producida: </strong>{{$inspection->equipment->equipment->energy_produced}}</td>
+    </tr>
+</table>
+<h3>Digrama Esquemático</h3>
+<img src="{{$inspection->equipment->equipment->equipment_diagram}}" width="45%" height="25%" style="margin: 10px">
+{{--    $pathAddress = asset('/').$inspection->equipment->equipment->equipment_diagram;--}}
+{{--  RESUMEN DE INSPECCIÓN  --}}
+<h3>Resumen de Inspección</h3>
+<p style="text-align: justify-all">{{$inspection->resume}}</p>
+{{--  EQUIPO INSPECCIÓN  --}}
+<h3>Equipos Utilizados En La Inspección</h3>
+<table>
+    @foreach($inspection->equipmentsInspection as $equipmentsInspection)
+        <tr>
+            <td><strong>Equipo: </strong>{{$equipmentsInspection->equipment->equipment}}</td>
+            <td><strong>Descripción: </strong><small>{{$equipmentsInspection->equipment->description}}</small></td>
+        </tr>
+    @endforeach
+</table>
