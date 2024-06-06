@@ -27,6 +27,50 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             </v-toolbar-title>
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
+                                            <v-dialog v-model="dialog" max-width="500px" v-if="hasPermissionTo('projects.create') || hasPermissionTo('projects.update')">
+                                                <template v-slot:activator="{ props }" v-if="hasPermissionTo('projects.create')">
+                                                    <v-btn class="mb-2" color="primary" dark v-bind="props"
+                                                        icon="mdi-plus"></v-btn>
+                                                </template>
+                                                <v-card>
+                                                    <v-card-title>
+                                                        <span class="text-h5">{{ formTitle }}</span>
+                                                    </v-card-title>
+
+                                                    <v-card-text>
+                                                        <v-container>
+                                                            <v-row>
+                                                                <v-col cols="12">
+                                                                    <v-text-field
+                                                                        v-model="editedItem.ct_equipment"
+                                                                        label="Nombre" variant="solo"
+                                                                        hide-details></v-text-field>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-textarea v-model="editedItem.description"
+                                                                        label="Descripción" variant="solo"
+                                                                        hide-details></v-textarea>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-switch label="Activo" v-model="editedItem.active"
+                                                                        color="primary"></v-switch>
+                                                                </v-col>
+
+                                                            </v-row>
+                                                        </v-container>
+                                                    </v-card-text>
+
+                                                    <v-card-actions>
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn color="blue-darken-1" variant="text" @click="close">
+                                                            Cancelar
+                                                        </v-btn>
+                                                        <v-btn color="blue-darken-1" variant="text" @click="save">
+                                                            Guardar
+                                                        </v-btn>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </v-dialog>
                                             <v-dialog v-model="dialogDelete" max-width="500px">
                                                 <v-card>
                                                     <v-card-title class="text-h5 text-center">¿Estás seguro de
@@ -36,7 +80,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         <v-btn color="blue-darken-1" variant="text"
                                                             @click="closeDelete">Cancel</v-btn>
                                                         <v-btn color="blue-darken-1" variant="text"
-                                                            @click="deleteItemConfirm(editedItem.inspection_uuid)">Si,
+                                                            @click="deleteItemConfirm(editedItem.ct_equipment_uuid)">Si,
                                                             eliminar</v-btn>
                                                         <v-spacer></v-spacer>
                                                     </v-card-actions>
@@ -80,14 +124,27 @@ export default {
     },
     data: () => ({
         search: '',
+        dialog: false,
         dialogDelete: false,
         headers: [
-            { title: 'Resumen', key: 'resume' },
-            { title: 'Conclusión', key: 'conclusion' },
-            { title: 'Recomendaciones', key: 'recomendations' },
-            //{ title: 'Categoría', key: '' },
+            { title: 'Categoria', key: 'ct_equipment' },
+            { title: 'Descripción', key: 'description' },
+            { title: 'Estado', key: 'active' },
             { title: 'Actions', key: 'actions', sortable: false }
         ],
+        editedIndex: -1,
+        editedItem: {
+            ct_equipment_uuid: '',
+            ct_equipment: '',
+            description: '',
+            active: false,
+        },
+        defaultItem: {
+            ct_equipment_uuid: '',
+            ct_equipment: '',
+            description: '',
+            active: false
+        },
     }),
     computed: {
         formTitle() {
@@ -95,11 +152,20 @@ export default {
         },
     },
     watch: {
+        dialog(val) {
+            val || this.close()
+        },
         dialogDelete(val) {
             val || this.closeDelete()
         },
     },
     methods: {
+        editItem(item) {
+            this.editedIndex = this.ct_equipments.indexOf(item)
+            item.active = item.active == "1" ? true : false
+            this.editedItem = Object.assign({}, item)
+            this.dialog = true
+        },
         deleteItem(item) {
             this.editedIndex = this.ct_equipments.indexOf(item)
             this.editedItem = Object.assign({}, item)
@@ -121,8 +187,69 @@ export default {
                 }
             });
         },
+        close() {
+            this.dialog = false
+            this.$nextTick(() => {
+                console.log("Cambiando estatus en close");
+                this.editedItem = Object.assign({}, this.defaultItem)
+                this.editedIndex = -1
+            })
+        },
         closeDelete() {
             this.dialogDelete = false
+            this.$nextTick(() => {
+                console.log("Cambiando estatus en closeDelete");
+                this.editedItem = Object.assign({}, this.defaultItem)
+                this.editedIndex = -1
+            })
+        },
+        save() {
+            if (this.editedIndex > -1) {
+                Object.assign(this.ct_equipments[this.editedIndex], this.editedItem)
+                const putRequest = () => {
+                    return axios.put('api/equipment/categories/' + this.editedItem.ct_equipment_uuid, {
+                        ct_equipment: this.editedItem.ct_equipment,
+                        description: this.editedItem.description,
+                        active: this.editedItem.active
+                    });
+                };
+                toast.promise(putRequest(), {
+                    loading: 'Procesando...',
+                    success: (data) => {
+                        this.$inertia.reload()
+                        this.close()
+                        return 'Categoria actualizada correctamente';
+                    },
+                    error: (data) => {
+                        this.handleErrors(data);
+                    }
+                });
+            } else {
+                this.ct_equipments.push(this.editedItem)
+                const postRequest = () => {
+                    return axios.post('api/equipment/categories', {
+                        ct_equipment: this.editedItem.ct_equipment,
+                        description: this.editedItem.description,
+                        active: this.editedItem.active
+                    });
+                };
+
+                toast.promise(postRequest(), {
+                    loading: 'Procesando...',
+                    success: (data) => {
+                        this.$inertia.reload()
+                        this.close()
+                        return 'Categoria creada correctamente';
+                    },
+                    error: (data) => {
+                        this.handleErrors(data);
+                    }
+                });
+            }
+
+        },
+        getColor(value) {
+            return value ? 'green' : 'red';
         },
     },
 
