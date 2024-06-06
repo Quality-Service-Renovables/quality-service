@@ -12,7 +12,8 @@
         <v-card-text>
           <v-row dense>
             <v-col cols="12">
-              <v-text-field label="Nombre*" variant="outlined" required hide-details v-model="sectionForm.name"></v-text-field>
+              <v-text-field label="Nombre*" variant="outlined" required hide-details
+                v-model="sectionForm.name"></v-text-field>
             </v-col>
           </v-row>
         </v-card-text>
@@ -45,37 +46,60 @@ export default {
       sectionForm: {
         name: ''
       },
+      dialog: false
     }
   },
   methods: {
-    saveSection() {
-      // Guardamos la sección con axios
-      const postRequest = () => {
-        return axios.post('api/inspection/forms/set-form', {
-          ct_inspection_code: this.item.ct_inspection_code,
-          sections: [{
-            ct_inspection_section: this.sectionForm.name,
-            sub_sections: [],
-            fields: []
-          }],
-        });
-      };
+    async saveSection() {
+      const toastId = toast.loading('Procesando...'); // Guardar el ID del toast para poder actualizarlo o cerrarlo
 
-      toast.promise(postRequest(), {
-        loading: 'Procesando...',
-        success: (response) => {
-          this.dialog = false;
-          console.log(response.data.data);
-          this.item.template.sections = response.data.data.sections;
-          this.sectionForm.name = '';
-          return 'Sección creada correctamente';
-        },
-        error: (data) => {
-          this.handleErrors(data);
-        }
-      });
-      //this.dialog = false;
-    }
+      try {
+        // Realizar la solicitud POST para guardar la sección
+        await this.postSection();
+
+        // Restablecer el formulario y cerrar el diálogo
+        this.resetForm();
+
+        // Actualizar las secciones
+        await this.updateSections();
+
+        // Mostrar mensaje de éxito
+        toast.success('Sección creada correctamente', { id: toastId });
+      } catch (error) {
+        // Mostrar mensaje de error
+        toast.error('Error al crear la sección', { id: toastId });
+      }
+    },
+
+    async postSection() {
+      try {
+        await axios.post('api/inspection/sections', {
+          ct_inspection_uuid: this.item.ct_inspection_uuid,
+          ct_inspection_section: this.sectionForm.name,
+        });
+      } catch (error) {
+        toast.error('Error al crear la sección');
+        throw error; // Propagar el error para que sea manejado por saveSection
+      }
+    },
+
+    async updateSections() {
+      try {
+        const response = await axios.get(`api/inspection/forms/get-form/${this.item.ct_inspection_uuid}`);
+        this.item.template.sections = response.data.data.sections;
+      } catch (error) {
+        toast.error('Error al cargar las secciones');
+        throw error; // Propagar el error para que sea manejado por saveSection
+      }
+    },
+
+    resetForm() {
+      this.dialog = false;
+      this.sectionForm.name = '';
+    },
+
   }
+
+
 }
 </script>

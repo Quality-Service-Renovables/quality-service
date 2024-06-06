@@ -86,7 +86,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                             <v-toolbar-title>Template</v-toolbar-title>
                                                             <v-spacer></v-spacer>
                                                             <v-toolbar-items>
-                                                                <v-btn text="Guardar" variant="text" @click="save"></v-btn>
+                                                                <v-btn text="Guardar" variant="text"
+                                                                    @click="save"></v-btn>
                                                             </v-toolbar-items>
                                                         </v-toolbar>
                                                         <v-card-text>
@@ -117,18 +118,20 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
-                                        <v-icon class="me-2" size="small" @click="editItem(item)"
-                                            v-if="hasPermissionTo('inspections.update')">
-                                            mdi-pencil
-                                        </v-icon>
-                                        <v-icon class="me-2" size="small" @click="showTemplate(item)"
-                                            v-if="hasPermissionTo('inspections.update')">
-                                            mdi-file-tree-outline
-                                        </v-icon>
-                                        <v-icon size="small" @click="deleteItem(item)"
-                                            v-if="hasPermissionTo('inspections.delete')">
-                                            mdi-delete
-                                        </v-icon>
+                                        <div class="d-flex">
+                                            <v-icon class="me-2" size="small" @click="editItem(item)"
+                                                v-if="hasPermissionTo('inspections.update')">
+                                                mdi-pencil
+                                            </v-icon>
+                                            <v-icon class="me-2" size="small" @click="showTemplate(item)"
+                                                v-if="hasPermissionTo('inspections.update')">
+                                                mdi-file-tree-outline
+                                            </v-icon>
+                                            <v-icon size="small" @click="deleteItem(item)"
+                                                v-if="hasPermissionTo('inspections.delete')">
+                                                mdi-delete
+                                            </v-icon>
+                                        </div>
                                     </template>
                                 </v-data-table>
                             </v-col>
