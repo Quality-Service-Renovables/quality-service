@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\V1\Inspections\FormController;
 use App\Http\Controllers\Api\V1\Inspections\InspectionController;
 use App\Http\Controllers\Api\V1\Inspections\Reports\ReportController;
 use App\Http\Controllers\Api\V1\Inspections\Resources\ResourceController;
+use App\Http\Controllers\Api\V1\Inspections\SectionController;
 use App\Http\Controllers\Api\V1\Oils\OilController;
 use App\Http\Controllers\Api\V1\Status\StatusController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
@@ -48,6 +49,7 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::post('clients/update/{uuid}', [ClientController::class, 'update'])->name('clients.update');
     //######################################################## INSPECTIONS #########################################################
     Route::resource('inspections', InspectionController::class);
+    Route::resource('inspection/sections', SectionController::class);
     Route::resource('inspection/equipments', \App\Http\Controllers\Api\V1\Inspections\EquipmentController::class);
     Route::resource('inspection/evidences', EvidenceController::class);
     Route::resource('inspection/categories', CategoryController::class);
@@ -61,6 +63,7 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //---------------------------------------------------------   FORMS    ----------------------------------------------------------
     Route::get('inspection/forms/get-form/{ct_inspection_uuid}', [FormController::class, 'getForm']);
     Route::post('inspection/forms/set-form', [FormController::class, 'setForm']);
+    Route::post('inspection/forms/set-form-fields', [FormController::class, 'setFormFields']);
     Route::post('inspection/forms/set-form-inspection', [FormController::class, 'setFormInspection']);
     //######################################################### EQUIPMENTS ##########################################################
     Route::resource('equipments', EquipmentController::class);
