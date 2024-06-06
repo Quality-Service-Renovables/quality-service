@@ -24,6 +24,24 @@ class FormController extends Controller
         return response()->json($this->service->response, $this->service->statusCode);
     }
 
+    public function setFormFields(Request $request): JsonResponse
+    {
+        $validated = Validator::make($request->all(), [
+            'ct_inspection_section_uuid' => 'required|string|min:10|max:255|exists:ct_inspection_sections,ct_inspection_section_uuid',
+            'fields.*.ct_inspection_form' => 'required|string|unique:ct_inspection_forms,ct_inspection_form',
+            'fields.*.required' => 'required|boolean',
+        ]);
+
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->setFormFields($request);
+
+        return response()->json($this->service->response, $this->service->statusCode);
+    }
+
     public function setFormInspection(Request $request): JsonResponse
     {
         $validated = Validator::make($request->all(), [

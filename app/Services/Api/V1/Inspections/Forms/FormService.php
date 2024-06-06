@@ -6,11 +6,11 @@
 
 namespace App\Services\Api\V1\Inspections\Forms;
 
+use App\Models\Inspections\Categories\FormInspection;
 use App\Models\Inspections\Categories\FormInspection as CtFormInspection;
 use App\Models\Inspections\Categories\Section;
 use App\Models\Inspections\Category;
 use App\Models\Inspections\CategoryForm;
-use App\Models\Inspections\FormInspection;
 use App\Models\Inspections\Inspection;
 use App\Services\Service;
 use Illuminate\Http\Request;
@@ -218,6 +218,58 @@ class FormService extends Service
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
             $this->response['data'] = $inspectionForms;
+            // Registro en log
+            $this->logService->create(
+                $this->nameService,
+                $request->all(),
+                $this->response,
+                trans('api.message_log'),
+            );
+            // Finaliza Transacción
+            DB::commit();
+        } catch (Throwable $exceptions) {
+            DB::rollBack();
+            // Manejo del error
+            $this->setExceptions($exceptions);
+        }
+
+        // Respuesta del módulo
+        return $this->response;
+    }
+
+    /**
+     * Sets the form fields for a given inspection form.
+     *
+     * @param  Request  $request  The request object containing the form data.
+     * @return array The response data.
+     */
+    public function setFormFields(Request $request): array
+    {
+        try {
+            // Control de transacciones
+            DB::beginTransaction();
+            // Campos a registrar
+            $fields = [];
+            // Obtiene la sección a la cuál se asociará el campo
+            $section = Section::where([
+                'ct_inspection_section_uuid' => $request->ct_inspection_section_uuid,
+            ])->first();
+            // Si la sección existe se registran los campos
+            if ($section) {
+                // Registro de campos
+                foreach ($request->fields as $field) {
+                    // Adjunta dependencias del campo para el registro
+                    $field['ct_inspection_form_uuid'] = Str::uuid()->toString();
+                    $field['ct_inspection_form_code'] = create_slug($field['ct_inspection_form']);
+                    $field['ct_inspection_section_id'] = $section->ct_inspection_section_id;
+                    // Registro de campos
+                    $fields[] = FormInspection::create($field);
+                }
+            }
+
+            $this->statusCode = 201;
+            $this->response['message'] = trans('api.created');
+            $this->response['data'] = $fields;
             // Registro en log
             $this->logService->create(
                 $this->nameService,
