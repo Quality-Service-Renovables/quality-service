@@ -5,8 +5,8 @@
       Agregar sección
     </v-btn>
     <p class="text-h6 font-weight-black my-2" v-if="item.template.sections">Secciones</p>
-    <SectionCard v-for="(section, index) in item.template.sections" :key="section.id" :section="section"
-      :title="section.section_details.ct_inspection_section" :item="item" @save-section="saveSection" @update-sections="handleUpdateSections" />
+    <SectionCard v-for="(section, index) in item.template.sections" :key="index" :section="section"
+      :title="section.section_details.ct_inspection_section" :item="item" @save-section="saveSection" @update-sections="updateSections"/>
     <v-dialog v-model="dialog" width="auto">
       <v-card min-width="400" prepend-icon="mdi-plus" title="Nueva sección">
         <v-card-text>
@@ -28,41 +28,36 @@
 
 <script>
 import SectionCard from './Partials/SectionCard.vue';
-import { Toaster, toast } from 'vue-sonner'
+import { Toaster, toast } from 'vue-sonner';
+import axios from 'axios';
 
 export default {
   components: {
     SectionCard,
-    Toaster
+    Toaster,
   },
   props: {
     item: {
       type: Object,
-      required: true
+      required: true,
     },
   },
   data() {
     return {
       sectionForm: {
-        name: ''
+        name: '',
       },
-      dialog: false
-    }
+      dialog: false,
+    };
   },
   methods: {
     async saveSection(ct_inspection_uuid, name, ct_inspection_relation_uuid = null) {
       try {
-        // Realizar la solicitud POST para guardar la sección
         await this.postSection(ct_inspection_uuid, name, ct_inspection_relation_uuid);
-
-        // Restablecer el formulario y cerrar el diálogo
         this.resetForm();
-
-        // Actualizar las secciones
         await this.updateSections();
         toast.success('Sección guardada correctamente');
       } catch (error) {
-        // Manejar el error de postSection o updateSections
         this.handleErrors(error);
       }
     },
@@ -70,23 +65,21 @@ export default {
     async postSection(ct_inspection_uuid, name, ct_inspection_relation_uuid = null) {
       try {
         await axios.post('api/inspection/sections', {
-          ct_inspection_uuid: ct_inspection_uuid,
+          ct_inspection_uuid,
           ct_inspection_section: name,
-          ct_inspection_relation_uuid: ct_inspection_relation_uuid,
+          ct_inspection_relation_uuid,
         });
       } catch (error) {
-        throw error; // Propagar el error para que sea manejado por saveSection
+        throw error;
       }
     },
 
     async updateSections() {
-      console.log("Entra a updateSections");
       try {
-        console.log("updateSections: actualizando secciones");
         const response = await axios.get(`api/inspection/forms/get-form/${this.item.ct_inspection_uuid}`);
         this.item.template.sections = response.data.data.sections;
       } catch (error) {
-        throw error; // Propagar el error para que sea manejado por saveSection
+        throw error;
       }
     },
 
@@ -94,10 +87,6 @@ export default {
       this.dialog = false;
       this.sectionForm.name = '';
     },
-
-  }
-
-
-
-}
+  },
+};
 </script>
