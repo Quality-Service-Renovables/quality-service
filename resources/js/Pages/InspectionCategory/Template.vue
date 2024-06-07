@@ -51,23 +51,26 @@ export default {
   },
   methods: {
     async saveSection() {
-      const toastId = toast.loading('Procesando...'); // Guardar el ID del toast para poder actualizarlo o cerrarlo
 
       try {
         // Realizar la solicitud POST para guardar la sección
-        await this.postSection();
+        await toast.promise(this.postSection(), {
+          loading: 'Procesando...',
+          success: 'Sección creada correctamente',
+        })
 
         // Restablecer el formulario y cerrar el diálogo
         this.resetForm();
 
         // Actualizar las secciones
-        await this.updateSections();
+        await toast.promise(this.updateSections(), {
+          loading: 'Actualizando secciones...',
+          success: 'Secciones actualizadas correctamente',
+        })
 
-        // Mostrar mensaje de éxito
-        toast.success('Sección creada correctamente', { id: toastId });
       } catch (error) {
         // Mostrar mensaje de error
-        toast.error('Error al crear la sección', { id: toastId });
+        await this.handleErrors(error);
       }
     },
 
@@ -78,7 +81,6 @@ export default {
           ct_inspection_section: this.sectionForm.name,
         });
       } catch (error) {
-        toast.error('Error al crear la sección');
         throw error; // Propagar el error para que sea manejado por saveSection
       }
     },
@@ -88,7 +90,6 @@ export default {
         const response = await axios.get(`api/inspection/forms/get-form/${this.item.ct_inspection_uuid}`);
         this.item.template.sections = response.data.data.sections;
       } catch (error) {
-        toast.error('Error al cargar las secciones');
         throw error; // Propagar el error para que sea manejado por saveSection
       }
     },
