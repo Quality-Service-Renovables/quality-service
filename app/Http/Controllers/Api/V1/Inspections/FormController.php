@@ -7,6 +7,7 @@ use App\Services\Api\V1\Inspections\Forms\FormService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class FormController extends Controller
 {
@@ -20,24 +21,6 @@ class FormController extends Controller
     public function setForm(Request $request): JsonResponse
     {
         $this->service->setForm($request);
-
-        return response()->json($this->service->response, $this->service->statusCode);
-    }
-
-    public function setFormFields(Request $request): JsonResponse
-    {
-        $validated = Validator::make($request->all(), [
-            'ct_inspection_section_uuid' => 'required|string|min:10|max:255|exists:ct_inspection_sections,ct_inspection_section_uuid',
-            'fields.*.ct_inspection_form' => 'required|string|unique:ct_inspection_forms,ct_inspection_form',
-            'fields.*.required' => 'required|boolean',
-        ]);
-
-        if ($validated->fails()) {
-            $this->service->setFailValidation($validated->errors());
-            return response()->json($this->service->response, $this->service->statusCode);
-        }
-
-        $this->service->setFormFields($request);
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
@@ -67,6 +50,70 @@ class FormController extends Controller
             return response()->json($this->service->response, $this->service->statusCode);
         }
         $this->service->getForm($uuid);
+
+        return response()->json($this->service->response, $this->service->statusCode);
+    }
+
+    public function setFormFields(Request $request): JsonResponse
+    {
+        $validated = Validator::make($request->all(), [
+            'ct_inspection_section_uuid' => 'required|string|min:10|max:255|exists:ct_inspection_sections,ct_inspection_section_uuid',
+            'fields.*.ct_inspection_form' => 'required|string|unique:ct_inspection_forms,ct_inspection_form',
+            'fields.*.required' => 'required|boolean',
+        ]);
+
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->setFormFields($request);
+
+        return response()->json($this->service->response, $this->service->statusCode);
+    }
+    public function updateFormField(Request $request, string $uuid): JsonResponse
+    {
+        $request->merge(['ct_inspection_form_uuid' => $uuid]);
+
+        $validated = Validator::make($request->all(), [
+            'ct_inspection_form_uuid' => 'required|string|min:10|max:255|exists:ct_inspection_forms,ct_inspection_form_uuid',
+            'ct_inspection_section_uuid' => 'required|string|min:10|max:255|exists:ct_inspection_sections,ct_inspection_section_uuid',
+            'ct_inspection_form' => [
+                'required',
+                'string',
+                'min:1',
+                'max:255',
+                Rule::unique('ct_inspection_forms', 'ct_inspection_form')
+                    ->whereNot('ct_inspection_form_uuid', $uuid)
+                    ->whereNull('deleted_at'),
+            ],
+            'required' => 'required|boolean',
+        ]);
+
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->updateFormField($request);
+
+        return response()->json($this->service->response, $this->service->statusCode);
+    }
+
+    public function deleteFormField(string $uuid): JsonResponse
+    {
+        $request = ['ct_inspection_form_uuid' => $uuid];
+
+        $validated = Validator::make($request, [
+            'ct_inspection_form_uuid' => 'required|string|min:10|max:255|exists:ct_inspection_forms,ct_inspection_form_uuid',
+        ]);
+
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->deleteFormField($uuid);
 
         return response()->json($this->service->response, $this->service->statusCode);
     }

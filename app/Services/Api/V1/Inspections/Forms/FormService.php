@@ -288,4 +288,84 @@ class FormService extends Service
         // Respuesta del módulo
         return $this->response;
     }
+
+    public function updateFormField(Request $request): array
+    {
+        try {
+            // Control de transacciones
+            DB::beginTransaction();
+            // Campos a registrar
+            $field = null;
+            // Obtiene la sección a la cuál se asociará el campo
+            $section = Section::where([
+                'ct_inspection_section_uuid' => $request->ct_inspection_section_uuid,
+            ])->first();
+            // Si la sección existe se registran los campos
+            if ($section) {
+                // Adjunta dependencias del campo para el registro
+                $request->merge([
+                    'ct_inspection_form_code' => create_slug($request->ct_inspection_form),
+                    'ct_inspection_section_id' => $section->ct_inspection_section_id,
+                ]);
+                // Registro de campos
+                $field = FormInspection::where([
+                    'ct_inspection_form_uuid' => $request->ct_inspection_form_uuid,
+                ])->update($request->except([
+                    'ct_inspection_section_uuid',
+                ]));
+            }
+
+            $this->response['message'] = trans('api.updated');
+            $this->response['data'] = $field;
+            // Registro en log
+            $this->logService->create(
+                $this->nameService,
+                $request->all(),
+                $this->response,
+                trans('api.message_log'),
+            );
+            // Finaliza Transacción
+            DB::commit();
+        } catch (Throwable $exceptions) {
+            DB::rollBack();
+            // Manejo del error
+            $this->setExceptions($exceptions);
+        }
+
+        // Respuesta del módulo
+        return $this->response;
+    }
+
+    /**
+     * Deletes a form field by UUID.
+     *
+     * @param  string  $uuid  The UUID of the form field to be deleted.
+     * @return array The response array containing the status code, message, and data.
+     */
+    public function deleteFormField(string $uuid): array
+    {
+        try {
+            // Control de transacciones
+            DB::beginTransaction();
+            // Elimina por soft delete el campo de la sección
+            $formInspection = FormInspection::where([
+                'ct_inspection_form_uuid' => $uuid,
+            ])->first();
+            // Se existe el campo se elimina
+            $formInspection?->delete();
+            // Respuesta de la api
+            $this->statusCode = $formInspection ? 204 : 404;
+            $this->response['message'] = trans('api.deleted');
+            $this->response['data'] = [];
+            // Finaliza Transacción
+            DB::commit();
+        } catch (Throwable $exceptions) {
+            DB::rollBack();
+            // Manejo del error
+            $this->setExceptions($exceptions);
+        }
+
+        // Respuesta del módulo
+        return $this->response;
+    }
 }

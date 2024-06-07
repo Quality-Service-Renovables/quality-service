@@ -8,7 +8,6 @@ namespace App\Services\Api\V1\Inspections;
 
 use App\Models\Inspections\Categories\Section;
 use App\Models\Inspections\Category;
-use App\Models\Inspections\Inspection;
 use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -132,7 +131,7 @@ class SectionService extends Service
             ])->first();
 
             $section->update($request->except([
-                'ct_inspection_relation_uuid','ct_inspection_uuid'
+                'ct_inspection_relation_uuid', 'ct_inspection_uuid',
             ]));
 
             $this->response['message'] = trans('api.updated');
@@ -171,10 +170,19 @@ class SectionService extends Service
             // Control Transaction
             DB::beginTransaction();
             // Delete Register
-            Inspection::where('inspection_uuid', $uuid)
-                ->update([
-                    'deleted_at' => now(),
-                ]);
+            $section = Section::where('ct_inspection_section_uuid', $uuid)
+                ->first();
+            // Elimina sub secciones para evitar secciones huerfanas
+            if (! $section->ct_inspection_relation_id) {
+                $subSections = Section::where([
+                    'ct_inspection_relation_id' => $section->ct_inspection_section_id,
+                ])->get();
+                foreach ($subSections as $subSection) {
+                    $subSection->delete();
+                }
+            }
+            // Elimina sección
+            $section?->delete();
             // Set Response
             $this->response['message'] = trans('api.deleted');
             // Commit Transaction
