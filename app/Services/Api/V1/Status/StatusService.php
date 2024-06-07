@@ -36,20 +36,20 @@ class StatusService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Agrega atributos a la solicitud
-            $request->merge(['status_uuid' => Str::uuid()->toString()]);
-            $request->merge(['status_code' => create_slug($request->get('status'))]);
-            // Registra los atributos de la solicitud a la categoria
-            $status = Status::create($request->all());
+            $request->merge([
+                'status_uuid' => Str::uuid()->toString(),
+                'status_code' => create_slug($request->status),
+            ]);
             // Define parámetros de respuesta
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
-            $this->response['data'] = $status;
+            $this->response['data'] = Status::create($request->all());
             // Registro en log
             $this->logService->create(
                 $this->nameService,
                 $request->all(),
                 $this->response,
-                'Create status request',
+                trans('api.message_log'),
             );
             // Finaliza Transacción
             DB::commit();
@@ -76,16 +76,14 @@ class StatusService extends Service implements ServiceInterface
         try {
             // Control de transacciones
             DB::beginTransaction();
-            // Asignación de identificadores
-            $slug = create_slug($request->get('status'));
             // Agregar elementos al request
-            $request->merge(['status_code' => $slug]);
+            $request->merge(['status_code' => create_slug($request->status)]);
             // Actualiza Estado
-            Status::where('status_uuid', $request->status_uuid)->update($request->all());
-            // Recupera Estado Actualizado
-            $equipmentUpdated = Status::where('status_uuid', $request->status_uuid)->first();
+            $status = Status::where('status_uuid', $request->status_uuid)->first();
+            $status?->update($request->all());
+            // Respuesta de servicio
             $this->response['message'] = trans('api.updated');
-            $this->response['data'] = $equipmentUpdated;
+            $this->response['data'] = $status;
             // Registro de log
             $this->logService->create(
                 $this->nameService,
@@ -112,7 +110,7 @@ class StatusService extends Service implements ServiceInterface
      */
     public function read(): array
     {
-        $this->response['message'] = trans('api.readed');
+        $this->response['message'] = trans('api.read');
         $this->response['data'] = Status::all();
 
         // Respuesta del módulo
@@ -143,11 +141,9 @@ class StatusService extends Service implements ServiceInterface
             // Parámetros de respuesta en caso de error
             $this->setExceptions($exceptions);
         }
-
         // Respuesta del módulo
         return $this->response;
     }
-
     /**
      * Retrieve a status by its UUID
      *
@@ -162,7 +158,7 @@ class StatusService extends Service implements ServiceInterface
             $this->response['message'] = $status === null
                 ? trans('api.not_found')
                 : trans('api.show');
-            $this->response['data'] = $status ?? [];
+            $this->response['data'] = $status ? $status->toArray() : [];
         } catch (Throwable $exceptions) {
             DB::rollBack();
             // Parámetros de respuesta en caso de error

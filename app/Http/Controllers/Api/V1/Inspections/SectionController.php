@@ -126,7 +126,7 @@ class SectionController extends Controller
      */
     public function destroy(string $uuid): JsonResponse
     {
-        $request = ['inspection_uuid' => $uuid];
+        $request = ['ct_inspection_section_uuid' => $uuid];
 
         if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
@@ -139,6 +139,8 @@ class SectionController extends Controller
 
     /**
      * Render the project component.
+     *
+     * @throws \Exception
      */
     public function component(): Response
     {

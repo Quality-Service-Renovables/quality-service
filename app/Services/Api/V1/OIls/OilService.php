@@ -12,10 +12,10 @@ use App\Models\Trademarks\Trademark;
 use App\Models\Trademarks\TrademarkModel;
 use App\Services\Api\ServiceInterface;
 use App\Services\Service;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Throwable;
 
 class OilService extends Service implements ServiceInterface
 {
@@ -33,13 +33,15 @@ class OilService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Agrega atributos a la solicitud
-            $request->merge(['oil_uuid' => Str::uuid()->toString()]);
-            $request->merge(['oil_code' => create_slug($request->oil)]);
+            $request->merge([
+                'oil_uuid' => Str::uuid()->toString(),
+                'oil_code' => create_slug($request->oil),
+            ]);
             // Obtiene los identificadores de los códigos
             $request->merge(['ct_oil_id' => Category::where('ct_oil_code', $request->ct_oil_code)->first()->ct_oil_id]);
             $request->merge(['trademark_id' => Trademark::where('trademark_code', $request->trademark_code)->first()->trademark_id]);
             $request->merge(['trademark_model_id' => TrademarkModel::where('trademark_model_code', $request->trademark_model_code)->first()->trademark_model_id]);
-            // Registra los atributos de la solicitud a la categoria
+            // Registra los atributos de la solicitud a la categoría
             $category = Oil::create($request->except(['ct_oil_code', 'trademark_code', 'trademark_model_code']));
             // Define parámetros de respuesta
             $this->statusCode = 201;
@@ -53,12 +55,10 @@ class OilService extends Service implements ServiceInterface
             );
             // Finaliza Transacción
             DB::commit();
-        } catch (Exception $exception) {
+        } catch (Throwable $exceptions) {
             DB::rollBack();
-            // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            // Manejo del error
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -76,12 +76,13 @@ class OilService extends Service implements ServiceInterface
         try {
             // Control de transacciones
             DB::beginTransaction();
-            // Agrega atributos a la solicitud
-            $request->merge(['oil_code' => create_slug($request->oil)]);
-            // Obtiene los identificadores de los códigos
-            $request->merge(['ct_oil_id' => Category::where('ct_oil_code', $request->ct_oil_code)->first()->ct_oil_id]);
-            $request->merge(['trademark_id' => Trademark::where('trademark_code', $request->trademark_code)->first()->trademark_id]);
-            $request->merge(['trademark_model_id' => TrademarkModel::where('trademark_model_code', $request->trademark_model_code)->first()->trademark_model_id]);
+            // Agrega atributos a la solicitud y obtiene los identificadores de los códigos
+            $request->merge([
+                'oil_code' => create_slug($request->oil),
+                'ct_oil_id' => Category::where('ct_oil_code', $request->ct_oil_code)->first()->ct_oil_id,
+                'trademark_id' => Trademark::where('trademark_code', $request->trademark_code)->first()->trademark_id,
+                'trademark_model_id' => TrademarkModel::where('trademark_model_code', $request->trademark_model_code)->first()->trademark_model_id,
+            ]);
             // Actualiza aceite
             Oil::where('oil_uuid', $request->oil_uuid)->update($request->except(['ct_oil_code', 'trademark_code', 'trademark_model_code']));
             // Recupera aceite actualizado
@@ -96,12 +97,10 @@ class OilService extends Service implements ServiceInterface
             );
             // Confirmación de transacción
             DB::commit();
-        } catch (Exception $exception) {
+        } catch (Throwable $exceptions) {
             DB::rollBack();
-            // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            // Manejo del error
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -141,11 +140,9 @@ class OilService extends Service implements ServiceInterface
             );
             // Parámetros de respuesta
             $this->response['message'] = 'Oil deleted successfully';
-        } catch (Exception $exception) {
-            // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+        } catch (Throwable $exceptions) {
+            // Manejo del error
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -161,16 +158,14 @@ class OilService extends Service implements ServiceInterface
     public function show(string $uuid): array
     {
         try {
-            // Obtiene categoria del equipo
+            // Obtiene categoría del equipo
             $category = Oil::where('oil_uuid', $uuid)->first();
-            $this->response['message'] = $category === null ? 'Category not found' : 'Category found';
-            $this->response['data'] = $category ?? [];
-        } catch (Exception $exception) {
+            $this->response['message'] = $category === null ? trans('api.not_found') : trans('api.show');
+            $this->response['data'] = $category ? $category->toArray() : [];
+        } catch (Throwable $exceptions) {
             DB::rollBack();
-            // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            // Manejo del error
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo

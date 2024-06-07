@@ -46,7 +46,7 @@ class RolPermissionService extends Service implements ServiceInterface
     {
         $roles = Role::with("permissions")->get();
 
-        $this->response['message'] = trans('api.readed');
+        $this->response['message'] = trans('api.read');
         $this->response['data'] = $roles;
 
         return $this->response;

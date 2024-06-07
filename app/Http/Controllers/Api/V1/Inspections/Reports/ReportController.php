@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Inspections\Reports;
 
 use App\Http\Controllers\Controller;
-use App\Models\Inspections\Inspection;
 use App\Services\Api\V1\Inspections\Reports\ReportService;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -15,11 +13,24 @@ class ReportController extends Controller
 {
     protected ReportService $service;
 
+    /**
+     * Initialize a new instance of the class.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->service = new ReportService();
     }
 
+    /**
+     * Get the resume with the given UUID.
+     *
+     * @param  string  $uuid  The UUID of the resume to retrieve.
+     * @return array The JSON response containing the resume data.
+     *
+     * @throws \Exception
+     */
     public function getResume(string $uuid)
     {
         $request = (['inspection_uuid' => $uuid]);

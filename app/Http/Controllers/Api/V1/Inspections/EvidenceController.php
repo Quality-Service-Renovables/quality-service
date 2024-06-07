@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\V1\Inspections;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Inspections\EquipmentRequest;
 use App\Http\Requests\Api\Inspections\EvidenceRequest;
 use App\Services\Api\V1\Inspections\EvidenceService;
 use Illuminate\Http\JsonResponse;
@@ -15,6 +14,13 @@ class EvidenceController extends Controller
 {
     protected EvidenceService $service;
 
+    /**
+     * Constructor.
+     *
+     * Initializes an instance of the class.
+     *
+     * @throws \Exception if evidence service fails to instantiate.
+     */
     public function __construct()
     {
         $this->service = new EvidenceService();

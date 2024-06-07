@@ -45,7 +45,7 @@ class CategoryService extends Service implements ServiceInterface
             // Agrega atributos a la solicitud
             $request->merge([
                 'ct_failure_uuid' => Str::uuid()->toString(),
-                'ct_failure_code' => create_slug($request->ct_failure)
+                'ct_failure_code' => create_slug($request->ct_failure),
             ]);
             // Registra los atributos de la solicitud a la categoría de la falla
             $failureCategory = Category::create($request->all());
@@ -78,7 +78,7 @@ class CategoryService extends Service implements ServiceInterface
      */
     public function read(): array
     {
-        $this->response['message'] = trans('api.readed');
+        $this->response['message'] = trans('api.read');
         $this->response['data'] = Category::all();
 
         return $this->response;
@@ -97,14 +97,10 @@ class CategoryService extends Service implements ServiceInterface
             DB::beginTransaction();
             $request->merge(['ct_failure_code' => create_slug($request->ct_failure)]);
             // Actualiza la categoría de falla
-            Category::where('ct_failure_uuid', $request->ct_failure_uuid)
-                ->update($request->all());
-            // Recupera la categoría de falla actualizada
-            $failureCategoryUpdated = Category::where(
-                'ct_failure_uuid', $request->ct_failure_uuid
-            )->first();
+            $category = Category::where('ct_failure_uuid', $request->ct_failure_uuid)->first();
+            $category?->update($request->all());
             $this->response['message'] = trans('api.updated');
-            $this->response['data'] = $failureCategoryUpdated;
+            $this->response['data'] = $category;
             // Registro de log
             $this->logService->create(
                 $this->nameService,
@@ -161,7 +157,7 @@ class CategoryService extends Service implements ServiceInterface
     public function show(string $uuid): array
     {
         try {
-            // Obtiene categoria del equipo
+            // Obtiene categoría del equipo
             $failureCategory = Category::where('ct_failure_uuid', $uuid)->first();
             $this->response['message'] = $failureCategory === null
                 ? trans('api.not_found')

@@ -6,7 +6,6 @@
 
 namespace App\Services\Api\V1\Inspections;
 
-use App\Models\Equipments\Equipment;
 use App\Models\Inspections\Equipment as InspectionEquipment;
 use App\Models\Inspections\Evidence;
 use App\Models\Inspections\Inspection;
@@ -14,6 +13,7 @@ use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Throwable;
 
 class EvidenceService extends Service
 {
@@ -78,7 +78,7 @@ class EvidenceService extends Service
     public function read(): array
     {
         try {
-            $this->response['message'] = trans('api.readed');
+            $this->response['message'] = trans('api.read');
             $this->response['data'] = Evidence::with(['inspection'])->get();
         } catch (Throwable $exceptions) {
             // Manejo del error

@@ -23,6 +23,12 @@ class FormService extends Service
 {
     public string $nameService = 'ct_inspection';
 
+    /**
+     * Sets the form for a given request.
+     *
+     * @param  Request  $request  The HTTP request object.
+     * @return array The response array.
+     */
     public function setForm(Request $request): array
     {
         try {
@@ -36,7 +42,7 @@ class FormService extends Service
             $ctInspectionId = $inspectionCategory->ct_inspection_id;
             // Itera sobre las secciones para la construcción del formulario
             foreach ($request->sections as $section) {
-                // Definie la sección raíz
+                // Define la sección raíz
                 $inspectionSectionId = $this->setSection($section, $ctInspectionId);
                 // En caso de que existan campos asociados a la sección raíz se registran
                 if ($section['fields'] && count($section['fields'])) {
@@ -89,7 +95,7 @@ class FormService extends Service
      */
     private function setSection(array $section, int $ctInspectionId, ?int $sectionRelationId = null): int
     {
-        $section = Section::create([
+        $createdSection = Section::create([
             'ct_inspection_section_uuid' => Str::uuid()->toString(),
             'ct_inspection_section' => $section['ct_inspection_section'],
             'ct_inspection_section_code' => create_slug($section['ct_inspection_section']),
@@ -97,7 +103,7 @@ class FormService extends Service
             'ct_inspection_relation_id' => $sectionRelationId,
         ]);
 
-        return $section->ct_inspection_section_id;
+        return $createdSection->ct_inspection_section_id;
     }
 
     /**
@@ -147,7 +153,7 @@ class FormService extends Service
                 }
             }
             // Response
-            $this->response['message'] = trans('api.readed');
+            $this->response['message'] = trans('api.read');
             $this->response['data'] = $form;
         } catch (Throwable $exceptions) {
             // Manejo del error
@@ -177,16 +183,16 @@ class FormService extends Service
                 $form['sections'][$sectionCode]['section_details'] = $currentSection;
                 // Set fields
                 $form['sections'][$sectionCode]['fields'] = $fields->where('ct_inspection_section_id', $section->ct_inspection_relation_id);
-                $section['fields'] = $fields->collect($section['fields'])->mapWithKeys(function ($item) {
+                $section['fields'] = $fields->collect()->mapWithKeys(function ($item) {
                     return [$item['ct_inspection_form_code'] => $item];
                 })->where('ct_inspection_section_id', $section->ct_inspection_section_id)->all();
                 // Set sub section
                 $form['sections'][$sectionCode]['sub_sections'][] = $section;
             } else {
-                // Tratamiento exclusivo para secciones principales o raices
+                // Tratamiento exclusivo para secciones principales o raíces
                 $form['sections'][$section->ct_inspection_section_code]['section_details'] = $section;
                 $form['sections'][$section->ct_inspection_section_code]['fields'] = $fields->where('ct_inspection_section_id', $section->ct_inspection_section_id);
-                $section['fields'] = $fields->collect($section['fields'])->mapWithKeys(function ($item) {
+                $section['fields'] = $fields->collect()->mapWithKeys(function ($item) {
                     return [$item['ct_inspection_form_code'] => $item];
                 })->where('ct_inspection_section_id', $section->ct_inspection_section_id)->all();
             }
@@ -277,6 +283,86 @@ class FormService extends Service
                 $this->response,
                 trans('api.message_log'),
             );
+            // Finaliza Transacción
+            DB::commit();
+        } catch (Throwable $exceptions) {
+            DB::rollBack();
+            // Manejo del error
+            $this->setExceptions($exceptions);
+        }
+
+        // Respuesta del módulo
+        return $this->response;
+    }
+
+    public function updateFormField(Request $request): array
+    {
+        try {
+            // Control de transacciones
+            DB::beginTransaction();
+            // Campos a registrar
+            $field = null;
+            // Obtiene la sección a la cuál se asociará el campo
+            $section = Section::where([
+                'ct_inspection_section_uuid' => $request->ct_inspection_section_uuid,
+            ])->first();
+            // Si la sección existe se registran los campos
+            if ($section) {
+                // Adjunta dependencias del campo para el registro
+                $request->merge([
+                    'ct_inspection_form_code' => create_slug($request->ct_inspection_form),
+                    'ct_inspection_section_id' => $section->ct_inspection_section_id,
+                ]);
+                // Registro de campos
+                $field = FormInspection::where([
+                    'ct_inspection_form_uuid' => $request->ct_inspection_form_uuid,
+                ])->update($request->except([
+                    'ct_inspection_section_uuid',
+                ]));
+            }
+
+            $this->response['message'] = trans('api.updated');
+            $this->response['data'] = $field;
+            // Registro en log
+            $this->logService->create(
+                $this->nameService,
+                $request->all(),
+                $this->response,
+                trans('api.message_log'),
+            );
+            // Finaliza Transacción
+            DB::commit();
+        } catch (Throwable $exceptions) {
+            DB::rollBack();
+            // Manejo del error
+            $this->setExceptions($exceptions);
+        }
+
+        // Respuesta del módulo
+        return $this->response;
+    }
+
+    /**
+     * Deletes a form field by UUID.
+     *
+     * @param  string  $uuid  The UUID of the form field to be deleted.
+     * @return array The response array containing the status code, message, and data.
+     */
+    public function deleteFormField(string $uuid): array
+    {
+        try {
+            // Control de transacciones
+            DB::beginTransaction();
+            // Elimina por soft delete el campo de la sección
+            $formInspection = FormInspection::where([
+                'ct_inspection_form_uuid' => $uuid,
+            ])->first();
+            // Se existe el campo se elimina
+            $formInspection?->delete();
+            // Respuesta de la api
+            $this->statusCode = $formInspection ? 204 : 404;
+            $this->response['message'] = trans('api.deleted');
+            $this->response['data'] = [];
             // Finaliza Transacción
             DB::commit();
         } catch (Throwable $exceptions) {
