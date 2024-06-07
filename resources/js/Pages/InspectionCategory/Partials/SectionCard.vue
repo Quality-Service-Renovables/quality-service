@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex">
     <v-icon class="mdi mdi-subdirectory-arrow-right mt-4"></v-icon>
-    <v-card class="mb-5 ml-2 mr-2 border rounded-lg w-100" variant="flat" elevation="1">
+    <v-card class="mb-5 ml-2 mr-2 w-100" variant="flat" elevation="1"  rounded="lg" border="dashed thin dark md">
       <v-sheet class="border">
         <v-card-item>
           <template v-slot:prepend>
@@ -99,7 +99,10 @@ export default {
   methods: {
     async save() {
       if (this.sectionForm.type === 'section') {
-        await this.saveSection();
+        let ct_inspection_uuid = this.item.ct_inspection_uuid;
+        let name = this.sectionForm.name;
+        let ct_inspection_section_uuid = this.section.section_details ? this.section.section_details.ct_inspection_section_uuid : this.section.ct_inspection_section_uuid;
+        await this.saveSection(ct_inspection_uuid, name, ct_inspection_section_uuid);
         this.resetForm();
       } else if (this.sectionForm.type === 'field') {
         try {
@@ -111,8 +114,9 @@ export default {
         }
       }
     },
-    saveSection(){
-      this.$emit('save-section', this.item.ct_inspection_uuid, this.sectionForm.name, this.section.section_details.ct_inspection_section_uuid);
+    saveSection(ct_inspection_uuid, name, ct_inspection_section_uuid){
+      console.log("sectionForm: " + name);
+      this.$emit('save-section', ct_inspection_uuid, name, ct_inspection_section_uuid);
     },
     updateSections(){
       this.$emit('update-sections');

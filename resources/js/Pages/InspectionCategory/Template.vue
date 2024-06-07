@@ -52,6 +52,9 @@ export default {
   },
   methods: {
     async saveSection(ct_inspection_uuid, name, ct_inspection_relation_uuid = null) {
+      console.log("ct_inspection_uuid: ", ct_inspection_uuid);
+      console.log("name: ", name);
+      console.log("ct_inspection_relation_uuid: ", ct_inspection_relation_uuid);
       try {
         await this.postSection(ct_inspection_uuid, name, ct_inspection_relation_uuid);
         this.resetForm();
