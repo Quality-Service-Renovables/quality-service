@@ -14,6 +14,14 @@ class EquipmentController extends Controller
 {
     protected EquipmentService $service;
 
+    /**
+     * EquipmentController constructor.
+     *
+     * Initializes an instance of the EquipmentController class.
+     * Creates an instance of the EquipmentService class and assigns it to the $service property.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->service = new EquipmentService();

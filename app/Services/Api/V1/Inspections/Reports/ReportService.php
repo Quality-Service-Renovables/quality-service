@@ -7,9 +7,9 @@
 namespace App\Services\Api\V1\Inspections\Reports;
 
 use App\Models\Inspections\Inspection;
-use App\Services\Api\V1\Inspections\Throwable;
 use App\Services\Service;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Throwable;
 
 class ReportService extends Service
 {

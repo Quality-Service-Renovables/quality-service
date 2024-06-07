@@ -48,7 +48,7 @@ class PermissionService extends Service implements ServiceInterface
      */
     public function read(): array
     {
-        $this->response['message'] = trans('api.readed');
+        $this->response['message'] = trans('api.read');
         $this->response['data'] = Permission::all();
 
         return $this->response;
@@ -61,7 +61,7 @@ class PermissionService extends Service implements ServiceInterface
      */
     public function readGrouped(): array
     {
-        $this->response['message'] = trans('api.readed');
+        $this->response['message'] = trans('api.read');
 
         // Obtenemos los permisos padre (aquellos que no tienen un punto))
         $data = Permission::where('name', 'NOT LIKE', '%.%')->get();

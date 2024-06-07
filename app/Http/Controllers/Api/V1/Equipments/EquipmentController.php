@@ -62,11 +62,6 @@ class EquipmentController extends Controller
 
     /**
      * Update a resource in storage.
-     *
-     * @param Request $request
-     * @param string  $uuid
-     *
-     * @return JsonResponse
      */
     public function update(Request $request, string $uuid): JsonResponse
     {
@@ -111,6 +106,7 @@ class EquipmentController extends Controller
 
         if ($validated->fails()) {
             $this->service->setFailValidation($validated->errors());
+
             return response()->json($this->service->response, $this->service->statusCode);
         }
 

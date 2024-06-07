@@ -33,19 +33,16 @@ class TrademarkService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Agrega atributos a la solicitud
-            $request->merge(['trademark_uuid' => Str::uuid()->toString()]);
-            $request->merge(['trademark_code' => create_slug($request->trademark)]);
-            // Obtiene identificador de la categoria de la marca
             $request->merge([
+                'trademark_uuid' => Str::uuid()->toString(),
+                'trademark_code' => create_slug($request->trademark),
                 'ct_trademark_id' => Category::where('ct_trademark_code', $request->ct_trademark_code)
                     ->first()->ct_trademark_id,
             ]);
-            // Registra los atributos de la solicitud a la marca
-            $trademark = Trademark::create($request->all());
             // Define parámetros de respuesta
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
-            $this->response['data'] = $trademark;
+            $this->response['data'] = Trademark::create($request->all());
             // Registro en log
             $this->logService->create(
                 $this->nameService,
@@ -72,7 +69,7 @@ class TrademarkService extends Service implements ServiceInterface
      */
     public function read(): array
     {
-        $this->response['message'] = trans('api.readed');
+        $this->response['message'] = trans('api.read');
         $this->response['data'] = Trademark::with(['category', 'models'])->get();
 
         // Respuesta del módulo
@@ -91,20 +88,16 @@ class TrademarkService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Asignación de identificadores
-            $request->merge(['trademark_code' => create_slug($request->trademark)]);
-            // Obtiene identificador de categoria de la marca
             $request->merge([
+                'trademark_code' => create_slug($request->trademark),
                 'ct_trademark_id' => Category::where('ct_trademark_code', $request->ct_trademark_code)
-                    ->first()->ct_trademark_id,
+                ->first()->ct_trademark_id,
             ]);
             // Actualiza marca
-            Trademark::where('trademark_uuid', $request->trademark_uuid)
-                ->update($request->except(['ct_trademark_code']));
-            // Recupera marca actualizada
-            $trademarkUpdated = Trademark::with(['category'])
-                ->where('trademark_uuid', $request->trademark_uuid)->first();
+            $trademark = Trademark::where('trademark_uuid', $request->trademark_uuid)->first();
+            $trademark?->update($request->except(['ct_trademark_code']));
             $this->response['message'] = trans('api.updated');
-            $this->response['data'] = $trademarkUpdated;
+            $this->response['data'] = $trademark;
             // Registro de log
             $this->logService->create(
                 $this->nameService,
@@ -166,7 +159,7 @@ class TrademarkService extends Service implements ServiceInterface
             $trademark = Trademark::with(['category'])
                 ->where('trademark_uuid', $uuid)->first();
             $this->response['message'] = $trademark === null ? trans('api.not_found') : trans('api.show');
-            $this->response['data'] = $trademark ?? [];
+            $this->response['data'] = $trademark ? $trademark->toArray() : [];
         } catch (Throwable $exceptions) {
             DB::rollBack();
             // Parámetros de respuesta en caso de error

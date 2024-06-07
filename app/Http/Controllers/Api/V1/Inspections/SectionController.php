@@ -139,6 +139,8 @@ class SectionController extends Controller
 
     /**
      * Render the project component.
+     *
+     * @throws \Exception
      */
     public function component(): Response
     {

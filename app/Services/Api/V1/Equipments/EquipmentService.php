@@ -34,6 +34,7 @@ use Throwable;
 class EquipmentService extends Service implements ServiceInterface
 {
     public string $nameService = 'equipment_service';
+
     private string $imageDefault = 'img/equipments/default.png';
 
     /**
@@ -84,7 +85,7 @@ class EquipmentService extends Service implements ServiceInterface
      */
     public function read(): array
     {
-        $this->response['message'] = trans('api.readed');
+        $this->response['message'] = trans('api.read');
         $this->response['data'] = Equipment::with([
             'category', 'status', 'trademark', 'model',
         ])->get();
@@ -165,7 +166,7 @@ class EquipmentService extends Service implements ServiceInterface
     public function show(string $uuid): array
     {
         try {
-            // Obtiene categoria del equipo
+            // Obtiene categoría del equipo
             $equipment = Equipment::with([
                 'category', 'status', 'trademark', 'model',
             ])->where('equipment_uuid', $uuid)->first();
@@ -215,9 +216,8 @@ class EquipmentService extends Service implements ServiceInterface
     /**
      * Sets the request fields for the equipment.
      *
-     * @param Request $request The request object.
+     * @param  Request  $request  The request object.
      *
-     * @return void
      * @throws \JsonException
      */
     private function setFields(Request $request): void

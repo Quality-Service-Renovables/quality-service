@@ -51,7 +51,7 @@ class RolService extends Service implements ServiceInterface
      */
     public function read(): array
     {
-        $this->response['message'] = trans('api.readed');
+        $this->response['message'] = trans('api.read');
         $this->response['data'] = Role::with('permissions')->get();
 
         return $this->response;

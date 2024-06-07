@@ -43,8 +43,10 @@ class ClientService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Agrega atributos a la solicitud
-            $request->merge(['client_uuid' => Str::uuid()->toString()]);
-            $request->merge(['client_code' => create_slug($request->client)]);
+            $request->merge([
+                'client_uuid' => Str::uuid()->toString(),
+                'client_code' => create_slug($request->client),
+            ]);
             $this->storeFile($request, 'logo_store', 'logo', 'clients');
             // Registra los atributos de la solicitud al cliente
             $client = Client::create($request->except(['logo_store']));
@@ -91,11 +93,10 @@ class ClientService extends Service implements ServiceInterface
                 $this->storeFile($request, 'logo_store', 'logo', 'clients');
             }
             // Actualiza el cliente
-            Client::where('client_uuid', $request->client_uuid)
-                ->update($request->except(['logo_store']));
-            // Recupera Cliente Actualizado
-            $clientUpdated = Client::where('client_uuid', $request->client_uuid)->first();
-            $this->response['data'] = $clientUpdated;
+            $client = Client::where('client_uuid', $request->client_uuid)->first();
+            $client?->update($request->except(['logo_store']));
+            // Respuesta del servicio
+            $this->response['data'] = $client;
             // Registro de log
             $this->logService->create(
                 $this->nameService,
@@ -122,7 +123,7 @@ class ClientService extends Service implements ServiceInterface
      */
     public function read(): array
     {
-        $this->response['message'] = trans('api.readed');
+        $this->response['message'] = trans('api.read');
         $this->response['data'] = Client::all();
 
         // Respuesta del módulo
@@ -172,7 +173,8 @@ class ClientService extends Service implements ServiceInterface
             $this->response['message'] = $client === null
                 ? trans('api.not_found')
                 : trans('api.show');
-            $this->response['data'] = $client ?? [];
+            // Si bien se puede retornar la colección, se regresa como arreglo para evitar alerta de complementación
+            $this->response['data'] = $client ? $client->toArray() : [];
         } catch (Throwable $exceptions) {
             DB::rollBack();
             // Parámetros de respuesta en caso de error

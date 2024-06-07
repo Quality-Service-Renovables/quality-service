@@ -33,15 +33,15 @@ class TrademarkModelService extends Service implements ServiceInterface
             // Recupera el identificador de la marca
             $trademark = Trademark::where('trademark_code', $request->trademark_code)->first();
             // Agrega atributos a la solicitud
-            $request->merge(['trademark_model_uuid' => Str::uuid()->toString()]);
-            $request->merge(['trademark_model_code' => create_slug($request->trademark_model)]);
-            $request->merge(['trademark_id' => $trademark->trademark_id]);
-            // Registra los atributos de la solicitud
-            $trademarkModel = TrademarkModel::create($request->all());
+            $request->merge([
+                'trademark_model_uuid' => Str::uuid()->toString(),
+                'trademark_model_code' => create_slug($request->trademark_model),
+                'trademark_id' => $trademark->trademark_id,
+            ]);
             // Define parámetros de respuesta
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
-            $this->response['data'] = $trademarkModel;
+            $this->response['data'] = TrademarkModel::create($request->all());
             // Registro en log
             $this->logService->create(
                 $this->nameService,
@@ -68,7 +68,7 @@ class TrademarkModelService extends Service implements ServiceInterface
      */
     public function read(): array
     {
-        $this->response['message'] = trans('api.readed');
+        $this->response['message'] = trans('api.read');
         $this->response['data'] = TrademarkModel::with(['trademark'])->get();
 
         // Respuesta del módulo
@@ -90,14 +90,14 @@ class TrademarkModelService extends Service implements ServiceInterface
             $slug = create_slug($request->trademark_model);
             // Agregar elementos al request
             $request->merge(['trademark_model_code' => $slug]);
-            // Depura elementos incompatibles con la actualización
+            // Depura elementos incompatibles con la actualización o bien usar el except en el request
             $request->offsetUnset('trademark_code');
             // Actualiza model de marca
-            TrademarkModel::where('trademark_model_uuid', $request->trademark_model_uuid)->update($request->all());
-            // Recupera modelo Actualizado
-            $trademarkModelUpdated = TrademarkModel::where('trademark_model_uuid', $request->trademark_model_uuid)->first();
+            $trademark = TrademarkModel::where('trademark_model_uuid', $request->trademark_model_uuid)->first();
+            $trademark?->update($request->all());
+            // Respuesta del servicio
             $this->response['message'] = trans('api.updated');
-            $this->response['data'] = $trademarkModelUpdated;
+            $this->response['data'] = $trademark;
             // Registro de log
             $this->logService->create(
                 $this->nameService,
@@ -161,7 +161,7 @@ class TrademarkModelService extends Service implements ServiceInterface
             $this->response['message'] = $trademarkModel === null
                 ? trans('api.not_found')
                 : trans('api.show');
-            $this->response['data'] = $trademarkModel ?? [];
+            $this->response['data'] = $trademarkModel ? $trademarkModel->toArray() : [];
         } catch (Throwable $exceptions) {
             DB::rollBack();
             // Parámetros de respuesta en caso de error

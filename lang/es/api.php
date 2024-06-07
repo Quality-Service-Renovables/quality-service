@@ -15,7 +15,7 @@ return [
 
     // CRUD Response
     'created' => 'Registro realizado exitosamente.',
-    'readed' => 'Registros recuperados exitosamente.',
+    'read' => 'Registros recuperados exitosamente.',
     'updated' => 'Registros actualizados exitosamente.',
     'deleted' => 'Registros eliminados exitosamente.',
     'show' => 'Registro recuperado exitosamente.',

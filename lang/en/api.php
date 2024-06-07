@@ -15,7 +15,7 @@ return [
 
     // CRUD Response
     'created' => 'Record created successfully.',
-    'readed' => 'Records retrieved successfully.',
+    'read' => 'Records retrieved successfully.',
     'updated' => 'Records updated successfully.',
     'deleted' => 'Records deleted successfully.',
     'show' => 'Record retrieved successfully.',

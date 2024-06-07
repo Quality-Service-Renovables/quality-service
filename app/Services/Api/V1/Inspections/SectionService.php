@@ -88,7 +88,7 @@ class SectionService extends Service
                     'ct_inspection_relation_id' => $section->ct_inspection_section_id,
                 ])->get();
             }
-            $this->response['message'] = trans('api.readed');
+            $this->response['message'] = trans('api.read');
             $this->response['data'] = $sections;
         } catch (Throwable $exceptions) {
             // Manejo del error
@@ -220,7 +220,7 @@ class SectionService extends Service
                 ])->get();
             }
             // Respuesta del módulo
-            $this->response['message'] = trans('api.readed');
+            $this->response['message'] = trans('api.read');
             $this->response['data'] = $section;
         } catch (Throwable $exceptions) {
             // Manejo del error

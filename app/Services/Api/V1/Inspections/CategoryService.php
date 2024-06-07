@@ -69,7 +69,7 @@ class CategoryService extends Service
     public function read(): array
     {
         try {
-            $this->response['message'] = trans('api.readed');
+            $this->response['message'] = trans('api.read');
             $this->response['data'] = Category::all();
         } catch (Throwable $exceptions) {
             // Manejo del error

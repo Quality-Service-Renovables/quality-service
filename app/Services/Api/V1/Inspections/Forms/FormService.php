@@ -23,6 +23,12 @@ class FormService extends Service
 {
     public string $nameService = 'ct_inspection';
 
+    /**
+     * Sets the form for a given request.
+     *
+     * @param  Request  $request  The HTTP request object.
+     * @return array The response array.
+     */
     public function setForm(Request $request): array
     {
         try {
@@ -36,7 +42,7 @@ class FormService extends Service
             $ctInspectionId = $inspectionCategory->ct_inspection_id;
             // Itera sobre las secciones para la construcción del formulario
             foreach ($request->sections as $section) {
-                // Definie la sección raíz
+                // Define la sección raíz
                 $inspectionSectionId = $this->setSection($section, $ctInspectionId);
                 // En caso de que existan campos asociados a la sección raíz se registran
                 if ($section['fields'] && count($section['fields'])) {
@@ -89,7 +95,7 @@ class FormService extends Service
      */
     private function setSection(array $section, int $ctInspectionId, ?int $sectionRelationId = null): int
     {
-        $section = Section::create([
+        $createdSection = Section::create([
             'ct_inspection_section_uuid' => Str::uuid()->toString(),
             'ct_inspection_section' => $section['ct_inspection_section'],
             'ct_inspection_section_code' => create_slug($section['ct_inspection_section']),
@@ -97,7 +103,7 @@ class FormService extends Service
             'ct_inspection_relation_id' => $sectionRelationId,
         ]);
 
-        return $section->ct_inspection_section_id;
+        return $createdSection->ct_inspection_section_id;
     }
 
     /**
@@ -147,7 +153,7 @@ class FormService extends Service
                 }
             }
             // Response
-            $this->response['message'] = trans('api.readed');
+            $this->response['message'] = trans('api.read');
             $this->response['data'] = $form;
         } catch (Throwable $exceptions) {
             // Manejo del error
@@ -177,16 +183,16 @@ class FormService extends Service
                 $form['sections'][$sectionCode]['section_details'] = $currentSection;
                 // Set fields
                 $form['sections'][$sectionCode]['fields'] = $fields->where('ct_inspection_section_id', $section->ct_inspection_relation_id);
-                $section['fields'] = $fields->collect($section['fields'])->mapWithKeys(function ($item) {
+                $section['fields'] = $fields->collect()->mapWithKeys(function ($item) {
                     return [$item['ct_inspection_form_code'] => $item];
                 })->where('ct_inspection_section_id', $section->ct_inspection_section_id)->all();
                 // Set sub section
                 $form['sections'][$sectionCode]['sub_sections'][] = $section;
             } else {
-                // Tratamiento exclusivo para secciones principales o raices
+                // Tratamiento exclusivo para secciones principales o raíces
                 $form['sections'][$section->ct_inspection_section_code]['section_details'] = $section;
                 $form['sections'][$section->ct_inspection_section_code]['fields'] = $fields->where('ct_inspection_section_id', $section->ct_inspection_section_id);
-                $section['fields'] = $fields->collect($section['fields'])->mapWithKeys(function ($item) {
+                $section['fields'] = $fields->collect()->mapWithKeys(function ($item) {
                     return [$item['ct_inspection_form_code'] => $item];
                 })->where('ct_inspection_section_id', $section->ct_inspection_section_id)->all();
             }

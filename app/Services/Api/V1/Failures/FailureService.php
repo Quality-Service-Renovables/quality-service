@@ -21,9 +21,6 @@ namespace App\Services\Api\V1\Failures;
 
 use App\Models\Failures\Category;
 use App\Models\Failures\Failure;
-use App\Models\Status\Status;
-use App\Models\Trademarks\Trademark;
-use App\Models\Trademarks\TrademarkModel;
 use App\Services\Api\ServiceInterface;
 use App\Services\Service;
 use Illuminate\Http\Request;
@@ -38,11 +35,9 @@ class FailureService extends Service implements ServiceInterface
     /**
      * Creates a new failure.
      *
-     * @param Request $request The request object.
-     *
+     * @param  Request  $request  The request object.
      * @return array The response data.
      *
-     * @throws \JsonException
      */
     public function create(Request $request): array
     {
@@ -54,13 +49,12 @@ class FailureService extends Service implements ServiceInterface
                 'failure_uuid' => Str::uuid()->toString(),
                 'failure_code' => create_slug($request->failure),
                 'ct_failure_id' => Category::where('ct_failure_code', $request->ct_failure_code)
-                ->first()->ct_failure_id
+                    ->first()->ct_failure_id,
             ]);
-            // Registra los atributos de la solicitud de la falla
-            $failure = Failure::create($request->except('ct_failure_code'));
+            // Respuesta del servicio
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
-            $this->response['data'] = $failure;
+            $this->response['data'] = Failure::create($request->except('ct_failure_code'));
             // Registro en log
             $this->logService->create(
                 $this->nameService,
@@ -87,7 +81,7 @@ class FailureService extends Service implements ServiceInterface
      */
     public function read(): array
     {
-        $this->response['message'] = trans('api.readed');
+        $this->response['message'] = trans('api.read');
         $this->response['data'] = Failure::with(['category'])->get();
 
         return $this->response;
@@ -107,15 +101,14 @@ class FailureService extends Service implements ServiceInterface
             $request->failure_code = create_slug($request->failure);
             $request->merge([
                 'ct_failure_id' => Category::where('ct_failure_code', $request->ct_failure_code)
-                    ->first()->ct_failure_id
+                    ->first()->ct_failure_id,
             ]);
             // Actualiza falla
-            Failure::where('failure_uuid', $request->failure_uuid)
-                ->update($request->except(['ct_failure_code']));
-            // Recupera Equipo Actualizado
-            $failureUpdated = Failure::where('failure_uuid', $request->failure_uuid)->first();
+            $failure = Failure::where('failure_uuid', $request->failure_uuid)->first();
+            $failure?->update($request->except(['ct_failure_code']));
+            // Respuesta de servicio
             $this->response['message'] = trans('api.updated');
-            $this->response['data'] = $failureUpdated;
+            $this->response['data'] = $failure;
             // Registro de log
             $this->logService->create(
                 $this->nameService,
@@ -165,8 +158,7 @@ class FailureService extends Service implements ServiceInterface
     /**
      * Retrieves the information of a failure with its category.
      *
-     * @param string $uuid The UUID of the equipment.
-     *
+     * @param  string  $uuid  The UUID of the equipment.
      * @return array The formatted response data.
      *
      * @throws \Throwable
@@ -181,7 +173,7 @@ class FailureService extends Service implements ServiceInterface
             $this->response['message'] = $failure === null
                 ? trans('api.not_found')
                 : trans('api.show');
-            $this->response['data'] = $failure ?? [];
+            $this->response['data'] = $failure ? $failure->toArray() : [];
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);

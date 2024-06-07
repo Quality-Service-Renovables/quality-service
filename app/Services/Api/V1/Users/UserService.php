@@ -70,7 +70,7 @@ class UserService extends Service implements ServiceInterface
 
     public function read(): array
     {
-        $this->response['message'] = trans('api.readed');
+        $this->response['message'] = trans('api.read');
         $this->response['data'] = User::with(['client', 'role'])->get();
 
         return $this->response;

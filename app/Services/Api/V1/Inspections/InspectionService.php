@@ -73,7 +73,7 @@ class InspectionService extends Service
     public function read(): array
     {
         try {
-            $this->response['message'] = trans('api.readed');
+            $this->response['message'] = trans('api.read');
             $this->response['data'] = ['inspections' => Inspection::with(['category'])->get()];
         } catch (Throwable $exceptions) {
             // Manejo del error

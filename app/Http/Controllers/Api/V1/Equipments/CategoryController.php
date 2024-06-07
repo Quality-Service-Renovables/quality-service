@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\V1\Equipments;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Equipments\CategoryRequest;
-use App\Http\Requests\Api\Trademarks\TrademarkRequest;
 use App\Services\Api\V1\Equipments\CategoryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -38,7 +37,7 @@ class CategoryController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(TrademarkRequest $request): JsonResponse
+    public function create(CategoryRequest $request): JsonResponse
     {
         $this->service->create($request);
 
@@ -62,7 +61,7 @@ class CategoryController extends Controller
     {
         $request = (['ct_equipment_uuid' => $uuid]);
 
-        if (!$this->commonValidation($request)) {
+        if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -78,7 +77,7 @@ class CategoryController extends Controller
     {
         $this->service->read();
 
-        $this->service->response['message'] = 'Api edit request not available: ' . $uuid;
+        $this->service->response['message'] = 'Api edit request not available: '.$uuid;
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
@@ -123,7 +122,7 @@ class CategoryController extends Controller
     {
         $request = ['ct_equipment_uuid' => $uuid];
 
-        if (!$this->commonValidation($request)) {
+        if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
