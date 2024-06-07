@@ -11,7 +11,8 @@
           </template>
 
           <v-divider class="mx-2" vertical></v-divider>
-          <v-btn density="compact" icon="mdi-plus" variant="tonal" class="text-subtitle-1 me-1" color="primary" @click="dialog = true"></v-btn>
+          <v-btn density="compact" icon="mdi-plus" variant="tonal" class="text-subtitle-1 me-1" color="primary"
+            @click="dialog = true"></v-btn>
           <v-btn density="compact" icon="mdi-pencil" variant="tonal" class="text-subtitle-1 me-1"></v-btn>
           <v-btn density="compact" icon="mdi-trash-can" variant="tonal" class="text-subtitle-1 me-1"
             color="red"></v-btn>
@@ -49,6 +50,9 @@
                 <v-select label="Tipo*" variant="outlined" required hide-details v-model="sectionForm.type"
                   :items="types" item-title="name" item-value="id"></v-select>
               </v-col>
+              <v-col cols="12" v-if="sectionForm.type == 'field'">
+                <v-checkbox label="Requerido" v-model="sectionForm.required"></v-checkbox>
+              </v-col>
             </v-row>
           </v-card-text>
           <template v-slot:actions>
@@ -63,6 +67,7 @@
 </template>
 
 <script>
+import { toast } from 'vue-sonner';
 import FieldCard from './FieldCard.vue';
 
 export default {
@@ -71,6 +76,10 @@ export default {
     FieldCard
   },
   props: {
+    item: {
+      type: Object,
+      required: true
+    },
     section: {
       type: Object,
       required: true
@@ -84,44 +93,64 @@ export default {
     return {
       dialog: false,
       types: [
-        { id: 'campo', name: 'Campo' },
+        { id: 'field', name: 'Campo' },
         { id: 'section', name: 'Sección' },
       ],
       sectionForm: {
         name: '',
-        type: ''
+        type: '',
+        required: true
       },
     }
   },
   methods: {
-    save() {
-      console.log("Nomnbre de la sección: " + this.sectionForm.name);
-      console.log("Tipo de la sección: " + this.sectionForm.type);
-      console.log("Sección:");
-      console.log(this.section.section_details);
-      // Guardamos la sección con axios
-      /*const postRequest = () => {
-        return axios.post('api/inspection/forms/set-form', {
-          ct_inspection_code: this.section.ct_inspection_code,
-          sections: [{
-            ct_inspection_section: this.sectionForm.name,
-            sub_sections: [],
-            fields: []
-          }],
-        });
-      };
+    async save() {
 
-      toast.promise(postRequest(), {
-        loading: 'Procesando...',
-        success: (response) => {
-          this.dialog = false;
-          this.$toaster.success('Sección guardada correctamente');
-        },
-        error: (error) => {
-          this.$toaster.error('Error al guardar la sección');
+      if (this.sectionForm.type == 'section') {
+        console.log("Guardamos la subsección");
+        this.$emit('save-section', this.item.ct_inspection_uuid, this.sectionForm.name, this.section.section_details.ct_inspection_section_uuid);
+        this.resetForm();
+      } else if (this.sectionForm.type == 'field') {
+        console.log("Guardamos el campo");
+        try {
+          console.log("Guardando campo");
+          await this.saveField();
+          console.log("Campo guardado");
+          this.resetForm();
+          console.log("Formulario reseteado");
+          console.log("Actualizando secciones");
+          await this.$emit('update-sections');
+          console.log("Secciones actualizadas");
+        } catch (error) {
+          this.handleErrors(error);
         }
-      });*/
-    }
+      }
+
+    },
+    async saveField() {
+      try {
+        // TODO: Hay que refactorizar este código
+        let ct_inspection_section_uuid = this.section.section_details ? this.section.section_details.ct_inspection_section_uuid : this.section.ct_inspection_section_uuid;
+
+        await axios.post('api/inspection/forms/set-form-fields', {
+          ct_inspection_section_uuid: ct_inspection_section_uuid,
+          fields: [
+            {
+              ct_inspection_form: this.sectionForm.name,
+              required: this.sectionForm.required
+            }
+          ]
+        });
+      } catch (error) {
+        throw error; // Propagar el error para que sea manejado por saveSection
+      }
+    },
+    resetForm() {
+      this.dialog = false;
+      this.sectionForm.name = '';
+      this.sectionForm.type = '';
+      this.sectionForm.required = true;
+    },
   }
 }
 </script>
