@@ -12,6 +12,7 @@ use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Throwable;
 
 class SectionService extends Service
 {
@@ -172,7 +173,7 @@ class SectionService extends Service
             // Delete Register
             $section = Section::where('ct_inspection_section_uuid', $uuid)
                 ->first();
-            // Elimina sub secciones para evitar secciones huerfanas
+            // Elimina sub secciones para evitar secciones huérfanas
             if (! $section->ct_inspection_relation_id) {
                 $subSections = Section::where([
                     'ct_inspection_relation_id' => $section->ct_inspection_section_id,
