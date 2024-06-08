@@ -5,9 +5,8 @@ namespace App\Http\Controllers\Api\V1\Inspections\Reports;
 use App\Http\Controllers\Controller;
 use App\Services\Api\V1\Inspections\Reports\ReportService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class ReportController extends Controller
 {
@@ -24,75 +23,22 @@ class ReportController extends Controller
     }
 
     /**
-     * Get the resume with the given UUID.
-     *
-     * @param  string  $uuid  The UUID of the resume to retrieve.
-     * @return array The JSON response containing the resume data.
-     *
-     * @throws \Exception
-     */
-    public function getResume(string $uuid)
-    {
-        $request = (['inspection_uuid' => $uuid]);
-        if (! $this->commonValidation($request)) {
-            return response()->json($this->service->response, $this->service->statusCode);
-        }
-
-        return $this->service->getResume($uuid);
-    }
-
-    /**
      * Display the specified resource.
      *
      * @throws \Exception
      */
-    public function getDocument(string $uuid)
+    public function getDocument(string $uuid): JsonResponse|Response
     {
         $request = (['inspection_uuid' => $uuid]);
         if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
-        return $this->service->getDocument($uuid);
-    }
+        $this->service->getDocument($uuid);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @throws \Exception
-     */
-    public function update(Request $request, string $uuid): JsonResponse
-    {
-        $request->merge(['inspection_equipment_uuid' => $uuid]);
-        $validated = Validator::make($request->all(), [
-            'inspection_equipment_uuid' => 'required|uuid|exists:inspection_equipments,inspection_equipment_uuid',
-            'equipment_uuid' => [
-                'required',
-                'string',
-                'min:1',
-                'max:255',
-                Rule::exists('equipments', 'equipment_uuid')
-                    ->whereNull('deleted_at'),
-            ],
-            'inspection_uuid' => [
-                'required',
-                'string',
-                'min:1',
-                'max:255',
-                Rule::exists('inspections', 'inspection_uuid')
-                    ->whereNull('deleted_at'),
-            ],
-        ]);
-
-        if ($validated->fails()) {
-            $this->service->setFailValidation($validated->errors());
-
-            return response()->json($this->service->response, $this->service->statusCode);
-        }
-
-        $this->service->update($request);
-
-        return response()->json($this->service->response, $this->service->statusCode);
+        return $this->service->document
+            ? $this->service->document->download($this->service->filename)
+            : response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**
