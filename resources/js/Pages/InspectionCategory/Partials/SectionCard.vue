@@ -9,7 +9,7 @@
           </template>
 
           <v-divider class="mx-2" vertical></v-divider>
-          <v-btn density="compact" icon="mdi-plus" variant="tonal" class="text-subtitle-1 me-1" color="primary" @click="dialog = true"></v-btn>
+          <v-btn density="compact" icon="mdi-plus" variant="tonal" class="text-subtitle-1 me-1" color="primary" @click="showAddDialog"></v-btn>
           <v-btn density="compact" icon="mdi-pencil" variant="tonal" class="text-subtitle-1 me-1"></v-btn>
           <v-btn density="compact" icon="mdi-trash-can" variant="tonal" class="text-subtitle-1 me-1" color="red"></v-btn>
         </v-card-item>
@@ -99,10 +99,7 @@ export default {
   methods: {
     async save() {
       if (this.sectionForm.type === 'section') {
-        let ct_inspection_uuid = this.item.ct_inspection_uuid;
-        let name = this.sectionForm.name;
-        let ct_inspection_section_uuid = this.section.section_details ? this.section.section_details.ct_inspection_section_uuid : this.section.ct_inspection_section_uuid;
-        await this.saveSection(ct_inspection_uuid, name, ct_inspection_section_uuid);
+        await this.saveSection();
         this.resetForm();
       } else if (this.sectionForm.type === 'field') {
         try {
@@ -114,9 +111,8 @@ export default {
         }
       }
     },
-    saveSection(ct_inspection_uuid, name, ct_inspection_section_uuid){
-      console.log("sectionForm: " + name);
-      this.$emit('save-section', ct_inspection_uuid, name, ct_inspection_section_uuid);
+    saveSection(){
+      this.$emit('save-section', this.item.ct_inspection_uuid, this.sectionForm.name, this.section.section_details.ct_inspection_section_uuid);
     },
     updateSections(){
       this.$emit('update-sections');
@@ -139,6 +135,11 @@ export default {
       this.sectionForm.name = '';
       this.sectionForm.type = '';
       this.sectionForm.required = true;
+    },
+    showAddDialog() {
+      this.dialog = true;
+      console.log("ITEM:");
+      console.log(this.item);
     },
   }
 };
