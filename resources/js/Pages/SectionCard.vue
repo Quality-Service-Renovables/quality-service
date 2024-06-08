@@ -1,0 +1,137 @@
+<template>
+    <div>
+        <v-card class="my-5" rounded="lg" border="dashed thin dark md">
+            <v-card-title>
+                <p class="text-h6">{{ title }}</p>
+            </v-card-title>
+            <v-card-text>
+                <slot></slot>
+            </v-card-text>
+            <v-card-actions>
+                <v-btn density="compact" icon="mdi-plus" variant="tonal" class="text-subtitle-1 me-1" color="primary"
+                    @click="dialog = true"></v-btn>
+                <v-btn density="compact" icon="mdi-pencil" variant="tonal" class="text-subtitle-1 me-1"></v-btn>
+                <v-btn density="compact" icon="mdi-trash-can" variant="tonal" class="text-subtitle-1 me-1"
+                    color="red"></v-btn>
+            </v-card-actions>
+        </v-card>
+
+        <v-dialog v-model="dialog" width="auto">
+            <v-card min-width="400">
+                <v-card-title>
+                    <p v-if="type == 'section'">Nueva sección o campo</p>
+                    <p v-if="type == 'sub_section'">Nuevo campo</p>
+                </v-card-title>
+                <v-card-text>
+                    <v-row dense>
+                        <v-col cols="12">
+                            <v-text-field label="Nombre*" variant="outlined" required hide-details
+                                v-model="sectionForm.name"></v-text-field>
+                        </v-col>
+                        <v-col cols="12" v-if="type == 'section'">
+                            <v-select label="Tipo*" variant="outlined" required hide-details v-model="sectionForm.type"
+                                :items="types" item-title="name" item-value="id"></v-select>
+                        </v-col>
+                        <v-col cols="12" v-if="sectionForm.type === 'field' && type == 'section'">
+                            <v-checkbox label="Requerido" v-model="sectionForm.required"></v-checkbox>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                <template v-slot:actions>
+                    <v-btn class="ms-auto" text="Cancelar" @click="dialog = false"></v-btn>
+                    <v-btn color="primary" text @click="save">Guardar</v-btn>
+                </template>
+            </v-card>
+        </v-dialog>
+    </div>
+</template>
+
+<script>
+export default {
+    props: {
+        section: {
+            type: Object,
+            required: true,
+        },
+        title: {
+            type: String,
+            required: true,
+        },
+        type: {
+            type: String,
+            required: true,
+        },
+        inspection: {
+            type: Object,
+            required: true,
+        },
+    },
+    data() {
+        return {
+            dialog: false,
+            types: [
+                { id: 'field', name: 'Campo' },
+                { id: 'section', name: 'Sección' },
+            ],
+            sectionForm: {
+                name: '',
+                type: 'section',
+                required: true
+            },
+        };
+    },
+    mounted() {
+        if (this.type == 'sub_section') {
+            this.sectionForm.type = 'field';
+        }
+    },
+    methods: {
+        async save() {
+            let ct_inspection_relation_uuid = this.type == 'section' ? this.section.section_details.ct_inspection_section_uuid : this.section.ct_inspection_section_uuid;
+
+            /*console.log("Inspection:");
+            console.log(this.inspection.ct_inspection_uuid);
+            console.log("Section:");
+            console.log(this.sectionForm.name);
+            console.log("Padre:");
+            console.log(ct_inspection_relation_uuid);*/
+
+            if (this.sectionForm.type === 'section') {
+                await this.saveSection(ct_inspection_relation_uuid);
+                this.resetForm();
+            } else if (this.sectionForm.type === 'field') {
+                try {
+                    await this.saveField(ct_inspection_relation_uuid);
+                    await this.updateSections();
+                    this.resetForm();
+                } catch (error) {
+                    this.handleErrors(error);
+                }
+            }
+        },
+        saveSection(ct_inspection_relation_uuid) {
+            this.$emit('save-section', this.inspection.ct_inspection_uuid, this.sectionForm.name, ct_inspection_relation_uuid);
+        },
+        updateSections() {
+            this.$emit('update-sections');
+        },
+        resetForm() {
+            this.dialog = false;
+            this.sectionForm.name = '';
+            this.sectionForm.type = 'section';
+            this.sectionForm.required = true;
+        },
+        async saveField(ct_inspection_relation_uuid) {
+            await axios.post('api/inspection/forms/set-form-fields', {
+                ct_inspection_section_uuid: ct_inspection_relation_uuid,
+                fields: [
+                    {
+                        ct_inspection_form: this.sectionForm.name,
+                        required: this.sectionForm.required
+                    }
+                ]
+            });
+        },
+    }
+}
+</script>
