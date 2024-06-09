@@ -61,7 +61,7 @@
         <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
                 <v-card-title class="text-h5 text-center">¿Estás seguro de
-                    eliminar?</v-card-title>
+                    eliminar este campo?</v-card-title>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancel</v-btn>

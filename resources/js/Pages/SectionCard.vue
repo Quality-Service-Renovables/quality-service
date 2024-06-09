@@ -1,7 +1,8 @@
 <template>
-    <div>
-        <v-card class="my-5" rounded="lg" border="dashed thin dark md">
-            <v-card-title>
+    <div class="d-flex">
+        <v-icon class="mdi mdi-subdirectory-arrow-right mt-4"></v-icon>
+        <v-card class="w-100 mb-5" rounded="lg" border="dashed thin dark md">
+            <v-card-title class="bg-blue-grey">
                 <p class="text-h6">{{ title }}</p>
             </v-card-title>
             <v-card-text>
@@ -135,6 +136,10 @@ export default {
                     }
                 ]
             });
+        },
+        deleteField() {
+            //this.$emit('delete-field', this.section.ct_inspection_section_uuid);
+
         },
     }
 }
