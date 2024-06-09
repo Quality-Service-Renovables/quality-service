@@ -88,18 +88,22 @@ export default {
     methods: {
         async save() {
             let ct_inspection_relation_uuid = this.type == 'section' ? this.section.section_details.ct_inspection_section_uuid : this.section.ct_inspection_section_uuid;
-
-            /*console.log("Inspection:");
+            if (this.type == 'sub_section') {
+                this.sectionForm.type = 'field';
+            }
+            console.log("Inspection:");
             console.log(this.inspection.ct_inspection_uuid);
             console.log("Section:");
             console.log(this.sectionForm.name);
             console.log("Padre:");
-            console.log(ct_inspection_relation_uuid);*/
+            console.log(ct_inspection_relation_uuid);
 
             if (this.sectionForm.type === 'section') {
                 await this.saveSection(ct_inspection_relation_uuid);
                 this.resetForm();
+                console.log("Entro a sección");
             } else if (this.sectionForm.type === 'field') {
+                console.log("Entro a campo");
                 try {
                     await this.saveField(ct_inspection_relation_uuid);
                     await this.updateSections();
