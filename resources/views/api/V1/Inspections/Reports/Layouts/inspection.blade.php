@@ -11,9 +11,9 @@
                             <td>
                                 <small>{{$field->ct_inspection_form}}</small>
                             </td>
-                            <td><small>{{$field->result->inspection_form_value}}</small></td>
+                            <td><small>{{$field->result->inspection_form_value ?? ''}}</small></td>
                             <td>
-                                <small style="color: gray">{{$field->result->inspection_form_comments}}</small>
+                                <small style="color: gray">{{$field->result->inspection_form_comments ?? ''}}</small>
                             </td>
                         </tr>
                     @endforeach
