@@ -14,20 +14,22 @@
 
                 <template v-if="section.fields">
                     <p class="text-h6 font-weight-black my-2">Campos ({{ section.fields.length }})</p>
-                    <FieldCard v-for="field in section.fields" :key="field.id" :field="field" />
+                    <FieldCard v-for="field in section.fields" :key="field.id" :field="field"
+                        @delete-field="deleteField" />
                 </template>
 
                 <div v-if="section.sub_sections && section.sub_sections.length > 0">
                     <p class="text-h6 font-weight-black my-2">Sub-secciones ({{ section.sub_sections.length }})</p>
                     <div v-for="(sub_section, index2) in section.sub_sections" :key="index2">
-                     
+
                         <SectionCard :section="sub_section" :title="sub_section.ct_inspection_section"
                             :type="'sub_section'" :inspection="item" @save-section="saveSection"
                             @update-sections="updateSections">
 
                             <template v-if="sub_section.fields">
                                 <p class="text-h6 font-weight-black my-2">Campos ({{ sub_section.fields.length }})</p>
-                                <FieldCard v-for="field in sub_section.fields" :key="field.id" :field="field" />
+                                <FieldCard v-for="field in sub_section.fields" :key="field.id" :field="field"
+                                    @delete-field="deleteField" />
                             </template>
 
                         </SectionCard>
@@ -56,6 +58,20 @@
             </v-card>
         </v-dialog>
 
+        <v-dialog v-model="dialogDelete" max-width="500px">
+            <v-card>
+                <v-card-title class="text-h5 text-center">¿Estás seguro de
+                    eliminar?</v-card-title>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancel</v-btn>
+                    <v-btn color="blue-darken-1" variant="text" @click="deleteFieldConfirm()">Si,
+                        eliminar</v-btn>
+                    <v-spacer></v-spacer>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
     </div>
 </template>
 
@@ -63,6 +79,7 @@
 import { Toaster, toast } from 'vue-sonner'
 import SectionCard from './SectionCard.vue';
 import FieldCard from '@/Pages/InspectionCategory/Partials/FieldCard.vue';
+import Swal from 'sweetalert2'
 
 export default {
     components: {
@@ -85,6 +102,8 @@ export default {
             sectionForm: {
                 name: '',
             },
+            dialogDelete: false,
+            fieldToDeleteUuid: null,
         }
     },
     methods: {
@@ -101,7 +120,6 @@ export default {
                 await this.updateSections();
                 toast.success('Sección guardada correctamente');
             } catch (error) {
-                console.log("Hubo un error al guardar la sección 1: " + error);
                 this.handleErrors(error);
             }
         },
@@ -116,7 +134,6 @@ export default {
                     ct_inspection_relation_uuid: ct_inspection_relation_uuid,
                 });
             } catch (error) {
-                console.log("Hubo un error al guardar la sección 2");
                 throw error;
             }
         },
@@ -128,7 +145,6 @@ export default {
                 const response = await axios.get(`api/inspection/forms/get-form/${this.item.ct_inspection_uuid}`);
                 this.item.template.sections = response.data.data.sections;
             } catch (error) {
-                console.log("Hubo un error en la actualización de las secciones");
                 throw error;
             }
         },
@@ -137,6 +153,38 @@ export default {
             this.dialog = false;
             this.sectionForm.name = '';
         },
+        closeDelete() {
+            this.dialogDelete = false;
+            this.fieldToDeleteUuid = null;
+        },
+        deleteField(ct_inspection_form_uuid) {
+            this.dialogDelete = true
+            this.fieldToDeleteUuid = ct_inspection_form_uuid
+        },
+        async deleteFieldConfirm() {
+            const deleteRequest = () => {
+                return axios.delete('api/inspection/forms/delete-form-field/' + this.fieldToDeleteUuid);
+            };
+
+            toast.promise(deleteRequest(), {
+                loading: 'Eliminando...',
+                success: (data) => {
+                    this.closeDelete();
+                    return 'Campo eliminado correctamente';
+                },
+                error: (data) => {
+                    this.handleErrors(data);
+                }
+            });
+
+            await this.updateSections();
+        }
     }
 }
 </script>
+
+<style scoped>
+::v-deep .my-swal {
+    z-index: 9999;
+}
+</style>

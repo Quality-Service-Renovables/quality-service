@@ -24,7 +24,7 @@
     "dependencies": {
         "moment": "^2.30.1",
         "pinia": "^2.1.7",
-        "sweetalert2": "^11.6.13",
+        "sweetalert2": "^11.11.1",
         "vue-sonner": "^1.1.2",
         "vuetify": "^3.5.14"
     }
