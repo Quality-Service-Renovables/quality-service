@@ -4,13 +4,17 @@
         <p class="text-h4">{{ item.ct_inspection }}</p>
         <br>
         <v-divider></v-divider>
-        <v-btn class="text-none text-subtitle-1 me-1 mb-2" color="primary" @click="dialog = true">
-            Agregar sección
-        </v-btn>
+        <div class="d-flex align-center justify-end mb-2 ">
+            <v-btn class="text-none text-subtitle-1 me-2" color="primary" @click="dialog = true">
+                Agregar sección
+            </v-btn>
+            <v-btn class="text-none text-subtitle-1 me-2" prepend-icon="mdi-reload" @click="updateSections">Recargar</v-btn>
 
+        </div>
         <div v-for="(section, index) in item.template.sections" :key="index">
             <SectionCard :section="section" :title="section.section_details.ct_inspection_section" :type="'section'"
-                :inspection="item" @save-section="saveSection" @update-sections="updateSections">
+                :inspection="item" @save-section="saveSection" @update-sections="updateSections"
+                @delete-section="deleteSection">
 
                 <template v-if="section.fields">
                     <p class="text-h6 font-weight-black my-2">Campos ({{ section.fields.length }})</p>
@@ -24,7 +28,7 @@
 
                         <SectionCard :section="sub_section" :title="sub_section.ct_inspection_section"
                             :type="'sub_section'" :inspection="item" @save-section="saveSection"
-                            @update-sections="updateSections">
+                            @update-sections="updateSections" @delete-section="deleteSection">
 
                             <template v-if="sub_section.fields">
                                 <p class="text-h6 font-weight-black my-2">Campos ({{ sub_section.fields.length }})</p>
@@ -58,14 +62,30 @@
             </v-card>
         </v-dialog>
 
-        <v-dialog v-model="dialogDelete" max-width="500px">
+        <!-- Delete field dialog -->
+        <v-dialog v-model="dialogDeleteField" max-width="500px">
             <v-card>
                 <v-card-title class="text-h5 text-center">¿Estás seguro de
                     eliminar este campo?</v-card-title>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancel</v-btn>
+                    <v-btn color="blue-darken-1" variant="text" @click="closeDeleteField">Cancel</v-btn>
                     <v-btn color="blue-darken-1" variant="text" @click="deleteFieldConfirm()">Si,
+                        eliminar</v-btn>
+                    <v-spacer></v-spacer>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <!-- Delete section dialog -->
+        <v-dialog v-model="dialogDeleteSection" max-width="500px">
+            <v-card>
+                <v-card-title class="text-h5 text-center">¿Estás seguro de
+                    eliminar esta sección?</v-card-title>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue-darken-1" variant="text" @click="closeDeleteSection">Cancel</v-btn>
+                    <v-btn color="blue-darken-1" variant="text" @click="deleteSectionConfirm()">Si,
                         eliminar</v-btn>
                     <v-spacer></v-spacer>
                 </v-card-actions>
@@ -102,8 +122,10 @@ export default {
             sectionForm: {
                 name: '',
             },
-            dialogDelete: false,
+            dialogDeleteField: false,
             fieldToDeleteUuid: null,
+            dialogDeleteSection: false,
+            sectionToDeleteUuid: null,
         }
     },
     methods: {
@@ -153,24 +175,49 @@ export default {
             this.dialog = false;
             this.sectionForm.name = '';
         },
-        closeDelete() {
-            this.dialogDelete = false;
+        // Delete field
+        closeDeleteField() {
+            this.dialogDeleteField = false;
             this.fieldToDeleteUuid = null;
         },
         deleteField(ct_inspection_form_uuid) {
-            this.dialogDelete = true
+            this.dialogDeleteField = true
             this.fieldToDeleteUuid = ct_inspection_form_uuid
         },
         async deleteFieldConfirm() {
             const deleteRequest = () => {
                 return axios.delete('api/inspection/forms/delete-form-field/' + this.fieldToDeleteUuid);
             };
-
-            toast.promise(deleteRequest(), {
+            await toast.promise(deleteRequest(), {
                 loading: 'Eliminando...',
                 success: (data) => {
-                    this.closeDelete();
+                    this.closeDeleteField();
                     return 'Campo eliminado correctamente';
+                },
+                error: (data) => {
+                    this.handleErrors(data);
+                }
+            });
+            await this.updateSections();
+        },
+        // Delete section
+        closeDeleteSection() {
+            this.dialogDeleteSection = false;
+            this.sectionToDeleteUuid = null;
+        },
+        deleteSection(ct_inspection_section_uuid) {
+            this.dialogDeleteSection = true
+            this.sectionToDeleteUuid = ct_inspection_section_uuid
+        },
+        async deleteSectionConfirm() {
+            const deleteRequest = () => {
+                return axios.delete('api/inspection/sections/' + this.sectionToDeleteUuid);
+            };
+            await toast.promise(deleteRequest(), {
+                loading: 'Eliminando...',
+                success: (data) => {
+                    this.closeDeleteSection();
+                    return 'Sección eliminada correctamente';
                 },
                 error: (data) => {
                     this.handleErrors(data);
@@ -178,7 +225,7 @@ export default {
             });
 
             await this.updateSections();
-        }
+        },
     }
 }
 </script>

@@ -13,7 +13,7 @@
                     @click="dialog = true"></v-btn>
                 <v-btn density="compact" icon="mdi-pencil" variant="tonal" class="text-subtitle-1 me-1"></v-btn>
                 <v-btn density="compact" icon="mdi-trash-can" variant="tonal" class="text-subtitle-1 me-1"
-                    color="red"></v-btn>
+                    color="red" @click="deleteSection"></v-btn>
             </v-card-actions>
         </v-card>
 
@@ -137,10 +137,10 @@ export default {
                 ]
             });
         },
-        deleteField() {
-            //this.$emit('delete-field', this.section.ct_inspection_section_uuid);
-
-        },
+        deleteSection() {
+            let ct_inspection_section_uuid = this.type == 'section' ? this.section.section_details.ct_inspection_section_uuid : this.section.ct_inspection_section_uuid;
+            this.$emit('delete-section', ct_inspection_section_uuid);
+        }
     }
 }
 </script>
