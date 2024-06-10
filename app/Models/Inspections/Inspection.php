@@ -25,7 +25,7 @@ class Inspection extends Model
         'ct_inspection_id',
     ];
 
-    protected $hidden = ['inspection_id', 'ct_inspection_id'];
+    protected $hidden = ['inspection_id', 'ct_inspection_id', 'client_id'];
 
     public function client(): BelongsTo
     {
