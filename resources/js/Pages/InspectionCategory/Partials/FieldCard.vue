@@ -7,7 +7,7 @@
         </v-chip></v-card-text>
       <v-card-actions class="p-0 m-0">
         <div class="border rounded-xl px-2">
-          <v-btn density="compact" icon="mdi-pencil" variant="plain" class="me-1"></v-btn>
+          <v-btn density="compact" icon="mdi-pencil" variant="plain" class="me-1" @click="editField"></v-btn>
           <v-btn density="compact" icon="mdi-trash-can" variant="plain" class="me-1" color="red"
             @click="deleteField"></v-btn>
         </div>
@@ -28,6 +28,9 @@ export default {
   methods: {
     deleteField() {
       this.$emit('delete-field', this.field.ct_inspection_form_uuid);
+    },
+    editField() {
+      this.$emit('edit-field', this.field);
     }
   }
 }

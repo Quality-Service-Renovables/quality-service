@@ -143,12 +143,12 @@ export default {
         resetFormSection() {
             this.dialogSection = false;
             this.sectionForm.name = '';
+            this.editingSection = false;
         },
         resetFormField() {
             this.dialogField = false;
             this.fieldForm.name = '';
             this.fieldForm.required = true;
-            this.editingSection = false;
         },
         async saveField(ct_inspection_relation_uuid) {
             const postRequest = () => {
@@ -185,8 +185,10 @@ export default {
             this.sectionForm.name = ct_inspection_section;
             this.sectionForm.ct_inspection_section_uuid = ct_inspection_section_uuid;
         },
-        editField() {
+        editField(field) {
             this.dialogField = true;
+            this.fieldForm.name = field.ct_inspection_form;
+            this.fieldForm.required = field.required == 1 ? true : false;
         },
     }
 }
