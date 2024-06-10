@@ -8,7 +8,7 @@
                     <div class="bg-white rounded-xl border-0 px-2">
                         <v-btn density="compact" icon="mdi-plus" variant="plain" class="me-1" color="primary"
                             @click="dialog = true"></v-btn>
-                        <v-btn density="compact" icon="mdi-pencil" variant="plain" class="me-1"></v-btn>
+                        <v-btn density="compact" icon="mdi-pencil" variant="plain" class="me-1" @click="edit"></v-btn>
                         <v-btn density="compact" icon="mdi-trash-can" variant="plain" class="me-1" color="red"
                             @click="deleteSection"></v-btn>
                     </div>
@@ -154,7 +154,14 @@ export default {
         deleteSection() {
             let ct_inspection_section_uuid = this.type == 'section' ? this.section.section_details.ct_inspection_section_uuid : this.section.ct_inspection_section_uuid;
             this.$emit('delete-section', ct_inspection_section_uuid);
-        }
+        },
+        edit() {
+            let ct_inspection_section = this.type == 'section' ? this.section.section_details.ct_inspection_section : this.section.ct_inspection_section;
+            this.dialog = true;
+            this.sectionForm.name = ct_inspection_section;
+            this.sectionForm.type = 'section';
+            this.sectionForm.required = this.section.section_details.required == 1;
+        },
     }
 }
 </script>

@@ -3,7 +3,7 @@
         <p class="text-h4">{{ item.ct_inspection }}</p>
         <br>
         <v-divider></v-divider>
-        <div class="d-flex align-center justify-end mb-2 ">
+        <div class="d-flex align-center justify-end mb-2">
             <PrimaryButton @click="dialog = true" class="me-2" :prependIcon="'mdi-plus'">
                 Agregar sección
             </PrimaryButton>
@@ -11,8 +11,8 @@
                 Recargar
             </SecondaryButton>
         </div>
-        <v-col cols="12">
-            <v-progress-linear indeterminate color="primary" v-if="loading"></v-progress-linear>
+        <v-col cols="12" v-if="loading">
+            <v-progress-linear indeterminate color="primary"></v-progress-linear>
         </v-col>
         <div v-for="(section, index) in item.template.sections" :key="index">
             <SectionCard :section="section" :title="section.section_details.ct_inspection_section" :type="'section'"
