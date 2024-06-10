@@ -12,8 +12,8 @@
                 <v-btn density="compact" icon="mdi-plus" variant="tonal" class="text-subtitle-1 me-1" color="primary"
                     @click="dialog = true"></v-btn>
                 <v-btn density="compact" icon="mdi-pencil" variant="tonal" class="text-subtitle-1 me-1"></v-btn>
-                <v-btn density="compact" icon="mdi-trash-can" variant="tonal" class="text-subtitle-1 me-1"
-                    color="red" @click="deleteSection"></v-btn>
+                <v-btn density="compact" icon="mdi-trash-can" variant="tonal" class="text-subtitle-1 me-1" color="red"
+                    @click="deleteSection"></v-btn>
             </v-card-actions>
         </v-card>
 
@@ -48,7 +48,11 @@
 </template>
 
 <script>
+import { Toaster, toast } from 'vue-sonner'
 export default {
+    components: {
+        Toaster,
+    },
     props: {
         section: {
             type: Object,
@@ -105,13 +109,9 @@ export default {
                 console.log("Entro a sección");
             } else if (this.sectionForm.type === 'field') {
                 console.log("Entro a campo");
-                try {
-                    await this.saveField(ct_inspection_relation_uuid);
-                    await this.updateSections();
-                    this.resetForm();
-                } catch (error) {
-                    this.handleErrors(error);
-                }
+                await this.saveField(ct_inspection_relation_uuid);
+                await this.updateSections();
+                this.resetForm();
             }
         },
         saveSection(ct_inspection_relation_uuid) {
@@ -127,14 +127,26 @@ export default {
             this.sectionForm.required = true;
         },
         async saveField(ct_inspection_relation_uuid) {
-            await axios.post('api/inspection/forms/set-form-fields', {
-                ct_inspection_section_uuid: ct_inspection_relation_uuid,
-                fields: [
-                    {
-                        ct_inspection_form: this.sectionForm.name,
-                        required: this.sectionForm.required
-                    }
-                ]
+            const postRequest = () => {
+                return axios.post('api/inspection/forms/set-form-fields', {
+                    ct_inspection_section_uuid: ct_inspection_relation_uuid,
+                    fields: [
+                        {
+                            ct_inspection_form: this.sectionForm.name,
+                            required: this.sectionForm.required
+                        }
+                    ]
+                })
+            };
+
+            await toast.promise(postRequest(), {
+                loading: 'Creando campo...',
+                success: (data) => {
+                    return 'Campo creado correctamente';
+                },
+                error: (data) => {
+                    this.handleErrors(data);
+                }
             });
         },
         deleteSection() {

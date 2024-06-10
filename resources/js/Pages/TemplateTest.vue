@@ -1,6 +1,5 @@
 <template>
     <div>
-        <Toaster position="top-right" richColors :visibleToasts="10" />
         <p class="text-h4">{{ item.ct_inspection }}</p>
         <br>
         <v-divider></v-divider>
@@ -8,7 +7,8 @@
             <v-btn class="text-none text-subtitle-1 me-2" color="primary" @click="dialog = true">
                 Agregar sección
             </v-btn>
-            <v-btn class="text-none text-subtitle-1 me-2" prepend-icon="mdi-reload" @click="updateSections">Recargar</v-btn>
+            <v-btn class="text-none text-subtitle-1 me-2" prepend-icon="mdi-reload"
+                @click="updateSections">Recargar</v-btn>
 
         </div>
         <div v-for="(section, index) in item.template.sections" :key="index">
@@ -140,7 +140,7 @@ export default {
                 await this.postSection(ct_inspection_uuid, ct_inspection_section, ct_inspection_relation_uuid);
                 this.resetForm();
                 await this.updateSections();
-                toast.success('Sección guardada correctamente');
+                //toast.success('Sección guardada correctamente');
             } catch (error) {
                 this.handleErrors(error);
             }
@@ -149,26 +149,43 @@ export default {
          * Post a new section
          */
         async postSection(ct_inspection_uuid, ct_inspection_section, ct_inspection_relation_uuid = null) {
-            try {
-                await axios.post('api/inspection/sections', {
+            const postRequest = () => {
+                return axios.post('api/inspection/sections', {
                     ct_inspection_uuid: ct_inspection_uuid,
                     ct_inspection_section: ct_inspection_section,
                     ct_inspection_relation_uuid: ct_inspection_relation_uuid,
-                });
-            } catch (error) {
-                throw error;
-            }
+                })
+            };
+
+            await toast.promise(postRequest(), {
+                loading: 'Creando sección...',
+                success: (data) => {
+                    return 'Sección creada correctamente';
+                },
+                error: (data) => {
+                    this.handleErrors(data);
+                }
+            });
+            
         },
         /**
          * Update the sections
          */
         async updateSections() {
-            try {
-                const response = await axios.get(`api/inspection/forms/get-form/${this.item.ct_inspection_uuid}`);
-                this.item.template.sections = response.data.data.sections;
-            } catch (error) {
-                throw error;
-            }
+            const getRequest = () => {
+                return axios.get(`api/inspection/forms/get-form/${this.item.ct_inspection_uuid}`);
+            };
+
+            await toast.promise(getRequest(), {
+                loading: 'Actualizando secciones...',
+                success: (data) => {
+                    this.item.template.sections = data.data.data.sections;
+                    return 'Secciónes actualizadas correctamente';
+                },
+                error: (data) => {
+                    this.handleErrors(data);
+                }
+            });
         },
 
         resetForm() {
@@ -229,9 +246,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-::v-deep .my-swal {
-    z-index: 9999;
-}
-</style>
