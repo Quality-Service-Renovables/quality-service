@@ -11,7 +11,7 @@
                             @click="dialogSection = true"></v-btn>
                         <v-btn density="compact" icon="mdi-focus-field-horizontal" variant="plain" class="me-1" color="primary"
                             @click="dialogField = true"></v-btn>
-                        <v-btn density="compact" icon="mdi-pencil" variant="plain" class="me-1" @click="edit"></v-btn>
+                        <v-btn density="compact" icon="mdi-pencil" variant="plain" class="me-1" @click="editSection"></v-btn>
                         <v-btn density="compact" icon="mdi-trash-can" variant="plain" class="me-1" color="red"
                             @click="deleteSection"></v-btn>
                     </div>
@@ -19,7 +19,7 @@
                     <div class="bg-white rounded-xl border-0 px-2" v-if="type == 'sub_section'">
                         <v-btn density="compact" icon="mdi-focus-field-horizontal" variant="plain" class="me-1" color="primary"
                             @click="dialogField = true"></v-btn>
-                        <v-btn density="compact" icon="mdi-pencil" variant="plain" class="me-1" @click="edit"></v-btn>
+                        <v-btn density="compact" icon="mdi-pencil" variant="plain" class="me-1" @click="editSection"></v-btn>
                         <v-btn density="compact" icon="mdi-trash-can" variant="plain" class="me-1" color="red"
                             @click="deleteSection"></v-btn>
                     </div>
@@ -34,7 +34,8 @@
         <v-dialog v-model="dialogSection" width="auto">
             <v-card min-width="400">
                 <v-card-title>
-                    <p>Nueva sub-sección</p>
+                    <p v-if="!editingSection">Nueva sub-sección</p>
+                    <p v-if="editingSection">Editar sub-sección</p>
                 </v-card-title>
                 <v-card-text>
                     <v-row dense>
@@ -110,12 +111,14 @@ export default {
                 { id: 'section', name: 'Sección' },
             ],
             sectionForm: {
+                ct_inspection_section_uuid: '',
                 name: '',
             },
             fieldForm: {
                 name: '',
                 required: true
             },
+            editingSection: false,
         };
     },
     methods: {
@@ -131,7 +134,8 @@ export default {
             this.resetFormField();
         },
         saveSection(ct_inspection_relation_uuid) {
-            this.$emit('save-section', this.inspection.ct_inspection_uuid, this.sectionForm.name, ct_inspection_relation_uuid);
+            let action = this.editingSection ? 'update' : 'create';
+            this.$emit('save-section', action, this.inspection.ct_inspection_uuid, this.sectionForm.name, ct_inspection_relation_uuid);
         },
         updateSections() {
             this.$emit('update-sections');
@@ -144,6 +148,7 @@ export default {
             this.dialogField = false;
             this.fieldForm.name = '';
             this.fieldForm.required = true;
+            this.editingSection = false;
         },
         async saveField(ct_inspection_relation_uuid) {
             const postRequest = () => {
@@ -172,10 +177,16 @@ export default {
             let ct_inspection_section_uuid = this.type == 'section' ? this.section.section_details.ct_inspection_section_uuid : this.section.ct_inspection_section_uuid;
             this.$emit('delete-section', ct_inspection_section_uuid);
         },
-        edit() {
-            let ct_inspection_section = this.type == 'section' ? this.section.section_details.ct_inspection_section : this.section.ct_inspection_section;
+        editSection() {
+            this.editingSection = true;
             this.dialogSection = true;
+            let ct_inspection_section_uuid = this.type == 'section' ? this.section.section_details.ct_inspection_section_uuid : this.section.ct_inspection_section_uuid;
+            let ct_inspection_section = this.type == 'section' ? this.section.section_details.ct_inspection_section : this.section.ct_inspection_section;
             this.sectionForm.name = ct_inspection_section;
+            this.sectionForm.ct_inspection_section_uuid = ct_inspection_section_uuid;
+        },
+        editField() {
+            this.dialogField = true;
         },
     }
 }

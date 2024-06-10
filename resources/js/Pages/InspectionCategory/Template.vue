@@ -138,13 +138,18 @@ export default {
     methods: {
         /**
          * Save a new section
+         * @param {string} action - The action to perform
          * @param {string} ct_inspection_uuid - The inspection uuid
          * @param {string} ct_inspection_section - The section name
          * @param {string} ct_inspection_relation_uuid - Si es una sección, se envía el uuid de la sección padre
          */
-        async saveSection(ct_inspection_uuid, ct_inspection_section, ct_inspection_relation_uuid = null) {
+        async saveSection(action, ct_inspection_uuid, ct_inspection_section, ct_inspection_relation_uuid = null) {
             try {
-                await this.postSection(ct_inspection_uuid, ct_inspection_section, ct_inspection_relation_uuid);
+                if(action == 'create'){
+                    await this.postSection(ct_inspection_uuid, ct_inspection_section, ct_inspection_relation_uuid);
+                }else if (action == 'update'){
+                    await this.updateSection(ct_inspection_uuid, ct_inspection_section, ct_inspection_relation_uuid);
+                }
                 this.resetForm();
                 await this.updateSections();
                 //toast.success('Sección guardada correctamente');
@@ -173,7 +178,24 @@ export default {
                     this.handleErrors(data);
                 }
             });
+        },
+        async updateSection(ct_inspection_uuid, ct_inspection_section, ct_inspection_relation_uuid = null) {
+            const postRequest = () => {
+                return axios.put('api/inspection/sections/' + ct_inspection_relation_uuid, {
+                    ct_inspection_uuid: ct_inspection_uuid,
+                    ct_inspection_section: ct_inspection_section,
+                })
+            };
 
+            await toast.promise(postRequest(), {
+                loading: 'Actualizando sección...',
+                success: (data) => {
+                    return 'Sección actualizada correctamente';
+                },
+                error: (data) => {
+                    this.handleErrors(data);
+                }
+            });
         },
         /**
          * Update the sections
@@ -189,7 +211,7 @@ export default {
                 success: (data) => {
                     this.loading = false;
                     this.item.template.sections = data.data.data.sections;
-                    return 'Secciónes actualizadas correctamente';
+                    return 'Template actualizado correctamente';
                 },
                 error: (data) => {
                     this.handleErrors(data);
