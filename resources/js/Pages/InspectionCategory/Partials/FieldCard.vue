@@ -5,10 +5,12 @@
       <v-card-text class="pb-0">{{ field.ct_inspection_form }}<v-chip size="x-small" variant="outlined" class="ml-2">
           {{ field.required == 1 ? '* Campo requerido' : 'Campo opcional' }}
         </v-chip></v-card-text>
-      <v-card-actions class="py-0">
-        <v-btn density="compact" icon="mdi-pencil" variant="tonal" class="text-subtitle-1 me-1"></v-btn>
-        <v-btn density="compact" icon="mdi-trash-can" variant="tonal" class="text-subtitle-1 me-1" color="red"
-          @click="deleteField"></v-btn>
+      <v-card-actions class="p-0 m-0">
+        <div class="border rounded-xl px-2">
+          <v-btn density="compact" icon="mdi-pencil" variant="plain" class="me-1"></v-btn>
+          <v-btn density="compact" icon="mdi-trash-can" variant="plain" class="me-1" color="red"
+            @click="deleteField"></v-btn>
+        </div>
       </v-card-actions>
     </v-card>
   </div>

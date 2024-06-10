@@ -92,9 +92,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         </v-toolbar>
                                                         <v-card-text>
                                                             <v-container v-if="editedItem.template">
-                                                                <!--<TemplateInspectionCategory :item="editedItem">
-                                                                </TemplateInspectionCategory>-->
-                                                                <TemplateTest :item="editedItem"></TemplateTest>
+                                                                <TemplateInspectionCategory :item="editedItem"></TemplateInspectionCategory>
                                                             </v-container>
                                                         </v-card-text>
                                                     </v-card>
@@ -150,13 +148,11 @@ import { router } from '@inertiajs/vue3'
 import { Toaster, toast } from 'vue-sonner'
 import Swal from 'sweetalert2';
 import TemplateInspectionCategory from './InspectionCategory/Template.vue';
-import TemplateTest from './TemplateTest.vue';
 
 export default {
     components: {
         Toaster,
-        //TemplateInspectionCategory
-        TemplateTest
+        TemplateInspectionCategory
     },
     props: {
         ct_inspections: {
