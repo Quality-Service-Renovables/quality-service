@@ -4,10 +4,10 @@
     <v-card class="mb-5 ml-2 mr-2 mt-2 border w-100" rounded="lg" variant="flat" border="dashed thin info md">
       <v-card-text class="pb-0">{{ field.ct_inspection_form }}
         <v-chip size="x-small" variant="outlined" class="ml-2 text-red" v-if="field.required == 1">
-          * Campo requerido
+          * Requerido
         </v-chip>
         <v-chip size="x-small" variant="outlined" class="ml-2 text-success" v-else>
-          * Campo opcional
+          * Opcional
         </v-chip>
       </v-card-text>
       <v-card-actions class="p-0 m-0">
