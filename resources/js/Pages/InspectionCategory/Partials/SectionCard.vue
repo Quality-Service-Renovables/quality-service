@@ -21,7 +21,7 @@
                 <div v-if="section.fields">
                     <p class="text-h6 font-weight-black my-2">Campos ({{ section.fields.length }})</p>
                     <FieldCard v-for="field in section.fields" :key="field.id" :field="field"
-                        @delete-field="deleteField" />
+                        @delete-field="deleteField" @edit-field="editField" />
                 </div>
 
                 <div v-if="section.sub_sections && section.sub_sections.length > 0">
@@ -35,7 +35,7 @@
                             <div v-if="sub_section.fields">
                                 <p class="text-h6 font-weight-black my-2">Campos ({{ sub_section.fields.length }})</p>
                                 <FieldCard v-for="field in sub_section.fields" :key="field.id" :field="field"
-                                    @delete-field="deleteField" />
+                                    @delete-field="deleteField" @edit-field="editField" />
                             </div>
 
                         </SectionCard>
@@ -149,12 +149,14 @@ export default {
                 name: '',
             },
             fieldForm: {
+                ct_inspection_form_uuid: '',
                 name: '',
                 required: true
             },
             editingSection: false,
             dialogDeleteField: false,
             fieldToDeleteUuid: null,
+            editingField: false,
         };
     },
     methods: {
@@ -166,7 +168,8 @@ export default {
         },
         async saveFieldForm() {
             let ct_inspection_relation_uuid = this.type == 'section' ? this.section.section_details.ct_inspection_section_uuid : this.section.ct_inspection_section_uuid;
-            await this.saveField(ct_inspection_relation_uuid);
+            let action = this.editingField ? 'update' : 'create';
+            await this.saveField(action, ct_inspection_relation_uuid);
             await this.updateSections();
             this.resetFormField();
         },
@@ -248,10 +251,20 @@ export default {
         },
         resetFormField() {
             this.dialogField = false;
+            this.fieldForm.ct_inspection_form_uuid = '';
             this.fieldForm.name = '';
             this.fieldForm.required = true;
         },
-        async saveField(ct_inspection_relation_uuid) {
+        async saveField(action, ct_inspection_relation_uuid) {
+            if (action == 'create') {
+                console.log("llego a create");
+                await this.postField(ct_inspection_relation_uuid);
+            } else if (action == 'update') {
+                console.log("llego a update");
+                await this.updateField(ct_inspection_relation_uuid);
+            }
+        },
+        async postField(ct_inspection_relation_uuid) {
             const postRequest = () => {
                 return axios.post('api/inspection/forms/set-form-fields', {
                     ct_inspection_section_uuid: ct_inspection_relation_uuid,
@@ -263,11 +276,29 @@ export default {
                     ]
                 })
             };
-
             await toast.promise(postRequest(), {
                 loading: 'Creando campo...',
                 success: (data) => {
                     return 'Campo creado correctamente';
+                },
+                error: (data) => {
+                    this.handleErrors(data);
+                }
+            });
+        },
+        async updateField(ct_inspection_relation_uuid) {
+            const postRequest = () => {
+                return axios.put('api/inspection/forms/update-form-field/' + this.fieldForm.ct_inspection_form_uuid, {
+                    ct_inspection_section_uuid: ct_inspection_relation_uuid,
+                    ct_inspection_form: this.fieldForm.name,
+                    required: this.fieldForm.required
+                })
+            };
+
+            await toast.promise(postRequest(), {
+                loading: 'Actualizando campo...',
+                success: (data) => {
+                    return 'Campo actualizado correctamente';
                 },
                 error: (data) => {
                     this.handleErrors(data);
@@ -288,7 +319,9 @@ export default {
             this.sectionForm.ct_inspection_section_uuid = ct_inspection_section_uuid;
         },
         editField(field) {
+            this.editingField = true;
             this.dialogField = true;
+            this.fieldForm.ct_inspection_form_uuid = field.ct_inspection_form_uuid;
             this.fieldForm.name = field.ct_inspection_form;
             this.fieldForm.required = field.required == 1 ? true : false;
         },
