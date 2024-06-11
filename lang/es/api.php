@@ -26,4 +26,5 @@ return [
     'status_invalid' => 'El estado seleccionado no es compatible con la solicitud',
     // Status Catalog
     'status_projects' => 'Estado de proyectos, codigo: proyecto',
+    'status_inspections' => 'Estado de proyectos, codigo: inspeccion',
 ];

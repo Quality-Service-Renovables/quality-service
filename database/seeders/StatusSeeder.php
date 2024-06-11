@@ -84,7 +84,7 @@ class StatusSeeder extends Seeder
             [
                 'status_uuid' => Str::uuid()->toString(),
                 'status' => 'Inspección iniciada',
-                'status_code' => 'inspeccion_iniciad',
+                'status_code' => 'inspeccion_iniciada',
                 'description' => 'Inspección inicializada',
                 'active' => true,
                 'ct_status_id' => $inspectionCategory,
@@ -92,7 +92,7 @@ class StatusSeeder extends Seeder
             [
                 'status_uuid' => Str::uuid()->toString(),
                 'status' => 'Inspección en Curso',
-                'status_code' => 'inspección_en_curso',
+                'status_code' => 'inspeccion_en_curso',
                 'description' => 'En proceso de inspección',
                 'active' => true,
                 'ct_status_id' => $inspectionCategory,

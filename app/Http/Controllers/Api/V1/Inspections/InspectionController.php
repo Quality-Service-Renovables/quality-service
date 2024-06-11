@@ -108,6 +108,8 @@ class InspectionController extends Controller
                     ->whereNot('ct_inspection_uuid', $uuid)
                     ->whereNull('deleted_at'),
             ],
+            'status_code' => 'required|string|exists:status,status_code',
+            'client_uuid' => 'required|uuid|exists:clients,client_uuid',
         ]);
 
         if ($validated->fails()) {

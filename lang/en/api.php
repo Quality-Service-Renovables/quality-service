@@ -26,4 +26,5 @@ return [
     'status_invalid' => 'Status is not valid.',
     // Status Catalog
     'status_projects' => 'Status proyect, code: proyecto',
+    'status_inspections' => 'Status proyect, code: inspeccion',
 ];

@@ -26,6 +26,8 @@ class InspectionRequest extends CustomRequest
                 Rule::exists('ct_inspections', 'ct_inspection_code')
                     ->whereNull('deleted_at'),
             ],
+            'status_code' => 'required|string|exists:status,status_code',
+            'client_uuid' => 'required|uuid|exists:clients,client_uuid',
         ];
     }
 }

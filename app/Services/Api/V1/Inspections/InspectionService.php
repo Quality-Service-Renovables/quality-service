@@ -6,9 +6,11 @@
 
 namespace App\Services\Api\V1\Inspections;
 
+use App\Models\Clients\Client;
 use App\Models\Inspections\Categories\Section;
 use App\Models\Inspections\Category;
 use App\Models\Inspections\Inspection;
+use App\Models\Status\Status;
 use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,27 +35,44 @@ class InspectionService extends Service
             // Control Transaction
             DB::beginTransaction();
             $category = Category::where('ct_inspection_code', $request->ct_inspection_code)->first();
-            // Establecer atributos para registro
-            $request->merge([
-                'inspection_uuid' => Str::uuid()->toString(),
-                'ct_inspection_id' => $category->ct_inspection_id,
-            ]);
-            // Create Register
-            $inspection = Inspection::create($request->all());
-            // Set Response
-            $this->statusCode = 201;
-            $this->response['message'] = trans('api.created');
-            $this->response['data'] = $inspection;
-            // Set Log
-            $this->logService->create(
-                $this->nameService,
-                $request->all(),
-                $this->response,
-                'Create new inspection',
-                $request->user()->id,
-            );
-            // Commit Transaction
-            DB::commit();
+            $status = Status::with(['category'])
+                ->where('status_code', '=', $request->status_code)
+                ->first();
+
+            if (($status && $status->category) && $status->category->ct_status_code === 'inspeccion') {
+                // Establecer atributos para registro
+                $request->merge([
+                    'inspection_uuid' => Str::uuid()->toString(),
+                    'ct_inspection_id' => $category->ct_inspection_id,
+                    'client_id' => Client::where('client_uuid', '=', $request->client_uuid)
+                        ->first()->client_id,
+                    'status_id' => $status->status_id,
+                ]);
+                // Create Register
+                $inspection = Inspection::create($request->all());
+                // Set Response
+                $this->statusCode = 201;
+                $this->response['message'] = trans('api.created');
+                $this->response['data'] = $inspection;
+                // Set Log
+                $this->logService->create(
+                    $this->nameService,
+                    $request->all(),
+                    $this->response,
+                    trans('api.message_log'),
+                    $request->user()->id,
+                );
+                // Commit Transaction
+                DB::commit();
+            } else {
+                // En caso de que el estado no sea válido se retorna el error
+                $this->statusCode = 422;
+                $this->response['status'] = 'fail';
+                $this->response['errors'] = [
+                    'status_expected' => trans('api.status_inspection'),
+                ];
+                $this->response['message'] = trans('api.status_invalid');
+            }
         } catch (Throwable $exceptions) {
             DB::rollBack();
             // Manejo del error
@@ -75,7 +94,14 @@ class InspectionService extends Service
     {
         try {
             $this->response['message'] = trans('api.read');
-            $this->response['data'] = ['inspections' => Inspection::with(['category', 'client'])->get()];
+            $this->response['data'] = ['inspections' => Inspection::with([
+                'client',
+                'equipment.equipment.model.trademark',
+                'category.sections.subSections.fields.result',
+                'equipmentsInspection.equipment',
+                'evidences',
+                'status.category',
+            ])->get()];
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);
@@ -95,29 +121,40 @@ class InspectionService extends Service
     public function update(Request $request): array
     {
         try {
-            // Control Transaction
-            DB::beginTransaction();
-
-            $request->merge([
-                'inspection_code' => create_slug($request->inspection),
-            ]);
-            // Update Register
-            $category = Inspection::where('inspection_uuid', $request->inspection_uuid)->first();
-            // Si el $category existe (no es nulo), actualízalo con todos los datos de la solicitud.
-            $category?->update($request->all());
-            // Set Response
-            $this->response['message'] = trans('api.updated');
-            $this->response['data'] = $category;
-            // Set Log
-            $this->logService->create(
-                $this->nameService,
-                $request->all(),
-                $this->response,
-                'Update new inspection',
-                $request->user()->id,
-            );
-            // Commit Transaction
-            DB::commit();
+            $category = Category::where('ct_inspection_code', $request->ct_inspection_code)->first();
+            $status = Status::with(['category'])
+                ->where('status_code', '=', $request->status_code)
+                ->first();
+            if (($status && $status->category) && $status->category->ct_status_code === 'inspeccion') {
+                // Control Transaction
+                DB::beginTransaction();
+                // Establecer atributos para registro
+                $request->merge([
+                    'ct_inspection_id' => $category->ct_inspection_id,
+                    'client_id' => Client::where('client_uuid', '=', $request->client_uuid)
+                        ->first()->client_id,
+                    'status_id' => $status->status_id,
+                ]);
+                // Update Register
+                $category = Inspection::where('inspection_uuid', $request->inspection_uuid)->first();
+                // Si el $category existe (no es nulo), actualízalo con todos los datos de la solicitud.
+                $category?->update($request->except([
+                    'client_uuid', 'status_code',
+                ]));
+                // Set Response
+                $this->response['message'] = trans('api.updated');
+                $this->response['data'] = $category;
+                // Set Log
+                $this->logService->create(
+                    $this->nameService,
+                    $request->all(),
+                    $this->response,
+                    'Update new inspection',
+                    $request->user()->id,
+                );
+                // Commit Transaction
+                DB::commit();
+            }
         } catch (Throwable $exceptions) {
             DB::rollBack();
             // Manejo del error
@@ -178,6 +215,7 @@ class InspectionService extends Service
                 'category.sections.subSections.fields.result',
                 'equipmentsInspection.equipment',
                 'evidences',
+                'status.category',
             ])->where('inspection_uuid', $uuid)->first();
 
             if ($inspection) {
