@@ -26,6 +26,7 @@ use App\Services\Api\ServiceInterface;
 use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Throwable;
 
 class EmployeeService extends Service implements ServiceInterface
@@ -45,15 +46,23 @@ class EmployeeService extends Service implements ServiceInterface
             DB::beginTransaction();
             $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
             $user = User::where('uuid', '=', $request->employee_uuid)->first();
+
             // Agrega atributos a la solicitud
             $request->merge([
+                'project_employee_uuid' => Str::uuid()->toString(),
                 'user_id' => $user->id,
-                'proyect_id' => $project->project_id,
+                'project_id' => $project->project_id,
             ]);
+
             // Registra los atributos de la solicitud
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
-            $this->response['data'] = Employee::create($request->all());
+            $this->response['data'] = Employee::firstOrCreate([
+                'user_id' => $request->user_id,
+                'project_id' => $request->project_id,
+            ], [
+                'project_employee_uuid' => $request->project_employee_uuid,
+            ]);
             // Registro en log
             $this->logService->create(
                 $this->nameService,
@@ -98,16 +107,20 @@ class EmployeeService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
-            $user = User::where('uuid', '=', $request->user_uuid)->first();
+            $user = User::where('uuid', '=', $request->employee_uuid)->first();
             // Agrega atributos a la solicitud
             $request->merge([
                 'user_id' => $user->id,
-                'proyect_id' => $project->project_id,
+                'project_id' => $project->project_id,
             ]);
             // Registra los atributos de la solicitud
-            $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
-            $this->response['data'] = Employee::create($request->except(['user_uuid', 'project_uuid']));
+            $this->response['data'] = Employee::updateOrCreate([
+                'user_id' => $request->user_id,
+                'project_id' => $request->project_id,
+            ], [
+                'update_at' => now(),
+            ]);
             // Registro en log
             $this->logService->create(
                 $this->nameService,
@@ -175,6 +188,7 @@ class EmployeeService extends Service implements ServiceInterface
             // Manejo del error
             $this->setExceptions($exceptions);
         }
+
         // Respuesta del módulo
         return $this->response;
     }

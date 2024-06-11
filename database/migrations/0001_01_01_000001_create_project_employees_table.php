@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('project_employees', static function (Blueprint $table) {
             $table->id('project_employee_id');
+            $table->uuid('project_employee_uuid');
             $table->unsignedBigInteger('user_id')->comment('Relation with user technical profile');
             $table->unsignedBigInteger('project_id')->comment('Relation with projects');
             $table->timestamps();
             $table->softDeletes();
             //INDEX
+            $table->index('project_employee_uuid');
             $table->index('user_id');
             $table->index('project_id');
             //FOREIGN KEYS
