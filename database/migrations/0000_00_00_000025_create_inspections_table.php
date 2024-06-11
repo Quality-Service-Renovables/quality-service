@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('ct_inspection_id')->comment('Relation with inspection category');
             $table->unsignedBigInteger('client_id')->comment('Relation with client');
             $table->unsignedBigInteger('status_id')->comment('Relation with status');
+            $table->unsignedBigInteger('project_id')->comment('Relation with proyects');
             $table->timestamps();
             $table->softDeletes();
             //INDEX
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->index('ct_inspection_id');
             $table->index('client_id');
             $table->index('status_id');
+            $table->index('project_id');
             //FOREIGN KEYS
             $table->foreign('ct_inspection_id', 'fk_ct_inspection')
                 ->references('ct_inspection_id')->on('ct_inspections');
@@ -34,6 +36,8 @@ return new class extends Migration
                 ->references('client_id')->on('clients');
             $table->foreign('status_id', 'fk_inspection_status')
                 ->references('status_id')->on('status');
+            $table->foreign('project_id', 'fk_inspection_project')
+                ->references('project_id')->on('projects');
         });
     }
 

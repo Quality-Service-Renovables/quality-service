@@ -15,29 +15,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Project extends Model
+class Employee extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'projects';
+    protected $table = 'project_employees';
 
-    protected $primaryKey = 'project_id';
+    protected $primaryKey = 'project_employee_id';
 
     protected $fillable = [
-        'project_uuid',
-        'project_name',
-        'description',
-        'active',
-        'status_id',
-        'client_id',
+        'user_id',
+        'project_id',
     ];
 
-    protected $hidden = ['project_id', 'client_id', 'status_id'];
+    protected $hidden = ['project_id', 'user_id'];
 
     /**
      * Get the category that this equipment belongs to.
      */
-    public function client(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(Client::class, 'client_id', 'client_id');
     }
@@ -45,18 +41,8 @@ class Project extends Model
     /**
      * Get the status that this application belongs to.
      */
-    public function status(): BelongsTo
+    public function project(): BelongsTo
     {
         return $this->belongsTo(Status::class, 'status_id', 'status_id');
-    }
-
-    /**
-     * Get the inspections for this project.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function inspections(): HasMany
-    {
-        return $this->hasMany(Inspection::class, 'project_id', 'project_id');
     }
 }
