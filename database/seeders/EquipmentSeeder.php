@@ -67,7 +67,7 @@ class EquipmentSeeder extends Seeder
                 'status_id' => $status
                     ->where('status_code',
                         '=',
-                        'operación'
+                        'operacion'
                     )->first()->status_id,
                 'active' => true,
             ],
@@ -103,7 +103,7 @@ class EquipmentSeeder extends Seeder
                 'status_id' => $status
                     ->where('status_code',
                         '=',
-                        'operación'
+                        'operacion'
                     )->first()->status_id,
                 'active' => true,
             ],

@@ -23,4 +23,7 @@ return [
     'not_found' => 'Registro no encontrado.',
     'exception' => 'Ha ocurrido un error.',
     'message_log' => 'Evento registrado automáticamente por el servicio, consulte la url de petición para mayor detalle',
+    'status_invalid' => 'El estado seleccionado no es compatible con la solicitud',
+    // Status Catalog
+    'status_projects' => 'Estado de proyectos, codigo: proyecto',
 ];

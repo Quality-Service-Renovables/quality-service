@@ -173,7 +173,7 @@ class EquipmentService extends Service implements ServiceInterface
             $this->response['message'] = $equipment === null
                 ? trans('api.not_found')
                 : trans('api.show');
-            $this->response['data'] = $equipment ?? [];
+            $this->response['data'] = $equipment ? $equipment->toArray() : [];
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);

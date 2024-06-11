@@ -18,10 +18,15 @@ return new class extends Migration
             $table->string('status_code');
             $table->longText('description');
             $table->boolean('active')->default(true);
+            $table->unsignedBigInteger('ct_status_id')->comment('Relation with status category');
             $table->timestamps();
             $table->softDeletes();
             //INDEX
             $table->index(['status_uuid']);
+            $table->index('ct_status_id');
+            //FOREIGN KEYS
+            $table->foreign('ct_status_id', 'fk_status_category')
+                ->references('ct_status_id')->on('ct_status');
         });
     }
 

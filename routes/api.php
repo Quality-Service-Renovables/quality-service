@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\Inspections\Reports\ReportController;
 use App\Http\Controllers\Api\V1\Inspections\Resources\ResourceController;
 use App\Http\Controllers\Api\V1\Inspections\SectionController;
 use App\Http\Controllers\Api\V1\Oils\OilController;
+use App\Http\Controllers\Api\V1\Projects\ProjectController;
 use App\Http\Controllers\Api\V1\Status\StatusController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
@@ -47,6 +48,8 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //######################################################### CLIENTS ##########################################################
     Route::resource('clients', ClientController::class);
     Route::post('clients/update/{uuid}', [ClientController::class, 'update'])->name('clients.update');
+    //######################################################## PROJECTS #########################################################
+    Route::resource('projects', ProjectController::class);
     //######################################################## INSPECTIONS #########################################################
     Route::resource('inspections', InspectionController::class);
     Route::resource('inspection/sections', SectionController::class);

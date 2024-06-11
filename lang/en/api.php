@@ -23,5 +23,7 @@ return [
     'not_found' => 'Record not found.',
     'exception' => 'An error has occurred.',
     'message_log' => 'Event automatically registered by the service, check the request URL for more details',
-
+    'status_invalid' => 'Status is not valid.',
+    // Status Catalog
+    'status_projects' => 'Status proyect, code: proyecto',
 ];

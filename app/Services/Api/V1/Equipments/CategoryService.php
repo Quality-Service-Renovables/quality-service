@@ -94,7 +94,7 @@ class CategoryService extends Service implements ServiceInterface
             $category = Category::where('ct_equipment_uuid', $request->ct_equipment_uuid)->first();
             $category?->update($request->all());
             $this->response['message'] = trans('api.updated');
-            $this->response['data'] = $category;
+            $this->response['data'] = $category ? $category->toArray() : [];
             // Registro de log
             $this->logService->create(
                 $this->nameService,

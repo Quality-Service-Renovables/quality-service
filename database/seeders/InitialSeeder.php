@@ -15,6 +15,7 @@ class InitialSeeder extends Seeder
             RolsSeeder::class,
             ClientsSeeder::class,
             PermissionSeeder::class,
+            StatusCategoriesSeeder::class,
             StatusSeeder::class,
             UsersSeeder::class,
             ServiceCategoriesSeeder::class,
