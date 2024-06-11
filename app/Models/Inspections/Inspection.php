@@ -3,6 +3,7 @@
 namespace App\Models\Inspections;
 
 use App\Models\Clients\Client;
+use App\Models\Projects\Project;
 use App\Models\Status\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,9 +27,10 @@ class Inspection extends Model
         'ct_inspection_id',
         'client_id',
         'status_id',
+        'project_id',
     ];
 
-    protected $hidden = ['inspection_id', 'ct_inspection_id', 'client_id', 'status_id'];
+    protected $hidden = ['inspection_id', 'ct_inspection_id', 'client_id', 'status_id', 'project_id'];
 
     /**
      * Get the client associated with the inspection.
@@ -89,5 +91,15 @@ class Inspection extends Model
     public function status(): BelongsTo
     {
         return $this->belongsTo(Status::class, 'status_id', 'status_id');
+    }
+
+    /**
+     * Get the project associated with the inspection.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class, 'project_id', 'project_id');
     }
 }

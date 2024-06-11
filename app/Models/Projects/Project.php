@@ -7,13 +7,12 @@
 namespace App\Models\Projects;
 
 use App\Models\Clients\Client;
-use App\Models\Equipments\Category;
+use App\Models\Inspections\Inspection;
 use App\Models\Status\Status;
-use App\Models\Trademarks\Trademark;
-use App\Models\Trademarks\TrademarkModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model
@@ -49,5 +48,15 @@ class Project extends Model
     public function status(): BelongsTo
     {
         return $this->belongsTo(Status::class, 'status_id', 'status_id');
+    }
+
+    /**
+     * Get the inspections for this project.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function inspections(): HasMany
+    {
+        return $this->hasMany(Inspection::class, 'project_id', 'project_id');
     }
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * Equipment Service.
+ * Porject Employees Service.
  *
- * Register equipments
+ * Register relation project with employees
  *
  * @author   Luis Adrian Olvera Facio
  *
@@ -19,9 +19,9 @@
 
 namespace App\Services\Api\V1\Projects;
 
-use App\Models\Clients\Client;
+use App\Models\Projects\Employee;
 use App\Models\Projects\Project;
-use App\Models\Status\Status;
+use App\Models\Users\User;
 use App\Services\Api\ServiceInterface;
 use App\Services\Service;
 use Illuminate\Http\Request;
@@ -29,32 +29,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Throwable;
 
-class ProjectService extends Service implements ServiceInterface
+class EmployeeService extends Service implements ServiceInterface
 {
-    //TODO Pendientes de proyectos:
-    /**
-     * • Nuevo proyecto
-     * • Asignar proyecto a trabajadores
-     * • Seguimiento de proyecto
-     * • Editar
-     * • Eliminar
-     * • Iniciar proyecto
-     * • Cerrar proyecto
-     * • Validar proyecto
-     * LISTA DE PROYECTOS
-     * • Iniciar inspección
-     * • Selección de zona (con sugerencia
-     * con base a ubicación del técnico)
-     * • Selección de generador
-     * • Agregar fotos (con opción de
-     * comentarios por foto)
-     * • Agregar comentarios generales
-     * • Pausar inspección
-     * • Cargar información a la nube
-     * • Finalizar inspección
-     * • Ver información del proyecto
-     */
-    public string $nameService = 'project_service';
+    public string $nameService = 'project_employee_service';
 
     /**
      * Create a new equipment
@@ -67,22 +44,25 @@ class ProjectService extends Service implements ServiceInterface
         try {
             // Control de transacciones
             DB::beginTransaction();
+            $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
+            $user = User::where('uuid', '=', $request->employee_uuid)->first();
+
             // Agrega atributos a la solicitud
             $request->merge([
-                'project_uuid' => Str::uuid()->toString(),
-                'status_id' => Status::where('status_uuid',
-                    '=',
-                    $request->status_uuid)
-                    ->first()->status_id,
-                'client_id' => Client::where('client_uuid',
-                    '=',
-                    $request->client_uuid
-                )->first()->client_id,
+                'project_employee_uuid' => Str::uuid()->toString(),
+                'user_id' => $user->id,
+                'project_id' => $project->project_id,
             ]);
+
             // Registra los atributos de la solicitud
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
-            $this->response['data'] = Project::create($request->all());
+            $this->response['data'] = Employee::firstOrCreate([
+                'user_id' => $request->user_id,
+                'project_id' => $request->project_id,
+            ], [
+                'project_employee_uuid' => $request->project_employee_uuid,
+            ]);
             // Registro en log
             $this->logService->create(
                 $this->nameService,
@@ -110,7 +90,7 @@ class ProjectService extends Service implements ServiceInterface
     public function read(): array
     {
         $this->response['message'] = trans('api.read');
-        $this->response['data'] = Project::with(['client', 'status'])->get();
+        $this->response['data'] = Employee::with(['user', 'project'])->get();
 
         return $this->response;
     }
@@ -126,47 +106,30 @@ class ProjectService extends Service implements ServiceInterface
         try {
             // Control de transacciones
             DB::beginTransaction();
-            // Obtiene estado
-            $status = Status::with(['category'])
-                ->where('status_uuid',
-                    '=',
-                    $request->status_uuid)
-                ->first();
-            // Si el estado es correspondiente al proyectos
-            if (($status && $status->category) && $status->category->ct_status_code === 'proyecto') {
-                // Agrega atributos a la solicitud
-                $request->merge([
-                    'status_id' => $status->status_id,
-                    'client_id' => Client::where('client_uuid',
-                        '=',
-                        $request->client_uuid
-                    )->first()->client_id,
-                ]);
-                // Actualiza Equipo
-                $project = Project::where('project_uuid', $request->project_uuid)->first();
-                $project?->update($request->except([
-                    'status_uuid', 'client_uuid',
-                ]));
-                $this->response['message'] = trans('api.updated');
-                $this->response['data'] = $project;
-                // Registro de log
-                $this->logService->create(
-                    $this->nameService,
-                    $request->all(),
-                    $this->response,
-                    trans('api.message_log'),
-                );
-                // Confirmación de transacción
-                DB::commit();
-            } else {
-                // En caso de que el estado no sea válido se retorna el error
-                $this->statusCode = 422;
-                $this->response['status'] = 'fail';
-                $this->response['errors'] = [
-                    'status_expected' => trans('api.status_projects'),
-                ];
-                $this->response['message'] = trans('api.status_invalid');
-            }
+            $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
+            $user = User::where('uuid', '=', $request->employee_uuid)->first();
+            // Agrega atributos a la solicitud
+            $request->merge([
+                'user_id' => $user->id,
+                'project_id' => $project->project_id,
+            ]);
+            // Registra los atributos de la solicitud
+            $this->response['message'] = trans('api.created');
+            $this->response['data'] = Employee::updateOrCreate([
+                'user_id' => $request->user_id,
+                'project_id' => $request->project_id,
+            ], [
+                'update_at' => now(),
+            ]);
+            // Registro en log
+            $this->logService->create(
+                $this->nameService,
+                $request->all(),
+                $this->response,
+                trans('api.message_log'),
+            );
+            // Finaliza Transacción
+            DB::commit();
         } catch (Throwable $exceptions) {
             DB::rollBack();
             // Manejo del error
@@ -187,7 +150,7 @@ class ProjectService extends Service implements ServiceInterface
     {
         try {
             // Aplica soft delete al equipo especificado por medio de su uuid
-            Project::where('project_uuid', $uuid)->update(['deleted_at' => now()]);
+            Employee::where('project_employee_uuid', $uuid)->update(['deleted_at' => now()]);
             $this->logService->create(
                 $this->nameService,
                 compact('uuid'),
@@ -214,9 +177,9 @@ class ProjectService extends Service implements ServiceInterface
     {
         try {
             // Obtiene categoría del equipo
-            $project = Project::with([
-                'client', 'status',
-            ])->where('project_uuid', $uuid)->first();
+            $project = Employee::with([
+                'user', 'project',
+            ])->where('project_employee_uuid', $uuid)->first();
             $this->response['message'] = $project === null
                 ? trans('api.not_found')
                 : trans('api.show');
