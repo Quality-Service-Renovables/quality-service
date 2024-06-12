@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpPossiblePolymorphicInvocationInspection */
+
 /** @noinspection UnknownInspectionInspection */
 
 /** @noinspection PhpUndefinedMethodInspection */
@@ -7,9 +9,9 @@
 namespace App\Services\Api\V1\Inspections;
 
 use App\Models\Clients\Client;
-use App\Models\Inspections\Categories\Section;
 use App\Models\Inspections\Category;
 use App\Models\Inspections\Inspection;
+use App\Models\Projects\Project;
 use App\Models\Status\Status;
 use App\Services\Service;
 use Illuminate\Http\Request;
@@ -35,6 +37,7 @@ class InspectionService extends Service
             // Control Transaction
             DB::beginTransaction();
             $category = Category::where('ct_inspection_code', $request->ct_inspection_code)->first();
+            $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
             $status = Status::with(['category'])
                 ->where('status_code', '=', $request->status_code)
                 ->first();
@@ -47,6 +50,7 @@ class InspectionService extends Service
                     'client_id' => Client::where('client_uuid', '=', $request->client_uuid)
                         ->first()->client_id,
                     'status_id' => $status->status_id,
+                    'project_id' => $project->project_id,
                 ]);
                 // Create Register
                 $inspection = Inspection::create($request->all());
@@ -122,6 +126,7 @@ class InspectionService extends Service
     {
         try {
             $category = Category::where('ct_inspection_code', $request->ct_inspection_code)->first();
+            $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
             $status = Status::with(['category'])
                 ->where('status_code', '=', $request->status_code)
                 ->first();
@@ -134,12 +139,13 @@ class InspectionService extends Service
                     'client_id' => Client::where('client_uuid', '=', $request->client_uuid)
                         ->first()->client_id,
                     'status_id' => $status->status_id,
+                    'project_id' => $project->project_id,
                 ]);
                 // Update Register
                 $category = Inspection::where('inspection_uuid', $request->inspection_uuid)->first();
                 // Si el $category existe (no es nulo), actualízalo con todos los datos de la solicitud.
                 $category?->update($request->except([
-                    'client_uuid', 'status_code',
+                    'client_uuid', 'status_code', 'project_uuid',
                 ]));
                 // Set Response
                 $this->response['message'] = trans('api.updated');
@@ -216,6 +222,7 @@ class InspectionService extends Service
                 'equipmentsInspection.equipment',
                 'evidences',
                 'status.category',
+                'project',
             ])->where('inspection_uuid', $uuid)->first();
 
             if ($inspection) {
@@ -230,16 +237,5 @@ class InspectionService extends Service
         }
 
         return $this->response;
-    }
-
-    public function setSections($inspection)
-    {
-        foreach ($inspection->category->sections as $section) {
-            dd($section);
-            $section->sub_sections = Section::where([
-                'ct_inspection_id' => $section->ct_inspection_relation_id,
-                'ct_inspection_relation_id' => null,
-            ])->get();
-        }
     }
 }
