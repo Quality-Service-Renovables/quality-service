@@ -86,8 +86,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                             <v-toolbar-title>Template</v-toolbar-title>
                                                             <v-spacer></v-spacer>
                                                             <v-toolbar-items>
-                                                                <v-btn text="Guardar" variant="text"
-                                                                    @click="save"></v-btn>
+                                                                <v-btn text="Cerrar" variant="text"
+                                                                    @click="closeTemplate"></v-btn>
                                                             </v-toolbar-items>
                                                         </v-toolbar>
                                                         <v-card-text>

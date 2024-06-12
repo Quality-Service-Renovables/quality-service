@@ -2,16 +2,24 @@
   <div class="d-flex">
     <v-icon class="mdi mdi-subdirectory-arrow-right mt-4"></v-icon>
     <v-card class="mb-5 ml-2 mr-2 mt-2 border w-100" rounded="lg" variant="flat" border="dashed thin info md">
-      <v-card-text class="pb-0">{{ field.ct_inspection_form }}<v-chip size="x-small" variant="outlined" class="ml-2">
-          {{ field.required == 1 ? '* Campo requerido' : 'Campo opcional' }}
-        </v-chip></v-card-text>
-      <v-card-actions class="p-0 m-0">
-        <div class="border rounded-xl px-2">
-          <v-btn density="compact" icon="mdi-pencil" variant="plain" class="me-1" @click="editField"></v-btn>
-          <v-btn density="compact" icon="mdi-trash-can" variant="plain" class="me-1" color="red"
-            @click="deleteField"></v-btn>
+      <v-card-text class="pb-1 pt-1">
+        <div class="d-flex align-center justify-between">
+          <div>
+            {{ field.ct_inspection_form }}
+            <v-chip size="x-small" variant="outlined" class="ml-2 text-red" v-if="field.required == 1">
+              * Requerido
+            </v-chip>
+            <v-chip size="x-small" variant="outlined" class="ml-2 text-success" v-else>
+              * Opcional
+            </v-chip>
+          </div>
+          <v-chip class="border rounded-xl p-0 ml-2" >
+            <v-btn density="compact" icon="mdi-pencil" variant="plain" class="p-0" @click="editField"></v-btn>
+            <v-btn density="compact" icon="mdi-trash-can" variant="plain" class="p-0" color="red"
+              @click="deleteField"></v-btn>
+          </v-chip>
         </div>
-      </v-card-actions>
+      </v-card-text>
     </v-card>
   </div>
 </template>

@@ -16,39 +16,14 @@
         </v-col>
         <div v-for="(section, index) in item.template.sections" :key="index">
             <SectionCard :section="section" :title="section.section_details.ct_inspection_section" :type="'section'"
-                :inspection="item" @save-section="saveSection" @update-sections="updateSections"
-                @delete-section="deleteSection">
-
-                <template v-if="section.fields">
-                    <p class="text-h6 font-weight-black my-2">Campos ({{ section.fields.length }})</p>
-                    <FieldCard v-for="field in section.fields" :key="field.id" :field="field"
-                        @delete-field="deleteField" />
-                </template>
-
-                <div v-if="section.sub_sections && section.sub_sections.length > 0">
-                    <p class="text-h6 font-weight-black my-2">Sub-secciones ({{ section.sub_sections.length }})</p>
-                    <div v-for="(sub_section, index2) in section.sub_sections" :key="index2">
-
-                        <SectionCard :section="sub_section" :title="sub_section.ct_inspection_section"
-                            :type="'sub_section'" :inspection="item" @save-section="saveSection"
-                            @update-sections="updateSections" @delete-section="deleteSection">
-
-                            <template v-if="sub_section.fields">
-                                <p class="text-h6 font-weight-black my-2">Campos ({{ sub_section.fields.length }})</p>
-                                <FieldCard v-for="field in sub_section.fields" :key="field.id" :field="field"
-                                    @delete-field="deleteField" />
-                            </template>
-
-                        </SectionCard>
-
-                    </div>
-                </div>
-
+                :inspection="item" @update-sections="updateSections" @delete-section="deleteSection"
+                ref="sectionCardRef">
             </SectionCard>
         </div>
 
+        <!-- Add section dialog -->
         <v-dialog v-model="dialog" width="auto">
-            <v-card min-width="400" prepend-icon="mdi-plus" title="Nueva sección">
+            <v-card min-width="500" prepend-icon="mdi-plus" title="Nueva sección">
                 <v-card-text>
                     <v-row dense>
                         <v-col cols="12">
@@ -59,24 +34,8 @@
                 </v-card-text>
                 <template v-slot:actions>
                     <v-btn class="ms-auto" text="Cancelar" @click="dialog = false"></v-btn>
-                    <v-btn color="primary" text
-                        @click="saveSection(item.ct_inspection_uuid, sectionForm.name)">Guardar</v-btn>
+                    <v-btn color="primary" text @click="saveSection">Guardar</v-btn>
                 </template>
-            </v-card>
-        </v-dialog>
-
-        <!-- Delete field dialog -->
-        <v-dialog v-model="dialogDeleteField" max-width="500px">
-            <v-card>
-                <v-card-title class="text-h5 text-center">¿Estás seguro de
-                    eliminar este campo?</v-card-title>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue-darken-1" variant="text" @click="closeDeleteField">Cancel</v-btn>
-                    <v-btn color="blue-darken-1" variant="text" @click="deleteFieldConfirm()">Si,
-                        eliminar</v-btn>
-                    <v-spacer></v-spacer>
-                </v-card-actions>
             </v-card>
         </v-dialog>
 
@@ -101,7 +60,6 @@
 <script>
 import { Toaster, toast } from 'vue-sonner'
 import SectionCard from './Partials/SectionCard.vue';
-import FieldCard from './Partials/FieldCard.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 
@@ -109,7 +67,6 @@ export default {
     components: {
         Toaster,
         SectionCard,
-        FieldCard,
         PrimaryButton,
         SecondaryButton,
     },
@@ -128,74 +85,17 @@ export default {
             sectionForm: {
                 name: '',
             },
-            dialogDeleteField: false,
-            fieldToDeleteUuid: null,
             dialogDeleteSection: false,
             sectionToDeleteUuid: null,
             loading: false,
         }
     },
     methods: {
-        /**
-         * Save a new section
-         * @param {string} action - The action to perform
-         * @param {string} ct_inspection_uuid - The inspection uuid
-         * @param {string} ct_inspection_section - The section name
-         * @param {string} ct_inspection_relation_uuid - Si es una sección, se envía el uuid de la sección padre
-         */
-        async saveSection(action, ct_inspection_uuid, ct_inspection_section, ct_inspection_relation_uuid = null) {
-            try {
-                if(action == 'create'){
-                    await this.postSection(ct_inspection_uuid, ct_inspection_section, ct_inspection_relation_uuid);
-                }else if (action == 'update'){
-                    await this.updateSection(ct_inspection_uuid, ct_inspection_section, ct_inspection_relation_uuid);
-                }
+        async saveSection() {
+            if (this.$refs.sectionCardRef) {
+                await this.$refs.sectionCardRef[0].saveSection('create', this.item.ct_inspection_uuid, this.sectionForm.name, null);
                 this.resetForm();
-                await this.updateSections();
-                //toast.success('Sección guardada correctamente');
-            } catch (error) {
-                this.handleErrors(error);
             }
-        },
-        /**
-         * Post a new section
-         */
-        async postSection(ct_inspection_uuid, ct_inspection_section, ct_inspection_relation_uuid = null) {
-            const postRequest = () => {
-                return axios.post('api/inspection/sections', {
-                    ct_inspection_uuid: ct_inspection_uuid,
-                    ct_inspection_section: ct_inspection_section,
-                    ct_inspection_relation_uuid: ct_inspection_relation_uuid,
-                })
-            };
-
-            await toast.promise(postRequest(), {
-                loading: 'Creando sección...',
-                success: (data) => {
-                    return 'Sección creada correctamente';
-                },
-                error: (data) => {
-                    this.handleErrors(data);
-                }
-            });
-        },
-        async updateSection(ct_inspection_uuid, ct_inspection_section, ct_inspection_relation_uuid = null) {
-            const postRequest = () => {
-                return axios.put('api/inspection/sections/' + ct_inspection_relation_uuid, {
-                    ct_inspection_uuid: ct_inspection_uuid,
-                    ct_inspection_section: ct_inspection_section,
-                })
-            };
-
-            await toast.promise(postRequest(), {
-                loading: 'Actualizando sección...',
-                success: (data) => {
-                    return 'Sección actualizada correctamente';
-                },
-                error: (data) => {
-                    this.handleErrors(data);
-                }
-            });
         },
         /**
          * Update the sections
@@ -218,35 +118,9 @@ export default {
                 }
             });
         },
-
         resetForm() {
             this.dialog = false;
             this.sectionForm.name = '';
-        },
-        // Delete field
-        closeDeleteField() {
-            this.dialogDeleteField = false;
-            this.fieldToDeleteUuid = null;
-        },
-        deleteField(ct_inspection_form_uuid) {
-            this.dialogDeleteField = true
-            this.fieldToDeleteUuid = ct_inspection_form_uuid
-        },
-        async deleteFieldConfirm() {
-            const deleteRequest = () => {
-                return axios.delete('api/inspection/forms/delete-form-field/' + this.fieldToDeleteUuid);
-            };
-            await toast.promise(deleteRequest(), {
-                loading: 'Eliminando...',
-                success: (data) => {
-                    this.closeDeleteField();
-                    return 'Campo eliminado correctamente';
-                },
-                error: (data) => {
-                    this.handleErrors(data);
-                }
-            });
-            await this.updateSections();
         },
         // Delete section
         closeDeleteSection() {
@@ -255,7 +129,8 @@ export default {
         },
         deleteSection(ct_inspection_section_uuid) {
             this.dialogDeleteSection = true
-            this.sectionToDeleteUuid = ct_inspection_section_uuid
+            this.sectionToDeleteUuid = ct_inspection_section_uuid;
+            console.log("delete section: ", this.sectionToDeleteUuid);
         },
         async deleteSectionConfirm() {
             const deleteRequest = () => {
