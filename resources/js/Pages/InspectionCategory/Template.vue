@@ -129,8 +129,8 @@ export default {
         },
         deleteSection(ct_inspection_section_uuid) {
             this.dialogDeleteSection = true
-            this.sectionToDeleteUuid = ct_inspection_section_uuid
-            console.log("delete section: " + ct_inspection_section_uuid);
+            this.sectionToDeleteUuid = ct_inspection_section_uuid;
+            console.log("delete section: ", this.sectionToDeleteUuid);
         },
         async deleteSectionConfirm() {
             const deleteRequest = () => {

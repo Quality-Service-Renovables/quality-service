@@ -13,7 +13,7 @@
                         <v-btn density="compact" icon="mdi-pencil" variant="plain" class="me-1"
                             @click="editSection"></v-btn>
                         <v-btn density="compact" icon="mdi-trash-can" variant="plain" class="me-1" color="red"
-                            @click="deleteSection"></v-btn>
+                            @click="deleteSection(section)"></v-btn>
                     </div>
                 </div>
             </v-card-title>
@@ -30,7 +30,7 @@
 
                         <SectionCard :section="sub_section" :title="sub_section.ct_inspection_section"
                             :type="'sub_section'" :inspection="inspection" @update-sections="updateSections"
-                            @delete-section="deleteSection">
+                            @delete-section="deleteSection(sub_section)">
 
                             <div v-if="sub_section.fields">
                                 <p class="text-h6 font-weight-black my-2">Campos ({{ sub_section.fields.length }})</p>
@@ -305,9 +305,8 @@ export default {
                 }
             });
         },
-        deleteSection() {
-            let ct_inspection_section_uuid = this.type == 'section' ? this.section.section_details.ct_inspection_section_uuid : this.section.ct_inspection_section_uuid;
-            //console.log("La sección a eliminar es: ", ct_inspection_section_uuid);
+        deleteSection(section) {
+            let ct_inspection_section_uuid = section.section_details ? section.section_details.ct_inspection_section_uuid : section.ct_inspection_section_uuid;
             this.$emit('delete-section', ct_inspection_section_uuid);
         },
         editSection() {
