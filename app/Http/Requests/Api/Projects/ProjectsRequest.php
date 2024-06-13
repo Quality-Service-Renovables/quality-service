@@ -16,7 +16,6 @@ class ProjectsRequest extends CustomRequest
     {
         return [
             'project_name' => 'required|string|min:10|max:255',
-            'status_uuid' => 'required|string|exists:status,status_uuid',
             'client_uuid' => 'required|string|exists:clients,client_uuid',
             'description' => 'required|string|min:3|max:255',
         ];

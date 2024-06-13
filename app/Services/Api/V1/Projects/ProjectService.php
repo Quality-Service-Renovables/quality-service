@@ -70,7 +70,7 @@ class ProjectService extends Service implements ServiceInterface
             // Agrega atributos a la solicitud
             $request->merge([
                 'project_uuid' => Str::uuid()->toString(),
-                'status_id' => Status::where('status_uuid',
+                'status_id' => Status::where('status_code',
                     '=',
                     'proceso_creado')
                     ->first()->status_id,
