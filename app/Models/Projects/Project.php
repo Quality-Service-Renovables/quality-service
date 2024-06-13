@@ -27,6 +27,7 @@ class Project extends Model
         'project_uuid',
         'project_name',
         'description',
+        'comments',
         'active',
         'status_id',
         'client_id',
