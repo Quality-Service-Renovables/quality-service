@@ -17,8 +17,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                     <v-card>
                         <v-row>
                             <v-col cols="12" sm="12">
-                                <v-data-table :headers="headers" :items="projects.inspections" fixed-header
+                                <v-data-table :headers="headers" :items="projects" fixed-header
                                     :search="search">
+                                    <template v-slot:item.status.status="{ value }">
+                                        <v-chip size="small" variant="outlined">{{ value }}</v-chip>
+                                    </template>
                                     <template v-slot:top>
                                         <v-toolbar flat>
                                             <v-toolbar-title class="ml-1">
@@ -127,9 +130,10 @@ export default {
         dialog: false,
         dialogDelete: false,
         headers: [
-            { title: 'Categoria', key: 'ct_equipment' },
+            { title: 'Nombre', key: 'project_name' },
             { title: 'Descripción', key: 'description' },
-            { title: 'Estado', key: 'active' },
+            { title: 'Cliente', key: 'client.client' },
+            { title: 'Estado', key: 'status.status' },
             { title: 'Actions', key: 'actions', sortable: false }
         ],
         editedIndex: -1,
@@ -148,7 +152,7 @@ export default {
     }),
     computed: {
         formTitle() {
-            return this.editedIndex === -1 ? 'Nueva categoria' : 'Editar categoria'
+            return this.editedIndex === -1 ? 'Nueva proyecto' : 'Editar proyecto'
         },
     },
     watch: {
@@ -161,26 +165,25 @@ export default {
     },
     methods: {
         editItem(item) {
-            this.editedIndex = this.ct_equipments.indexOf(item)
-            item.active = item.active == "1" ? true : false
+            this.editedIndex = this.projects.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialog = true
         },
         deleteItem(item) {
-            this.editedIndex = this.ct_equipments.indexOf(item)
+            this.editedIndex = this.projects.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
         },
         deleteItemConfirm(item) {
-            this.ct_equipments.splice(this.editedIndex, 1)
+            this.projects.splice(this.editedIndex, 1)
             const putRequest = () => {
-                return axios.delete('api/equipment/categories/' + item);
+                return axios.delete('api/projects/' + item);
             };
             toast.promise(putRequest, {
                 loading: 'Procesando...',
                 success: (data) => {
                     this.closeDelete()
-                    return 'Categoria eliminada correctamente';
+                    return 'Proyecto eliminado correctamente';
                 },
                 error: (data) => {
                     this.handleErrors(data);
@@ -205,7 +208,7 @@ export default {
         },
         save() {
             if (this.editedIndex > -1) {
-                Object.assign(this.ct_equipments[this.editedIndex], this.editedItem)
+                /*Object.assign(this.projects[this.editedIndex], this.editedItem)
                 const putRequest = () => {
                     return axios.put('api/equipment/categories/' + this.editedItem.ct_equipment_uuid, {
                         ct_equipment: this.editedItem.ct_equipment,
@@ -223,9 +226,9 @@ export default {
                     error: (data) => {
                         this.handleErrors(data);
                     }
-                });
+                });*/
             } else {
-                this.ct_equipments.push(this.editedItem)
+                /*this.projects.push(this.editedItem)
                 const postRequest = () => {
                     return axios.post('api/equipment/categories', {
                         ct_equipment: this.editedItem.ct_equipment,
@@ -244,12 +247,9 @@ export default {
                     error: (data) => {
                         this.handleErrors(data);
                     }
-                });
+                });*/
             }
 
-        },
-        getColor(value) {
-            return value ? 'green' : 'red';
         },
     },
 

@@ -108,8 +108,8 @@ class ProjectController extends Controller
     {
         $this->service->read();
 
-        return Inertia::render('Equipment', [
-            'equipments' => $this->service->response['data'],
+        return Inertia::render('Projects', [
+            'projects' => $this->service->response['data'],
         ]);
     }
 

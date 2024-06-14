@@ -1,20 +1,21 @@
 <?php
 
-use App\Http\Controllers\Api\V1\AuthGuards\RolePermissionController;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Api\V1\Oils\OilController;
 use App\Http\Controllers\Api\V1\Clients\ClientController;
+use App\Http\Controllers\Api\V1\Failures\FailureController;
+use App\Http\Controllers\Api\V1\Projects\ProjectController;
 use App\Http\Controllers\Api\V1\Equipments\CategoryController;
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
-use App\Http\Controllers\Api\V1\Failures\FailureController;
-use App\Http\Controllers\Api\V1\Inspections\CategoryController as InspectionCategoryController;
-use App\Http\Controllers\Api\V1\Inspections\InspectionController;
-use App\Http\Controllers\Api\V1\Inspections\Reports\ReportController;
-use App\Http\Controllers\Api\V1\Oils\OilController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
+use App\Http\Controllers\Api\V1\Inspections\InspectionController;
+use App\Http\Controllers\Api\V1\AuthGuards\RolePermissionController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\Api\V1\Inspections\Reports\ReportController;
+use App\Http\Controllers\Api\V1\Inspections\CategoryController as InspectionCategoryController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -81,7 +82,7 @@ Route::middleware('auth')->group(function () {
 
     //Projects
     Route::group(['middleware' => ['permission:projects']], function () {
-        Route::get('/projects', [InspectionController::class, 'component'])->name('projects');
+        Route::get('/projects', [ProjectController::class, 'component'])->name('projects');
     });
 
     Route::get('/inspection/get-document/{uuid}', [ReportController::class, 'getDocument'])->name('document-get');
