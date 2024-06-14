@@ -24,6 +24,7 @@ return [
     'exception' => 'An error has occurred.',
     'message_log' => 'Event automatically registered by the service, check the request URL for more details',
     'status_invalid' => 'Status is not valid.',
+    'comments_required' => 'Comments Required',
     // Status Catalog
     'status_projects' => 'Status proyect, code: proyecto',
     'status_inspections' => 'Status proyect, code: inspeccion',

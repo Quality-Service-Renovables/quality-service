@@ -24,6 +24,7 @@ return [
     'exception' => 'Ha ocurrido un error.',
     'message_log' => 'Evento registrado automáticamente por el servicio, consulte la url de petición para mayor detalle',
     'status_invalid' => 'El estado seleccionado no es compatible con la solicitud',
+    'comments_required' => 'Es necesario registrar comentarios sobre la acción requerida',
     // Status Catalog
     'status_projects' => 'Estado de proyectos, codigo: proyecto',
     'status_inspections' => 'Estado de proyectos, codigo: inspeccion',
