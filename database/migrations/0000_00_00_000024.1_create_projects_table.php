@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id('project_id');
             $table->uuid('project_uuid');
             $table->string('project_name');
-            $table->string('description')->nullable();
+            $table->longText('description')->nullable();
+            $table->longText('comments')->nullable();
             $table->unsignedBigInteger('client_id')->comment('Relation with client');
             $table->unsignedBigInteger('status_id')->comment('Relation with status');
             $table->timestamps();

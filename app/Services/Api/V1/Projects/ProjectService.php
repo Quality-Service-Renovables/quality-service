@@ -70,9 +70,9 @@ class ProjectService extends Service implements ServiceInterface
             // Agrega atributos a la solicitud
             $request->merge([
                 'project_uuid' => Str::uuid()->toString(),
-                'status_id' => Status::where('status_uuid',
+                'status_id' => Status::where('status_code',
                     '=',
-                    $request->status_uuid)
+                    'proceso_creado')
                     ->first()->status_id,
                 'client_id' => Client::where('client_uuid',
                     '=',
@@ -134,30 +134,36 @@ class ProjectService extends Service implements ServiceInterface
                 ->first();
             // Si el estado es correspondiente al proyectos
             if (($status && $status->category) && $status->category->ct_status_code === 'proyecto') {
-                // Agrega atributos a la solicitud
-                $request->merge([
-                    'status_id' => $status->status_id,
-                    'client_id' => Client::where('client_uuid',
-                        '=',
-                        $request->client_uuid
-                    )->first()->client_id,
-                ]);
-                // Actualiza Equipo
-                $project = Project::where('project_uuid', $request->project_uuid)->first();
-                $project?->update($request->except([
-                    'status_uuid', 'client_uuid',
-                ]));
-                $this->response['message'] = trans('api.updated');
-                $this->response['data'] = $project;
-                // Registro de log
-                $this->logService->create(
-                    $this->nameService,
-                    $request->all(),
-                    $this->response,
-                    trans('api.message_log'),
-                );
-                // Confirmación de transacción
-                DB::commit();
+                // Si el proyecto ha sido cancelado y no se proporcionan comentarios, no es posible proceder.
+                if ($status->status_code === 'proyecto_cancelado' && $request->comments === '') {
+                    $this->statusCode = 422;
+                    $this->response['message'] = trans('api.project_cancelled');
+                } else {
+                    // Agrega atributos a la solicitud
+                    $request->merge([
+                        'status_id' => $status->status_id,
+                        'client_id' => Client::where('client_uuid',
+                            '=',
+                            $request->client_uuid
+                        )->first()->client_id,
+                    ]);
+                    // Actualiza Equipo
+                    $project = Project::where('project_uuid', $request->project_uuid)->first();
+                    $project?->update($request->except([
+                        'status_uuid', 'client_uuid',
+                    ]));
+                    $this->response['message'] = trans('api.updated');
+                    $this->response['data'] = $project;
+                    // Registro de log
+                    $this->logService->create(
+                        $this->nameService,
+                        $request->all(),
+                        $this->response,
+                        trans('api.message_log'),
+                    );
+                    // Confirmación de transacción
+                    DB::commit();
+                }
             } else {
                 // En caso de que el estado no sea válido se retorna el error
                 $this->statusCode = 422;

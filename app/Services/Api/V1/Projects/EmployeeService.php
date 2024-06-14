@@ -21,6 +21,7 @@ namespace App\Services\Api\V1\Projects;
 
 use App\Models\Projects\Employee;
 use App\Models\Projects\Project;
+use App\Models\Status\Status;
 use App\Models\Users\User;
 use App\Services\Api\ServiceInterface;
 use App\Services\Service;
@@ -45,6 +46,9 @@ class EmployeeService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
+            $project->status_id = Status::where('status_code', '=', 'proceso_asignado')
+                ->first()->status_id;
+            $project->save();
             $user = User::where('uuid', '=', $request->employee_uuid)->first();
 
             // Agrega atributos a la solicitud
