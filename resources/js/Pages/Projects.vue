@@ -113,52 +113,57 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-icon>
                                     </template>
                                     <template v-slot:item.inspection_actions="{ item }">
-                                        <v-tooltip text="Asignar inspección" location="top"
-                                            v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_creado')">
-                                            <template v-slot:activator="{ props }">
-                                                <v-btn icon="mdi-table-plus" v-bind="props" size="small" class="m-1" />
-                                            </template>
-                                        </v-tooltip>
-                                        <v-tooltip text="Asignar técnico" location="top"
-                                            v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_creado')">
-                                            <template v-slot:activator="{ props }">
-                                                <v-btn icon="mdi-account-plus-outline" v-bind="props" size="small"
-                                                    class="m-1" />
-                                            </template>
-                                        </v-tooltip>
-                                        <v-tooltip text="Iniciar proyecto" location="top"
-                                            v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado')">
-                                            <template v-slot:activator="{ props }">
-                                                <v-btn icon="mdi-play-speed" v-bind="props" size="small" class="m-1" />
-                                            </template>
-                                        </v-tooltip>
-                                        <v-tooltip text="Finalizar proyecto" location="top"
-                                            v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_iniciado')">
-                                            <template v-slot:activator="{ props }">
-                                                <v-btn icon="mdi-note-check" v-bind="props" size="small" class="m-1" />
-                                            </template>
-                                        </v-tooltip>
-                                        <v-tooltip text="Validar proyecto" location="top"
-                                            v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_finalizado')">
-                                            <template v-slot:activator="{ props }">
-                                                <v-btn icon="mdi-check-circle-outline" v-bind="props" size="small"
-                                                    class="m-1" />
-                                            </template>
-                                        </v-tooltip>
-                                        <v-tooltip text="Cerrar proyecto" location="top"
-                                            v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_validado')">
-                                            <template v-slot:activator="{ props }">
-                                                <v-btn icon="mdi-close-circle-outline" v-bind="props" size="small"
-                                                    class="m-1" />
-                                            </template>
-                                        </v-tooltip>
-                                        <v-tooltip text="Cancelar proyecto" location="top">
-                                            <template v-slot:activator="{ props }">
-                                                <v-btn icon="mdi-table-cancel" v-bind="props"
-                                                    v-if="hasPermissionTo('projects.update')" size="small"
-                                                    class="m-1" />
-                                            </template>
-                                        </v-tooltip>
+                                        <div class="d-flex">
+                                            <v-tooltip text="Asignar inspección" location="top"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_creado')">
+                                                <template v-slot:activator="{ props }">
+                                                    <v-btn icon="mdi-table-plus" v-bind="props" size="small"
+                                                        class="m-1" />
+                                                </template>
+                                            </v-tooltip>
+                                            <v-tooltip text="Asignar técnico" location="top"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_creado')">
+                                                <template v-slot:activator="{ props }">
+                                                    <v-btn icon="mdi-account-plus-outline" v-bind="props" size="small"
+                                                        class="m-1" />
+                                                </template>
+                                            </v-tooltip>
+                                            <v-tooltip text="Iniciar proyecto" location="top"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado')">
+                                                <template v-slot:activator="{ props }">
+                                                    <v-btn icon="mdi-play-speed" v-bind="props" size="small"
+                                                        class="m-1" />
+                                                </template>
+                                            </v-tooltip>
+                                            <v-tooltip text="Finalizar proyecto" location="top"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_iniciado')">
+                                                <template v-slot:activator="{ props }">
+                                                    <v-btn icon="mdi-note-check" v-bind="props" size="small"
+                                                        class="m-1" />
+                                                </template>
+                                            </v-tooltip>
+                                            <v-tooltip text="Validar proyecto" location="top"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_finalizado')">
+                                                <template v-slot:activator="{ props }">
+                                                    <v-btn icon="mdi-check-circle-outline" v-bind="props" size="small"
+                                                        class="m-1" />
+                                                </template>
+                                            </v-tooltip>
+                                            <v-tooltip text="Cerrar proyecto" location="top"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_validado')">
+                                                <template v-slot:activator="{ props }">
+                                                    <v-btn icon="mdi-close-circle-outline" v-bind="props" size="small"
+                                                        class="m-1" />
+                                                </template>
+                                            </v-tooltip>
+                                            <v-tooltip text="Cancelar proyecto" location="top">
+                                                <template v-slot:activator="{ props }">
+                                                    <v-btn icon="mdi-table-cancel" v-bind="props"
+                                                        v-if="hasPermissionTo('projects.update')" size="small"
+                                                        class="m-1" />
+                                                </template>
+                                            </v-tooltip>
+                                        </div>
                                     </template>
                                 </v-data-table>
 
