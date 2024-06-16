@@ -20,7 +20,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
                                 <v-data-table :headers="headers" :items="projects" fixed-header :search="search">
                                     <template v-slot:item.status.status="{ value }">
-                                        <v-chip size="small">{{ value }}</v-chip>
+                                        <v-chip size="small" class="m-1">{{ value }}</v-chip>
                                     </template>
                                     <template v-slot:top>
                                         <v-toolbar flat>
@@ -108,58 +108,55 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             v-if="hasPermissionTo('projects.update')">
                                             mdi-pencil
                                         </v-icon>
-                                        <v-icon @click="deleteItem(item)"
-                                            v-if="hasPermissionTo('projects.delete')">
+                                        <v-icon @click="deleteItem(item)" v-if="hasPermissionTo('projects.delete')">
                                             mdi-delete
                                         </v-icon>
                                     </template>
                                     <template v-slot:item.inspection_actions="{ item }">
-                                        <v-tooltip text="Asignar inspección" location="top">
+                                        <v-tooltip text="Asignar inspección" location="top"
+                                            v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_creado')">
                                             <template v-slot:activator="{ props }">
-                                                <v-icon class="m-1 border rounded p-3"
-                                                    v-if="hasPermissionTo('projects.update')" v-bind="props">
-                                                    mdi-table-plus
-                                                </v-icon>
+                                                <v-btn icon="mdi-table-plus" v-bind="props" size="small" class="m-1" />
                                             </template>
                                         </v-tooltip>
-                                        <v-tooltip text="Asignar técnico" location="top">
+                                        <v-tooltip text="Asignar técnico" location="top"
+                                            v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_creado')">
                                             <template v-slot:activator="{ props }">
-                                                <v-icon class="m-1 border rounded p-3"
-                                                    v-if="hasPermissionTo('projects.update')" v-bind="props">
-                                                    mdi-account-plus-outline
-                                                </v-icon>
+                                                <v-btn icon="mdi-account-plus-outline" v-bind="props" size="small"
+                                                    class="m-1" />
                                             </template>
                                         </v-tooltip>
-                                        <v-tooltip text="Iniciar proyecto" location="top">
+                                        <v-tooltip text="Iniciar proyecto" location="top"
+                                            v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado')">
                                             <template v-slot:activator="{ props }">
-                                                <v-icon class="m-1 border rounded p-3"
-                                                    v-if="hasPermissionTo('projects.update')" v-bind="props">
-                                                    mdi-play-speed
-                                                </v-icon>
+                                                <v-btn icon="mdi-play-speed" v-bind="props" size="small" class="m-1" />
                                             </template>
                                         </v-tooltip>
-                                        <v-tooltip text="Finalizar proyecto" location="top">
+                                        <v-tooltip text="Finalizar proyecto" location="top"
+                                            v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_iniciado')">
                                             <template v-slot:activator="{ props }">
-                                                <v-icon class="m-1 border rounded p-3"
-                                                    v-if="hasPermissionTo('projects.update')" v-bind="props">
-                                                    mdi-note-check
-                                                </v-icon>
+                                                <v-btn icon="mdi-note-check" v-bind="props" size="small" class="m-1" />
                                             </template>
                                         </v-tooltip>
-                                        <v-tooltip text="Validar proyecto" location="top">
+                                        <v-tooltip text="Validar proyecto" location="top"
+                                            v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_finalizado')">
                                             <template v-slot:activator="{ props }">
-                                                <v-icon class="m-1 border rounded p-3"
-                                                    v-if="hasPermissionTo('projects.update')" v-bind="props">
-                                                    mdi-check-circle-outline
-                                                </v-icon>
+                                                <v-btn icon="mdi-check-circle-outline" v-bind="props" size="small"
+                                                    class="m-1" />
                                             </template>
                                         </v-tooltip>
-                                        <v-tooltip text="Cerrar proyecto" location="top">
+                                        <v-tooltip text="Cerrar proyecto" location="top"
+                                            v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_validado')">
                                             <template v-slot:activator="{ props }">
-                                                <v-icon class="m-1 border rounded p-3"
-                                                    v-if="hasPermissionTo('projects.update')" v-bind="props">
-                                                    mdi-close-circle-outline
-                                                </v-icon>
+                                                <v-btn icon="mdi-close-circle-outline" v-bind="props" size="small"
+                                                    class="m-1" />
+                                            </template>
+                                        </v-tooltip>
+                                        <v-tooltip text="Cancelar proyecto" location="top">
+                                            <template v-slot:activator="{ props }">
+                                                <v-btn icon="mdi-table-cancel" v-bind="props"
+                                                    v-if="hasPermissionTo('projects.update')" size="small"
+                                                    class="m-1" />
                                             </template>
                                         </v-tooltip>
                                     </template>
@@ -373,6 +370,9 @@ export default {
                     console.log(error);
                 });
         },
+        checkStatus(item, status) {
+            return item.status.status_code == status;
+        }
     },
 
 }
