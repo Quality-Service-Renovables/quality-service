@@ -84,7 +84,9 @@ class Service
         // Establece la ruta de guardado
         $storagePath = match ($module) {
             'clients' => $paths->clients->logos,
-            'equipments' => $paths->equipments->images,
+            'equipment_images' => $paths->equipments->images,
+            'equipment_documents' => $paths->equipments->documents,
+            'equipments_diagrams' => $paths->equipments->diagrams,
             'evidences' => $paths->evidences->inspections,
             default => 'tmp',
         };
@@ -117,11 +119,6 @@ class Service
      */
     private function addFileToRequest(Request $request, string $fileRequest, string $fileDatabase, string $storagePath): void
     {
-        // Si existe una imagen o manual anterior se purga el archivo
-        if ($request->$fileDatabase) {
-            $this->purgeFile($request->$fileDatabase);
-        }
-
         // Guardar imagen o manual y obtener ruta
         $path = $request
             ->file($fileRequest)
@@ -138,10 +135,13 @@ class Service
      *
      * If the file exists, it will be deleted from the storage.
      */
-    public function purgeFile($path): void
+    public function purgeFile($path, $disk = 'public_direct'): void
     {
-        if (Storage::exists($path)) {
-            Storage::delete($path);
+        if (Storage::disk($disk)->exists($path)) {
+            $filename = pathinfo($path, PATHINFO_FILENAME);
+            if ($filename !== 'default') {
+                Storage::disk($disk)->delete($path);
+            }
         }
     }
 }
