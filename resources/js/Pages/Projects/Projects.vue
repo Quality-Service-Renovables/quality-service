@@ -31,6 +31,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             </v-toolbar-title>
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
+
+                                            <!-- Dialog para editar proyecto -->
                                             <v-dialog v-model="dialog" width="auto"
                                                 v-if="hasPermissionTo('projects.create') || hasPermissionTo('projects.update')">
 
@@ -38,7 +40,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                     v-if="hasPermissionTo('projects.create')">
                                                     <v-btn class="mb-2" color="primary" dark
                                                         icon="mdi-lightbulb-on-outline"
-                                                        @click="helpDialog = true"></v-btn>
+                                                        @click="dialogHelp = true"></v-btn>
                                                     <v-btn class="mb-2" color="primary" dark v-bind="props"
                                                         icon="mdi-plus"></v-btn>
                                                 </template>
@@ -95,6 +97,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                     </v-card-actions>
                                                 </v-card>
                                             </v-dialog>
+
+                                            <!-- Dialog para eliminar proyecto -->
                                             <v-dialog v-model="dialogDelete" max-width="500px">
                                                 <v-card>
                                                     <v-card-title class="text-h5 text-center">¿Estás seguro de
@@ -110,6 +114,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                     </v-card-actions>
                                                 </v-card>
                                             </v-dialog>
+
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
@@ -126,7 +131,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <div class="d-flex">
                                             <ActionButton text="Asignar técnicos" icon="mdi-account-plus-outline"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_creado')"
-                                                size="small" />
+                                                size="small" @click="asignEmployees"/>
                                             <ActionButton text="Asignar inspección" icon="mdi-table-plus"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado')"
                                                 size="small" />
@@ -149,7 +154,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                 </v-data-table>
 
                                 <!-- Help Dialog -->
-                                <v-dialog v-model="helpDialog" width="auto">
+                                <v-dialog v-model="dialogHelp" width="auto">
                                     <v-card>
                                         <v-card-title class="text-h5 text-center">Ayuda</v-card-title>
                                         <v-card-text>
@@ -176,7 +181,40 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <v-card-actions>
                                             <v-spacer></v-spacer>
                                             <v-btn color="blue-darken-1" variant="text"
-                                                @click="helpDialog = false">Cerrar</v-btn>
+                                                @click="dialogHelp = false">Cerrar</v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-dialog>
+
+                                <!-- Dialog para asignar técnicos -->
+                                <v-dialog v-model="dialogAsignEmployees" width="auto"
+                                    v-if="hasPermissionTo('projects.update')">
+                                    <v-card :loading="!editedItem.project_uuid">
+                                        <v-card-title>
+                                            <span class="text-h5">Asignar técnicos</span>
+                                        </v-card-title>
+
+                                        <v-card-text>
+                                            <v-container>
+                                                <v-row>
+                                                    <v-col cols="12">
+                                                        <v-select v-model="editedItem.employees_uuid" :items="employees"
+                                                            item-title="name" item-value="uuid"
+                                                            label="Seleccionar tecnicos" variant="solo" hide-details
+                                                            required multiple></v-select>
+                                                    </v-col>
+                                                </v-row>
+                                            </v-container>
+                                        </v-card-text>
+
+                                        <v-card-actions>
+                                            <v-spacer></v-spacer>
+                                            <v-btn color="blue-darken-1" variant="text" @click="close">
+                                                Cerrar
+                                            </v-btn>
+                                            <v-btn color="blue-darken-1" variant="text" @click="save">
+                                                Guardar
+                                            </v-btn>
                                         </v-card-actions>
                                     </v-card>
                                 </v-dialog>
@@ -212,7 +250,8 @@ export default {
     data: () => ({
         search: '',
         dialog: false,
-        helpDialog: false,
+        dialogHelp: false,
+        dialogAsignEmployees: false,
         dialogDelete: false,
         headers: [
             { title: 'Nombre', key: 'project_name' },
@@ -374,7 +413,11 @@ export default {
                 .catch(error => {
                     this.handleErrors(error);
                 });
-        }
+        },
+        asignEmployees() {
+            //this.dialogAsignEmployees = true;
+            console.log("Asignar técnicos");
+        },
     }
 
 }
