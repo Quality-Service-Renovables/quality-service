@@ -31,29 +31,6 @@ use Throwable;
 
 class ProjectService extends Service implements ServiceInterface
 {
-    //TODO Pendientes de proyectos:
-    /**
-     * • Nuevo proyecto
-     * • Asignar proyecto a trabajadores
-     * • Seguimiento de proyecto
-     * • Editar
-     * • Eliminar
-     * • Iniciar proyecto
-     * • Cerrar proyecto
-     * • Validar proyecto
-     * LISTA DE PROYECTOS
-     * • Iniciar inspección
-     * • Selección de zona (con sugerencia
-     * con base a ubicación del técnico)
-     * • Selección de generador
-     * • Agregar fotos (con opción de
-     * comentarios por foto)
-     * • Agregar comentarios generales
-     * • Pausar inspección
-     * • Cargar información a la nube
-     * • Finalizar inspección
-     * • Ver información del proyecto
-     */
     public string $nameService = 'project_service';
 
     /**
@@ -110,7 +87,7 @@ class ProjectService extends Service implements ServiceInterface
     public function read(): array
     {
         $this->response['message'] = trans('api.read');
-        $this->response['data'] = Project::with(['client', 'status'])->get();
+        $this->response['data'] = Project::with(['client', 'status', 'employees.user', 'inspections'])->get();
 
         return $this->response;
     }
@@ -221,7 +198,7 @@ class ProjectService extends Service implements ServiceInterface
         try {
             // Obtiene categoría del equipo
             $project = Project::with([
-                'client', 'status', 'employees.user',
+                'client', 'status', 'employees.user', 'inspections'
             ])->where('project_uuid', $uuid)->first();
             $this->response['message'] = $project === null
                 ? trans('api.not_found')
