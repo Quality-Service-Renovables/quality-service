@@ -53,11 +53,19 @@ class Project extends Model
 
     /**
      * Get the inspections for this project.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function inspections(): HasMany
     {
         return $this->hasMany(Inspection::class, 'project_id', 'project_id');
+    }
+
+    /**
+     * Get the employees assigned to this project.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function employees(): HasMany
+    {
+        return $this->hasMany(Employee::class, 'project_id', 'project_id');
     }
 }

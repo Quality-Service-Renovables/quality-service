@@ -221,7 +221,7 @@ class ProjectService extends Service implements ServiceInterface
         try {
             // Obtiene categoría del equipo
             $project = Project::with([
-                'client', 'status',
+                'client', 'status', 'employees.user',
             ])->where('project_uuid', $uuid)->first();
             $this->response['message'] = $project === null
                 ? trans('api.not_found')
