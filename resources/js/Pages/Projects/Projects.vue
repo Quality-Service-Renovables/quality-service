@@ -42,7 +42,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                     <v-btn class="mb-2" color="primary" dark v-bind="props"
                                                         icon="mdi-plus"></v-btn>
                                                 </template>
-                                                <v-card>
+                                                <v-card :loading="!editedItem.project_uuid">
                                                     <v-card-title>
                                                         <span class="text-h5">{{ formTitle }}</span>
                                                     </v-card-title>
@@ -71,6 +71,17 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         item-value="client_uuid" label="Cliente"
                                                                         variant="solo" hide-details required></v-select>
                                                                 </v-col>
+                                                                <v-col cols="12" class="text-right">
+                                                                    <PrimaryButton @click="save">Guardar</PrimaryButton>
+                                                                </v-col>
+                                                                <v-col cols="12"
+                                                                    v-if="editedItem.project_uuid && checkStatus(editedItem, 'proceso_asignado')">
+                                                                    <v-select v-model="editedItem.employees_uuid"
+                                                                        :items="editedItem.employees"
+                                                                        item-title="user.name" item-value="user.uuid"
+                                                                        label="Tecnicos asignados" variant="solo"
+                                                                        hide-details required multiple></v-select>
+                                                                </v-col>
                                                             </v-row>
                                                         </v-container>
                                                     </v-card-text>
@@ -78,11 +89,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                     <v-card-actions>
                                                         <v-spacer></v-spacer>
                                                         <v-btn color="blue-darken-1" variant="text" @click="close">
-                                                            Cancelar
+                                                            Cerrar
                                                         </v-btn>
-                                                        <v-btn color="blue-darken-1" variant="text" @click="save">
-                                                            Guardar
-                                                        </v-btn>
+
                                                     </v-card-actions>
                                                 </v-card>
                                             </v-dialog>
@@ -186,10 +195,13 @@ import { router } from '@inertiajs/vue3'
 import { Toaster, toast } from 'vue-sonner'
 import Swal from 'sweetalert2';
 import ActionButton from '@/Pages/Projects/Partials/ActionButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 export default {
     components: {
         Toaster,
+        ActionButton,
+        PrimaryButton
     },
     props: {
         projects: {
@@ -218,6 +230,7 @@ export default {
             description: '',
             comments: '',
             client_uuid: '',
+            employees_uuid: [],
         },
         defaultItem: {
             project_uuid: '',
@@ -225,6 +238,7 @@ export default {
             description: '',
             comments: '',
             client_uuid: '',
+            employees_uuid: [],
         },
         helpData: [
             { title: 'Proceso creado', description: 'El proyecto ha sido creado, falta asignar técnico e inspección.' },
@@ -255,10 +269,9 @@ export default {
     },
     methods: {
         editItem(item) {
-            this.editedIndex = this.projects.indexOf(item)
-            this.editedItem = Object.assign({}, item)
-            this.editedItem.client_uuid = item.client.client_uuid;
             this.dialog = true
+            this.editedIndex = this.projects.indexOf(item)
+            this.getProject(item.project_uuid);
         },
         deleteItem(item) {
             this.editedIndex = this.projects.indexOf(item)
@@ -350,8 +363,19 @@ export default {
         },
         checkStatus(item, status) {
             return item.status.status_code == status;
+        },
+        getProject(project_uuid) {
+            axios.get('api/projects/' + project_uuid)
+                .then(response => {
+                    this.editedItem = response.data.data;
+                    this.editedItem.client_uuid = this.editedItem.client.client_uuid;
+                    this.editedItem.employees_uuid = this.editedItem.employees.map(employee => employee.user.uuid);
+                })
+                .catch(error => {
+                    this.handleErrors(error);
+                });
         }
-    },
+    }
 
 }
 </script>
