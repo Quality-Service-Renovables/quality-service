@@ -42,7 +42,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                     <v-btn class="mb-2" color="primary" dark v-bind="props"
                                                         icon="mdi-plus"></v-btn>
                                                 </template>
-                                                <v-card>
+                                                <v-card :loading="!editedItem.project_uuid">
                                                     <v-card-title>
                                                         <span class="text-h5">{{ formTitle }}</span>
                                                     </v-card-title>
@@ -71,6 +71,17 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         item-value="client_uuid" label="Cliente"
                                                                         variant="solo" hide-details required></v-select>
                                                                 </v-col>
+                                                                <v-col cols="12" class="text-right">
+                                                                    <PrimaryButton @click="save">Guardar</PrimaryButton>
+                                                                </v-col>
+                                                                <v-col cols="12"
+                                                                    v-if="editedItem.project_uuid && checkStatus(editedItem, 'proceso_asignado')">
+                                                                    <v-select v-model="editedItem.employees_uuid"
+                                                                        :items="editedItem.employees"
+                                                                        item-title="user.name" item-value="user.uuid"
+                                                                        label="Tecnicos asignados" variant="solo"
+                                                                        hide-details required multiple></v-select>
+                                                                </v-col>
                                                             </v-row>
                                                         </v-container>
                                                     </v-card-text>
@@ -78,11 +89,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                     <v-card-actions>
                                                         <v-spacer></v-spacer>
                                                         <v-btn color="blue-darken-1" variant="text" @click="close">
-                                                            Cancelar
+                                                            Cerrar
                                                         </v-btn>
-                                                        <v-btn color="blue-darken-1" variant="text" @click="save">
-                                                            Guardar
-                                                        </v-btn>
+
                                                     </v-card-actions>
                                                 </v-card>
                                             </v-dialog>
@@ -104,65 +113,37 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
-                                        <v-icon class="me-2" @click="editItem(item)"
-                                            v-if="hasPermissionTo('projects.update')">
-                                            mdi-pencil
-                                        </v-icon>
-                                        <v-icon @click="deleteItem(item)" v-if="hasPermissionTo('projects.delete')">
-                                            mdi-delete
-                                        </v-icon>
+                                        <div class="d-flex">
+                                            <ActionButton text="Editar" icon="mdi-pencil"
+                                                v-if="hasPermissionTo('projects.update')" @click="editItem(item)"
+                                                size="small" />
+                                            <ActionButton text="Eliminar" icon="mdi-delete"
+                                                v-if="hasPermissionTo('projects.delete')" @click="deleteItem(item)"
+                                                size="small" />
+                                        </div>
                                     </template>
                                     <template v-slot:item.inspection_actions="{ item }">
                                         <div class="d-flex">
-                                            <v-tooltip text="Asignar inspección" location="top"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_creado')">
-                                                <template v-slot:activator="{ props }">
-                                                    <v-btn icon="mdi-table-plus" v-bind="props" size="small"
-                                                        class="m-1" />
-                                                </template>
-                                            </v-tooltip>
-                                            <v-tooltip text="Asignar técnico" location="top"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_creado')">
-                                                <template v-slot:activator="{ props }">
-                                                    <v-btn icon="mdi-account-plus-outline" v-bind="props" size="small"
-                                                        class="m-1" />
-                                                </template>
-                                            </v-tooltip>
-                                            <v-tooltip text="Iniciar proyecto" location="top"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado')">
-                                                <template v-slot:activator="{ props }">
-                                                    <v-btn icon="mdi-play-speed" v-bind="props" size="small"
-                                                        class="m-1" />
-                                                </template>
-                                            </v-tooltip>
-                                            <v-tooltip text="Finalizar proyecto" location="top"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_iniciado')">
-                                                <template v-slot:activator="{ props }">
-                                                    <v-btn icon="mdi-note-check" v-bind="props" size="small"
-                                                        class="m-1" />
-                                                </template>
-                                            </v-tooltip>
-                                            <v-tooltip text="Validar proyecto" location="top"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_finalizado')">
-                                                <template v-slot:activator="{ props }">
-                                                    <v-btn icon="mdi-check-circle-outline" v-bind="props" size="small"
-                                                        class="m-1" />
-                                                </template>
-                                            </v-tooltip>
-                                            <v-tooltip text="Cerrar proyecto" location="top"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_validado')">
-                                                <template v-slot:activator="{ props }">
-                                                    <v-btn icon="mdi-close-circle-outline" v-bind="props" size="small"
-                                                        class="m-1" />
-                                                </template>
-                                            </v-tooltip>
-                                            <v-tooltip text="Cancelar proyecto" location="top">
-                                                <template v-slot:activator="{ props }">
-                                                    <v-btn icon="mdi-table-cancel" v-bind="props"
-                                                        v-if="hasPermissionTo('projects.update')" size="small"
-                                                        class="m-1" />
-                                                </template>
-                                            </v-tooltip>
+                                            <ActionButton text="Asignar técnicos" icon="mdi-account-plus-outline"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_creado')"
+                                                size="small" />
+                                            <ActionButton text="Asignar inspección" icon="mdi-table-plus"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado')"
+                                                size="small" />
+                                            <ActionButton text="Iniciar proyecto" icon="mdi-play-speed"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado')"
+                                                size="small" />
+                                            <ActionButton text="Finalizar proyecto" icon="mdi-note-check"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_iniciado')"
+                                                size="small" />
+                                            <ActionButton text="Validar proyecto" icon="mdi-check-circle-outline"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_finalizado')"
+                                                size="small" />
+                                            <ActionButton text="Cerrar proyecto" icon="mdi-close-circle-outline"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_validado')"
+                                                size="small" />
+                                            <ActionButton text="Cancelar proyecto" icon="mdi-table-cancel"
+                                                v-if="hasPermissionTo('projects.update')" size="small" />
                                         </div>
                                     </template>
                                 </v-data-table>
@@ -213,10 +194,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { router } from '@inertiajs/vue3'
 import { Toaster, toast } from 'vue-sonner'
 import Swal from 'sweetalert2';
+import ActionButton from '@/Pages/Projects/Partials/ActionButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 export default {
     components: {
         Toaster,
+        ActionButton,
+        PrimaryButton
     },
     props: {
         projects: {
@@ -245,6 +230,7 @@ export default {
             description: '',
             comments: '',
             client_uuid: '',
+            employees_uuid: [],
         },
         defaultItem: {
             project_uuid: '',
@@ -252,6 +238,7 @@ export default {
             description: '',
             comments: '',
             client_uuid: '',
+            employees_uuid: [],
         },
         helpData: [
             { title: 'Proceso creado', description: 'El proyecto ha sido creado, falta asignar técnico e inspección.' },
@@ -282,10 +269,9 @@ export default {
     },
     methods: {
         editItem(item) {
-            this.editedIndex = this.projects.indexOf(item)
-            this.editedItem = Object.assign({}, item)
-            this.editedItem.client_uuid = item.client.client_uuid;
             this.dialog = true
+            this.editedIndex = this.projects.indexOf(item)
+            this.getProject(item.project_uuid);
         },
         deleteItem(item) {
             this.editedIndex = this.projects.indexOf(item)
@@ -377,8 +363,19 @@ export default {
         },
         checkStatus(item, status) {
             return item.status.status_code == status;
+        },
+        getProject(project_uuid) {
+            axios.get('api/projects/' + project_uuid)
+                .then(response => {
+                    this.editedItem = response.data.data;
+                    this.editedItem.client_uuid = this.editedItem.client.client_uuid;
+                    this.editedItem.employees_uuid = this.editedItem.employees.map(employee => employee.user.uuid);
+                })
+                .catch(error => {
+                    this.handleErrors(error);
+                });
         }
-    },
+    }
 
 }
 </script>
