@@ -109,7 +109,7 @@ class ProjectController extends Controller
     {
         $this->service->read();
 
-        return Inertia::render('Projects', [
+        return Inertia::render('Projects/Projects', [
             'projects' => $this->service->response['data'],
         ]);
     }
