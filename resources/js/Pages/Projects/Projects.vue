@@ -22,6 +22,18 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     <template v-slot:item.status.status="{ value }">
                                         <v-chip size="small" class="m-1">{{ value }}</v-chip>
                                     </template>
+                                    <template v-slot:item.employees="{ value }">
+                                        <p v-for="employee in value" :key="employee.user.uuid">
+                                            {{ employee.user.name }}
+                                        </p>
+                                        <p v-if="!value.length">Por asignar</p>
+                                    </template>
+                                    <template v-slot:item.inspections="{ value }">
+                                        <p v-for="inspection in value" :key="inspection.ct_inspection_uuid">
+                                            {{ inspection.ct_inspection }}
+                                        </p>
+                                        <p v-if="!value.length">Por asignar</p>
+                                    </template>
                                     <template v-slot:top>
                                         <v-toolbar flat>
                                             <v-toolbar-title class="ml-1">
@@ -78,11 +90,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 </v-col>
                                                                 <v-col cols="12"
                                                                     v-if="editedItem.project_uuid && checkStatus(editedItem, 'proceso_asignado')">
-                                                                    <v-select v-model="editedItem.employees_uuid"
+                                                                    <v-select v-model="editedItem.employee_uuid"
                                                                         :items="editedItem.employees"
                                                                         item-title="user.name" item-value="user.uuid"
-                                                                        label="Tecnicos asignados" variant="solo"
-                                                                        hide-details required multiple></v-select>
+                                                                        label="Técnico asignado" variant="solo"
+                                                                        hide-details required></v-select>
                                                                 </v-col>
                                                             </v-row>
                                                         </v-container>
@@ -198,10 +210,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             <v-container>
                                                 <v-row>
                                                     <v-col cols="12">
-                                                        <v-select v-model="editedItem.employees_uuid" :items="employees"
+                                                        <v-select v-model="editedItem.employee_uuid" :items="employees"
                                                             item-title="name" item-value="uuid"
-                                                            label="Seleccionar tecnicos" variant="solo" hide-details
-                                                            required multiple></v-select>
+                                                            label="Seleccionar tecnico" variant="solo" hide-details
+                                                            required></v-select>
                                                     </v-col>
                                                 </v-row>
                                             </v-container>
@@ -255,9 +267,11 @@ export default {
         dialogDelete: false,
         headers: [
             { title: 'Nombre', key: 'project_name' },
-            { title: 'Descripción', key: 'description' },
+            //{ title: 'Descripción', key: 'description' },
             { title: 'Cliente', key: 'client.client' },
-            { title: 'Comentarios', key: 'comments' },
+            //{ title: 'Comentarios', key: 'comments' },
+            { title: 'Técnico asignado', key: 'employees' },
+            { title: 'Inspecciónes asignadas', key: 'inspections' },
             { title: 'Estado', key: 'status.status' },
             { title: 'Acciones', key: 'actions', sortable: false },
             { title: 'Inspección', key: 'inspection_actions', sortable: false },
@@ -269,7 +283,7 @@ export default {
             description: '',
             comments: '',
             client_uuid: '',
-            employees_uuid: [],
+            employee_uuid: '',
         },
         defaultItem: {
             project_uuid: '',
@@ -277,7 +291,7 @@ export default {
             description: '',
             comments: '',
             client_uuid: '',
-            employees_uuid: [],
+            employee_uuid: '',
         },
         helpData: [
             { title: 'Proceso creado', description: 'El proyecto ha sido creado, falta asignar técnico e inspección.' },
@@ -408,7 +422,7 @@ export default {
                 .then(response => {
                     this.editedItem = response.data.data;
                     this.editedItem.client_uuid = this.editedItem.client.client_uuid;
-                    this.editedItem.employees_uuid = this.editedItem.employees.map(employee => employee.user.uuid);
+                    this.editedItem.employee_uuid = this.editedItem.employees[0].user.uuid;
                 })
                 .catch(error => {
                     this.handleErrors(error);
