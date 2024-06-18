@@ -6,7 +6,6 @@
 
 namespace App\Services\Api\V1\Inspections;
 
-use App\Models\Inspections\Equipment as InspectionEquipment;
 use App\Models\Inspections\Evidence;
 use App\Models\Inspections\Inspection;
 use App\Services\Service;
@@ -108,6 +107,14 @@ class EvidenceService extends Service
                 'inspection_id' => $inspection->inspection_id,
             ]);
 
+            // En caso de que se actualicen las evidencias y existan registros previos se depuran.
+            if ($inspection->envidence_store !== $request->inspection_store) {
+                $this->purgeFile($inspection->inspection_evidence_secondary);
+                if ($inspection->evidence_store_secondary) {
+                    $this->purgeFile($inspection->inspection_evidence_secondary);
+                }
+            }
+            // Se registra la evidencia principal y secundaria
             if ($request->evidence_store) {
                 $this->storeFile($request,
                     'evidence_store',
@@ -165,7 +172,7 @@ class EvidenceService extends Service
             // Control Transaction
             DB::beginTransaction();
             // Delete Register
-            InspectionEquipment::where('inspection_equipment_uuid', $uuid)
+            Evidence::where('inspection_evidence_uuid', $uuid)
                 ->update([
                     'deleted_at' => now(),
                 ]);

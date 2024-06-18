@@ -25,7 +25,7 @@ trait ApplicationPaths
     /**
      * @throws \JsonException
      */
-    protected function getApplicationPaths()
+    public function getApplicationPaths()
     {
         $storagePath = $this->getStoragePath();
 

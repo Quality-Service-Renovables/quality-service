@@ -21,7 +21,6 @@ use App\Http\Controllers\Api\V1\Status\StatusController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
 use App\Http\Controllers\Api\V1\Users\UserController;
-use App\Models\Projects\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -46,12 +45,11 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //**************************** END SESSION *****************************
     //****************************** USER *******************************
     Route::resource('users', UserController::class);
-    Route::get('users/get-rol-users/{rol_user}', [UserController::class, 'getRolUsers'])
-        ->name('users.get-rol-users');
+    Route::get('users/get-rol-users/{rol_user}', [UserController::class, 'getRolUsers']);
     //**************************** END USER *****************************
     //######################################################### CLIENTS ##########################################################
     Route::resource('clients', ClientController::class);
-    Route::post('clients/update/{uuid}', [ClientController::class, 'update'])->name('clients.update');
+    Route::post('clients/update/{uuid}', [ClientController::class, 'update']);
     //######################################################## PROJECTS #########################################################
     Route::resource('projects', ProjectController::class);
     Route::resource('project/employees', EmployeeController::class);
@@ -62,7 +60,7 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::resource('inspection/evidences', EvidenceController::class);
     Route::resource('inspection/categories', CategoryController::class);
 
-    Route::post('inspection/evidences/update/{uuid}', [EvidenceController::class, 'update'])->name('inspections.update');
+    Route::post('inspection/evidences/update/{uuid}', [EvidenceController::class, 'update']);
     Route::get('inspection/resources/get-inspection-details/{ct_inspection_uuid}', [ResourceController::class, 'getInspectionDetail'])
         ->name('inspection.resources.get-inspection-details');
 
@@ -79,7 +77,7 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //######################################################### EQUIPMENTS ##########################################################
     Route::resource('equipments', EquipmentController::class);
     // Para envio de tipo multi form, el verbo PUT no es compatible, se ha remplazado por la llamada a este end point
-    Route::post('equipments/update/{uuid}', [EquipmentController::class, 'update'])->name('equipments.update');
+    Route::post('equipments/update/{uuid}', [EquipmentController::class, 'update']);
     Route::resource('equipment/categories', \App\Http\Controllers\Api\V1\Equipments\CategoryController::class);
     //######################################################### OILS ##########################################################
     Route::resource('oils', OilController::class);
@@ -89,8 +87,7 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::resource('trademark/categories', \App\Http\Controllers\Api\V1\Trademarks\CategoryController::class);
     Route::resource('trademark/models', TrademarkModelController::class);
     //----------------------------------------------------- Trademarks Resources ----------------------------------------------------
-    Route::get('trademarks/get-category/{category}', [TrademarkController::class, 'getCategory'])
-        ->name('trademarks.get-category')->where(['category' => '[0-9]+']);
+    Route::get('trademarks/get-category/{category}', [TrademarkController::class, 'getCategory'])->where(['category' => '[0-9]+']);
     //######################################################### EQUIPMENTS ##########################################################
     Route::resource('status', StatusController::class);
     //----------------------------------------------------- Failure Equipments ----------------------------------------------------
