@@ -113,20 +113,22 @@ class EmployeeService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
-            $user = User::where('uuid', '=', $request->employee_uuid)->first();
-            // Agrega atributos a la solicitud
-            $request->merge([
-                'user_id' => $user->id,
-                'project_id' => $project->project_id,
-            ]);
-            // Registra los atributos de la solicitud
-            $this->response['message'] = trans('api.created');
-            $this->response['data'] = Employee::updateOrCreate([
-                'user_id' => $request->user_id,
-                'project_id' => $request->project_id,
-            ], [
-                'update_at' => now(),
-            ]);
+            foreach ($request->employees as $employee) {
+                $user = User::where('uuid', '=', $employee['employee_uuid'])->first();
+                // Agrega atributos a la solicitud
+                $request->merge([
+                    'user_id' => $user->id,
+                    'project_id' => $project->project_id,
+                ]);
+                // Registra los atributos de la solicitud
+                $this->response['message'] = trans('api.created');
+                $this->response['data'] = Employee::updateOrCreate([
+                    'user_id' => $request->user_id,
+                    'project_id' => $request->project_id,
+                ], [
+                    'update_at' => now(),
+                ]);
+            }
             // Registro en log
             $this->logService->create(
                 $this->nameService,
