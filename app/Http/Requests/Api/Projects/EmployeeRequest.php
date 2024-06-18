@@ -16,7 +16,7 @@ class EmployeeRequest extends CustomRequest
     {
         return [
             'project_uuid' => 'required|uuid|exists:projects,project_uuid',
-            'employee_uuid' => 'required|uuid|exists:users,uuid',
+            'employees.*.employee_uuid' => 'required|uuid|exists:users,uuid',
         ];
     }
 }

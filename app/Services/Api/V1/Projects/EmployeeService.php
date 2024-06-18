@@ -49,24 +49,26 @@ class EmployeeService extends Service implements ServiceInterface
             $project->status_id = Status::where('status_code', '=', 'proceso_asignado')
                 ->first()->status_id;
             $project->save();
-            $user = User::where('uuid', '=', $request->employee_uuid)->first();
 
-            // Agrega atributos a la solicitud
-            $request->merge([
-                'project_employee_uuid' => Str::uuid()->toString(),
-                'user_id' => $user->id,
-                'project_id' => $project->project_id,
-            ]);
+            foreach ($request->employees as $employee) {
+                $user = User::where('uuid', '=', $employee['employee_uuid'])->first();
+                // Agrega atributos a la solicitud
+                $request->merge([
+                    'project_employee_uuid' => Str::uuid()->toString(),
+                    'user_id' => $user->id,
+                    'project_id' => $project->project_id,
+                ]);
 
-            // Registra los atributos de la solicitud
-            $this->statusCode = 201;
-            $this->response['message'] = trans('api.created');
-            $this->response['data'] = Employee::firstOrCreate([
-                'user_id' => $request->user_id,
-                'project_id' => $request->project_id,
-            ], [
-                'project_employee_uuid' => $request->project_employee_uuid,
-            ]);
+                // Registra los atributos de la solicitud
+                $this->statusCode = 201;
+                $this->response['message'] = trans('api.created');
+                $this->response['data'][] = Employee::firstOrCreate([
+                    'user_id' => $request->user_id,
+                    'project_id' => $request->project_id,
+                ], [
+                    'project_employee_uuid' => $request->project_employee_uuid,
+                ]);
+            }
             // Registro en log
             $this->logService->create(
                 $this->nameService,
