@@ -46,6 +46,8 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //**************************** END SESSION *****************************
     //****************************** USER *******************************
     Route::resource('users', UserController::class);
+    Route::get('users/get-rol-users/{rol_user}', [UserController::class, 'getRolUsers'])
+        ->name('users.get-rol-users');
     //**************************** END USER *****************************
     //######################################################### CLIENTS ##########################################################
     Route::resource('clients', ClientController::class);

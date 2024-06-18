@@ -32,6 +32,7 @@ use Throwable;
 class UserService extends Service implements ServiceInterface
 {
     public string $nameService = 'user_service';
+
     private string $imageDefault = 'img/users/default.png';
 
     public function create(Request $request): array
@@ -67,11 +68,10 @@ class UserService extends Service implements ServiceInterface
         return $this->response;
     }
 
-
     public function read(): array
     {
         $this->response['message'] = trans('api.read');
-        $this->response['data'] = User::with(['client', 'role'])->get();
+        $this->response['data'] = User::with(['client', 'roles'])->get();
 
         return $this->response;
     }
@@ -266,5 +266,19 @@ class UserService extends Service implements ServiceInterface
         $request->merge([
             $newField => $this->getApplicationPaths()->application.$path,
         ]);
+    }
+
+    /**
+     * Retrieves users based on their role.
+     *
+     * @param  string  $rol  The role to filter users.
+     * @return array The response containing the users.
+     */
+    public function getRolUsers(string $rol): array
+    {
+        $this->response['message'] = trans('api.read');
+        $this->response['data'] = User::role($rol)->get();
+
+        return $this->response;
     }
 }
