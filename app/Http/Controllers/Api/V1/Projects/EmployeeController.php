@@ -4,14 +4,10 @@ namespace App\Http\Controllers\Api\V1\Projects;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Projects\EmployeeRequest;
-use App\Http\Requests\Api\Projects\ProjectsRequest;
 use App\Services\Api\V1\Projects\EmployeeService;
-use App\Services\Api\V1\Projects\ProjectService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class EmployeeController extends Controller
@@ -53,7 +49,7 @@ class EmployeeController extends Controller
     {
         $request = (['project_employee_uuid' => $uuid]);
 
-        if (! $this->commonValidation($request)) {
+        if (!$this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -67,16 +63,13 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, string $uuid): JsonResponse
     {
-        $request->merge(['project_employee_uuid' => $uuid]);
+        $request->merge(['project_uuid' => $uuid]);
         $validated = Validator::make($request->all(), [
-            'project_employee_uuid' => 'required|uuid|exists:project_employees,project_employee_uuid',
-            'project_uuid' => 'required|uuid|exists:projects,project_uuid',
-            'employee_uuid' => 'required|uuid|exists:users,uuid',
+            'employees.*.employee_uuid' => 'required|uuid|exists:users,uuid',
         ]);
 
         if ($validated->fails()) {
             $this->service->setFailValidation($validated->errors());
-
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -92,7 +85,7 @@ class EmployeeController extends Controller
     {
         $request = ['project_employee_uuid' => $uuid];
 
-        if (! $this->commonValidation($request)) {
+        if (!$this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 

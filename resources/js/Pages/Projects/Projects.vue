@@ -23,7 +23,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <v-chip size="small" class="m-1">{{ value }}</v-chip>
                                     </template>
                                     <template v-slot:item.employees="{ value }">
-                                        <p v-for="employee in value" :key="employee.user.uuid">
+                                        <p v-for="(employee, index) in value" :key="index">
+                                            <v-icon class="mdi mdi-vector-point text-primary"></v-icon>
                                             {{ employee.user.name }}
                                         </p>
                                         <p v-if="!value.length">Por asignar</p>
@@ -66,35 +67,45 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                             <v-row>
                                                                 <v-col cols="12">
                                                                     <v-text-field v-model="editedItem.project_name"
-                                                                        label="Nombre" variant="solo" hide-details
+                                                                        label="Nombre" variant="outlined" hide-details
                                                                         required></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="6">
                                                                     <v-textarea v-model="editedItem.description"
-                                                                        label="Descripción" variant="solo" hide-details
-                                                                        required></v-textarea>
+                                                                        label="Descripción" variant="outlined"
+                                                                        hide-details required></v-textarea>
                                                                 </v-col>
                                                                 <v-col cols="6">
                                                                     <v-textarea v-model="editedItem.comments"
-                                                                        label="Comentarios" variant="solo"
+                                                                        label="Comentarios" variant="outlined"
                                                                         hide-details></v-textarea>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select v-model="editedItem.client_uuid"
                                                                         :items="clients" item-title="client"
                                                                         item-value="client_uuid" label="Cliente"
-                                                                        variant="solo" hide-details required></v-select>
+                                                                        variant="outlined" hide-details
+                                                                        required></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12" class="text-right">
                                                                     <PrimaryButton @click="save">Guardar</PrimaryButton>
                                                                 </v-col>
+                                                                <v-col cols="12" class="text-right">
+                                                                    <v-divider></v-divider>
+                                                                </v-col>
                                                                 <v-col cols="12"
                                                                     v-if="editedItem.project_uuid && checkStatus(editedItem, 'proceso_asignado')">
-                                                                    <v-select v-model="editedItem.employee_uuid"
-                                                                        :items="editedItem.employees"
-                                                                        item-title="user.name" item-value="user.uuid"
-                                                                        label="Técnico asignado" variant="solo"
-                                                                        hide-details required></v-select>
+                                                                    <v-select v-model="editedItem.employees_uuid"
+                                                                        :items="employees" item-title="name"
+                                                                        item-value="uuid" label="Técnicos asignados"
+                                                                        variant="outlined" hide-details required
+                                                                        multiple chips clearable></v-select>
+                                                                </v-col>
+                                                                <v-col cols="12" class="text-right"
+                                                                    v-if="editedItem.project_uuid && checkStatus(editedItem, 'proceso_asignado')">
+                                                                    <PrimaryButton @click="saveTechniciens('update')">
+                                                                        Guardar
+                                                                    </PrimaryButton>
                                                                 </v-col>
                                                             </v-row>
                                                         </v-container>
@@ -141,14 +152,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     </template>
                                     <template v-slot:item.inspection_actions="{ item }">
                                         <div class="d-flex">
-                                            <ActionButton text="Asignar técnicos" icon="mdi-account-plus-outline"
+                                            <ActionButton text="Asignar técnico" icon="mdi-account-plus-outline"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_creado')"
-                                                size="small" @click="asignEmployees"/>
+                                                size="small" @click="asignEmployees(item)" />
                                             <ActionButton text="Asignar inspección" icon="mdi-table-plus"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado')"
                                                 size="small" />
                                             <ActionButton text="Iniciar proyecto" icon="mdi-play-speed"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado')"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado') && item.inspections.length > 0"
                                                 size="small" />
                                             <ActionButton text="Finalizar proyecto" icon="mdi-note-check"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_iniciado')"
@@ -199,9 +210,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                 </v-dialog>
 
                                 <!-- Dialog para asignar técnicos -->
-                                <v-dialog v-model="dialogAsignEmployees" width="auto"
+                                <v-dialog v-model="dialogAsignEmployees" width="400"
                                     v-if="hasPermissionTo('projects.update')">
-                                    <v-card :loading="!editedItem.project_uuid">
+                                    <v-card>
                                         <v-card-title>
                                             <span class="text-h5">Asignar técnicos</span>
                                         </v-card-title>
@@ -210,10 +221,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             <v-container>
                                                 <v-row>
                                                     <v-col cols="12">
-                                                        <v-select v-model="editedItem.employee_uuid" :items="employees"
+                                                        <v-select v-model="editedItem.employees_uuid" :items="employees"
                                                             item-title="name" item-value="uuid"
-                                                            label="Seleccionar tecnico" variant="solo" hide-details
-                                                            required></v-select>
+                                                            label="Seleccionar técnicos" variant="outlined" hide-details
+                                                            required multiple></v-select>
                                                     </v-col>
                                                 </v-row>
                                             </v-container>
@@ -221,10 +232,13 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
                                         <v-card-actions>
                                             <v-spacer></v-spacer>
-                                            <v-btn color="blue-darken-1" variant="text" @click="close">
+                                            <v-btn color="blue-darken-1" variant="text"
+                                                @click="dialogAsignEmployees = false">
                                                 Cerrar
                                             </v-btn>
-                                            <v-btn color="blue-darken-1" variant="text" @click="save">
+                                            <v-btn color="blue-darken-1" variant="text"
+                                                @click="saveTechniciens('create')"
+                                                :disabled="!editedItem.employees_uuid.length">
                                                 Guardar
                                             </v-btn>
                                         </v-card-actions>
@@ -270,8 +284,8 @@ export default {
             //{ title: 'Descripción', key: 'description' },
             { title: 'Cliente', key: 'client.client' },
             //{ title: 'Comentarios', key: 'comments' },
-            { title: 'Técnico asignado', key: 'employees' },
-            { title: 'Inspecciónes asignadas', key: 'inspections' },
+            { title: 'Técnicos asignados', key: 'employees' },
+            { title: 'Inspección asignada', key: 'inspections' },
             { title: 'Estado', key: 'status.status' },
             { title: 'Acciones', key: 'actions', sortable: false },
             { title: 'Inspección', key: 'inspection_actions', sortable: false },
@@ -283,7 +297,7 @@ export default {
             description: '',
             comments: '',
             client_uuid: '',
-            employee_uuid: '',
+            employees_uuid: [],
         },
         defaultItem: {
             project_uuid: '',
@@ -291,7 +305,7 @@ export default {
             description: '',
             comments: '',
             client_uuid: '',
-            employee_uuid: '',
+            employees_uuid: [],
         },
         helpData: [
             { title: 'Proceso creado', description: 'El proyecto ha sido creado, falta asignar técnico e inspección.' },
@@ -303,6 +317,8 @@ export default {
             { title: 'Proceso cancelado', description: 'El proyecto ha sido cancelado y no se podrá realizar más cambios.' },
         ],
         clients: [],
+        employees: [],
+        editingProjectUuid: '',
     }),
     computed: {
         formTitle() {
@@ -319,6 +335,7 @@ export default {
     },
     mounted() {
         this.getClients();
+        this.getTechniciens();
     },
     methods: {
         editItem(item) {
@@ -362,6 +379,10 @@ export default {
                 this.editedItem = Object.assign({}, this.defaultItem)
                 this.editedIndex = -1
             })
+        },
+        closeAsignEmployees() {
+            this.dialogAsignEmployees = false;
+            this.editingProjectUuid = '';
         },
         save() {
             let formData = {
@@ -422,15 +443,73 @@ export default {
                 .then(response => {
                     this.editedItem = response.data.data;
                     this.editedItem.client_uuid = this.editedItem.client.client_uuid;
-                    this.editedItem.employee_uuid = this.editedItem.employees[0].user.uuid;
+                    //this.editedItem.employee_uuid = this.editedItem.employees.length > 0 ? this.editedItem.employees[0].user.uuid : '';
+                    this.editedItem.employees_uuid = this.editedItem.employees.map(employee => employee.user.uuid);
                 })
                 .catch(error => {
                     this.handleErrors(error);
                 });
         },
-        asignEmployees() {
-            //this.dialogAsignEmployees = true;
-            console.log("Asignar técnicos");
+        asignEmployees(item) {
+            this.dialogAsignEmployees = true;
+            this.editingProjectUuid = item.project_uuid;
+            console.log("Asignar técnico");
+        },
+        getTechniciens() {
+            axios.get('api/users/get-rol-users/tecnico')
+                .then(response => {
+                    this.employees = response.data.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        saveTechniciens(action) {
+            let formData = {
+                project_uuid: action === 'create' ? this.editingProjectUuid : this.editedItem.project_uuid,
+                employees: []
+            };
+
+            this.editedItem.employees_uuid.forEach(employee => {
+                formData.employees.push({
+                    employee_uuid: employee
+                });
+            });
+            //console.log(formData);
+
+            if (action === 'update') {
+                console.log("Actualizar técnicos");
+                const putRequest = () => {
+                    return axios.put('api/project/employees/' + formData.project_uuid, formData);
+                };
+                toast.promise(putRequest(), {
+                    loading: 'Procesando...',
+                    success: (data) => {
+                        this.$inertia.reload()
+                        this.close();
+                        return 'Técnicos actualizados correctamente';
+                    },
+                    error: (data) => {
+                        this.handleErrors(data);
+                    }
+                });
+            } else if (action === 'create') {
+                console.log("Asignar técnicos");
+                const postRequest = () => {
+                    return axios.post('api/project/employees', formData);
+                };
+                toast.promise(postRequest(), {
+                    loading: 'Procesando...',
+                    success: (data) => {
+                        this.$inertia.reload()
+                        this.closeAsignEmployees();
+                        return 'Técnicos asignados correctamente';
+                    },
+                    error: (data) => {
+                        this.handleErrors(data);
+                    }
+                });
+            }
         },
     }
 
