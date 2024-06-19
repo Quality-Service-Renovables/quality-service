@@ -112,21 +112,24 @@ class EmployeeService extends Service implements ServiceInterface
         try {
             // Control de transacciones
             DB::beginTransaction();
+            
             $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
+
+            // Eliminamos los tecnicos actuales
+            Employee::where('project_id', $project->project_id)->delete();
+
+            // Registra los atributos de la solicitud
+            $this->response['message'] = trans('api.created');
+
+            // Asignamos los nuevos tecnicos al proyecto
             foreach ($request->employees as $employee) {
                 $user = User::where('uuid', '=', $employee['employee_uuid'])->first();
-                // Agrega atributos a la solicitud
-                $request->merge([
+
+                $this->response['data'][] = Employee::firstOrCreate([
                     'user_id' => $user->id,
                     'project_id' => $project->project_id,
-                ]);
-                // Registra los atributos de la solicitud
-                $this->response['message'] = trans('api.created');
-                $this->response['data'] = Employee::updateOrCreate([
-                    'user_id' => $request->user_id,
-                    'project_id' => $request->project_id,
                 ], [
-                    'update_at' => now(),
+                    'project_employee_uuid' => Str::uuid()->toString(),
                 ]);
             }
             // Registro en log
@@ -189,8 +192,8 @@ class EmployeeService extends Service implements ServiceInterface
                 'user', 'project',
             ])->where('project_employee_uuid', $uuid)->first();
             $this->response['message'] = $project === null
-                ? trans('api.not_found')
-                : trans('api.show');
+            ? trans('api.not_found')
+            : trans('api.show');
             $this->response['data'] = $project ? $project->toArray() : [];
         } catch (Throwable $exceptions) {
             // Manejo del error
