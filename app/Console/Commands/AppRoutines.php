@@ -143,6 +143,12 @@ class AppRoutines extends Command implements Isolatable
                     'logo',
                 ],
             ],
+            'users' => [
+                'table' => 'users',
+                'columns' => [
+                    'image_profile',
+                ],
+            ],
         ];
     }
 }

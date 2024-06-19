@@ -46,6 +46,7 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //****************************** USER *******************************
     Route::resource('users', UserController::class);
     Route::get('users/get-rol-users/{rol_user}', [UserController::class, 'getRolUsers']);
+    Route::post('users/update/{uuid}', [UserController::class, 'update']);
     //**************************** END USER *****************************
     //######################################################### CLIENTS ##########################################################
     Route::resource('clients', ClientController::class);

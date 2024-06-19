@@ -8,6 +8,7 @@ namespace App\Models\Equipments;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
@@ -27,4 +28,14 @@ class Category extends Model
     ];
 
     protected $hidden = ['ct_equipment_id'];
+
+    /**
+     * Retrieve the equipment records associated with the current model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function equipments(): HasMany
+    {
+        return $this->hasMany(Equipment::class, 'ct_equipment_id', 'ct_equipment_id');
+    }
 }

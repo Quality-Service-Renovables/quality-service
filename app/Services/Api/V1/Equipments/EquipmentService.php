@@ -261,9 +261,8 @@ class EquipmentService extends Service implements ServiceInterface
                 $this->storeFile(
                     $request,
                     $file['fileRequest'],
-                    $file['fileDatabase'],
                     $file['module'],
-                    true
+                    $file['fileDatabase']
                 );
             }
         }

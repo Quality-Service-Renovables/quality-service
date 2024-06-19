@@ -47,7 +47,7 @@ class ClientService extends Service implements ServiceInterface
                 'client_uuid' => Str::uuid()->toString(),
                 'client_code' => create_slug($request->client),
             ]);
-            $this->storeFile($request, 'logo_store', 'logo', 'clients');
+            $this->storeFile($request, 'logo_store', 'clients', 'logo');
             // Registra los atributos de la solicitud al cliente
             $client = Client::create($request->except(['logo_store']));
             // Define parámetros de respuesta
@@ -90,7 +90,7 @@ class ClientService extends Service implements ServiceInterface
             $request->merge(['client_code' => $slug]);
             // Si se detecta que se requiere actualizar el logo, se procede a guardar el nuevo logo.
             if ($request->logo_store) {
-                $this->storeFile($request, 'logo_store', 'logo', 'clients');
+                $this->storeFile($request, 'logo_store', 'clients', 'logo');
             }
             // Actualiza el cliente
             $client = Client::where('client_uuid', $request->client_uuid)->first();

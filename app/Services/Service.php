@@ -71,63 +71,53 @@ class Service
     }
 
     /**
-     * Sets the fields for the equipment.
-     *
-     * @param  Request  $request  The request object.
-     * @return array The formatted request data.
-     *
      * @throws \JsonException
      */
-    public function storeFile(Request $request, string $fileRequest, string $fileDatabase, string $module, bool $deleteAttribute = false): array
+    public function storeFile(Request $request, string $file, string $module, ?string $path = null): Request
+    {
+        // Obtiene el directorio en base al módulo solicitado
+        $directory = $this->getDirectory($module);
+        // Si se ha seleccionado una archivo se guarda en el storage
+        if ($request->hasFile($file)) {
+            // Guardar archivo y obtener ruta
+            $pathStorage = $request
+                ->file($file)
+                ->store($directory, 'public_direct');
+            /**
+             * En caso de no recibir un nombre de atributo personalizado en $path
+             * Se establece el mismo nombre del atributo $file en una instancia
+             * clonada del Request, en caso de proveer el nombre personalizado en el
+             * atributo $path se retorna sobre este atributo la ruta de guardado del documento.
+             **/
+            if (($file === $path) || ! $path) {
+                $path = $file;
+                $request = new Request($request->except($file));
+            }
+            $request->merge([
+                $path => $this->getApplicationPaths()->application.$pathStorage,
+            ]);
+        }
+
+        return $request;
+    }
+
+    /**
+     * @throws \JsonException
+     */
+    private function getDirectory($module): string
     {
         $paths = $this->getApplicationPaths();
+
         // Establece la ruta de guardado
-        $storagePath = match ($module) {
+        return match ($module) {
             'clients' => $paths->clients->logos,
             'equipment_images' => $paths->equipments->images,
             'equipment_documents' => $paths->equipments->documents,
             'equipments_diagrams' => $paths->equipments->diagrams,
             'evidences' => $paths->evidences->inspections,
+            'users' => $paths->users->image_profile,
             default => 'tmp',
         };
-        // Si se ha seleccionado una imagen se guarda en el storage
-        if ($request->hasFile($fileRequest)) {
-            $this->addFileToRequest(
-                $request,
-                $fileRequest,
-                $fileDatabase,
-                $storagePath,
-            );
-        }
-        // Eliminar atributo
-        if ($deleteAttribute) {
-            $request->offsetUnset($fileRequest);
-        }
-
-        return $request->all();
-    }
-
-    /**
-     * Adds a file to the request and removes the original file field.
-     *
-     * @param  Request  $request  The request object.
-     * @param  string  $fileField  The file field in the request.
-     * @param  string  $newField  The new field key to replace the original with in the request.
-     * @param  string  $storagePath  The storage path for the file.
-     *
-     * @throws \JsonException
-     */
-    private function addFileToRequest(Request $request, string $fileRequest, string $fileDatabase, string $storagePath): void
-    {
-        // Guardar imagen o manual y obtener ruta
-        $path = $request
-            ->file($fileRequest)
-            ->store($storagePath, 'public_direct');
-
-        // Agregar el atributo a la solicitud
-        $request->merge([
-            $fileDatabase => $this->getApplicationPaths()->application.$path,
-        ]);
     }
 
     /**

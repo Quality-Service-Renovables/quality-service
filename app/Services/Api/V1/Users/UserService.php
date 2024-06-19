@@ -19,6 +19,7 @@
 
 namespace App\Services\Api\V1\Users;
 
+use App\Models\Clients\Client;
 use App\Models\Equipments\Category;
 use App\Models\Equipments\Equipment;
 use App\Models\Users\User;
@@ -41,11 +42,26 @@ class UserService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Agrega atributos a la solicitud
-            $request->merge(['uuid' => Str::uuid()->toString()]);
-            // Obtiene los identificadores de los códigos y depura atributos a la solicitud
-            $input = $this->setRequest($request);
+            $client = Client::where('client_uuid', '=', $request->client_uuid)
+                ->first();
+            $request->merge([
+                'uuid' => Str::uuid()->toString(),
+                'client_id' => $client->client_id,
+            ]);
+
+            // Establecer imágen por defecto en caso de no seleccionar alguna.
+            if (! $request->image_profile) {
+                $request->merge(['image_profile' => $this->imageDefault]);
+            } else {
+                $request = $this->storeFile($request,
+                    'image_profile',
+                    'users'
+                );
+            }
             // Registra los atributos de la solicitud al usuario
-            $user = User::create($input);
+            $user = User::create($request->all());
+            $user->assignRole($request->rol);
+
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
             $this->response['data'] = $user;
@@ -87,24 +103,45 @@ class UserService extends Service implements ServiceInterface
         try {
             // Control de transacciones
             DB::beginTransaction();
-            // Obtiene los identificadores de los códigos y depura atributos a la solicitud
-            $input = $this->setRequest($request);
-            // En caso de que no se detecte una imágen se establece una por defecto
-            $input['equipment_image'] = $input['equipment_image'] ?? $this->imageDefault;
-            // Actualiza Equipo
-            Equipment::where('equipment_uuid', $request->equipment_uuid)->update($input);
-            // Recupera Equipo Actualizado
-            $equipmentUpdated = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
+            // Obtener el usuario a actualizar
+            $user = User::where('uuid', '=', $request->uuid)->first();
+            // Agrega atributos a la solicitud
+            $client = Client::where('client_uuid', '=', $request->client_uuid)
+                ->first();
+            // Asociación de cliente a la solicitud.
+            $request->merge([
+                'client_id' => $client->client_id,
+            ]);
+            /**
+             * Elimina la imágen anterior siempre y cuando no sea la imágen por defecto.
+             * Esto con la finalidad de eliminar imágenes huérfanas en la aplicación.
+             * */
+            if ($user->image_profile && ($user->image_profile !== $request->image_profile)) {
+                $this->purgeFile($user->image_profile);
+                $request = $this->storeFile($request,
+                    'image_profile',
+                    'users'
+                );
+            } else {
+                $request->merge(['image_profile' => $this->imageDefault]);
+            }
+            // Registra los atributos de la solicitud al usuario
+            $user?->update($request->except([
+                'client_uuid',
+            ]));
+            // Asignación de rol
+            $user->assignRole($request->rol);
+            // Respuesta del módulo
             $this->response['message'] = trans('api.updated');
-            $this->response['data'] = $equipmentUpdated;
-            // Registro de log
+            $this->response['data'] = $user;
+            // Registro en log
             $this->logService->create(
                 $this->nameService,
                 $request->all(),
                 $this->response,
                 trans('api.message_log'),
             );
-            // Confirmación de transacción
+            // Finaliza Transacción
             DB::commit();
         } catch (Throwable $exceptions) {
             DB::rollBack();
@@ -167,105 +204,6 @@ class UserService extends Service implements ServiceInterface
 
         // Respuesta del módulo
         return $this->response;
-    }
-
-    /**
-     * Sets the request data for the equipment.
-     *
-     * @param  Request  $request  The request object.
-     * @return array The formatted request data.
-     *
-     * @throws \JsonException
-     */
-    private function setRequest(Request $request): array
-    {
-        // Obtiene identificadores de códigos
-        $rolId = Category::where('rol_code', $request->get('rol_code'))->first()->id;
-        // Agrupa el contenido a insertar en la solicitud
-        $extraAttributes = [
-            'equipment_code' => create_slug($request->equipment),
-            'ct_equipment_id' => $categoryId,
-            'trademark_id' => $trademarkId,
-            'trademark_model_id' => $trademarkModelId,
-            'status_id' => $statusId,
-        ];
-        // Agrupa contenido en la solicitud
-        $request->merge($extraAttributes);
-
-        // Omite contenido de la solicitud
-        return $this->setFields($request);
-    }
-
-    /**
-     * Sets the fields for the equipment.
-     *
-     * @param  Request  $request  The request object.
-     * @return array The formatted request data.
-     *
-     * @throws \JsonException
-     */
-    private function setFields(Request $request): array
-    {
-        $paths = $this->getApplicationPaths();
-
-        // Si se ha seleccionado una imagen para el equipo se guarda en el storage
-        if ($request->hasFile('equipment_image_storage')) {
-            $this->addFileToRequest(
-                $request,
-                'equipment_image_storage',
-                'equipment_image',
-                $paths->equipments->images
-            );
-        }
-
-        // Si se ha seleccionado un manual para el equipo se guarda en el storage
-        if ($request->hasFile('manual_storage')) {
-            $this->addFileToRequest(
-                $request,
-                'manual_storage',
-                'manual',
-                $paths->equipments->documents
-            );
-        }
-
-        return $request->except([
-            'ct_equipment_code',
-            'trademark_code',
-            'trademark_model_code',
-            'status_code',
-            'equipment_image_storage',
-            'manual_storage',
-        ]);
-    }
-
-    /**
-     * Adds a file to the request and removes the original file field.
-     *
-     * @param  Request  $request  The request object.
-     * @param  string  $fileField  The file field in the request.
-     * @param  string  $newField  The new field key to replace the original with in the request.
-     * @param  string  $storagePath  The storage path for the file.
-     *
-     * @throws \JsonException
-     */
-    private function addFileToRequest(Request $request, string $fileField, string $newField, string $storagePath): void
-    {
-        // Si existe una imagen o manual anterior se purga el archivo
-        if ($request->$newField) {
-            $this->purgeFile($request->$newField);
-        }
-
-        // Eliminar atributo
-        $request->offsetUnset($newField);
-        // Guardar imagen o manual y obtener ruta
-        $path = $request
-            ->file($fileField)
-            ->store($storagePath, 'public_direct');
-
-        // Agregar el atributo a la solicitud
-        $request->merge([
-            $newField => $this->getApplicationPaths()->application.$path,
-        ]);
     }
 
     /**

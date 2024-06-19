@@ -32,14 +32,16 @@ class EvidenceService extends Service
 
             $this->storeFile($request,
                 'evidence_store',
-                'inspection_evidence',
-                'evidences');
+                'evidences',
+                'inspection_evidence'
+            );
 
             if ($request->evidence_store_secondary) {
                 $this->storeFile($request,
                     'evidence_store_secondary',
-                    'inspection_evidence_secondary',
-                    'evidences');
+                    'evidences',
+                    'inspection_evidence_secondary'
+                );
             }
             // Create Register
             $inspectionEquipment = Evidence::create($request->all());
@@ -118,15 +120,17 @@ class EvidenceService extends Service
             if ($request->evidence_store) {
                 $this->storeFile($request,
                     'evidence_store',
-                    'inspection_evidence',
-                    'evidences');
+                    'evidences',
+                    'inspection_evidence'
+                );
             }
 
             if ($request->evidence_store_secondary) {
                 $this->storeFile($request,
                     'evidence_store_secondary',
-                    'inspection_evidence_secondary',
-                    'evidences');
+                    'evidences',
+                    'inspection_evidence_secondary'
+                );
             }
 
             // Update Register

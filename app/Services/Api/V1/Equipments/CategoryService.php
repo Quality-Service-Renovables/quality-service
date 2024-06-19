@@ -122,7 +122,7 @@ class CategoryService extends Service implements ServiceInterface
     public function read(): array
     {
         $this->response['message'] = trans('api.read');
-        $this->response['data'] = Category::all();
+        $this->response['data'] = Category::with(['equipments'])->get();
 
         // Respuesta del módulo
         return $this->response;
@@ -167,7 +167,8 @@ class CategoryService extends Service implements ServiceInterface
     {
         try {
             // Obtiene categoría del equipo
-            $category = Category::where('ct_equipment_uuid', $uuid)->first();
+            $category = Category::with(['equipments'])
+                ->where('ct_equipment_uuid', $uuid)->first();
             $this->response['message'] = $category === null
                 ? trans('api.not_found')
                 : trans('api.show');
