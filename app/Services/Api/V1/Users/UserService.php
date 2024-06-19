@@ -163,7 +163,7 @@ class UserService extends Service implements ServiceInterface
     {
         try {
             // Aplica soft delete al equipo especificado por medio de su uuid
-            Equipment::where('equipment_uuid', $uuid)->update(['deleted_at' => now()]);
+            User::where('uuid', $uuid)->update(['deleted_at' => now()]);
             $this->logService->create(
                 $this->nameService,
                 compact('uuid'),

@@ -102,12 +102,20 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $uuid): JsonResponse
     {
-        //
+        $request = ['uuid' => $uuid];
+
+        if (! $this->commonValidation($request)) {
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->delete($uuid);
+
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
-    public function getRolUsers(string $rol)
+    public function getRolUsers(string $rol): JsonResponse
     {
         $rolUser = ['rol_user' => $rol];
         $validated = Validator::make($rolUser, [
@@ -123,5 +131,26 @@ class UserController extends Controller
         $this->service->getRolUsers($rol);
 
         return response()->json($this->service->response, $this->service->statusCode);
+    }
+
+    /**
+     * Perform common validation for the request data.
+     *
+     *
+     * @return bool Returns true if validation passes, false otherwise.
+     */
+    private function commonValidation(array $request): bool
+    {
+        $validated = Validator::make($request, [
+            'uuid' => 'required|uuid|exists:users,uuid',
+        ]);
+
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+
+            return false;
+        }
+
+        return true;
     }
 }

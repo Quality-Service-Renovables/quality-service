@@ -113,7 +113,7 @@ class AppRoutines extends Command implements Isolatable
             $fileExist = $fileInDatabase->first();
             // si el archivo no existe en la base de datos, lo elimina
             if (! $fileExist) {
-                $this->info('Deleting orphan document: '.$file);
+                $this->warn('Deleting orphan document: '.$file);
                 Storage::disk('public_direct')->delete($file);
             }
         }
