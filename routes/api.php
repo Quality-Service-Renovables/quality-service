@@ -57,9 +57,11 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //######################################################## INSPECTIONS #########################################################
     Route::resource('inspections', InspectionController::class);
     Route::resource('inspection/sections', SectionController::class);
-    Route::resource('inspection/equipments', \App\Http\Controllers\Api\V1\Inspections\EquipmentController::class);
+    Route::resource('inspection/equipments', \App\Http\Controllers\Api\V1\Inspections\EquipmentController::class)
+        ->names('inspection.equipments');
     Route::resource('inspection/evidences', EvidenceController::class);
-    Route::resource('inspection/categories', CategoryController::class);
+    Route::resource('inspection/categories', CategoryController::class)
+        ->names('inspection.categories');
 
     Route::post('inspection/evidences/update/{uuid}', [EvidenceController::class, 'update']);
     Route::get('inspection/resources/get-inspection-details/{ct_inspection_uuid}', [ResourceController::class, 'getInspectionDetail'])
@@ -79,13 +81,16 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::resource('equipments', EquipmentController::class);
     // Para envio de tipo multi form, el verbo PUT no es compatible, se ha remplazado por la llamada a este end point
     Route::post('equipments/update/{uuid}', [EquipmentController::class, 'update']);
-    Route::resource('equipment/categories', \App\Http\Controllers\Api\V1\Equipments\CategoryController::class);
+    Route::resource('equipment/categories', \App\Http\Controllers\Api\V1\Equipments\CategoryController::class)
+        ->names('equipment.categories');
     //######################################################### OILS ##########################################################
     Route::resource('oils', OilController::class);
-    Route::resource('oil/categories', \App\Http\Controllers\Api\V1\Oils\CategoryController::class);
+    Route::resource('oil/categories', \App\Http\Controllers\Api\V1\Oils\CategoryController::class)
+        ->names('oil.categories');
     //######################################################### TRADEMARKS ##########################################################
     Route::resource('trademarks', TrademarkController::class);
-    Route::resource('trademark/categories', \App\Http\Controllers\Api\V1\Trademarks\CategoryController::class);
+    Route::resource('trademark/categories', \App\Http\Controllers\Api\V1\Trademarks\CategoryController::class)
+        ->names('trademark.categories');
     Route::resource('trademark/models', TrademarkModelController::class);
     //----------------------------------------------------- Trademarks Resources ----------------------------------------------------
     Route::get('trademarks/get-category/{category}', [TrademarkController::class, 'getCategory'])->where(['category' => '[0-9]+']);
@@ -93,7 +98,8 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::resource('status', StatusController::class);
     //----------------------------------------------------- Failure Equipments ----------------------------------------------------
     Route::resource('failures', FailureController::class);
-    Route::resource('failure/categories', \App\Http\Controllers\Api\V1\Failures\CategoryController::class);
+    Route::resource('failure/categories', \App\Http\Controllers\Api\V1\Failures\CategoryController::class)
+        ->names('failure.categories');
     //######################################################## AUTH GUARDS ##########################################################
     Route::resource('auth-guard/roles', RoleController::class);
     Route::resource('auth-guard/permissions', PermissionController::class);

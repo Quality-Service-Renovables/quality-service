@@ -54,12 +54,12 @@ class AppRoutines extends Command implements Isolatable
          * no debes usar este comando ya que todas las rutas seguirán
          * siendo cacheadas.
          */
-        //Artisan::call('route:cache');
+        Artisan::call('route:cache');
         Artisan::call('config:cache');
         Artisan::call('view:cache');
         // Actualización de composer
-        $this->line('Optimizing composer');
-        $commandComposer = shell_exec('composer dump-autoload --optimize');
+        $this->line('Optimizing composer...');
+        shell_exec('composer dump-autoload --optimize');
     }
 
     /**
@@ -67,12 +67,13 @@ class AppRoutines extends Command implements Isolatable
      */
     private function purgeModules(): void
     {
-        $this->line('Searching orphans document');
+        $this->line('Searching orphan documents');
         $service = new Service();
 
         $modules = $service->getApplicationPaths();
         // Depurar módulos que cuenten con directorios
         foreach ($modules as $module => $folders) {
+            $this->line('Scanning folder: '.$module);
             if (is_array($folders) || is_object($folders)) {
                 $this->purgeFiles($module, $folders);
             }
@@ -113,7 +114,7 @@ class AppRoutines extends Command implements Isolatable
             $fileExist = $fileInDatabase->first();
             // si el archivo no existe en la base de datos, lo elimina
             if (! $fileExist) {
-                $this->warn('Deleting orphan document: '.$file);
+                $this->warn('Orphan document deleted: '.$file);
                 Storage::disk('public_direct')->delete($file);
             }
         }
