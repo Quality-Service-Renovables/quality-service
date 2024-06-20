@@ -87,7 +87,7 @@ class ProjectService extends Service implements ServiceInterface
     public function read(): array
     {
         $this->response['message'] = trans('api.read');
-        $this->response['data'] = Project::with(['client', 'status', 'employees.user', 'inspections'])->get();
+        $this->response['data'] = Project::with(['client', 'status', 'employees.user', 'inspections.category'])->get();
 
         return $this->response;
     }
