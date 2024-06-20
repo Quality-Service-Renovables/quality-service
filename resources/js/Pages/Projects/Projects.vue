@@ -152,7 +152,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 v-if="hasPermissionTo('projects.delete')" @click="deleteItem(item)"
                                                 size="small" />
                                             <ActionButton text="Asignar técnico" icon="mdi-account-plus-outline"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_creado', 'inspeccion_iniciada'])"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado', 'inspeccion_iniciada'])"
                                                 size="small" @click="asignTechniciensDialog('update', item)" color="text-success" />
                                             <ActionButton text="Asignar inspección" icon="mdi-table-plus"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado', 'inspeccion_iniciada']) && item.inspections.length"
@@ -224,7 +224,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     v-if="hasPermissionTo('projects.update')">
                                     <v-card>
                                         <v-card-title>
-                                            <span class="text-h5">Asignar técnicos</span>
+                                            <span class="text-h5" v-if="editedItem.action == 'create'">Asignar técnicos</span>
+                                            <span class="text-h5" v-if="editedItem.action == 'update'">Actualizar técnicos</span>
                                         </v-card-title>
 
                                         <v-card-text>
