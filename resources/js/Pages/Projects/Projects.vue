@@ -96,7 +96,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 <v-col cols="12" class="text-right">
                                                                     <v-divider></v-divider>
                                                                 </v-col>
-                                                                <v-col cols="12"
+                                                                <!--<v-col cols="12"
                                                                     v-if="editedItem.project_uuid && checkStatus(editedItem, ['proceso_asignado'])">
                                                                     <v-select v-model="editedItem.employees_uuid"
                                                                         :items="employees" item-title="name"
@@ -109,7 +109,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                     <PrimaryButton @click="asignTechniciens('update')">
                                                                         Guardar
                                                                     </PrimaryButton>
-                                                                </v-col>
+                                                                </v-col>-->
                                                             </v-row>
                                                         </v-container>
                                                     </v-card-text>
@@ -151,6 +151,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             <ActionButton text="Eliminar" icon="mdi-delete"
                                                 v-if="hasPermissionTo('projects.delete')" @click="deleteItem(item)"
                                                 size="small" />
+                                            <ActionButton text="Asignar técnico" icon="mdi-account-plus-outline"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_creado', 'inspeccion_iniciada'])"
+                                                size="small" @click="asignTechniciensDialog('update', item)" color="text-success" />
                                             <ActionButton text="Asignar inspección" icon="mdi-table-plus"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado', 'inspeccion_iniciada']) && item.inspections.length"
                                                 size="small" @click="asignInspectionDialog('update', item)"
@@ -161,7 +164,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <div class="d-flex">
                                             <ActionButton text="Asignar técnico" icon="mdi-account-plus-outline"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_creado'])"
-                                                size="small" @click="asignTechniciensDialog(item)" />
+                                                size="small" @click="asignTechniciensDialog('create', item)" />
                                             <ActionButton text="Asignar inspección" icon="mdi-table-plus"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado']) && !item.inspections.length"
                                                 size="small" @click="asignInspectionDialog('create', item)" />
@@ -243,7 +246,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 Cerrar
                                             </v-btn>
                                             <v-btn color="blue-darken-1" variant="text"
-                                                @click="asignTechniciens('create')"
+                                                @click="asignTechniciens()"
                                                 :disabled="!editedItem.employees_uuid.length">
                                                 Guardar
                                             </v-btn>
@@ -557,14 +560,23 @@ export default {
         },
 
         // 2 - Asignar técnicos
-        asignTechniciensDialog(item) {
+        asignTechniciensDialog(action, item) {
             this.dialogAsignEmployees = true;
             this.editingProjectUuid = item.project_uuid;
+
+            if(action === 'update'){
+                this.editedItem.action = 'update';
+                this.editedItem.employees_uuid = item.employees.map(employee => employee.user.uuid);
+            }else{
+                this.editedItem.action = 'create';
+                this.editedItem.employees_uuid = [];
+            }
             console.log("Asignar técnico");
         },
-        asignTechniciens(action) {
+        asignTechniciens() {
+            let action = this.editedItem.action;
             let formData = {
-                project_uuid: action === 'create' ? this.editingProjectUuid : this.editedItem.project_uuid,
+                project_uuid: this.editingProjectUuid,
                 employees: []
             };
 
@@ -581,7 +593,7 @@ export default {
                     loading: 'Procesando...',
                     success: (data) => {
                         this.$inertia.reload()
-                        this.close();
+                        this.closeAsignTechniciens();
                         return 'Técnicos actualizados correctamente';
                     },
                     error: (data) => {
@@ -696,7 +708,6 @@ export default {
                         reject(data);
                     }
                 });
-
             });
         },
         asignEquipmentToInspection() {
