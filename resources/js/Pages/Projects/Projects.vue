@@ -157,7 +157,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 size="small" @click="asignEmployees(item)" />
                                             <ActionButton text="Asignar inspección" icon="mdi-table-plus"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado')"
-                                                size="small" @click="asignInspection(item)"/>
+                                                size="small" @click="asignInspection(item)" />
                                             <ActionButton text="Iniciar proyecto" icon="mdi-play-speed"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado') && item.inspections.length > 0"
                                                 size="small" />
@@ -232,8 +232,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
                                         <v-card-actions>
                                             <v-spacer></v-spacer>
-                                            <v-btn color="blue-darken-1" variant="text"
-                                                @click="closeAsignEmployees">
+                                            <v-btn color="blue-darken-1" variant="text" @click="closeAsignEmployees">
                                                 Cerrar
                                             </v-btn>
                                             <v-btn color="blue-darken-1" variant="text"
@@ -246,35 +245,54 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                 </v-dialog>
 
                                 <!-- Dialog para asignar técnicos -->
-                                <v-dialog v-model="dialogAsignInspection" width="600"
+                                <v-dialog v-model="dialogAsignInspection" width="auto" min-height="600" scrollable
                                     v-if="hasPermissionTo('projects.update')">
-                                    <v-card :loading="loadingInspectionDependencies" :disabled="loadingInspectionDependencies">
+                                    <v-card :loading="loadingInspectionDependencies"
+                                        :disabled="loadingInspectionDependencies">
                                         <v-card-title>
-                                            <span class="text-h5">Asignar inspección</span>
+                                            <span class="text-h5">Asignando inspección al proyecto "{{
+        inspectionForm.project_name }}"</span>
                                         </v-card-title>
 
                                         <v-card-text>
                                             <v-container>
                                                 <v-row>
                                                     <v-col cols="12">
-                                                        <v-select v-model="editedItem.ct_inspection_uuid" :items="inspections"
-                                                            item-title="ct_inspection" item-value="ct_inspection_uuid"
+                                                        <v-select v-model="inspectionForm.ct_inspection_code"
+                                                            :items="inspections" item-title="ct_inspection"
+                                                            item-value="ct_inspection_code"
                                                             label="Seleccionar inspección" variant="outlined"
                                                             hide-details required></v-select>
                                                     </v-col>
-                                                    <v-col cols="12">
-                                                        <v-select v-model="editedItem.ct_equipment_uuid"
+                                                    <v-col cols="6">
+                                                        <v-select v-model="inspectionForm.ct_equipment_uuid"
                                                             :items="inspectionsEquipmentsCategories"
-                                                            item-title="ct_equipment"
-                                                            item-value="ct_equipment_uuid"
-                                                            label="Seleccionar equipo"
-                                                            variant="outlined" hide-details required @update:modelValue="getInspectionEquipmentsByCategory"></v-select>
+                                                            item-title="ct_equipment" item-value="ct_equipment_uuid"
+                                                            label="Seleccionar categoría de equipo" variant="outlined"
+                                                            hide-details required
+                                                            @update:modelValue="getInspectionEquipmentsByCategory"></v-select>
+                                                    </v-col>
+                                                    <v-col cols="6">
+                                                        <v-select v-model="inspectionForm.equipment_uuid"
+                                                            :items="equipmentsByCategory" item-title="equipment"
+                                                            item-value="equipment_uuid"
+                                                            label="Seleccionar equipo a inspeccionar" variant="outlined"
+                                                            hide-details clearable></v-select>
                                                     </v-col>
                                                     <v-col cols="12">
-                                                        <v-select v-model="editedItem.equipment_uuid" :items="equipmentsByCategory"
+                                                        <v-select v-model="inspectionForm.equipments_uuid"
+                                                            :items="inspectionsEquipmentsToUseInInspections"
                                                             item-title="equipment" item-value="equipment_uuid"
-                                                            label="Seleccionar equipo" variant="outlined" hide-details
-                                                            required></v-select>
+                                                            label="Seleccionar equipos a utilizar en la inspcección"
+                                                            variant="outlined" hide-details multiple chips
+                                                            clearable></v-select>
+                                                    </v-col>
+                                                    <v-col cols="12">
+                                                        <p class="text-grey mb-2">Define el resumen de la inspección a
+                                                            realizar
+                                                        </p>
+                                                        <QuillEditor v-model:content="inspectionForm.resume"
+                                                            theme="snow" toolbar="full" heigth="100%" contentType="html"/>
                                                     </v-col>
                                                 </v-row>
                                             </v-container>
@@ -282,13 +300,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
                                         <v-card-actions>
                                             <v-spacer></v-spacer>
-                                            <v-btn color="blue-darken-1" variant="text"
-                                                @click="closeAsignInspection">
+                                            <v-btn color="blue-darken-1" variant="text" @click="closeAsignInspection">
                                                 Cerrar
                                             </v-btn>
-                                            <v-btn color="blue-darken-1" variant="text"
-                                                @click="saveAsignInspection()"
-                                                :disabled="false">
+                                            <v-btn color="blue-darken-1" variant="text" @click="saveAsignInspection()"
+                                                :disabled="false" :loading="loadingInspectionDependencies">
                                                 Guardar
                                             </v-btn>
                                         </v-card-actions>
@@ -312,12 +328,15 @@ import Swal from 'sweetalert2';
 import ActionButton from '@/Pages/Projects/Partials/ActionButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { mdiCarLightHigh } from '@mdi/js';
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 export default {
     components: {
         Toaster,
         ActionButton,
-        PrimaryButton
+        PrimaryButton,
+        QuillEditor
     },
     props: {
         projects: {
@@ -374,8 +393,32 @@ export default {
         editingProjectUuid: '',
         inspections: [],
         inspectionsEquipmentsCategories: [],
+        inspectionsEquipmentsToUseInInspections: [],
         loadingInspectionDependencies: false,
-        equipmentsByCategory: []
+        equipmentsByCategory: [],
+        inspectionForm: {
+            project_name: '',
+            resume: '',
+            ct_inspection_code: null,
+            status_code: 'inspeccion_iniciada',
+            project_id: null,
+            client_uuid: null,
+            ct_equipment_uuid: null,
+            equipment_uuid: [],
+            equipments_uuid: [],
+        },
+        defaultInspectionForm: {
+            project_name: '',
+            resume: '',
+            ct_inspection_code: null,
+            status_code: 'inspeccion_iniciada',
+            project_id: null,
+            client_uuid: null,
+            ct_equipment_uuid: null,
+            equipment_uuid: [],
+            equipments_uuid: [],
+        },
+        errorAssigningInspection: false,
     }),
     computed: {
         formTitle() {
@@ -443,7 +486,7 @@ export default {
         },
         closeAsignInspection() {
             this.dialogAsignInspection = false;
-            this.editingProjectUuid = '';
+            this.inspectionForm = Object.assign({}, this.defaultInspectionForm);
         },
         save() {
             let formData = {
@@ -519,6 +562,10 @@ export default {
         async asignInspection(item) {
             this.dialogAsignInspection = true;
             this.editingProjectUuid = item.project_uuid;
+            this.inspectionForm.project_name = item.project_name;
+            this.inspectionForm.project_id = item.project_uuid;
+            this.inspectionForm.client_uuid = item.client.client_uuid;
+
             console.log("Asignar inspección: " + item.project_uuid);
 
             this.loadingInspectionDependencies = true;
@@ -583,8 +630,86 @@ export default {
                 });
             }
         },
-        saveAsignInspection() {
+        async saveAsignInspection() {
             console.log("Asignar inspección");
+            this.loadingInspectionDependencies = true;
+
+            try {
+                await this.createInspection();
+                await this.asignEquipmentToInspection();
+            } catch (error) {
+                toast.error('Error al asignar inspección, favor de verificar los datos ingresados.');
+            }
+
+            this.loadingInspectionDependencies = false;
+
+            console.log("errorAssigningInspection: " + this.errorAssigningInspection);
+
+            if (this.errorAssigningInspection == false) {
+                this.$inertia.reload();
+                this.closeAsignInspection();
+            }
+        },
+
+        createInspection() {
+            console.log("Crear inspección");
+
+            return new Promise((resolve, reject) => {
+                const postRequest = () => {
+                    return axios.post('api/inspections', {
+                        resume: this.inspectionForm.resume,
+                        conclusion: 'Por definir',
+                        ct_inspection_code: this.inspectionForm.ct_inspection_code,
+                        status_code: this.inspectionForm.status_code,
+                        equipment_uuid: this.inspectionForm.equipment_uuid,
+                        project_uuid: this.inspectionForm.project_id,
+                        client_uuid: this.inspectionForm.client_uuid
+                    });
+                };
+
+                toast.promise(postRequest(), {
+                    loading: 'Asignando inspección...',
+                    success: (data) => {
+                        resolve('Inspección asignada correctamente');
+                    },
+                    error: (data) => {
+                        this.errorAssigningInspection = true;
+                        this.handleErrors(data);
+                        reject(data);
+                    }
+                });
+            });
+        },
+
+        asignEquipmentToInspection() {
+            console.log("Asignar equipos a inspección");
+
+            return new Promise((resolve, reject) => {
+                let equipments = this.inspectionForm.equipments_uuid.map(equipment => {
+                    return {
+                        equipment_uuid: equipment
+                    };
+                });
+
+                const postRequest = () => {
+                    return axios.post('api/inspection/equipments', {
+                        inspection_uuid: '',
+                        equipments_uuid: equipments
+                    });
+                };
+
+                toast.promise(postRequest(), {
+                    loading: 'Asignando equipos a inspección...',
+                    success: (data) => {
+                        resolve('Asignación completada correctamente');
+                    },
+                    error: (data) => {
+                        this.errorAssigningInspection = true;
+                        this.handleErrors(data);
+                        reject(data);
+                    }
+                });
+            });
         },
         getInspections() {
             axios.get('api/inspection/categories')
@@ -592,28 +717,24 @@ export default {
                     this.inspections = response.data.data;
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.handleErrors(error);
                 });
         },
         getinspectionsEquipmentsCategories() {
             axios.get('api/equipment/categories')
                 .then(response => {
                     this.inspectionsEquipmentsCategories = response.data.data;
+                    this.inspectionsEquipmentsToUseInInspections = this.inspectionsEquipmentsCategories
+                        .filter(item => item.ct_equipment_code === 'inspeccion')
+                    this.inspectionsEquipmentsToUseInInspections = this.inspectionsEquipmentsToUseInInspections.length ? this.inspectionsEquipmentsToUseInInspections[0].equipments : [];
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.handleErrors(error);
                 });
         },
         getInspectionEquipmentsByCategory() {
-            console.log("Cargando equipos por categoría");
-            let find = this.inspectionsEquipmentsCategories.find(category => category.ct_equipment_uuid === this.editedItem.ct_equipment_uuid).equipments;
-            if(find.length > 0){
-                this.equipmentsByCategory = find;
-            }else{
-                this.equipmentsByCategory = [];
-            }
-           
-            console.log(this.equipmentsByCategory);
+            let equipments = this.inspectionsEquipmentsCategories.find(category => category.ct_equipment_uuid === this.inspectionForm.ct_equipment_uuid).equipments;
+            this.equipmentsByCategory = equipments.length > 0 ? equipments : [];
         }
     }
 
