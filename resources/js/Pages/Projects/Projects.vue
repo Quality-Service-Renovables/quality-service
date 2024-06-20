@@ -103,7 +103,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 </v-col>
                                                                 <v-col cols="12" class="text-right"
                                                                     v-if="editedItem.project_uuid && checkStatus(editedItem, 'proceso_asignado')">
-                                                                    <PrimaryButton @click="saveTechniciens('update')">
+                                                                    <PrimaryButton @click="asignTechniciens('update')">
                                                                         Guardar
                                                                     </PrimaryButton>
                                                                 </v-col>
@@ -236,7 +236,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 Cerrar
                                             </v-btn>
                                             <v-btn color="blue-darken-1" variant="text"
-                                                @click="saveTechniciens('create')"
+                                                @click="asignTechniciens('create')"
                                                 :disabled="!editedItem.employees_uuid.length">
                                                 Guardar
                                             </v-btn>
@@ -510,7 +510,7 @@ export default {
                     this.handleErrors(error);
                 });
         },
-        
+
         // Delete project
         deleteItem(item) {
             this.editedIndex = this.projects.indexOf(item)
@@ -548,7 +548,7 @@ export default {
             this.editingProjectUuid = item.project_uuid;
             console.log("Asignar técnico");
         },
-        saveTechniciens(action) {
+        asignTechniciens(action) {
             let formData = {
                 project_uuid: action === 'create' ? this.editingProjectUuid : this.editedItem.project_uuid,
                 employees: []
