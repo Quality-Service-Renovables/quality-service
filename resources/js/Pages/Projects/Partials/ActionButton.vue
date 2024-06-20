@@ -1,7 +1,7 @@
 <template>
     <v-tooltip :text="text" location="top">
         <template v-slot:activator="{ props }">
-            <v-btn :icon="icon" v-bind="props" :size="size" class="m-1" @click="handleClick" />
+            <v-btn :icon="icon" v-bind="props" :size="size" class="m-1" @click="handleClick" :class="color"/>
         </template>
     </v-tooltip>
 </template>
@@ -20,6 +20,10 @@ export default {
         size: {
             type: String,
             default: 'small'
+        },
+        color: {
+            type: String,
+            default: 'text-dark'
         }
     },
     methods: {

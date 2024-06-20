@@ -19,8 +19,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                             <v-col cols="12" sm="12">
 
                                 <v-data-table :headers="headers" :items="projects" fixed-header :search="search">
-                                    <template v-slot:item.status.status="{ value }">
-                                        <v-chip size="small" class="m-1">{{ value }}</v-chip>
+                                    <template v-slot:item.status.status="{ value, item }">
+                                        <v-chip size="small" class="m-1" v-if="!item.inspections.length">{{ value }}
+                                        </v-chip>
+                                        <v-chip size="small" class="m-1" v-if="item.inspections.length">{{
+        item.inspections[0].status.status }}</v-chip>
                                     </template>
                                     <template v-slot:item.employees="{ value }">
                                         <p v-for="(employee, index) in value" :key="index">
@@ -94,7 +97,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                     <v-divider></v-divider>
                                                                 </v-col>
                                                                 <v-col cols="12"
-                                                                    v-if="editedItem.project_uuid && checkStatus(editedItem, 'proceso_asignado')">
+                                                                    v-if="editedItem.project_uuid && checkStatus(editedItem, ['proceso_asignado'])">
                                                                     <v-select v-model="editedItem.employees_uuid"
                                                                         :items="employees" item-title="name"
                                                                         item-value="uuid" label="Técnicos asignados"
@@ -102,7 +105,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         multiple chips clearable></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12" class="text-right"
-                                                                    v-if="editedItem.project_uuid && checkStatus(editedItem, 'proceso_asignado')">
+                                                                    v-if="editedItem.project_uuid && checkStatus(editedItem, ['proceso_asignado'])">
                                                                     <PrimaryButton @click="asignTechniciens('update')">
                                                                         Guardar
                                                                     </PrimaryButton>
@@ -148,27 +151,31 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             <ActionButton text="Eliminar" icon="mdi-delete"
                                                 v-if="hasPermissionTo('projects.delete')" @click="deleteItem(item)"
                                                 size="small" />
+                                            <ActionButton text="Asignar inspección" icon="mdi-table-plus"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado', 'inspeccion_iniciada']) && item.inspections.length"
+                                                size="small" @click="asignInspectionDialog('update', item)"
+                                                color="text-success" />
                                         </div>
                                     </template>
                                     <template v-slot:item.inspection_actions="{ item }">
                                         <div class="d-flex">
                                             <ActionButton text="Asignar técnico" icon="mdi-account-plus-outline"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_creado')"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_creado'])"
                                                 size="small" @click="asignTechniciensDialog(item)" />
                                             <ActionButton text="Asignar inspección" icon="mdi-table-plus"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado') && !item.inspections.length"
-                                                size="small" @click="asignInspectionDialog(item)" />
-                                            <ActionButton text="Iniciar inspección" icon="mdi-play-speed"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado']) && !item.inspections.length"
+                                                size="small" @click="asignInspectionDialog('create', item)" />
+                                            <!--<ActionButton text="Iniciar inspección" icon="mdi-play-speed"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado') && item.inspections.length > 0"
-                                                size="small" />
+                                                size="small" />-->
                                             <ActionButton text="Finalizar proyecto" icon="mdi-note-check"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_iniciado')"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_iniciado', 'inspeccion_iniciada']) && item.inspections.length > 0"
                                                 size="small" />
                                             <ActionButton text="Validar proyecto" icon="mdi-check-circle-outline"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_finalizado')"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_finalizado'])"
                                                 size="small" />
                                             <ActionButton text="Cerrar proyecto" icon="mdi-close-circle-outline"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_validado')"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_validado'])"
                                                 size="small" />
                                             <ActionButton text="Cancelar proyecto" icon="mdi-table-cancel"
                                                 v-if="hasPermissionTo('projects.update')" size="small" />
@@ -247,10 +254,15 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                 <!-- Dialog para asignar técnicos -->
                                 <v-dialog v-model="dialogAsignInspection" width="auto" min-height="600" scrollable
                                     v-if="hasPermissionTo('projects.update')">
-                                    <v-card :loading="loadingInspectionDialog"
-                                        :disabled="loadingInspectionDialog">
+                                    <v-card :loading="loadingInspectionDialog" :disabled="loadingInspectionDialog">
                                         <v-card-title>
-                                            <span class="text-h5">Asignando inspección al proyecto "{{
+                                            <span class="text-h5" v-if="!this.inspectionForm.isUpdating">Asignando
+                                                inspección al
+                                                proyecto "{{
+        inspectionForm.project_name }}"</span>
+                                            <span class="text-h5" v-if="this.inspectionForm.isUpdating">Actualizando
+                                                inspección
+                                                al proyecto "{{
         inspectionForm.project_name }}"</span>
                                         </v-card-title>
 
@@ -398,6 +410,7 @@ export default {
         loadingInspectionDialog: false,
         equipmentsByCategory: [],
         inspectionForm: {
+            isUpdating: false,
             inspection_uuid: '',
             project_name: '',
             resume: '',
@@ -410,6 +423,7 @@ export default {
             equipments_uuid: [],
         },
         defaultInspectionForm: {
+            isUpdating: false,
             inspection_uuid: '',
             project_name: '',
             resume: '',
@@ -443,7 +457,7 @@ export default {
         this.getinspectionsEquipmentsCategories();
     },
     methods: {
-        // Save/edit project
+        // 1 - Save/edit project
         save() {
             let formData = {
                 project_name: this.editedItem.project_name,
@@ -511,7 +525,7 @@ export default {
                 });
         },
 
-        // Delete project
+        // 1 - Delete project
         deleteItem(item) {
             this.editedIndex = this.projects.indexOf(item)
             this.editedItem = Object.assign({}, item)
@@ -542,7 +556,7 @@ export default {
             })
         },
 
-        // Asinar técnicos
+        // 2 - Asignar técnicos
         asignTechniciensDialog(item) {
             this.dialogAsignEmployees = true;
             this.editingProjectUuid = item.project_uuid;
@@ -596,13 +610,30 @@ export default {
             this.editingProjectUuid = '';
         },
 
-        // Asignar inspección
-        async asignInspectionDialog(item) {
+        // 2 - Asignar inspección
+        async asignInspectionDialog(action, item) {
             this.dialogAsignInspection = true;
             this.editingProjectUuid = item.project_uuid;
-            this.inspectionForm.project_name = item.project_name;
-            this.inspectionForm.project_id = item.project_uuid;
-            this.inspectionForm.client_uuid = item.client.client_uuid;
+
+            if (action == 'update') {
+                this.inspectionForm.isUpdating = true;
+                this.inspectionForm.inspection_uuid = item.inspections[0].inspection_uuid;
+                this.inspectionForm.project_name = item.project_name;
+                this.inspectionForm.resume = item.inspections[0].resume;
+                this.inspectionForm.ct_inspection_code = item.inspections[0].category.ct_inspection_code;
+                this.inspectionForm.status_code = item.inspections[0].status.status_code;
+                this.inspectionForm.project_id = item.project_uuid;
+                this.inspectionForm.client_uuid = item.client.client_uuid;
+                this.inspectionForm.ct_equipment_uuid = item.inspections[0].equipment.category.ct_equipment_uuid;
+                this.getInspectionEquipmentsByCategory(this.inspectionForm.ct_equipment_uuid);
+                this.inspectionForm.equipment_uuid = item.inspections[0].equipment.equipment_uuid;
+                this.inspectionForm.equipments_uuid = item.inspections[0].inspection_equipments.map(equipment => equipment.equipment.equipment_uuid);
+            } else if (action == 'create') {
+                this.inspectionForm.isUpdating = false;
+                this.inspectionForm.project_name = item.project_name;
+                this.inspectionForm.project_id = item.project_uuid;
+                this.inspectionForm.client_uuid = item.client.client_uuid;
+            }
         },
         async asignInspection() {
             console.log("Asignar inspección");
@@ -622,8 +653,9 @@ export default {
         },
         createInspection() {
             return new Promise((resolve, reject) => {
-                const postRequest = () => {
-                    return axios.post('api/inspections', {
+                let request = null;
+                if (!this.inspectionForm.isUpdating) {
+                    let formData = {
                         resume: this.inspectionForm.resume,
                         conclusion: 'Por definir',
                         ct_inspection_code: this.inspectionForm.ct_inspection_code,
@@ -631,14 +663,32 @@ export default {
                         equipment_uuid: this.inspectionForm.equipment_uuid,
                         project_uuid: this.inspectionForm.project_id,
                         client_uuid: this.inspectionForm.client_uuid
-                    });
-                };
-                toast.promise(postRequest(), {
-                    loading: 'Asignando inspección...',
+                    }
+                    request = () => {
+                        return axios.post('api/inspections', formData);
+                    };
+                } else {
+                    request = () => {
+                        return axios.put('api/inspections/' + this.inspectionForm.inspection_uuid, formData);
+                    };
+                    let formData = {
+                        resume: this.inspectionForm.resume,
+                        conclusion: 'Por definir',
+                        ct_inspection_code: this.inspectionForm.ct_inspection_code,
+                        status_code: this.inspectionForm.status_code,
+                        equipment_uuid: this.inspectionForm.equipment_uuid,
+                        project_uuid: this.inspectionForm.project_id,
+                        client_uuid: this.inspectionForm.client_uuid
+                    }
+                }
+
+                toast.promise(request(), {
+                    loading: !this.inspectionForm.isUpdating ? 'Asignando inspección...' : 'Actualizando inspección...',
                     success: (data) => {
                         this.inspectionForm.inspection_uuid = data.data.data.inspection_uuid;
-                        resolve('Inspección asignada correctamente');
-                        return 'Inspección asignada correctamente';
+                        let label = !this.inspectionForm.isUpdating ? 'Inspección asignada correctamente' : 'Inspección actualizada correctamente';
+                        resolve(label);
+                        return label;
                     },
                     error: (data) => {
                         this.errorAssigningInspection = true;
@@ -646,6 +696,7 @@ export default {
                         reject(data);
                     }
                 });
+
             });
         },
         asignEquipmentToInspection() {
@@ -655,17 +706,26 @@ export default {
                         equipment_uuid: equipment
                     };
                 });
-                const postRequest = () => {
-                    return axios.post('api/inspection/equipments', {
-                        inspection_uuid: this.inspectionForm.inspection_uuid,
-                        equipments: equipments
-                    });
+                const request = () => {
+                    if(!this.inspectionForm.isUpdating){
+                        return axios.post('api/inspection/equipments', {
+                            inspection_uuid: this.inspectionForm.inspection_uuid,
+                            equipments: equipments
+                        });
+                    }else{
+                        return axios.put('api/inspection/equipments/' + this.inspectionForm.inspection_uuid, {
+                            inspection_uuid: this.inspectionForm.inspection_uuid,
+                            equipments: equipments
+                        });
+                    }
+                    
                 };
-                toast.promise(postRequest(), {
-                    loading: 'Asignando equipos a inspección...',
+                toast.promise(request(), {
+                    loading: !this.inspectionForm.isUpdating ? 'Asignando equipos a inspección...' : 'Actualizando equipos de inspección...',
                     success: (data) => {
-                        resolve('Asignación completada correctamente');
-                        return 'Asignación completada correctamente';
+                        let label = !this.inspectionForm.isUpdating ? 'Asignación completada correctamente' : 'Actualización completada correctamente';
+                        resolve(label);
+                        return label;
                     },
                     error: (data) => {
                         this.errorAssigningInspection = true;
@@ -723,9 +783,16 @@ export default {
 
         // Helpers
         checkStatus(item, status) {
-            return item.status.status_code == status;
+            let statusAux = null;
+            if (item.inspections.length > 0) {
+                statusAux = item.inspections[0].status.status_code;
+            } else {
+                statusAux = item.status.status_code;
+            }
+            return status.includes(statusAux);
         },
         getInspectionEquipmentsByCategory(ct_equipment_uuid) {
+            this.inspectionForm.equipment_uuid = null;
             let equipments = this.inspectionsEquipmentsCategories.find(category => category.ct_equipment_uuid === ct_equipment_uuid).equipments;
             this.equipmentsByCategory = equipments.length > 0 ? equipments : [];
         },

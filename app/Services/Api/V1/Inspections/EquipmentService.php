@@ -96,7 +96,8 @@ class EquipmentService extends Service
             DB::beginTransaction();
 
             $inspection = Inspection::where('inspection_uuid', $request->inspection_uuid)->first();
-            $equipment = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
+            /*$equipment = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
+
             $inspectionEquipment = InspectionEquipment::where([
                 'equipment_id' => $equipment->equipment_id,
                 'inspection_id' => $inspection->inspection_id,
@@ -116,7 +117,24 @@ class EquipmentService extends Service
                 $this->response['message'] = trans('api.updated');
             } else {
                 $this->response['message'] = trans('api.inspection_equipment_exist');
+            }*/
+
+            // Eliminamos los equipos asociados a la inspección
+            InspectionEquipment::where('inspection_id', $inspection->inspection_id)->delete();
+
+            // Asignamos los nuevos equipos a la inspección
+            $inspectionEquipment = [];
+            foreach ($request->equipments as $equipmentRequest) {
+                $equipment = Equipment::where('equipment_uuid', $equipmentRequest['equipment_uuid'])
+                    ->first();
+                // Create Register
+                $inspectionEquipment[] = InspectionEquipment::create([
+                    'inspection_equipment_uuid' => Str::uuid()->toString(),
+                    'inspection_id' => $inspection->inspection_id,
+                    'equipment_id' => $equipment->equipment_id,
+                ]);
             }
+
             $this->response['data'] = $inspectionEquipment;
             // Set Log
             $this->logService->create(
