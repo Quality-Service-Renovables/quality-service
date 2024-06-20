@@ -95,7 +95,7 @@ class EquipmentController extends Controller
         $request->merge(['inspection_equipment_uuid' => $uuid]);
         $validated = Validator::make($request->all(), [
             'inspection_equipment_uuid' => 'required|uuid|exists:inspection_equipments,inspection_equipment_uuid',
-            'equipment_uuid' => [
+            'equipments.*.equipment_uuid' => [
                 'required',
                 'string',
                 'min:1',

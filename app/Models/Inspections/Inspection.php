@@ -25,12 +25,13 @@ class Inspection extends Model
         'conclusion',
         'recomendations',
         'ct_inspection_id',
+        'equipment_id',
         'client_id',
         'status_id',
         'project_id',
     ];
 
-    protected $hidden = ['inspection_id', 'ct_inspection_id', 'client_id', 'status_id', 'project_id'];
+    protected $hidden = ['inspection_id', 'ct_inspection_id', 'equipment_id', 'client_id', 'status_id', 'project_id'];
 
     /**
      * Get the client associated with the inspection.
@@ -57,14 +58,12 @@ class Inspection extends Model
      */
     public function equipment(): BelongsTo
     {
-        return $this->belongsTo(Equipment::class, 'inspection_id', 'inspection_id')
-            ->where('is_inspection_equipment', false);
+        return $this->belongsTo(\App\Models\Equipments\Equipment::class, 'equipment_id', 'equipment_id');
     }
 
-    public function equipmentsInspection(): HasMany
+    public function inspectionEquipments(): HasMany
     {
-        return $this->hasMany(Equipment::class, 'inspection_id', 'inspection_id')
-            ->where('is_inspection_equipment', true);
+        return $this->hasMany(Equipment::class, 'inspection_id', 'inspection_id');
     }
 
     /**

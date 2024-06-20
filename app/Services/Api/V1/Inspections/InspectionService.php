@@ -9,6 +9,7 @@
 namespace App\Services\Api\V1\Inspections;
 
 use App\Models\Clients\Client;
+use App\Models\Equipments\Equipment;
 use App\Models\Inspections\Category;
 use App\Models\Inspections\Inspection;
 use App\Models\Projects\Project;
@@ -37,6 +38,7 @@ class InspectionService extends Service
             // Control Transaction
             DB::beginTransaction();
             $category = Category::where('ct_inspection_code', $request->ct_inspection_code)->first();
+            $equipment = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
             $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
             $status = Status::with(['category'])
                 ->where('status_code', '=', $request->status_code)
@@ -47,6 +49,7 @@ class InspectionService extends Service
                 $request->merge([
                     'inspection_uuid' => Str::uuid()->toString(),
                     'ct_inspection_id' => $category->ct_inspection_id,
+                    'equipment_id' => $equipment->equipment_id,
                     'client_id' => Client::where('client_uuid', '=', $request->client_uuid)
                         ->first()->client_id,
                     'status_id' => $status->status_id,
@@ -100,11 +103,12 @@ class InspectionService extends Service
             $this->response['message'] = trans('api.read');
             $this->response['data'] = ['inspections' => Inspection::with([
                 'client',
-                'equipment.equipment.model.trademark',
+                'equipment.model.trademark',
+                'inspectionEquipments.equipment',
                 'category.sections.subSections.fields.result',
-                'equipmentsInspection.equipment',
                 'evidences',
                 'status.category',
+                'project',
             ])->get()];
         } catch (Throwable $exceptions) {
             // Manejo del error
@@ -126,6 +130,7 @@ class InspectionService extends Service
     {
         try {
             $category = Category::where('ct_inspection_code', $request->ct_inspection_code)->first();
+            $equipment = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
             $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
             $status = Status::with(['category'])
                 ->where('status_code', '=', $request->status_code)
@@ -136,6 +141,7 @@ class InspectionService extends Service
                 // Establecer atributos para registro
                 $request->merge([
                     'ct_inspection_id' => $category->ct_inspection_id,
+                    'equipment_id' => $equipment->equipment_id,
                     'client_id' => Client::where('client_uuid', '=', $request->client_uuid)
                         ->first()->client_id,
                     'status_id' => $status->status_id,
@@ -217,9 +223,9 @@ class InspectionService extends Service
             $user = auth()->user()->load('client');
             $inspection = Inspection::with([
                 'client',
-                'equipment.equipment.model.trademark',
+                'equipment.model.trademark',
+                'inspectionEquipments.equipment',
                 'category.sections.subSections.fields.result',
-                'equipmentsInspection.equipment',
                 'evidences',
                 'status.category',
                 'project',

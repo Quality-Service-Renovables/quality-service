@@ -25,6 +25,7 @@ return [
     'message_log' => 'Event automatically registered by the service, check the request URL for more details',
     'status_invalid' => 'Status is not valid.',
     'comments_required' => 'Comments Required',
+    'inspection_equipment_exist' => 'Inspection equipment already exist.',
     // Status Catalog
     'status_projects' => 'Status proyect, code: proyecto',
     'status_inspections' => 'Status proyect, code: inspeccion',

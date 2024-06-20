@@ -25,13 +25,18 @@ class EquipmentService extends Service
             // Control Transaction
             DB::beginTransaction();
             $inspection = Inspection::where('inspection_uuid', $request->inspection_uuid)->first();
-            $equipment = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
-            // Create Register
-            $inspectionEquipment = InspectionEquipment::create([
-                'inspection_equipment_uuid' => Str::uuid()->toString(),
-                'inspection_id' => $inspection->inspection_id,
-                'equipment_id' => $equipment->equipment_id,
-            ]);
+            $inspectionEquipment = [];
+            foreach ($request->equipments as $equipmentRequest) {
+                $equipment = Equipment::with(['category'])
+                    ->where('equipment_uuid', $equipmentRequest['equipment_uuid'])
+                    ->first();
+                // Create Register
+                $inspectionEquipment[] = InspectionEquipment::create([
+                    'inspection_equipment_uuid' => Str::uuid()->toString(),
+                    'inspection_id' => $inspection->inspection_id,
+                    'equipment_id' => $equipment->equipment_id,
+                ]);
+            }
             // Set Response
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
@@ -92,17 +97,26 @@ class EquipmentService extends Service
 
             $inspection = Inspection::where('inspection_uuid', $request->inspection_uuid)->first();
             $equipment = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
-            // Update Register
-            $inspectionEquipment = InspectionEquipment::with(['equipment'])
-                ->where('inspection_equipment_uuid', $request->inspection_equipment_uuid)
-                ->first();
-            // Si el $category existe (no es nulo), actualízalo con todos los datos de la solicitud.
-            $inspectionEquipment?->update([
+            $inspectionEquipment = InspectionEquipment::where([
                 'equipment_id' => $equipment->equipment_id,
                 'inspection_id' => $inspection->inspection_id,
-            ]);
-            // Set Response
-            $this->response['message'] = trans('api.updated');
+            ])->first();
+
+            if (! $inspectionEquipment) {
+                // Update Register
+                $inspectionEquipment = InspectionEquipment::with(['equipment'])
+                    ->where('inspection_equipment_uuid', $request->inspection_equipment_uuid)
+                    ->first();
+                // Si el $category existe (no es nulo), actualízalo con todos los datos de la solicitud.
+                $inspectionEquipment?->update([
+                    'equipment_id' => $equipment->equipment_id,
+                    'inspection_id' => $inspection->inspection_id,
+                ]);
+
+                $this->response['message'] = trans('api.updated');
+            } else {
+                $this->response['message'] = trans('api.inspection_equipment_exist');
+            }
             $this->response['data'] = $inspectionEquipment;
             // Set Log
             $this->logService->create(
