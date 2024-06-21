@@ -322,7 +322,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                 <!-- Dialog para cargar informaciónd de secciones de la inspección -->
                                 <v-dialog v-model="dialogForm" v-if="hasPermissionTo('projects.update')"
                                     transition="dialog-bottom-transition" fullscreen>
-                                    <Sections :dialogForm="dialogForm" :ct_inspection_uuid="ctInspectionUuid" @closeSectionDialog="closeSectionDialog"/>
+                                    <Sections :dialogForm="dialogForm" :ct_inspection_uuid="ctInspectionUuid"
+                                        @closeSectionDialog="closeSectionDialog" />
                                 </v-dialog>
                             </v-col>
                         </v-row>
@@ -763,7 +764,7 @@ export default {
             this.dialogForm = false;
             this.ctInspectionUuid = '';
         },
-       
+
 
         // Dependencies
         getClients() {
@@ -820,6 +821,18 @@ export default {
             this.inspectionForm.equipment_uuid = null;
             let equipments = this.inspectionsEquipmentsCategories.find(category => category.ct_equipment_uuid === ct_equipment_uuid).equipments;
             this.equipmentsByCategory = equipments.length > 0 ? equipments : [];
+        },
+        generatePdf(item) {
+
+            axios.get('api/inspection/get-document/' + item.inspections[0].inspection_uuid, {
+                responseType: 'blob'
+            })
+                .then(response => {
+                    console.log(response);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         },
     }
 }
