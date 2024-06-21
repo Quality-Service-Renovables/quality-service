@@ -93,23 +93,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 <v-col cols="12" class="text-right">
                                                                     <PrimaryButton @click="save">Guardar</PrimaryButton>
                                                                 </v-col>
-                                                                <v-col cols="12" class="text-right">
-                                                                    <v-divider></v-divider>
-                                                                </v-col>
-                                                                <!--<v-col cols="12"
-                                                                    v-if="editedItem.project_uuid && checkStatus(editedItem, ['proceso_asignado'])">
-                                                                    <v-select v-model="editedItem.employees_uuid"
-                                                                        :items="employees" item-title="name"
-                                                                        item-value="uuid" label="Técnicos asignados"
-                                                                        variant="outlined" hide-details required
-                                                                        multiple chips clearable></v-select>
-                                                                </v-col>
-                                                                <v-col cols="12" class="text-right"
-                                                                    v-if="editedItem.project_uuid && checkStatus(editedItem, ['proceso_asignado'])">
-                                                                    <PrimaryButton @click="asignTechniciens('update')">
-                                                                        Guardar
-                                                                    </PrimaryButton>
-                                                                </v-col>-->
                                                             </v-row>
                                                         </v-container>
                                                     </v-card-text>
@@ -153,11 +136,15 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 size="small" />
                                             <ActionButton text="Asignar técnico" icon="mdi-account-plus-outline"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado', 'inspeccion_iniciada'])"
-                                                size="small" @click="asignTechniciensDialog('update', item)" color="text-success" />
+                                                size="small" @click="asignTechniciensDialog('update', item)"
+                                                color="text-success" />
                                             <ActionButton text="Asignar inspección" icon="mdi-table-plus"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado', 'inspeccion_iniciada']) && item.inspections.length"
                                                 size="small" @click="asignInspectionDialog('update', item)"
                                                 color="text-success" />
+                                            <ActionButton text="Generar PDF" icon="mdi-file-eye"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado', 'inspeccion_iniciada'])"
+                                                size="small" @click="generatePdf(item)" color="text-red" />
                                         </div>
                                     </template>
                                     <template v-slot:item.inspection_actions="{ item }">
@@ -171,6 +158,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             <!--<ActionButton text="Iniciar inspección" icon="mdi-play-speed"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado') && item.inspections.length > 0"
                                                 size="small" />-->
+                                            <ActionButton text="Cargar información" icon="mdi-file-edit"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado', 'inspeccion_iniciada'])"
+                                                size="small" @click="formDialog(item)" />
                                             <ActionButton text="Finalizar proyecto" icon="mdi-note-check"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_iniciado', 'inspeccion_iniciada']) && item.inspections.length > 0"
                                                 size="small" />
@@ -224,8 +214,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     v-if="hasPermissionTo('projects.update')">
                                     <v-card>
                                         <v-card-title>
-                                            <span class="text-h5" v-if="editedItem.action == 'create'">Asignar técnicos</span>
-                                            <span class="text-h5" v-if="editedItem.action == 'update'">Actualizar técnicos</span>
+                                            <span class="text-h5" v-if="editedItem.action == 'create'">Asignar
+                                                técnicos</span>
+                                            <span class="text-h5" v-if="editedItem.action == 'update'">Actualizar
+                                                técnicos</span>
                                         </v-card-title>
 
                                         <v-card-text>
@@ -246,8 +238,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             <v-btn color="blue-darken-1" variant="text" @click="closeAsignTechniciens">
                                                 Cerrar
                                             </v-btn>
-                                            <v-btn color="blue-darken-1" variant="text"
-                                                @click="asignTechniciens()"
+                                            <v-btn color="blue-darken-1" variant="text" @click="asignTechniciens()"
                                                 :disabled="!editedItem.employees_uuid.length">
                                                 Guardar
                                             </v-btn>
@@ -255,7 +246,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     </v-card>
                                 </v-dialog>
 
-                                <!-- Dialog para asignar técnicos -->
+                                <!-- Dialog para asignar inspección -->
                                 <v-dialog v-model="dialogAsignInspection" width="auto" min-height="600" scrollable
                                     v-if="hasPermissionTo('projects.update')">
                                     <v-card :loading="loadingInspectionDialog" :disabled="loadingInspectionDialog">
@@ -328,6 +319,106 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     </v-card>
                                 </v-dialog>
 
+                                <!-- Dialog para cargar informaciónd de secciones de la inspección -->
+                                <v-dialog v-model="dialogForm" v-if="hasPermissionTo('projects.update')"
+                                    transition="dialog-bottom-transition" fullscreen>
+                                    <v-card :loading="dialogFormDialog">
+                                        <v-toolbar>
+                                            <v-btn icon="mdi-close" @click="dialogForm = false"></v-btn>
+
+                                            <v-toolbar-title>Carga de información</v-toolbar-title>
+
+                                            <v-spacer></v-spacer>
+
+                                            <v-toolbar-items>
+                                                <v-btn text="Guardar" variant="text"
+                                                    @click="dialogForm = false"></v-btn>
+                                            </v-toolbar-items>
+                                        </v-toolbar>
+
+                                        <v-card-text>
+                                            <v-container>
+                                                <v-row>
+                                                    <v-col cols="12">
+                                                        <v-card v-for="(section, indexSection) in sectionsForm"
+                                                            :key="indexSection" variant="outlined" class="my-5">
+                                                            <v-card-title>
+                                                                {{ section.section_details.ct_inspection_section }}
+                                                            </v-card-title>
+                                                            <v-card-subtitle>
+                                                                Sección
+                                                            </v-card-subtitle>
+
+                                                            <v-card-text>
+                                                                <!-- Campos -->
+                                                                <div v-if="section.fields">
+                                                                    <v-card
+                                                                        v-for="(field, indexField) in section.fields"
+                                                                        :key="indexField" class="my-5">
+                                                                        <v-card-title>
+                                                                            {{ field.ct_inspection_form }}
+                                                                        </v-card-title>
+                                                                        <v-card-subtitle>
+                                                                            Campo {{ field.required ? '*Requerido' :
+        'Opcional'
+                                                                            }}
+                                                                        </v-card-subtitle>
+                                                                        <v-card-text>
+                                                                            <QuillEditor v-model:content="field.content"
+                                                                                theme="snow" toolbar="essential"
+                                                                                heigth="100%" contentType="html" />
+                                                                        </v-card-text>
+                                                                    </v-card>
+                                                                </div>
+
+                                                                <!-- Secciones -->
+                                                                <div v-if="section.sub_sections">
+                                                                    <v-card
+                                                                        v-for="(subSection, indexSubSection) in section.sub_sections"
+                                                                        :key="indexSubSection" variant="outlined" class="my-5">
+                                                                        <v-card-title>
+                                                                            {{ subSection.ct_inspection_section}}
+                                                                        </v-card-title>
+                                                                        <v-card-subtitle>
+                                                                            Sub-sección
+                                                                        </v-card-subtitle>
+                                                                        <v-card-text>
+                                                                            <!-- Campos -->
+                                                                            <div v-if="subSection.fields">
+                                                                                <v-card
+                                                                                    v-for="(fieldSub, indexFieldSub) in subSection.fields"
+                                                                                    :key="indexFieldSub" class="my-5">
+                                                                                    <v-card-title>
+                                                                                        {{ fieldSub.ct_inspection_form
+                                                                                        }}
+                                                                                    </v-card-title>
+                                                                                    <v-card-subtitle>
+                                                                                        Campo {{ fieldSub.required ?
+                                                                                        '*Requerido' : 'Opcional' }}
+                                                                                    </v-card-subtitle>
+                                                                                    <v-card-text>
+                                                                                        <QuillEditor
+                                                                                            v-model:content="fieldSub.content"
+                                                                                            theme="snow"
+                                                                                            toolbar="essential"
+                                                                                            heigth="100%"
+                                                                                            contentType="html" />
+                                                                                    </v-card-text>
+                                                                                </v-card>
+                                                                            </div>
+                                                                        </v-card-text>
+                                                                    </v-card>
+                                                                </div>
+
+                                                            </v-card-text>
+                                                        </v-card>
+
+                                                    </v-col>
+                                                </v-row>
+                                            </v-container>
+                                        </v-card-text>
+                                    </v-card>
+                                </v-dialog>
                             </v-col>
                         </v-row>
                     </v-card>
@@ -440,6 +531,11 @@ export default {
             equipments_uuid: [],
         },
         errorAssigningInspection: false,
+
+        // Sections
+        sectionsForm: null,
+        dialogForm: false,
+        dialogFormDialog: false,
     }),
     computed: {
         formTitle() {
@@ -565,10 +661,10 @@ export default {
             this.dialogAsignEmployees = true;
             this.editingProjectUuid = item.project_uuid;
 
-            if(action === 'update'){
+            if (action === 'update') {
                 this.editedItem.action = 'update';
                 this.editedItem.employees_uuid = item.employees.map(employee => employee.user.uuid);
-            }else{
+            } else {
                 this.editedItem.action = 'create';
                 this.editedItem.employees_uuid = [];
             }
@@ -719,18 +815,18 @@ export default {
                     };
                 });
                 const request = () => {
-                    if(!this.inspectionForm.isUpdating){
+                    if (!this.inspectionForm.isUpdating) {
                         return axios.post('api/inspection/equipments', {
                             inspection_uuid: this.inspectionForm.inspection_uuid,
                             equipments: equipments
                         });
-                    }else{
+                    } else {
                         return axios.put('api/inspection/equipments/' + this.inspectionForm.inspection_uuid, {
                             inspection_uuid: this.inspectionForm.inspection_uuid,
                             equipments: equipments
                         });
                     }
-                    
+
                 };
                 toast.promise(request(), {
                     loading: !this.inspectionForm.isUpdating ? 'Asignando equipos a inspección...' : 'Actualizando equipos de inspección...',
@@ -750,6 +846,25 @@ export default {
         closeAsignInspection() {
             this.dialogAsignInspection = false;
             this.inspectionForm = Object.assign({}, this.defaultInspectionForm);
+        },
+
+        // Sections
+        formDialog(item) {
+            this.dialogForm = true;
+            let ct_inspection_uuid = item.inspections[0].category.ct_inspection_uuid;
+            this.getForm(ct_inspection_uuid);
+        },
+        getForm(ct_inspection_uuid) {
+            this.dialogFormDialog = true;
+            axios.get('api/inspection/forms/get-form/' + ct_inspection_uuid)
+                .then(response => {
+                    this.dialogFormDialog = false;
+                    this.sectionsForm = response.data.data.sections;
+                })
+                .catch(error => {
+                    this.dialogFormDialog = false;
+                    this.handleErrors(error);
+                });
         },
 
         // Dependencies
@@ -809,6 +924,5 @@ export default {
             this.equipmentsByCategory = equipments.length > 0 ? equipments : [];
         },
     }
-
 }
 </script>
