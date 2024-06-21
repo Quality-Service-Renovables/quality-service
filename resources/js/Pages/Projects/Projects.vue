@@ -322,102 +322,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                 <!-- Dialog para cargar informaciónd de secciones de la inspección -->
                                 <v-dialog v-model="dialogForm" v-if="hasPermissionTo('projects.update')"
                                     transition="dialog-bottom-transition" fullscreen>
-                                    <v-card :loading="dialogFormDialog">
-                                        <v-toolbar>
-                                            <v-btn icon="mdi-close" @click="dialogForm = false"></v-btn>
-
-                                            <v-toolbar-title>Carga de información</v-toolbar-title>
-
-                                            <v-spacer></v-spacer>
-
-                                            <v-toolbar-items>
-                                                <v-btn text="Guardar" variant="text"
-                                                    @click="dialogForm = false"></v-btn>
-                                            </v-toolbar-items>
-                                        </v-toolbar>
-
-                                        <v-card-text>
-                                            <v-container>
-                                                <v-row>
-                                                    <v-col cols="12">
-                                                        <v-card v-for="(section, indexSection) in sectionsForm"
-                                                            :key="indexSection" variant="outlined" class="my-5">
-                                                            <v-card-title>
-                                                                {{ section.section_details.ct_inspection_section }}
-                                                            </v-card-title>
-                                                            <v-card-subtitle>
-                                                                Sección
-                                                            </v-card-subtitle>
-
-                                                            <v-card-text>
-                                                                <!-- Campos -->
-                                                                <div v-if="section.fields">
-                                                                    <v-card
-                                                                        v-for="(field, indexField) in section.fields"
-                                                                        :key="indexField" class="my-5">
-                                                                        <v-card-title>
-                                                                            {{ field.ct_inspection_form }}
-                                                                        </v-card-title>
-                                                                        <v-card-subtitle>
-                                                                            Campo {{ field.required ? '*Requerido' :
-        'Opcional'
-                                                                            }}
-                                                                        </v-card-subtitle>
-                                                                        <v-card-text>
-                                                                            <QuillEditor v-model:content="field.content"
-                                                                                theme="snow" toolbar="essential"
-                                                                                heigth="100%" contentType="html" />
-                                                                        </v-card-text>
-                                                                    </v-card>
-                                                                </div>
-
-                                                                <!-- Secciones -->
-                                                                <div v-if="section.sub_sections">
-                                                                    <v-card
-                                                                        v-for="(subSection, indexSubSection) in section.sub_sections"
-                                                                        :key="indexSubSection" variant="outlined" class="my-5">
-                                                                        <v-card-title>
-                                                                            {{ subSection.ct_inspection_section}}
-                                                                        </v-card-title>
-                                                                        <v-card-subtitle>
-                                                                            Sub-sección
-                                                                        </v-card-subtitle>
-                                                                        <v-card-text>
-                                                                            <!-- Campos -->
-                                                                            <div v-if="subSection.fields">
-                                                                                <v-card
-                                                                                    v-for="(fieldSub, indexFieldSub) in subSection.fields"
-                                                                                    :key="indexFieldSub" class="my-5">
-                                                                                    <v-card-title>
-                                                                                        {{ fieldSub.ct_inspection_form
-                                                                                        }}
-                                                                                    </v-card-title>
-                                                                                    <v-card-subtitle>
-                                                                                        Campo {{ fieldSub.required ?
-                                                                                        '*Requerido' : 'Opcional' }}
-                                                                                    </v-card-subtitle>
-                                                                                    <v-card-text>
-                                                                                        <QuillEditor
-                                                                                            v-model:content="fieldSub.content"
-                                                                                            theme="snow"
-                                                                                            toolbar="essential"
-                                                                                            heigth="100%"
-                                                                                            contentType="html" />
-                                                                                    </v-card-text>
-                                                                                </v-card>
-                                                                            </div>
-                                                                        </v-card-text>
-                                                                    </v-card>
-                                                                </div>
-
-                                                            </v-card-text>
-                                                        </v-card>
-
-                                                    </v-col>
-                                                </v-row>
-                                            </v-container>
-                                        </v-card-text>
-                                    </v-card>
+                                    <Sections :dialogForm="dialogForm" :ct_inspection_uuid="ctInspectionUuid" @closeSectionDialog="closeSectionDialog"/>
                                 </v-dialog>
                             </v-col>
                         </v-row>
@@ -435,6 +340,7 @@ import { Toaster, toast } from 'vue-sonner'
 import Swal from 'sweetalert2';
 import ActionButton from '@/Pages/Projects/Partials/ActionButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Sections from '@/Pages/Projects/Partials/Sections.vue';
 import { mdiCarLightHigh } from '@mdi/js';
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
@@ -444,7 +350,8 @@ export default {
         Toaster,
         ActionButton,
         PrimaryButton,
-        QuillEditor
+        QuillEditor,
+        Sections
     },
     props: {
         projects: {
@@ -533,9 +440,8 @@ export default {
         errorAssigningInspection: false,
 
         // Sections
-        sectionsForm: null,
         dialogForm: false,
-        dialogFormDialog: false,
+        ctInspectionUuid: '',
     }),
     computed: {
         formTitle() {
@@ -851,21 +757,13 @@ export default {
         // Sections
         formDialog(item) {
             this.dialogForm = true;
-            let ct_inspection_uuid = item.inspections[0].category.ct_inspection_uuid;
-            this.getForm(ct_inspection_uuid);
+            this.ctInspectionUuid = item.inspections[0].category.ct_inspection_uuid;
         },
-        getForm(ct_inspection_uuid) {
-            this.dialogFormDialog = true;
-            axios.get('api/inspection/forms/get-form/' + ct_inspection_uuid)
-                .then(response => {
-                    this.dialogFormDialog = false;
-                    this.sectionsForm = response.data.data.sections;
-                })
-                .catch(error => {
-                    this.dialogFormDialog = false;
-                    this.handleErrors(error);
-                });
+        closeSectionDialog() {
+            this.dialogForm = false;
+            this.ctInspectionUuid = '';
         },
+       
 
         // Dependencies
         getClients() {
