@@ -299,7 +299,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                             realizar
                                                         </p>
                                                         <QuillEditor v-model:content="inspectionForm.resume"
-                                                            theme="snow" toolbar="full" heigth="100%"
+                                                            theme="snow" toolbar="essential" heigth="100%"
                                                             contentType="html" />
                                                     </v-col>
                                                 </v-row>
