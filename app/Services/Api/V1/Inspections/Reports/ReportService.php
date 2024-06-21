@@ -31,7 +31,7 @@ class ReportService extends Service
             $user = auth()->user()->load('client');
             $inspection = Inspection::with([
                 'client',
-                'equipment.equipment.model.trademark',
+                'equipment.model.trademark',
                 'category.sections.subSections.fields.result',
                 'equipmentsInspection.equipment',
                 'evidences',
