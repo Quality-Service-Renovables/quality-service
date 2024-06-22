@@ -33,16 +33,16 @@ class ReportService extends Service
                 'client',
                 'equipment.model.trademark',
                 'category.sections.subSections.fields.result',
-                'equipmentsInspection.equipment',
+                'inspectionEquipments.equipment',
                 'evidences',
             ])->where('inspection_uuid', $uuid)->first();
 
             if ($inspection) {
                 $inspection->provider = $user->client;
                 $this->document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
-                $this->filename = $inspection->category->ct_inspection_code.'_'.now()->format('Y-m-d H:i:s');
+                $this->filename = $inspection->category->ct_inspection_code.'_'.now()->format('Y-m-d H:i:s').'.pdf';
+                $this->document->download($this->filename);
             }
-
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);

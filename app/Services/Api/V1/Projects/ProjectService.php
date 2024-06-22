@@ -87,7 +87,15 @@ class ProjectService extends Service implements ServiceInterface
     public function read(): array
     {
         $this->response['message'] = trans('api.read');
-        $this->response['data'] = Project::with(['client', 'status', 'employees.user', 'inspections.status', 'inspections.category','inspections.equipment.category', 'inspections.inspectionEquipments.equipment'])->get();
+        $this->response['data'] = Project::with([
+            'client',
+            'status',
+            'employees.user',
+            'inspections.status',
+            'inspections.category',
+            'inspections.equipment.category',
+            'inspections.inspectionEquipments.equipment'
+        ])->get();
 
         return $this->response;
     }
@@ -109,6 +117,10 @@ class ProjectService extends Service implements ServiceInterface
                     '=',
                     $request->status_uuid)
                 ->first();
+            $clientId = Client::where('client_uuid',
+                '=',
+                $request->client_uuid
+            )->first()->client_id;
             // Si el estado es correspondiente al proyectos
             if (($status && $status->category) && $status->category->ct_status_code === 'proyecto') {
                 // Si el proyecto ha sido cancelado y no se proporcionan comentarios, no es posible proceder.
@@ -119,16 +131,20 @@ class ProjectService extends Service implements ServiceInterface
                     // Agrega atributos a la solicitud
                     $request->merge([
                         'status_id' => $status->status_id,
-                        'client_id' => Client::where('client_uuid',
-                            '=',
-                            $request->client_uuid
-                        )->first()->client_id,
+                        'client_id' => $clientId,
                     ]);
                     // Actualiza Equipo
-                    $project = Project::where('project_uuid', $request->project_uuid)->first();
+                    $project = Project::with(['inspections'])
+                        ->where('project_uuid', $request->project_uuid)->first();
                     $project?->update($request->except([
                         'status_uuid', 'client_uuid',
                     ]));
+
+                    foreach ($project->inspections as $inspection) {
+                        $inspection->client_id = $clientId;
+                        $inspection->save();
+                    }
+
                     $this->response['message'] = trans('api.updated');
                     $this->response['data'] = $project;
                     // Registro de log
