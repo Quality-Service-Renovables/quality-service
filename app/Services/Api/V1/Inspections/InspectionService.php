@@ -41,10 +41,10 @@ class InspectionService extends Service
             $equipment = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
             $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
             $status = Status::with(['category'])
-                ->where('status_code', '=', $request->status_code)
+                ->where('status_code', '=', 'proyecto_iniciado')
                 ->first();
 
-            if (($status && $status->category) && $status->category->ct_status_code === 'inspeccion') {
+            if (($status && $status->category) && $status->category->ct_status_code === 'proyecto') {
                 // Establecer atributos para registro
                 $request->merge([
                     'inspection_uuid' => Str::uuid()->toString(),

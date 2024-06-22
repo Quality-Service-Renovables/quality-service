@@ -49,7 +49,7 @@ class ProjectService extends Service implements ServiceInterface
                 'project_uuid' => Str::uuid()->toString(),
                 'status_id' => Status::where('status_code',
                     '=',
-                    'proceso_creado')
+                    'proyecto_creado')
                     ->first()->status_id,
                 'client_id' => Client::where('client_uuid',
                     '=',

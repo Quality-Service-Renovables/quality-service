@@ -135,40 +135,40 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 v-if="hasPermissionTo('projects.delete')" @click="deleteItem(item)"
                                                 size="small" />
                                             <ActionButton text="Asignar técnico" icon="mdi-account-plus-outline"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado', 'inspeccion_iniciada'])"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'inspeccion_iniciada'])"
                                                 size="small" @click="asignTechniciensDialog('update', item)"
                                                 color="text-success" />
                                             <ActionButton text="Asignar inspección" icon="mdi-table-plus"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado', 'inspeccion_iniciada']) && item.inspections.length"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'inspeccion_iniciada']) && item.inspections.length"
                                                 size="small" @click="asignInspectionDialog('update', item)"
                                                 color="text-success" />
                                             <ActionButton text="Generar PDF" icon="mdi-file-eye"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado', 'inspeccion_iniciada'])"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'inspeccion_iniciada'])"
                                                 size="small" @click="generatePdf(item)" color="text-red" />
                                         </div>
                                     </template>
                                     <template v-slot:item.inspection_actions="{ item }">
                                         <div class="d-flex">
                                             <ActionButton text="Asignar técnico" icon="mdi-account-plus-outline"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_creado'])"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_creado'])"
                                                 size="small" @click="asignTechniciensDialog('create', item)" />
                                             <ActionButton text="Asignar inspección" icon="mdi-table-plus"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado']) && !item.inspections.length"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado']) && !item.inspections.length"
                                                 size="small" @click="asignInspectionDialog('create', item)" />
                                             <!--<ActionButton text="Iniciar inspección" icon="mdi-play-speed"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proceso_asignado') && item.inspections.length > 0"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proyecto_asignado') && item.inspections.length > 0"
                                                 size="small" />-->
                                             <ActionButton text="Cargar información" icon="mdi-file-edit"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_asignado', 'inspeccion_iniciada'])"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'inspeccion_iniciada'])"
                                                 size="small" @click="formDialog(item)" />
                                             <ActionButton text="Finalizar proyecto" icon="mdi-note-check"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_iniciado', 'inspeccion_iniciada']) && item.inspections.length > 0"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_iniciado', 'inspeccion_iniciada']) && item.inspections.length > 0"
                                                 size="small" />
                                             <ActionButton text="Validar proyecto" icon="mdi-check-circle-outline"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_finalizado'])"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_finalizado'])"
                                                 size="small" />
                                             <ActionButton text="Cerrar proyecto" icon="mdi-close-circle-outline"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proceso_validado'])"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_validado'])"
                                                 size="small" />
                                             <ActionButton text="Cancelar proyecto" icon="mdi-table-cancel"
                                                 v-if="hasPermissionTo('projects.update')" size="small" />

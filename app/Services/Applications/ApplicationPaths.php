@@ -41,6 +41,7 @@ trait ApplicationPaths
             ],
             'evidences' => [
                 'inspections' => 'img/inspections',
+                'reports' => 'docs/inspections',
             ],
             'users' => [
                 'image_profile' => 'img/users/profiles',

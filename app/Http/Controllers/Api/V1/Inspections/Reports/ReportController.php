@@ -36,9 +36,7 @@ class ReportController extends Controller
 
         $this->service->getDocument($uuid);
 
-        return $this->service->document
-            ? $this->service->document->download($this->service->filename)
-            : response()->json($this->service->response, $this->service->statusCode);
+        return response()->json($this->service->response, $this->service->statusCode);
     }
 
     /**

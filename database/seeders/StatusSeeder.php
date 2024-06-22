@@ -27,7 +27,7 @@ class StatusSeeder extends Seeder
         $categories = Category::all();
         $equipmentCategory = $categories->where('ct_status_code', 'equipo')
             ->first()->ct_status_id;
-        $processsCategory = $categories->where('ct_status_code', 'proyecto')
+        $projectCategory = $categories->where('ct_status_code', 'proyecto')
             ->first()->ct_status_id;
         $inspectionCategory = $categories->where('ct_status_code', 'inspeccion')
             ->first()->ct_status_id;
@@ -59,61 +59,61 @@ class StatusSeeder extends Seeder
             ],
             [
                 'status_uuid' => Str::uuid()->toString(),
-                'status' => 'Proceso Creado',
-                'status_code' => 'proceso_creado',
-                'description' => 'Proceso creado',
+                'status' => 'Proyecto Creado',
+                'status_code' => 'proyecto_creado',
+                'description' => 'Proyecto creado',
                 'active' => true,
-                'ct_status_id' => $processsCategory,
+                'ct_status_id' => $projectCategory,
             ],
             [
                 'status_uuid' => Str::uuid()->toString(),
-                'status' => 'Proceso Asignado',
-                'status_code' => 'proceso_asignado',
-                'description' => 'Proceso asignado',
+                'status' => 'Proyecto Asignado',
+                'status_code' => 'proyecto_asignado',
+                'description' => 'Proyecto asignado',
                 'active' => true,
-                'ct_status_id' => $processsCategory,
+                'ct_status_id' => $projectCategory,
             ],
             [
                 'status_uuid' => Str::uuid()->toString(),
-                'status' => 'Proceso Inciado',
-                'status_code' => 'proceso_iniciado',
-                'description' => 'Proceso inicializado',
+                'status' => 'Proyecto Inciado',
+                'status_code' => 'proyecto_iniciado',
+                'description' => 'Proyecto inicializado',
                 'active' => true,
-                'ct_status_id' => $processsCategory,
+                'ct_status_id' => $projectCategory,
             ],
             [
                 'status_uuid' => Str::uuid()->toString(),
-                'status' => 'Proceso Finalizado',
-                'status_code' => 'proceso_finalizado',
-                'description' => 'Proceso finalizado',
+                'status' => 'Proyecto Finalizado',
+                'status_code' => 'proyecto_finalizado',
+                'description' => 'Proyecto finalizado',
                 'active' => true,
-                'ct_status_id' => $processsCategory,
+                'ct_status_id' => $projectCategory,
             ],
             [
                 'status_uuid' => Str::uuid()->toString(),
-                'status' => 'En Proceso De Validación',
-                'status_code' => 'proceso_validado',
-                'description' => 'En proceso de validación',
+                'status' => 'En Proyecto De Validación',
+                'status_code' => 'proyecto_validado',
+                'description' => 'En Proyecto de validación',
                 'active' => true,
-                'ct_status_id' => $processsCategory,
+                'ct_status_id' => $projectCategory,
             ],
             [
                 'status_uuid' => Str::uuid()->toString(),
-                'status' => 'Proceso Cerrado',
-                'status_code' => 'proceso_cerrado',
-                'description' => 'Proceso finalizado o ciclo cerrado',
+                'status' => 'Proyecto Cerrado',
+                'status_code' => 'proyecto_cerrado',
+                'description' => 'Proyecto finalizado o ciclo cerrado',
                 'active' => true,
-                'ct_status_id' => $processsCategory,
+                'ct_status_id' => $projectCategory,
             ],
             [
                 'status_uuid' => Str::uuid()->toString(),
-                'status' => 'Proceso Cancelado',
-                'status_code' => 'proceso_cancelado',
-                'description' => 'Proceso cancelado',
+                'status' => 'Proyecto Cancelado',
+                'status_code' => 'proyecto_cancelado',
+                'description' => 'Proyecto cancelado',
                 'active' => true,
-                'ct_status_id' => $processsCategory,
+                'ct_status_id' => $projectCategory,
             ],
-            [
+/*            [
                 'status_uuid' => Str::uuid()->toString(),
                 'status' => 'Inspección iniciada',
                 'status_code' => 'inspeccion_iniciada',
@@ -125,7 +125,7 @@ class StatusSeeder extends Seeder
                 'status_uuid' => Str::uuid()->toString(),
                 'status' => 'Inspección en Curso',
                 'status_code' => 'inspeccion_en_curso',
-                'description' => 'En proceso de inspección',
+                'description' => 'En Proyecto de inspección',
                 'active' => true,
                 'ct_status_id' => $inspectionCategory,
             ],
@@ -152,7 +152,7 @@ class StatusSeeder extends Seeder
                 'description' => 'Inspección validada y accesible por el cliente',
                 'active' => true,
                 'ct_status_id' => $inspectionCategory,
-            ],
+            ],*/
         ];
     }
 }

@@ -46,7 +46,7 @@ class EmployeeService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
-            $project->status_id = Status::where('status_code', '=', 'proceso_asignado')
+            $project->status_id = Status::where('status_code', '=', 'proyecto_asignado')
                 ->first()->status_id;
             $project->save();
 
@@ -112,7 +112,7 @@ class EmployeeService extends Service implements ServiceInterface
         try {
             // Control de transacciones
             DB::beginTransaction();
-            
+
             $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
 
             // Eliminamos los tecnicos actuales

@@ -19,6 +19,7 @@ namespace App\Services\Applications;
 
 use App\Models\Application\Log;
 use Exception;
+use Illuminate\Log\Logger;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -27,10 +28,9 @@ use Illuminate\Support\Str;
  */
 class LogService
 {
-    /**
-     * @var bool Indicates whether the data has been successfully saved.
-     */
-    public bool $isSaved;
+
+
+    public Log $log;
 
     /**
      * @var string Holds the custom message for the application.
@@ -44,7 +44,6 @@ class LogService
      */
     public function __construct()
     {
-        $this->isSaved = false;
         $this->message = '';
     }
 
@@ -55,7 +54,7 @@ class LogService
 
             $user = $user ?? auth()->id();
 
-            Log::create([
+            $this->log = Log::create([
                 'application_log_uuid' => Str::uuid()->toString(),
                 'request_url' => url()->current(),
                 'request_received' => json_encode($request, JSON_THROW_ON_ERROR),
@@ -64,14 +63,9 @@ class LogService
                 'description' => $description,
                 'user_id' => $user,
             ]);
-
-            $this->isSaved = true;
-
             DB::commit();
         } catch (Exception $exception) {
             DB::rollBack();
-
-            $this->isSaved = false;
             $this->message = $exception->getMessage();
         }
     }
