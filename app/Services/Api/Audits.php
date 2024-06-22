@@ -3,20 +3,18 @@
 namespace App\Services\Api;
 
 use App\Models\Projects\Audits as ProjectAudits;
-use http\Exception\RuntimeException;
-use Throwable;
+use Illuminate\Support\Str;
 
 Trait Audits
 {
-    public function proyectAudits(array $project)
+    public function proyectAudits(int $project, int $status, int $log, string $comments = null)
     {
-        try {
-            ProjectAudits::create($project);
-        } catch (Throwable $exception) {
-            throw new RuntimeException([
-                'error' => $exception->getMessage(),
-                'line' => $exception->getLine(),
-            ]);
-        }
+        ProjectAudits::create([
+            'project_audit_uuid' => Str::uuid()->toString(),
+            'project_id' => $project,
+            'status_id' => $status,
+            'application_log_id' => $log,
+            'comments' => $comments,
+        ]);
     }
 }

@@ -32,7 +32,7 @@
 {{--    $pathAddress = asset('/').$inspection->equipment->equipment_diagram;--}}
 {{--  RESUMEN DE INSPECCIÓN  --}}
 <h3>Resumen de Inspección</h3>
-<p style="text-align: justify-all">{{$inspection->resume}}</p>
+<p style="text-align: justify-all">{!! $inspection->resume !!}</p>
 {{--  EQUIPO INSPECCIÓN  --}}
 <h3>Equipos Utilizados En La Inspección</h3>
 <table>

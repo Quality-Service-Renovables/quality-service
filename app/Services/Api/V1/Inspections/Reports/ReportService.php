@@ -37,9 +37,8 @@ class ReportService extends Service
                 'evidences',
                 'project',
             ])->where('inspection_uuid', $uuid)->first();
-
+            dd($inspection);
             if ($inspection) {
-                dd($inspection);
                 $inspection->provider = $user->client;
                 // Generación de la vista en base a la información de la colección.
                 $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
@@ -64,14 +63,16 @@ class ReportService extends Service
                     auth()->user()->id,
                 ]);
 
-                $this->proyectAudits([
-                    'project_id' => 1,
-                    'status_id' => 1,
-                    'application_log_id' => $this->logService->log->application_log_id ?? null,
-                ]);
+                $this->proyectAudits(
+                    $inspection->project->project_id,
+                    $inspection->project->status->status_id,
+                    $this->logService->log->application_log_id,
+                    trans('api.document_generated')
+                );
             } else {
                 $this->statusCode = 404;
                 $this->response['message'] = trans('api.inspection_not_found');
+                $this->response['data'] = [];
             }
         } catch (Throwable $exceptions) {
             // Manejo del error

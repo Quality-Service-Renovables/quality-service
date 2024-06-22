@@ -33,7 +33,7 @@ class SessionService extends Service
                     $user->id,
                 );
                 // Fail register log
-                if (!$this->logService->isSaved) {
+                if (!$this->logService->log) {
                     $user->tokens()->delete();
                     $this->statusCode = 200;
                     $this->response['message'] = 'Security process revoke current tokens, register log process fail!';

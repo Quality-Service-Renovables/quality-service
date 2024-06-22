@@ -16,18 +16,17 @@ class Audits extends Model
 
     protected $table = 'project_audits';
 
-    protected $primaryKey = 'inspection_audits_id';
+    protected $primaryKey = 'project_audit_id';
 
     protected $fillable = [
-        'proyect_audits_uuid',
-        'proyect_audit_id',
+        'project_audit_uuid',
         'project_id',
         'status_id',
         'application_log_id',
         'comments',
     ];
 
-    protected $hidden = ['project_id', 'status_id', 'application_log_id'];
+    protected $hidden = ['project_audit_id', 'project_id', 'status_id', 'application_log_id'];
 
     /**
      * Get the client associated with the inspection.
