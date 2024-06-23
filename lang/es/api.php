@@ -26,6 +26,8 @@ return [
     'status_invalid' => 'El estado seleccionado no es compatible con la solicitud',
     'comments_required' => 'Es necesario registrar comentarios sobre la acción requerida',
     'inspection_equipment_exist' => 'El equipo ya ha sido asignado a la inspección.',
+    'inspection_not_found' => 'Inspección no encontrada',
+    'document_generated' => 'Documento generado',
     // Status Catalog
     'status_projects' => 'Estado de proyectos, codigo: proyecto',
     'status_inspections' => 'Estado de proyectos, codigo: inspeccion',
