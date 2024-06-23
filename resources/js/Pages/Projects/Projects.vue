@@ -322,8 +322,31 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                 <!-- Dialog para cargar informaciónd de secciones de la inspección -->
                                 <v-dialog v-model="dialogForm" v-if="hasPermissionTo('projects.update')"
                                     transition="dialog-bottom-transition" fullscreen>
-                                    <Sections :dialogForm="dialogForm" :ct_inspection_uuid="ctInspectionUuid"
-                                        @closeSectionDialog="closeSectionDialog" />
+                                    <v-toolbar>
+                                        <v-btn icon="mdi-close" @click="closeSectionDialog()"></v-btn>
+                                        <v-toolbar-title>Carga de información</v-toolbar-title>
+                                        <v-spacer></v-spacer>
+                                    </v-toolbar>
+                                    <v-card>
+                                        <v-tabs v-model="tab" bg-color="primary">
+                                            <v-tab value="info">Información</v-tab>
+                                            <v-tab value="evidences">Evidencias</v-tab>
+                                        </v-tabs>
+
+                                        <v-card-text>
+                                            <v-tabs-window v-model="tab">
+                                                <v-tabs-window-item v-if="tab === 'info'">
+                                                    <Section :dialogForm="dialogForm"
+                                                        :ct_inspection_uuid="ctInspectionUuid"
+                                                        @closeSectionDialog="closeSectionDialog" />
+                                                </v-tabs-window-item>
+
+                                                <v-tabs-window-item v-if="tab === 'evidences'">
+                                                    <Evidence :inspection_uuid="inspectionUuid" />
+                                                </v-tabs-window-item>
+                                            </v-tabs-window>
+                                        </v-card-text>
+                                    </v-card>
                                 </v-dialog>
                             </v-col>
                         </v-row>
@@ -341,8 +364,8 @@ import { Toaster, toast } from 'vue-sonner'
 import Swal from 'sweetalert2';
 import ActionButton from '@/Pages/Projects/Partials/ActionButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import Sections from '@/Pages/Projects/Partials/Sections.vue';
-import { mdiCarLightHigh } from '@mdi/js';
+import Section from '@/Pages/Projects/Partials/Section.vue';
+import Evidence from '@/Pages/Projects/Partials/Evidence.vue';
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
@@ -352,7 +375,8 @@ export default {
         ActionButton,
         PrimaryButton,
         QuillEditor,
-        Sections
+        Section,
+        Evidence
     },
     props: {
         projects: {
@@ -443,6 +467,8 @@ export default {
         // Sections
         dialogForm: false,
         ctInspectionUuid: '',
+        tab: 'info',
+        inspectionUuid: null,
     }),
     computed: {
         formTitle() {
@@ -759,6 +785,7 @@ export default {
         formDialog(item) {
             this.dialogForm = true;
             this.ctInspectionUuid = item.inspections[0].category.ct_inspection_uuid;
+            this.inspectionUuid = item.inspections[0].inspection_uuid;
         },
         closeSectionDialog() {
             this.dialogForm = false;

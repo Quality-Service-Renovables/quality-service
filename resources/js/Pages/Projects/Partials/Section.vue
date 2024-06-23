@@ -1,17 +1,5 @@
 <template>
     <v-card :loading="dialogFormLoading">
-        <v-toolbar>
-            <v-btn icon="mdi-close" @click="closeSectionDialog()"></v-btn>
-
-            <v-toolbar-title>Carga de información</v-toolbar-title>
-
-            <v-spacer></v-spacer>
-
-            <v-toolbar-items>
-                <v-btn text="Guardar" variant="text" @click="dialogForm = false"></v-btn>
-            </v-toolbar-items>
-        </v-toolbar>
-
         <v-card-text>
             <v-container>
                 <v-row>
@@ -75,7 +63,7 @@
                                                             <v-card-subtitle>
                                                                 Campo {{
             fieldSub.required ?
-                '*Requerido' :
+                                                                '*Requerido' :
                                                                 'Opcional' }}
                                                             </v-card-subtitle>
                                                             <v-card-text>
@@ -121,7 +109,7 @@ export default {
         return {
             dialogFormLoading: false,
             sectionsForm: [],
-            expandedPanel: [0,1,2,3,4,5]
+            expandedPanel: []
         }
     },
     methods: {
