@@ -109,7 +109,7 @@ export default {
         return {
             dialogFormLoading: false,
             sectionsForm: [],
-            expandedPanel: []
+            expandedPanel: [0,1,2,3,4,5,6]
         }
     },
     methods: {
