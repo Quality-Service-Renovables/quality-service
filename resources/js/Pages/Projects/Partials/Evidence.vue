@@ -5,7 +5,10 @@
         </v-col>
     </v-row>
     <v-row>
-        <v-col cols="12"><p class="text-h5 text-center" v-if="evidences.length">Evidencias cargadas</p></v-col>
+        <v-col cols="12" class="text-center">
+            <v-divider></v-divider>
+            <p class="text-h5 mt-4" v-if="evidences.length">Evidencias cargadas</p>
+        </v-col>
         <v-col cols="3" v-for="(evidence, index) in evidences" :key="index">
             <EvidenceForm :inspection_uuid="inspection_uuid" :evidence="evidence"/>
         </v-col>

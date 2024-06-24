@@ -328,7 +328,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <v-spacer></v-spacer>
                                     </v-toolbar>
                                     <v-card>
-                                        <v-tabs v-model="tab" bg-color="primary">
+                                        <v-tabs v-model="tab" bg-color="primary" align-tabs="center">
                                             <v-tab value="info">Información</v-tab>
                                             <v-tab value="evidences">Evidencias</v-tab>
                                         </v-tabs>
@@ -336,13 +336,21 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <v-card-text>
                                             <v-tabs-window v-model="tab">
                                                 <v-tabs-window-item v-if="tab === 'info'">
-                                                    <Section :dialogForm="dialogForm"
-                                                        :ct_inspection_uuid="ctInspectionUuid"
-                                                        @closeSectionDialog="closeSectionDialog" />
+                                                    <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
+                                                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                                                            <Section :dialogForm="dialogForm"
+                                                                :ct_inspection_uuid="ctInspectionUuid"
+                                                                @closeSectionDialog="closeSectionDialog" />
+                                                        </div>
+                                                    </div>
                                                 </v-tabs-window-item>
 
                                                 <v-tabs-window-item v-if="tab === 'evidences'">
-                                                    <Evidence :inspection_uuid="inspectionUuid" />
+                                                    <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
+                                                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                                                            <Evidence :inspection_uuid="inspectionUuid" />
+                                                        </div>
+                                                    </div>
                                                 </v-tabs-window-item>
                                             </v-tabs-window>
                                         </v-card-text>
