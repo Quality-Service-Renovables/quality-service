@@ -345,11 +345,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                     </div>
                                                 </v-tabs-window-item>
 
-                                                <v-tabs-window-item v-if="tab === 'evidences'">
-                                                    <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
-                                                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                                                            <Evidence :inspection_uuid="inspectionUuid" />
-                                                        </div>
+                                                <v-tabs-window-item v-if="tab === 'evidences'" class="border">
+                                                    <div class="max-w-7xl mx-auto my-auto sm:px-4 lg:px-6">
+                                                        <Evidence :inspection_uuid="inspectionUuid" />
                                                     </div>
                                                 </v-tabs-window-item>
                                             </v-tabs-window>

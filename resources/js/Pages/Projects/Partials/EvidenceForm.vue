@@ -1,5 +1,5 @@
 <template>
-    <v-card class="mx-auto">
+    <v-card>
         <file-pond name="evidence" ref="pond"
             label-idle="Arrastra y suelta tu archivo o <span class='filepond--label-action'>selecciona</span>"
             :allow-multiple="false" accepted-file-types="image/jpeg, image/png" :files="myFiles"
