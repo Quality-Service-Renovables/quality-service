@@ -4,24 +4,39 @@
             label-idle="Arrastra y suelta tu archivo o <span class='filepond--label-action'>selecciona</span>"
             :allow-multiple="false" accepted-file-types="image/jpeg, image/png" :files="myFiles"
             @init="handleFilePondInit" :server="serverConfig" instantUpload="false" allowProcess="true"
-            labelButtonProcessItem="Subir" />
+            allowReplace="true" allowImagePreview="true" 
+            labelInvalidField="Tipo de archivo no permitido"
+            labelFileLoading="Cargando"
+            labelFileLoadError="Error al subir el archivo"
+            labelFileProcessing="Procesando"
+            labelFileProcessingComplete="Proceso completado"
+            labelFileProcessingAborted="Proceso abortado"
+            labelFileProcessingError="Error al procesar"
+            labelTapToCancel="Toca para cancelar"
+            labelTapToRetry="Toca para reintentar"
+            labelTapToUndo="Toca para deshacer"
+            labelButtonAbortItemLoad = "Cancelar"
+            labelButtonRetryItemLoad = "Reintentar"
+            labelButtonAbortItemProcessing="Cancelar"
+            labelButtonProcessItem="Subir"
+            />
 
         <v-card-title>
             <v-text-field label="Título" v-model="form.title" variant="outlined" hide-details
                 density="compact"></v-text-field>
         </v-card-title>
-        <v-card-title>
-            <v-text-field label="Título secundario" v-model="form.titleSecondary" variant="outlined" hide-details
+        <!--<v-card-title>
+            <v-text-field label="Título secundario" v-model="form.title_secondary" variant="outlined" hide-details
                 density="compact"></v-text-field>
-        </v-card-title>
+        </v-card-title>-->
         <v-card-title>
             <v-textarea label="Descripción" v-model="form.description" variant="outlined" rows="2" hide-details
                 density="compact"></v-textarea>
         </v-card-title>
-        <v-card-title>
-            <v-textarea label="Descripción secundaría" v-model="form.descriptionSecondary" variant="outlined" rows="2"
+        <!--<v-card-title>
+            <v-textarea label="Descripción secundaría" v-model="form.description_secondary" variant="outlined" rows="2"
                 hide-details density="compact"></v-textarea>
-        </v-card-title>
+        </v-card-title>-->
     </v-card>
 </template>
 
@@ -34,35 +49,39 @@ import axios from 'axios';
 import "filepond/dist/filepond.min.css";
 // Import image preview plugin styles
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
+
 // Import image preview and file type validation plugins
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
-import FilePondPluginImageEdit from "filepond-plugin-image-edit";
 
 // Create component
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
     FilePondPluginImagePreview,
-    FilePondPluginImageEdit
 );
 export default {
     props: {
         inspection_uuid: {
             type: String,
             required: true
+        },
+        evidence: {
+            type: Object,
+            required: false
         }
     },
     data() {
         return {
             myFiles: [],
+            action: 'create',
             form: {
                 inspection_uuid: this.inspection_uuid,
                 evidence_store: null,
                 evidence_store_secondary: null,
                 title: 'Título',
-                titleSecondary: 'Título secundario',
+                title_secondary: null,
                 description: 'Descripción',
-                descriptionSecondary: 'Descripción secundaría',
+                description_secondary: null,
                 inspection_evidence_secondary: null,
             },
             formDefault: {
@@ -70,75 +89,82 @@ export default {
                 evidence_store: null,
                 evidence_store_secondary: null,
                 title: 'Título',
-                titleSecondary: 'Título secundario',
+                title_secondary: null,
                 description: 'Descripción',
-                descriptionSecondary: 'Descripción secundaría',
+                description_secondary: null,
                 inspection_evidence_secondary: null,
             },
             serverConfig: {
                 process: (fieldName, file, metadata, load, error, progress, abort) => {
-                    // Create FormData to send the file
-                    /*const formData = new FormData();
-                    formData.append(fieldName, file, file.name);*/
                     this.form.evidence_store = file;
-                    this.form.inspection_evidence_secondary = this.form.evidence_store;
 
                     // Create a CancelToken source
                     const CancelToken = axios.CancelToken;
                     const source = CancelToken.source();
 
                     if (!this.form.title) {
-                        toast.error("El campo título es requerido");
-                        abort();
+                        toast.error("El título es requerido");
+                        this.abort(source);
                     }
 
-                    // Send the file to the backend using axios
-                    axios.post('api/inspection/evidences', this.form, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        },
-                        cancelToken: source.token,
-                        onUploadProgress: (e) => {
-                            // Update the progress indicator, can call the progress method multiple times
-                            progress(e.lengthComputable, e.loaded, e.total);
-                        }
-                    })
-                        .then(response => {
-                            // Pass the file id to FilePond so it can be used later
-                            load(response.data.fileId);
-                            setTimeout(() => {
-                                this.myFiles = [];
-                                this.form = this.formDefault;
-                            }, 2000);
-                        })
-                        .catch(thrown => {
-                            if (axios.isCancel(thrown)) {
-                                console.log('Request canceled', thrown.message);
-                                // Let FilePond know the request has been cancelled
-                                abort();
-                            } else {
-                                console.error('Error uploading file to the server', thrown);
-                                // Pass error to FilePond
-                                error('Error uploading file to the server');
-                                this.handleErrors(thrown);
-                            }
-                        });
-
-                    // Should expose an abort method so the request can be cancelled
-                    return {
-                        abort: () => {
-                            // Cancel the request
-                            source.cancel('Operation canceled by the user.');
-                        }
-                    };
+                    this.save(source, load, error, progress);
                 }
             }
         };
     },
+    mounted() {
+        if (this.evidence) {
+            this.action = 'update';
+            this.form.evidence_store = this.evidence.inspection_evidence;
+            //this.form.evidence_store_secondary = this.evidence.inspection_evidence_secondary;
+            this.form.title = this.evidence.title;
+            //this.form.title_secondary = this.evidence.title_secondary;
+            this.form.description = this.evidence.description;
+            //this.form.description_secondary = this.evidence.description_secondary;
+            this.myFiles = [
+                {
+                    source: this.evidence.inspection_evidence,
+                    options: {
+                        type: 'remote',
+                    },
+                },
+            ];
+        }
+    },
     methods: {
         handleFilePondInit() {
-            console.log("FilePond has initialized");
             // FilePond instance methods are available on `this.$refs.pond`
+        },
+        save(source, load, error, progress) {
+            // Send the file to the backend using axios
+            axios.post('api/inspection/evidences', this.form, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                cancelToken: source.token,
+                onUploadProgress: (e) => {
+                    progress(e.lengthComputable, e.loaded, e.total);
+                }
+            })
+                .then(response => {
+                    load(response.data.fileId);
+                    setTimeout(() => {
+                        this.myFiles = [];
+                        this.form = this.formDefault;
+                        this.$emit('getEvidences');
+                    }, 2000);
+                })
+                .catch(thrown => {
+                    if (axios.isCancel(thrown)) {
+                        this.abort(source);
+                    } else {
+                        error('Error al subir la información.');
+                        this.handleErrors(thrown);
+                    }
+                });
+        },
+        abort() {
+            source.cancel('Operación cancelada por el usuario.');
         }
     },
     components: {

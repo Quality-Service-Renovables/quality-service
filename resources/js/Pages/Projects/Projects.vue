@@ -135,15 +135,15 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 v-if="hasPermissionTo('projects.delete')" @click="deleteItem(item)"
                                                 size="small" />
                                             <ActionButton text="Asignar técnico" icon="mdi-account-plus-outline"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'inspeccion_iniciada'])"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'proyecto_iniciado'])"
                                                 size="small" @click="asignTechniciensDialog('update', item)"
                                                 color="text-success" />
                                             <ActionButton text="Asignar inspección" icon="mdi-table-plus"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'inspeccion_iniciada']) && item.inspections.length"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'proyecto_iniciado']) && item.inspections.length"
                                                 size="small" @click="asignInspectionDialog('update', item)"
                                                 color="text-success" />
                                             <ActionButton text="Generar PDF" icon="mdi-file-eye"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'inspeccion_iniciada'])"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'proyecto_iniciado']) && item.inspections.length"
                                                 size="small" @click="generatePdf(item)" color="text-red" />
                                         </div>
                                     </template>
@@ -159,7 +159,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proyecto_asignado') && item.inspections.length > 0"
                                                 size="small" />-->
                                             <ActionButton text="Cargar información" icon="mdi-file-edit"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'inspeccion_iniciada'])"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_iniciado'])"
                                                 size="small" @click="formDialog(item)" />
                                             <ActionButton text="Finalizar proyecto" icon="mdi-note-check"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_iniciado', 'inspeccion_iniciada']) && item.inspections.length > 0"
@@ -227,7 +227,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         <v-select v-model="editedItem.employees_uuid" :items="employees"
                                                             item-title="name" item-value="uuid"
                                                             label="Seleccionar técnicos" variant="outlined" hide-details
-                                                            required multiple></v-select>
+                                                            required multiple chips></v-select>
                                                     </v-col>
                                                 </v-row>
                                             </v-container>
@@ -689,6 +689,7 @@ export default {
             this.loadingInspectionDialog = false;
 
             if (!this.errorAssigningInspection) {
+                console.log("this.errorAssigningInspection: " + this.errorAssigningInspection);
                 this.$inertia.reload();
                 this.closeAsignInspection();
             }
