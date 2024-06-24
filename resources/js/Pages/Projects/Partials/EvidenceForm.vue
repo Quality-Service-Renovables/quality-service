@@ -4,22 +4,13 @@
             label-idle="Arrastra y suelta tu archivo o <span class='filepond--label-action'>selecciona</span>"
             :allow-multiple="false" accepted-file-types="image/jpeg, image/png" :files="myFiles"
             @init="handleFilePondInit" :server="serverConfig" instantUpload="false" allowProcess="true"
-            allowReplace="true" allowImagePreview="true" 
-            labelInvalidField="Tipo de archivo no permitido"
-            labelFileLoading="Cargando"
-            labelFileLoadError="Error al subir el archivo"
-            labelFileProcessing="Procesando"
-            labelFileProcessingComplete="Proceso completado"
-            labelFileProcessingAborted="Proceso abortado"
-            labelFileProcessingError="Error al procesar"
-            labelTapToCancel="Toca para cancelar"
-            labelTapToRetry="Toca para reintentar"
-            labelTapToUndo="Toca para deshacer"
-            labelButtonAbortItemLoad = "Cancelar"
-            labelButtonRetryItemLoad = "Reintentar"
-            labelButtonAbortItemProcessing="Cancelar"
-            labelButtonProcessItem="Subir"
-            />
+            allowReplace="true" allowImagePreview="true" labelInvalidField="Tipo de archivo no permitido"
+            labelFileLoading="Cargando" labelFileLoadError="Error al subir el archivo" labelFileProcessing="Procesando"
+            labelFileProcessingComplete="Proceso completado" labelFileProcessingAborted="Proceso abortado"
+            labelFileProcessingError="Error al procesar" labelTapToCancel="Toca para cancelar"
+            labelTapToRetry="Toca para reintentar" labelTapToUndo="Toca para deshacer"
+            labelButtonAbortItemLoad="Cancelar" labelButtonRetryItemLoad="Reintentar"
+            labelButtonAbortItemProcessing="Cancelar" labelButtonProcessItem="Subir" />
 
         <v-card-title>
             <v-text-field label="Título" v-model="form.title" variant="outlined" hide-details
@@ -137,15 +128,17 @@ export default {
         },
         save(source, load, error, progress) {
             // Send the file to the backend using axios
-            axios.post('api/inspection/evidences', this.form, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-                cancelToken: source.token,
-                onUploadProgress: (e) => {
-                    progress(e.lengthComputable, e.loaded, e.total);
-                }
-            })
+            console.log("La acción es: ", this.action);
+            if (this.action === 'create') {
+                axios.post('api/inspection/evidences', this.form, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    cancelToken: source.token,
+                    onUploadProgress: (e) => {
+                        progress(e.lengthComputable, e.loaded, e.total);
+                    }
+                })
                 .then(response => {
                     load(response.data.fileId);
                     setTimeout(() => {
@@ -162,6 +155,33 @@ export default {
                         this.handleErrors(thrown);
                     }
                 });
+            }else if (this.action === 'update') {
+                axios.post('api/inspection/evidences/update/'+this.evidence.inspection_evidence_uuid, this.form, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    cancelToken: source.token,
+                    onUploadProgress: (e) => {
+                        progress(e.lengthComputable, e.loaded, e.total);
+                    }
+                })
+                .then(response => {
+                    load(response.data.fileId);
+                    setTimeout(() => {
+                        console.log("Se actualizó la evidencia");
+                        this.$emit('getEvidences');
+                    }, 2000);
+                })
+                .catch(thrown => {
+                    if (axios.isCancel(thrown)) {
+                        this.abort(source);
+                    } else {
+                        error('Error al subir la información.');
+                        this.handleErrors(thrown);
+                    }
+                });
+            }
+
         },
         abort() {
             source.cancel('Operación cancelada por el usuario.');
