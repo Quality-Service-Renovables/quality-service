@@ -1,6 +1,6 @@
 <template>
     <v-row class="d-flex justify-center">
-        <v-col cols="4">
+        <v-col cols="12" lg="4">
             <EvidenceForm :inspection_uuid="inspection_uuid" @getEvidences="getEvidences" />
         </v-col>
     </v-row>
@@ -9,7 +9,7 @@
             <v-divider></v-divider>
             <p class="text-h5 mt-4" v-if="evidences.length">Evidencias cargadas</p>
         </v-col>
-        <v-col cols="3" v-for="(evidence, index) in evidences" :key="index">
+        <v-col cols="12" lg="3" v-for="(evidence, index) in evidences" :key="index">
             <EvidenceForm :inspection_uuid="inspection_uuid" :evidence="evidence"/>
         </v-col>
     </v-row>
