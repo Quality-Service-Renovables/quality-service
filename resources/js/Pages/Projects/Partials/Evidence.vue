@@ -4,9 +4,9 @@
             <EvidenceForm :inspection_uuid="inspection_uuid" @getEvidences="getEvidences" />
         </v-col>
     </v-row>
-    <v-row class="my-4">
+    <v-row>
         <v-col cols="12"><p class="text-h5 text-center" v-if="evidences.length">Evidencias cargadas</p></v-col>
-        <v-col cols="4" v-for="(evidence, index) in evidences" :key="index">
+        <v-col cols="3" v-for="(evidence, index) in evidences" :key="index">
             <EvidenceForm :inspection_uuid="inspection_uuid" :evidence="evidence"/>
         </v-col>
     </v-row>
