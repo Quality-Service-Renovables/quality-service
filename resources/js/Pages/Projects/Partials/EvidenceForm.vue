@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card class="pb-0">
         <file-pond name="evidence" ref="pond"
             label-idle="Arrastra y suelta tu archivo o <span class='filepond--label-action'>selecciona</span>"
             :allow-multiple="false" accepted-file-types="image/jpeg, image/png" :files="myFiles"
@@ -10,7 +10,8 @@
             labelFileProcessingError="Error al procesar" labelTapToCancel="Toca para cancelar"
             labelTapToRetry="Toca para reintentar" labelTapToUndo="Toca para deshacer"
             labelButtonAbortItemLoad="Cancelar" labelButtonRetryItemLoad="Reintentar"
-            labelButtonAbortItemProcessing="Cancelar" labelButtonProcessItem="Subir" />
+            labelButtonAbortItemProcessing="Cancelar" labelButtonProcessItem="Subir"
+            :class="evidence ? 'min-height' : ''" />
 
         <v-card-title>
             <v-text-field label="Título" v-model="form.title" variant="outlined" hide-details
@@ -20,7 +21,7 @@
             <v-text-field label="Título secundario" v-model="form.title_secondary" variant="outlined" hide-details
                 density="compact"></v-text-field>
         </v-card-title>-->
-        <v-card-title>
+        <v-card-title class="pb-0">
             <v-textarea label="Descripción" v-model="form.description" variant="outlined" rows="2" hide-details
                 density="compact"></v-textarea>
         </v-card-title>
@@ -28,11 +29,32 @@
             <v-textarea label="Descripción secundaría" v-model="form.description_secondary" variant="outlined" rows="2"
                 hide-details density="compact"></v-textarea>
         </v-card-title>-->
+        <v-card-actions class="p-0 m-0">
+            <!--Delete button-->
+            <v-btn color="error" @click="dialogDelete = true" v-if="evidence" block density="compact">
+                Eliminar
+            </v-btn>
+        </v-card-actions>
     </v-card>
+    <v-dialog v-model="dialogDelete" max-width="500px">
+        <v-card>
+            <v-card-title class="text-h5 text-center">¿Estás seguro de
+                eliminar?</v-card-title>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue-darken-1" variant="text" @click="dialogDelete = false">Cancelar</v-btn>
+                <v-btn color="blue-darken-1" variant="text" @click="deleteEvidence()">Si,
+                    eliminar</v-btn>
+                <v-spacer></v-spacer>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
 import { Toaster, toast } from 'vue-sonner'
+import Swal from "sweetalert2";
+
 // Import Vue FilePond
 import vueFilePond from "vue-filepond";
 import axios from 'axios';
@@ -65,6 +87,7 @@ export default {
         return {
             myFiles: [],
             action: 'create',
+            dialogDelete: false,
             form: {
                 inspection_uuid: this.inspection_uuid,
                 evidence_store: null,
@@ -139,24 +162,24 @@ export default {
                         progress(e.lengthComputable, e.loaded, e.total);
                     }
                 })
-                .then(response => {
-                    load(response.data.fileId);
-                    setTimeout(() => {
-                        this.myFiles = [];
-                        this.form = this.formDefault;
-                        this.$emit('getEvidences');
-                    }, 2000);
-                })
-                .catch(thrown => {
-                    if (axios.isCancel(thrown)) {
-                        this.abort(source);
-                    } else {
-                        error('Error al subir la información.');
-                        this.handleErrors(thrown);
-                    }
-                });
-            }else if (this.action === 'update') {
-                axios.post('api/inspection/evidences/update/'+this.evidence.inspection_evidence_uuid, this.form, {
+                    .then(response => {
+                        load(response.data.fileId);
+                        setTimeout(() => {
+                            this.myFiles = [];
+                            this.form = this.formDefault;
+                            this.$emit('getEvidences');
+                        }, 2000);
+                    })
+                    .catch(thrown => {
+                        if (axios.isCancel(thrown)) {
+                            this.abort(source);
+                        } else {
+                            error('Error al subir la información.');
+                            this.handleErrors(thrown);
+                        }
+                    });
+            } else if (this.action === 'update') {
+                axios.post('api/inspection/evidences/update/' + this.evidence.inspection_evidence_uuid, this.form, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     },
@@ -165,35 +188,51 @@ export default {
                         progress(e.lengthComputable, e.loaded, e.total);
                     }
                 })
-                .then(response => {
-                    load(response.data.fileId);
-                    setTimeout(() => {
-                        console.log("Se actualizó la evidencia");
-                        this.$emit('getEvidences');
-                    }, 2000);
-                })
-                .catch(thrown => {
-                    if (axios.isCancel(thrown)) {
-                        this.abort(source);
-                    } else {
-                        error('Error al subir la información.');
-                        this.handleErrors(thrown);
-                    }
-                });
+                    .then(response => {
+                        load(response.data.fileId);
+                        setTimeout(() => {
+                            console.log("Se actualizó la evidencia");
+                            this.$emit('getEvidences');
+                        }, 2000);
+                    })
+                    .catch(thrown => {
+                        if (axios.isCancel(thrown)) {
+                            this.abort(source);
+                        } else {
+                            error('Error al subir la información.');
+                            this.handleErrors(thrown);
+                        }
+                    });
             }
-
         },
         abort() {
             source.cancel('Operación cancelada por el usuario.');
-        }
+        },
+        deleteEvidence() {
+            console.log("Entro a eliminar");
+
+            axios.delete('api/inspection/evidences/' + this.evidence.inspection_evidence_uuid)
+                .then(response => {
+                    toast.success("Evidencia eliminada");
+                    this.$emit('getEvidences');
+                })
+                .catch(error => {
+                    this.handleErrors(error);
+                });
+
+        },
     },
     components: {
         FilePond,
-        Toaster
+        Toaster,
     },
 };
 </script>
 
 
 
-<style scoped></style>
+<style scoped>
+.min-height {
+    min-height: 300px;
+}
+</style>

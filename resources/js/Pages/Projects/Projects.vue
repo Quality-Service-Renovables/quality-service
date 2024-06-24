@@ -333,10 +333,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             <v-tab value="evidences">Evidencias</v-tab>
                                         </v-tabs>
 
-                                        <v-card-text class="mt-15">
+                                        <v-card-text class="mt-10">
                                             <v-tabs-window v-model="tab">
                                                 <v-tabs-window-item v-if="tab === 'info'">
-                                                    <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
+                                                    <div class="max-w-7xl mx-auto sm:px-4 lg:px-6 mb-5 pb-5">
                                                         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                                                             <Section :dialogForm="dialogForm"
                                                                 :ct_inspection_uuid="ctInspectionUuid"
@@ -346,8 +346,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 </v-tabs-window-item>
 
                                                 <v-tabs-window-item v-if="tab === 'evidences'" class="border">
-                                                    <div class="max-w-7xl mx-auto my-auto sm:px-4 lg:px-6">
-                                                        <Evidence :inspection_uuid="inspectionUuid" />
+                                                    <div class="max-w-7xl mx-auto my-auto sm:px-4 lg:px-6 mt-5 mb-5 pb-5">
+                                                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                                                            <Evidence :inspection_uuid="inspectionUuid" />
+                                                        </div>
                                                     </div>
                                                 </v-tabs-window-item>
                                             </v-tabs-window>
@@ -886,3 +888,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.position-fixed{
+    z-index: 9999;
+}
+</style>
