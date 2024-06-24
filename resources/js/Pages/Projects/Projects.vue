@@ -324,7 +324,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     transition="dialog-bottom-transition" fullscreen>
                                     <v-toolbar>
                                         <v-btn icon="mdi-close" @click="closeSectionDialog()"></v-btn>
-                                        <v-toolbar-title>Carga de información</v-toolbar-title>
+                                        <v-toolbar-title class="w-100">
+                                            Carga de información 
+                                             <p><small>Proyecto: "{{ this.inspectionForm.project_name }}"</small></p>
+                                        </v-toolbar-title>
                                         <v-spacer></v-spacer>
                                     </v-toolbar>
                                     <v-card>
@@ -795,6 +798,7 @@ export default {
             this.dialogForm = true;
             this.ctInspectionUuid = item.inspections[0].category.ct_inspection_uuid;
             this.inspectionUuid = item.inspections[0].inspection_uuid;
+            this.inspectionForm.project_name = item.project_name;
         },
         closeSectionDialog() {
             this.dialogForm = false;
