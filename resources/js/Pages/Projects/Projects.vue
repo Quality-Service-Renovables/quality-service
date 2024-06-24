@@ -328,7 +328,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <v-spacer></v-spacer>
                                     </v-toolbar>
                                     <v-card>
-                                        <v-tabs v-model="tab" bg-color="primary" align-tabs="center" class="position-fixed w-100">
+                                        <v-tabs v-model="tab" align-tabs="center" class="position-fixed w-100 bg-primary-color">
                                             <v-tab value="info">Información</v-tab>
                                             <v-tab value="evidences">Evidencias</v-tab>
                                         </v-tabs>

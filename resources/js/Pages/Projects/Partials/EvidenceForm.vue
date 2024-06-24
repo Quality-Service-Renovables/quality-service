@@ -31,8 +31,11 @@
         </v-card-title>-->
         <v-card-actions class="p-0 m-0">
             <!--Delete button-->
-            <v-btn color="error" @click="dialogDelete = true" v-if="evidence" block density="compact">
-                Eliminar
+            <v-btn color="error" @click="dialogDelete = true" v-if="evidence" block @mouseover="isHoveredDelete = true"
+                @mouseleave="isHoveredDelete = false">
+                <v-icon left class="text-h5 primary-color">
+                    {{ isHoveredDelete ? 'mdi-delete-empty-outline' : 'mdi-delete-outline' }}
+                </v-icon>
             </v-btn>
         </v-card-actions>
     </v-card>
@@ -88,6 +91,7 @@ export default {
             myFiles: [],
             action: 'create',
             dialogDelete: false,
+            isHoveredDelete: false,
             form: {
                 inspection_uuid: this.inspection_uuid,
                 evidence_store: null,
