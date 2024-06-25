@@ -865,25 +865,9 @@ export default {
         },
         generatePdf(item) {
             toast.warning('Solicitando documento, espere...');
-            axios.get('inspection/get-document/' + item.inspections[0].inspection_uuid, {
-                responseType: 'blob'
-            })
+            axios.get('inspection/get-document/' + item.inspections[0].inspection_uuid)
                 .then(response => {
-                    // Crear un objeto de URL del BLOB recibido
-                    const url = window.URL.createObjectURL(new Blob([response.data]));
-                    // Crear enlace para descargar
-                    const link = document.createElement('a');
-                    link.href = url;
-                    // El nombre del archivo para descargar puede ser definido aquí.
-                    // Usando una cadena de texto estática para este ejemplo. Cambia esto según lo necesites
-                    link.setAttribute('download', 'inspection.pdf');
-                    // Agregar el enlace al documento
-                    document.body.appendChild(link);
-                    // Simular clic en el enlace para descargar
-                    link.click();
-                    // Eliminar el enlace después de la descarga
-                    document.body.removeChild(link);
-                    toast.success('Documento generado');
+                    window.open(response.data.data, '_blank');
                 })
                 .catch(error => {
                     toast.error('No fue posible recuperar el documento');
