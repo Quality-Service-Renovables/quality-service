@@ -165,15 +165,15 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 size="small" @click="formDialog(item)" color="text-primary" />
                                             <ActionButton text="Finalizar proyecto" icon="mdi-note-check"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_iniciado', 'inspeccion_iniciada']) && item.inspections.length > 0"
-                                                size="small" />
+                                                size="small" color="text-primary"/>
                                             <ActionButton text="Validar proyecto" icon="mdi-check-circle-outline"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_finalizado'])"
                                                 size="small" />
                                             <ActionButton text="Cerrar proyecto" icon="mdi-close-circle-outline"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_validado'])"
-                                                size="small" />
+                                                size="small" color="text-primary"/>
                                             <ActionButton text="Cancelar proyecto" icon="mdi-table-cancel"
-                                                v-if="hasPermissionTo('projects.update')" size="small" />
+                                                v-if="hasPermissionTo('projects.update')" size="small" color="text-red"/>
                                         </div>
                                     </template>
                                 </v-data-table>
