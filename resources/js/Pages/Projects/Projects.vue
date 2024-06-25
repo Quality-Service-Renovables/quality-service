@@ -131,6 +131,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             <ActionButton text="Editar" icon="mdi-pencil"
                                                 v-if="hasPermissionTo('projects.update')" @click="editItem(item)"
                                                 size="small" />
+                                            <ActionButton text="Cancelar proyecto" icon="mdi-table-cancel"
+                                                v-if="hasPermissionTo('projects.update')" size="small"/>
                                             <ActionButton text="Eliminar" icon="mdi-delete"
                                                 v-if="hasPermissionTo('projects.delete')" @click="deleteItem(item)"
                                                 size="small" />
@@ -172,8 +174,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             <ActionButton text="Cerrar proyecto" icon="mdi-close-circle-outline"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_validado'])"
                                                 size="small" color="text-primary"/>
-                                            <ActionButton text="Cancelar proyecto" icon="mdi-table-cancel"
-                                                v-if="hasPermissionTo('projects.update')" size="small" color="text-red"/>
+                                            
                                         </div>
                                     </template>
                                 </v-data-table>
