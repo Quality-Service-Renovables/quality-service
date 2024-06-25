@@ -9,6 +9,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class UserController extends Controller
 {
@@ -152,5 +154,17 @@ class UserController extends Controller
         }
 
         return true;
+    }
+
+    /**
+     * Render the equipment component.
+     */
+    public function component(): Response
+    {
+        $this->service->read();
+
+        return Inertia::render('User', [
+            'users' => $this->service->response['data'],
+        ]);
     }
 }

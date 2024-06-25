@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Api\V1\Oils\OilController;
+use App\Http\Controllers\Api\V1\Users\UserController;
 use App\Http\Controllers\Api\V1\Clients\ClientController;
 use App\Http\Controllers\Api\V1\Failures\FailureController;
 use App\Http\Controllers\Api\V1\Projects\ProjectController;
@@ -86,6 +87,11 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/inspection/get-document/{uuid}', [ReportController::class, 'getDocument'])->name('document-get');
+
+    //Users
+    Route::group(['middleware' => ['permission:users']], function () {
+        Route::get('/users', [UserController::class, 'component'])->name('users');
+    });
 
 });
 

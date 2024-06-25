@@ -1,0 +1,283 @@
+<script setup>
+import { Head } from '@inertiajs/vue3';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+</script>
+
+<template>
+    <Toaster position="top-right" richColors :visibleToasts="10" />
+
+    <Head title="Usuarios" />
+    <AuthenticatedLayout>
+        <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Usuarios</h2>
+        </template>
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <v-card>
+                        <v-row>
+                            <v-col cols="12" sm="12">
+                                <v-data-table :headers="headers" :items="users" fixed-header :search="search">
+                                    <template v-slot:item.active="{ value }">
+                                        <v-icon :color="getColor(value)">mdi-circle-slice-8</v-icon>
+                                    </template>
+                                    <template v-slot:top>
+                                        <v-toolbar flat>
+                                            <v-toolbar-title class="ml-1">
+                                                <v-text-field v-model="search" label="Buscar" hide-details
+                                                    variant="solo" append-inner-icon="mdi-magnify"
+                                                    density="compact"></v-text-field>
+                                            </v-toolbar-title>
+                                            <v-divider class="mx-4" inset vertical></v-divider>
+                                            <v-spacer></v-spacer>
+                                            <v-dialog v-model="dialog" max-width="500px" v-if="hasPermissionTo('users.create') || hasPermissionTo('users.update')">
+                                                <template v-slot:activator="{ props }" v-if="hasPermissionTo('users.create')">
+                                                    <v-btn class="mb-2" color="primary" dark v-bind="props"
+                                                        icon="mdi-plus"></v-btn>
+                                                </template>
+                                                <v-card>
+                                                    <v-card-title>
+                                                        <span class="text-h5">{{ formTitle }}</span>
+                                                    </v-card-title>
+
+                                                    <v-card-text>
+                                                        <v-container>
+                                                            <v-row>
+                                                                <v-col cols="12">
+                                                                    <v-text-field v-model="editedItem.name"
+                                                                        label="Nombre" variant="solo"
+                                                                        hide-details></v-text-field>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-text-field v-model="editedItem.email"
+                                                                        label="Nombre" variant="solo"
+                                                                        hide-details></v-text-field>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-switch label="Activo" v-model="editedItem.active"
+                                                                        color="primary" :readonly="editedItem.roles && editedItem.roles[0].name === 'admin'"></v-switch>
+                                                                </v-col>
+
+                                                            </v-row>
+                                                        </v-container>
+                                                    </v-card-text>
+
+                                                    <v-card-actions>
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn color="blue-darken-1" variant="text" @click="close">
+                                                            Cancelar
+                                                        </v-btn>
+                                                        <v-btn color="blue-darken-1" variant="text" @click="save">
+                                                            Guardar
+                                                        </v-btn>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </v-dialog>
+                                            <v-dialog v-model="dialogDelete" max-width="500px">
+                                                <v-card>
+                                                    <v-card-title class="text-h5 text-center">¿Estás seguro de
+                                                        eliminar?</v-card-title>
+                                                    <v-card-actions>
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn color="blue-darken-1" variant="text"
+                                                            @click="closeDelete">Cancel</v-btn>
+                                                        <v-btn color="blue-darken-1" variant="text"
+                                                            @click="deleteItemConfirm(editedItem.usersuuid)">Si,
+                                                            eliminar</v-btn>
+                                                        <v-spacer></v-spacer>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </v-dialog>
+                                        </v-toolbar>
+                                    </template>
+                                    <template v-slot:item.actions="{ item }">
+                                        <v-icon class="me-2" size="small" @click="editItem(item)" v-if="hasPermissionTo('users.update')">
+                                            mdi-pencil
+                                        </v-icon>
+                                        <v-icon size="small" @click="deleteItem(item)" v-if="hasPermissionTo('users.delete') && item.roles[0].name != 'admin'" >
+                                            mdi-delete
+                                        </v-icon>
+                                    </template>
+                                </v-data-table>
+                            </v-col>
+                        </v-row>
+                    </v-card>
+                </div>
+            </div>
+
+        </div>
+    </AuthenticatedLayout>
+</template>
+
+<script>
+import { Toaster, toast } from 'vue-sonner'
+
+export default {
+    components: {
+        Toaster,
+    },
+    props: {
+        users: {
+            type: Array,
+            required: true
+        }
+    },
+    data: () => ({
+        search: '',
+        dialog: false,
+        dialogDelete: false,
+        headers: [
+            { title: 'Usuario', key: 'name' },
+            { title: 'Email', key: 'email' },
+            { title: 'Teléfono', key: 'phone' },
+            { title: 'Cliente', key: 'client.client' },
+            { title: 'Rol', key: 'roles[0].description' },
+            { title: 'Estado', key: 'active' },
+            { title: 'Actions', key: 'actions', sortable: false }
+        ],
+        editedIndex: -1,
+        editedItem: {
+            uuid: '',
+            name: '',
+            image_profile: '',
+            phone: '',
+            password: '',
+            password_confirm: '',
+            client_uuid: '',
+            rol: '',
+            active: false,
+        },
+        defaultItem: {
+            uuid: '',
+            name: '',
+            image_profile: '',
+            phone: '',
+            password: '',
+            password_confirm: '',
+            client_uuid: '',
+            rol: '',
+            active: false,
+        },
+        roles: [],
+        clients: [],
+    }),
+    computed: {
+        formTitle() {
+            return this.editedIndex === -1 ? 'Nuevo usuario' : 'Editar usuario'
+        },
+    },
+    watch: {
+        dialog(val) {
+            val || this.close()
+        },
+        dialogDelete(val) {
+            val || this.closeDelete()
+        },
+    },
+    methods: {
+        editItem(item) {
+            this.editedIndex = this.users.indexOf(item)
+            item.active = item.active == "1" ? true : false
+            this.editedItem = Object.assign({}, item)
+            this.dialog = true
+        },
+        deleteItem(item) {
+            this.editedIndex = this.users.indexOf(item)
+            this.editedItem = Object.assign({}, item)
+            this.dialogDelete = true
+        },
+        deleteItemConfirm(item) {
+            const putRequest = () => {
+                return axios.delete('api/users/' + item);
+            };
+            toast.promise(putRequest, {
+                loading: 'Procesando...',
+                success: (data) => {
+                    this.closeDelete()
+                    this.$inertia.reload()
+                    return 'Usuario eliminado correctamente';
+                },
+                error: (data) => {
+                    this.handleErrors(data);
+                }
+            });
+        },
+        close() {
+            this.dialog = false
+            this.$nextTick(() => {
+                console.log("Cambiando estatus en close");
+                this.editedItem = Object.assign({}, this.defaultItem)
+                this.editedIndex = -1
+            })
+        },
+        closeDelete() {
+            this.dialogDelete = false
+            this.$nextTick(() => {
+                console.log("Cambiando estatus en closeDelete");
+                this.editedItem = Object.assign({}, this.defaultItem)
+                this.editedIndex = -1
+            })
+        },
+        save() {
+            if (this.editedIndex > -1) {
+                const putRequest = () => {
+                    return axios.put('api/users/' + this.editedItem.usersuuid, this.editedItem);
+                };
+                toast.promise(putRequest(), {
+                    loading: 'Procesando...',
+                    success: (data) => {
+                        this.$inertia.reload()
+                        this.close()
+                        return 'Usuario actualizado correctamente';
+                    },
+                    error: (data) => {
+                        this.handleErrors(data);
+                    }
+                });
+            } else {
+                const postRequest = () => {
+                    return axios.post('api/users', this.editedItem);
+                };
+
+                toast.promise(postRequest(), {
+                    loading: 'Procesando...',
+                    success: (data) => {
+                        this.$inertia.reload()
+                        this.close()
+                        return 'Usuario creado correctamente';
+                    },
+                    error: (data) => {
+                        this.handleErrors(data);
+                    }
+                });
+            }
+
+        },
+        getColor(value) {
+            return value ? 'green' : 'red';
+        },
+        getRoles() {
+            axios.get('api/auth-guard/roles')
+                .then(response => {
+                    this.roles = response.data.data;
+                })
+                .catch(error => {
+                    toast.error('Error al cargar los roles');
+                });
+        },
+        getClients() {
+            axios.get('api/clients')
+                .then(response => {
+                    this.clients = response.data.data;
+                })
+                .catch(error => {
+                    toast.error('Error al cargar los clientes');
+                });
+        },
+    },
+    mounted() {
+        this.getRoles();
+        this.getClients();
+    }
+}
+</script>
