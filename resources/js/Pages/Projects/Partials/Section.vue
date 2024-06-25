@@ -24,8 +24,11 @@
                                             <div v-if="section.fields">
                                                 <v-card v-for="(field, indexField) in section.fields" :key="indexField"
                                                     class="my-5">
-                                                    <v-card-title>
+                                                    {{ complementData(field) }}
+                                                    <v-card-title class="d-flex justify-between">
                                                         {{ field.ct_inspection_form }}
+                                                        <v-icon color="success" v-if="field.form_inspection.inspection_form_value">mdi-check</v-icon>
+                                                        <v-icon color="red" v-if="isEmptyField(field) && field.required">mdi-alert-circle-outline</v-icon>
                                                     </v-card-title>
                                                     <v-card-subtitle>
                                                         Campo {{ field.required ? '*Requerido' :
@@ -33,7 +36,6 @@
                                                         }}
                                                     </v-card-subtitle>
                                                     <v-card-text>
-                                                        {{ complementData(field) }}
                                                         <QuillEditor v-model:content="field.form_inspection.inspection_form_value" theme="snow"
                                                             toolbar="essential" heigth="100%" contentType="html" />
                                                         <v-text-field v-model="field.form_inspection.inspection_form_comments" variant="outlined"
@@ -64,10 +66,13 @@
                                                                 <v-card
                                                                     v-for="(fieldSub, indexFieldSub) in subSection.fields"
                                                                     :key="indexFieldSub" class="my-5">
-                                                                    <v-card-title>
+                                                                    {{ complementData(fieldSub) }}
+                                                                    <v-card-title class="d-flex justify-between">
                                                                         {{
-                fieldSub.ct_inspection_form
-            }}
+                                                                            fieldSub.ct_inspection_form
+                                                                        }}
+                                                                        <v-icon color="success" v-if="fieldSub.form_inspection.inspection_form_value">mdi-check</v-icon>
+                                                                        <v-icon color="red" v-if="isEmptyField(fieldSub) && fieldSub.required">mdi-alert-circle-outline</v-icon>
                                                                     </v-card-title>
                                                                     <v-card-subtitle>
                                                                         Campo {{
@@ -76,7 +81,6 @@
                                                                         'Opcional' }}
                                                                     </v-card-subtitle>
                                                                     <v-card-text>
-                                                                        {{ complementData(fieldSub) }}
                                                                         <QuillEditor v-model:content="fieldSub.form_inspection.inspection_form_value"
                                                                             theme="snow" toolbar="essential"
                                                                             heigth="100%" contentType="html" />
@@ -190,6 +194,13 @@ export default {
                     inspection_form_comments: ''
                 }
             } 
+        },
+        isEmptyField(field) {
+            if (field.form_inspection.inspection_form_value == null || field.form_inspection.inspection_form_value == '') {
+                return true;
+            } else {
+                return false;
+            }
         },
     },
     mounted() {
