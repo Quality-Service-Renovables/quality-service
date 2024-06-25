@@ -11,10 +11,19 @@
                     <v-divider></v-divider>
                     <p class="text-h5 mt-4" v-if="evidences.length">Evidencias cargadas</p>
                 </v-col>
-                <v-col cols="12" lg="4" v-for="(evidence, index) in evidences" :key="index">
-                    <EvidenceForm :inspection_uuid="inspection_uuid" :evidence="evidence"
-                        @getEvidences="getEvidences" />
-                </v-col>
+                <template v-if="!loading">
+                    <v-col cols="12" lg="4" v-for="(evidence, index) in evidences" :key="index">
+                        <EvidenceForm :inspection_uuid="inspection_uuid" :evidence="evidence"
+                            @getEvidences="getEvidences" />
+                    </v-col>
+                </template>
+                <template v-else>
+                    <v-col cols="12" lg="4" v-for="i in 3" :key="i">
+                        <v-skeleton-loader type="card"></v-skeleton-loader>
+                        <v-skeleton-loader type="paragraph" />
+                        <v-skeleton-loader type="paragraph" />
+                    </v-col>
+                </template>
             </v-row>
         </div>
     </div>
@@ -56,7 +65,8 @@ export default {
     },
     data() {
         return {
-            evidences: []
+            evidences: [],
+            loading: false,
         }
     },
     mounted() {
@@ -64,14 +74,16 @@ export default {
     },
     methods: {
         getEvidences() {
-            console.log("Actualizando evidencias");
+            this.loading = true;
             this.evidences = [];
             //axios.get('api/inspection/evidences' + this.inspection_uuid)
             axios.get('api/inspection/evidences')
                 .then(response => {
+                    this.loading = false;
                     this.evidences = response.data.data;
                 })
                 .catch(error => {
+                    this.loading = false;
                     this.handleErrors(error);
                 });
         },
