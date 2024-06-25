@@ -1,18 +1,23 @@
 <template>
-    <v-row class="d-flex justify-center">
-        <v-col cols="12" lg="4">
-            <EvidenceForm :inspection_uuid="inspection_uuid" @getEvidences="getEvidences" />
-        </v-col>
-    </v-row>
-    <v-row>
-        <v-col cols="12" class="text-center">
-            <v-divider></v-divider>
-            <p class="text-h5 mt-4" v-if="evidences.length">Evidencias cargadas</p>
-        </v-col>
-        <v-col cols="12" lg="4" v-for="(evidence, index) in evidences" :key="index">
-            <EvidenceForm :inspection_uuid="inspection_uuid" :evidence="evidence" @getEvidences="getEvidences"/>
-        </v-col>
-    </v-row>
+    <div class="max-w-7xl mx-auto my-auto sm:px-4 lg:px-6 mt-5 mb-5 pb-5">
+        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <v-row class="d-flex justify-center">
+                <v-col cols="12" lg="4">
+                    <EvidenceForm :inspection_uuid="inspection_uuid" @getEvidences="getEvidences" />
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" class="text-center">
+                    <v-divider></v-divider>
+                    <p class="text-h5 mt-4" v-if="evidences.length">Evidencias cargadas</p>
+                </v-col>
+                <v-col cols="12" lg="4" v-for="(evidence, index) in evidences" :key="index">
+                    <EvidenceForm :inspection_uuid="inspection_uuid" :evidence="evidence"
+                        @getEvidences="getEvidences" />
+                </v-col>
+            </v-row>
+        </div>
+    </div>
 </template>
 
 <script>

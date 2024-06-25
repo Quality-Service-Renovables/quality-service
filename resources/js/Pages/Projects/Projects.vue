@@ -151,16 +151,18 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <div class="d-flex">
                                             <ActionButton text="Asignar técnico" icon="mdi-account-plus-outline"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_creado'])"
-                                                size="small" @click="asignTechniciensDialog('create', item)" color="text-primary"/>
+                                                size="small" @click="asignTechniciensDialog('create', item)"
+                                                color="text-primary" />
                                             <ActionButton text="Asignar inspección" icon="mdi-table-plus"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado']) && !item.inspections.length"
-                                                size="small" @click="asignInspectionDialog('create', item)" color="text-primary"/>
+                                                size="small" @click="asignInspectionDialog('create', item)"
+                                                color="text-primary" />
                                             <!--<ActionButton text="Iniciar inspección" icon="mdi-play-speed"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proyecto_asignado') && item.inspections.length > 0"
                                                 size="small" />-->
                                             <ActionButton text="Cargar información" icon="mdi-file-edit"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_iniciado'])"
-                                                size="small" @click="formDialog(item)" color="text-primary"/>
+                                                size="small" @click="formDialog(item)" color="text-primary" />
                                             <ActionButton text="Finalizar proyecto" icon="mdi-note-check"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_iniciado', 'inspeccion_iniciada']) && item.inspections.length > 0"
                                                 size="small" />
@@ -325,35 +327,34 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     <v-toolbar>
                                         <v-btn icon="mdi-close" @click="closeSectionDialog()"></v-btn>
                                         <v-toolbar-title class="w-100">
-                                            Carga de información 
-                                             <p><small>Proyecto: "{{ this.inspectionForm.project_name }}"</small></p>
+                                            Carga de información
+                                            <p><small>Proyecto: "{{ this.inspectionForm.project_name }}"</small></p>
                                         </v-toolbar-title>
                                         <v-spacer></v-spacer>
                                     </v-toolbar>
                                     <v-card>
-                                        <v-tabs v-model="tab" align-tabs="center" class="position-fixed w-100 bg-primary-color">
-                                            <v-tab value="info">Información</v-tab>
+                                        <v-tabs v-model="tab" align-tabs="center"
+                                            class="position-fixed w-100 bg-primary-color">
+                                            <v-tab value="sections">Secciones</v-tab>
                                             <v-tab value="evidences">Evidencias</v-tab>
+                                            <v-tab value="recomendations">Concluciones y Recomendaciones</v-tab>
                                         </v-tabs>
 
                                         <v-card-text class="mt-10">
                                             <v-tabs-window v-model="tab">
-                                                <v-tabs-window-item v-if="tab === 'info'">
-                                                    <div class="max-w-7xl mx-auto sm:px-4 lg:px-6 mb-5 pb-5">
-                                                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                                                            <Section :dialogForm="dialogForm"
-                                                                :ct_inspection_uuid="ctInspectionUuid"
-                                                                @closeSectionDialog="closeSectionDialog" />
-                                                        </div>
-                                                    </div>
+                                                <v-tabs-window-item v-if="tab === 'sections'">
+                                                    <Section :dialogForm="dialogForm"
+                                                        :ct_inspection_uuid="ctInspectionUuid"
+                                                        :inspection_uuid="inspectionUuid"
+                                                        @closeSectionDialog="closeSectionDialog" />
                                                 </v-tabs-window-item>
 
-                                                <v-tabs-window-item v-if="tab === 'evidences'" class="border">
-                                                    <div class="max-w-7xl mx-auto my-auto sm:px-4 lg:px-6 mt-5 mb-5 pb-5">
-                                                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                                                            <Evidence :inspection_uuid="inspectionUuid" />
-                                                        </div>
-                                                    </div>
+                                                <v-tabs-window-item v-if="tab === 'evidences'">
+                                                    <Evidence :inspection_uuid="inspectionUuid" />
+                                                </v-tabs-window-item>
+
+                                                <v-tabs-window-item v-if="tab === 'recomendations'">
+                                                    <ConclutionAndRecomendation :inspection_uuid="inspectionUuid"  />
                                                 </v-tabs-window-item>
                                             </v-tabs-window>
                                         </v-card-text>
@@ -370,13 +371,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 </template>
 
 <script>
-import { router } from '@inertiajs/vue3'
 import { Toaster, toast } from 'vue-sonner'
-import Swal from 'sweetalert2';
 import ActionButton from '@/Pages/Projects/Partials/ActionButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Section from '@/Pages/Projects/Partials/Section.vue';
 import Evidence from '@/Pages/Projects/Partials/Evidence.vue';
+import ConclutionAndRecomendation from '@/Pages/Projects/Partials/ConclutionAndRecomendation.vue';
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
@@ -387,7 +387,8 @@ export default {
         PrimaryButton,
         QuillEditor,
         Section,
-        Evidence
+        Evidence,
+        ConclutionAndRecomendation
     },
     props: {
         projects: {
@@ -478,7 +479,7 @@ export default {
         // Sections
         dialogForm: false,
         ctInspectionUuid: '',
-        tab: 'info',
+        tab: 'sections',
         inspectionUuid: null,
     }),
     computed: {
@@ -894,7 +895,7 @@ export default {
 </script>
 
 <style scoped>
-.position-fixed{
+.position-fixed {
     z-index: 9999;
 }
 </style>
