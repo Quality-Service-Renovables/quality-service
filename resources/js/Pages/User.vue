@@ -30,7 +30,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             </v-toolbar-title>
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
-                                            <v-dialog v-model="dialog" max-width="500px" v-if="hasPermissionTo('users.create') || hasPermissionTo('users.update')">
+                                            <v-dialog v-model="dialog" width="auto" v-if="hasPermissionTo('users.create') || hasPermissionTo('users.update')">
                                                 <template v-slot:activator="{ props }" v-if="hasPermissionTo('users.create')">
                                                     <v-btn class="mb-2" color="primary" dark v-bind="props"
                                                         icon="mdi-plus"></v-btn>
@@ -48,10 +48,21 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         label="Nombre" variant="solo"
                                                                         hide-details></v-text-field>
                                                                 </v-col>
-                                                                <v-col cols="12">
+                                                                <v-col cols="6">
                                                                     <v-text-field v-model="editedItem.email"
-                                                                        label="Nombre" variant="solo"
+                                                                        label="Email" variant="solo"
                                                                         hide-details></v-text-field>
+                                                                </v-col>
+                                                                <v-col cols="6">
+                                                                    <v-text-field v-model="editedItem.phone"
+                                                                        label="Teléfono" variant="solo"
+                                                                        hide-details></v-text-field>
+                                                                </v-col>
+                                                                <v-col cols="6">
+                                                                   <v-select v-model="editedItem.client_uuid" :items="clients" label="Cliente" item-title="client" item-value="client_uuid" dense></v-select>
+                                                                </v-col>
+                                                                <v-col cols="6">
+                                                                   <v-select v-model="editedItem.rol" :items="roles" label="Rol" item-title="description" item-value="name" dense></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
@@ -178,6 +189,8 @@ export default {
         editItem(item) {
             this.editedIndex = this.users.indexOf(item)
             item.active = item.active == "1" ? true : false
+            item.client_uuid = item.client.client_uuid;
+            item.rol = item.roles[0].name;
             this.editedItem = Object.assign({}, item)
             this.dialog = true
         },
