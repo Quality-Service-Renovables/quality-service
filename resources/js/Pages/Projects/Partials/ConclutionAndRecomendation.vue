@@ -54,7 +54,8 @@ export default {
                 ct_inspection_code: '',
                 equipment_uuid: '',
                 status_code: '',
-                client_uuid: ''
+                client_uuid: '',
+                project_uuid: '',
             }
         }
     },
@@ -79,7 +80,8 @@ export default {
                 ct_inspection_code: this.inspection_form.category.ct_inspection_code,
                 equipment_uuid: this.inspection_form.equipment.equipment_uuid,
                 status_code: this.inspection_form.status.status_code,
-                client_uuid: this.inspection_form.client.client_uuid
+                client_uuid: this.inspection_form.client.client_uuid,
+                project_uuid: this.inspection_form.project.project_uuid,
             }
 
             let request = () => {
