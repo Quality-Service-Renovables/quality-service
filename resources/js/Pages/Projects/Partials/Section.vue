@@ -33,9 +33,10 @@
                                                         }}
                                                     </v-card-subtitle>
                                                     <v-card-text>
-                                                        <QuillEditor v-model:content="field.content" theme="snow"
+                                                        {{ complementData(field) }}
+                                                        <QuillEditor v-model:content="field.form_inspection.inspection_form_value" theme="snow"
                                                             toolbar="essential" heigth="100%" contentType="html" />
-                                                        <v-text-field v-model="field.comments" variant="outlined"
+                                                        <v-text-field v-model="field.form_inspection.inspection_form_comments" variant="outlined"
                                                             density="compact" class="mt-2"
                                                             placeholder="Comentarios (opcional)" />
                                                         <PrimaryButton @click="saveField(field)" class="mt-2">Guardar
@@ -75,10 +76,11 @@
                                                                         'Opcional' }}
                                                                     </v-card-subtitle>
                                                                     <v-card-text>
-                                                                        <QuillEditor v-model:content="fieldSub.content"
+                                                                        {{ complementData(fieldSub) }}
+                                                                        <QuillEditor v-model:content="fieldSub.form_inspection.inspection_form_value"
                                                                             theme="snow" toolbar="essential"
                                                                             heigth="100%" contentType="html" />
-                                                                        <v-text-field v-model="fieldSub.comments"
+                                                                        <v-text-field v-model="fieldSub.form_inspection.inspection_form_comments"
                                                                             variant="outlined" density="compact"
                                                                             class="mt-2"
                                                                             placeholder="Comentarios (opcional)" />
@@ -158,8 +160,8 @@ export default {
             let formData = {
                 inspection_uuid: this.inspection_uuid,
                 form: [{
-                    inspection_form_value: field.content,
-                    inspection_form_comments: field.comments,
+                    inspection_form_value: field.form_inspection.inspection_form_value,
+                    inspection_form_comments: field.form_inspection.inspection_form_comments,
                     ct_inspection_form_uuid: field.ct_inspection_form_uuid
                 }]
             }
@@ -180,7 +182,15 @@ export default {
                         this.handleErrors(error);
                     });
             }
-        }
+        },
+        complementData(field) {
+            if (field.form_inspection == null) {
+                field.form_inspection = {
+                    inspection_form_value: '',
+                    inspection_form_comments: ''
+                }
+            } 
+        },
     },
     mounted() {
         this.getForm();

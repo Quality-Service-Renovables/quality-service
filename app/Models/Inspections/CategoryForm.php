@@ -2,9 +2,10 @@
 
 namespace App\Models\Inspections;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Inspections\FormInspection;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CategoryForm extends Model
 {
@@ -20,4 +21,9 @@ class CategoryForm extends Model
         'required',
     ];
     protected $hidden = ['ct_inspection_form_id','ct_inspection_section_id'];
+
+    public function formInspection()
+    {
+        return $this->belongsTo(FormInspection::class, 'ct_inspection_form_id', 'ct_inspection_form_id');
+    }
 }

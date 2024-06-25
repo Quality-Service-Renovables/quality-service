@@ -146,7 +146,7 @@ class FormService extends Service
                 if (count($sections)) {
                     $fields = CategoryForm::whereIn(
                         'ct_inspection_section_id', $sections->pluck('ct_inspection_section_id'))
-                        ->get();
+                        ->with("formInspection")->get();
                     if ($fields) {
                         $form = $this->buildForm($sections, $fields);
                     }
