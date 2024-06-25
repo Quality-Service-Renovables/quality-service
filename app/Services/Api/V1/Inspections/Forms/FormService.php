@@ -6,7 +6,7 @@
 
 namespace App\Services\Api\V1\Inspections\Forms;
 
-use App\Models\Inspections\Categories\FormInspection;
+use App\Models\Inspections\FormInspection;
 use App\Models\Inspections\Categories\FormInspection as CtFormInspection;
 use App\Models\Inspections\Categories\Section;
 use App\Models\Inspections\Category;

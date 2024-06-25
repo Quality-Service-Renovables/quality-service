@@ -14,6 +14,7 @@ use App\Models\Inspections\Category;
 use App\Models\Inspections\Inspection;
 use App\Models\Projects\Project;
 use App\Models\Status\Status;
+use App\Services\Api\Audits;
 use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,7 @@ use Throwable;
 
 class InspectionService extends Service
 {
+    use Audits;
     public string $nameService = 'inspection';
 
     public object $inspection;
@@ -68,6 +70,13 @@ class InspectionService extends Service
                     $this->response,
                     trans('api.message_log'),
                     $request->user()->id,
+                );
+                // Crear log de auditoria
+                $this->proyectAudits(
+                    $project->project_id,
+                    $project->status_id,
+                    $this->logService->log->application_log_id,
+                    trans('api.status_project_started')
                 );
                 // Commit Transaction
                 DB::commit();
@@ -132,10 +141,8 @@ class InspectionService extends Service
             $category = Category::where('ct_inspection_code', $request->ct_inspection_code)->first();
             $equipment = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
             $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
-            $status = Status::with(['category'])
-                ->where('status_code', '=', $request->status_code)
-                ->first();
-            if (($status && $status->category) && $status->category->ct_status_code === 'inspeccion') {
+
+            if ($project) {
                 // Control Transaction
                 DB::beginTransaction();
                 // Establecer atributos para registro
@@ -144,7 +151,6 @@ class InspectionService extends Service
                     'equipment_id' => $equipment->equipment_id,
                     'client_id' => Client::where('client_uuid', '=', $request->client_uuid)
                         ->first()->client_id,
-                    'status_id' => $status->status_id,
                     'project_id' => $project->project_id,
                 ]);
                 // Update Register

@@ -28,7 +28,9 @@ class ReportService extends Service
     public function getDocument(string $uuid): array
     {
         try {
-            $user = auth()->user()->load('client');
+            // Obtiene datos del usuario
+            $user = auth()->user()->load('client.config');
+            // Obtiene resumen de inspección
             $inspection = Inspection::with([
                 'client',
                 'equipment.model.trademark',
@@ -37,11 +39,16 @@ class ReportService extends Service
                 'evidences',
                 'project',
             ])->where('inspection_uuid', $uuid)->first();
-
+            // Valida si la inspección tiene información.
             if ($this->isValidInspection($inspection)) {
                 $inspection->provider = $user->client;
                 // Generación de la vista en base a la información de la colección.
                 $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
+                // Cifrar el PDF
+                if ($user->client->config && $user->client->config->crypt_report) {
+                    $passReport = 'qsr.2024';
+                    $document->getDomPDF()->getCanvas()->get_cpdf()->setEncryption($passReport);
+                }
                 // Nombre del documento
                 $filename = $inspection->category->ct_inspection_code.'_'.now()->format('Y-m-d_His').'.pdf';
                 // Obtener el contenido PDF como una cadena
@@ -54,7 +61,7 @@ class ReportService extends Service
                 $this->statusCode = 202;
                 $this->response['message'] = trans('api.document_generated');
                 $this->response['data'] = $pathStorage;
-
+                // Crear log de sistema
                 $this->logService->create('inspection_report', [
                     $this->nameService,
                     compact('uuid'),
@@ -62,7 +69,7 @@ class ReportService extends Service
                     trans('api.inspection_not_found'),
                     auth()->user()->id,
                 ]);
-
+                // Crear log de auditoria
                 $this->proyectAudits(
                     $inspection->project->project_id,
                     $inspection->project->status->status_id,
@@ -107,7 +114,6 @@ class ReportService extends Service
             }
         }
 
-        //return $isValidInspection;
-        return true;
+        return env('APP_DEBUG') ?? $isValidInspection;
     }
 }

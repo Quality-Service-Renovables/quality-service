@@ -29,6 +29,13 @@ return [
     'inspection_not_found' => 'Inspection not found.',
     'document_generated' => 'Document generated',
     // Status Catalog
-    'status_projects' => 'Status proyect, code: proyecto',
-    'status_inspections' => 'Status proyect, code: inspeccion',
+    'status_projects' => 'Status project, code: proyecto',
+    'status_inspections' => 'Status project, code: inspeccion',
+    'status_project_created' => 'Project created successfully.',
+    'status_project_assigned' => 'Project assigned successfully.',
+    'status_project_started' => 'Project started successfully.',
+    'status_project_finished' => 'Project finished successfully.',
+    'status_project_validated' => 'Project validated successfully.',
+    'status_project_closed' => 'Project closed successfully.',
+    'status_project_cancel' => 'Project cancelled successfully.',
 ];

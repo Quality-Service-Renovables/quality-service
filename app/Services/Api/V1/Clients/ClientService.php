@@ -124,7 +124,7 @@ class ClientService extends Service implements ServiceInterface
     public function read(): array
     {
         $this->response['message'] = trans('api.read');
-        $this->response['data'] = Client::all();
+        $this->response['data'] = Client::with(['config'])->get();
 
         // Respuesta del módulo
         return $this->response;
@@ -169,7 +169,9 @@ class ClientService extends Service implements ServiceInterface
     {
         try {
             // Obtiene client del equipo
-            $client = Client::where('client_uuid', $uuid)->first();
+            $client = Client::with(['config'])
+                ->where('client_uuid', $uuid)
+                ->first();
             $this->response['message'] = $client === null
                 ? trans('api.not_found')
                 : trans('api.show');

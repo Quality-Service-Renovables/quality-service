@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('client_configuration', static function (Blueprint $table) {
+        Schema::create('client_configurations', static function (Blueprint $table) {
             $table->id('client_configuration_id');
             $table->uuid('client_configuration_uuid');
             $table->unsignedBigInteger('client_id');
-            $table->boolean('send_email');
-            $table->boolean('invoice_required');
+            $table->boolean('send_email')->default(false);
+            $table->boolean('invoice_required')->default(false);
+            $table->boolean('send_client_report')->default(false);
+            $table->boolean('crypt_report')->default(false);
             $table->timestamps();
             $table->softDeletes();
             //INDEX
@@ -33,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('client_configuration');
+        Schema::dropIfExists('client_configurations');
     }
 };

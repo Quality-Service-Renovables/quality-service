@@ -27,8 +27,8 @@ class InspectionRequest extends CustomRequest
                     ->whereNull('deleted_at'),
             ],
             'equipment_uuid' => 'required|uuid|exists:equipments,equipment_uuid',
-            //'status_code' => 'required|string|exists:status,status_code',
             'project_uuid' => 'required|string|exists:projects,project_uuid',
+            'diagnosis_user_id' => 'nullable|int|exists:users,id',
             'client_uuid' => 'required|uuid|exists:clients,client_uuid',
         ];
     }

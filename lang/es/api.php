@@ -31,4 +31,11 @@ return [
     // Status Catalog
     'status_projects' => 'Estado de proyectos, codigo: proyecto',
     'status_inspections' => 'Estado de proyectos, codigo: inspeccion',
+    'status_project_created' => 'Proyecto creado.',
+    'status_project_assigned' => 'Proyecto asignado.',
+    'status_project_started' => 'Proyecto iniciado.',
+    'status_project_finished' => 'Proyecto finalizado.',
+    'status_project_validated' => 'Proyecto validado.',
+    'status_project_closed' => 'Proyecto cerrado',
+    'status_project_cancel' => 'Proyecto cancelado.',
 ];

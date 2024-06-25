@@ -22,6 +22,7 @@ namespace App\Services\Api\V1\Projects;
 use App\Models\Clients\Client;
 use App\Models\Projects\Project;
 use App\Models\Status\Status;
+use App\Services\Api\Audits;
 use App\Services\Api\ServiceInterface;
 use App\Services\Service;
 use Illuminate\Http\Request;
@@ -31,6 +32,7 @@ use Throwable;
 
 class ProjectService extends Service implements ServiceInterface
 {
+    use Audits;
     public string $nameService = 'project_service';
 
     /**
@@ -56,10 +58,7 @@ class ProjectService extends Service implements ServiceInterface
                     $request->client_uuid
                 )->first()->client_id,
             ]);
-            // Registra los atributos de la solicitud
-            $this->statusCode = 201;
-            $this->response['message'] = trans('api.created');
-            $this->response['data'] = Project::create($request->all());
+            $project = Project::create($request->all());
             // Registro en log
             $this->logService->create(
                 $this->nameService,
@@ -67,6 +66,17 @@ class ProjectService extends Service implements ServiceInterface
                 $this->response,
                 trans('api.message_log'),
             );
+            // Crear log de auditoria
+            $this->proyectAudits(
+                $project->project_id,
+                $project->status_id,
+                $this->logService->log->application_log_id,
+                trans('api.status_project_created')
+            );
+            // Registra los atributos de la solicitud
+            $this->statusCode = 201;
+            $this->response['message'] = trans('api.created');
+            $this->response['data'] = $project;
             // Finaliza Transacción
             DB::commit();
         } catch (Throwable $exceptions) {

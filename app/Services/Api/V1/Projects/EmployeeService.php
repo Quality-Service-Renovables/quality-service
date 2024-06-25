@@ -23,6 +23,7 @@ use App\Models\Projects\Employee;
 use App\Models\Projects\Project;
 use App\Models\Status\Status;
 use App\Models\Users\User;
+use App\Services\Api\Audits;
 use App\Services\Api\ServiceInterface;
 use App\Services\Service;
 use Illuminate\Http\Request;
@@ -32,6 +33,8 @@ use Throwable;
 
 class EmployeeService extends Service implements ServiceInterface
 {
+    use Audits;
+
     public string $nameService = 'project_employee_service';
 
     /**
@@ -75,6 +78,13 @@ class EmployeeService extends Service implements ServiceInterface
                 $request->all(),
                 $this->response,
                 trans('api.message_log'),
+            );
+            // Crear log de auditoria
+            $this->proyectAudits(
+                $project->project_id,
+                $project->status_id,
+                $this->logService->log->application_log_id,
+                trans('api.status_project_assigned')
             );
             // Finaliza Transacción
             DB::commit();
