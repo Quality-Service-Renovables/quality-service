@@ -201,6 +201,13 @@ class FormService extends Service
         return $form;
     }
 
+    /**
+     * Sets the form inspection.
+     *
+     * @param Request $request The request object.
+     *
+     * @return array The response data.
+     */
     public function setFormInspection(Request $request): array
     {
         try {
@@ -295,6 +302,13 @@ class FormService extends Service
         return $this->response;
     }
 
+    /**
+     * Update a form field.
+     *
+     * @param \Illuminate\Http\Request $request The HTTP request
+     *
+     * @return array The response data
+     */
     public function updateFormField(Request $request): array
     {
         try {
