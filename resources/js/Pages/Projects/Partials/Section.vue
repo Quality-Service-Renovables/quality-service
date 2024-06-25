@@ -38,7 +38,7 @@
                                                             toolbar="essential" heigth="100%" contentType="html" />
                                                         <v-text-field v-model="field.form_inspection.inspection_form_comments" variant="outlined"
                                                             density="compact" class="mt-2"
-                                                            placeholder="Comentarios (opcional)" />
+                                                            placeholder="Comentarios (opcional)" hide-details/>
                                                         <PrimaryButton @click="saveField(field)" class="mt-2">Guardar
                                                         </PrimaryButton>
                                                     </v-card-text>
@@ -83,7 +83,7 @@
                                                                         <v-text-field v-model="fieldSub.form_inspection.inspection_form_comments"
                                                                             variant="outlined" density="compact"
                                                                             class="mt-2"
-                                                                            placeholder="Comentarios (opcional)" />
+                                                                            placeholder="Comentarios (opcional)" hide-details/>
                                                                         <PrimaryButton @click="saveField(fieldSub)"
                                                                             class="mt-2">Guardar</PrimaryButton>
                                                                     </v-card-text>
