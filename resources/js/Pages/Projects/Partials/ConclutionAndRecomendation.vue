@@ -33,6 +33,7 @@ import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Toaster, toast } from 'vue-sonner'
+import { getInspection } from '@/Functions/api';
 
 export default {
     components: {
@@ -65,17 +66,16 @@ export default {
         this.getInspection();
     },
     methods: {
-        getInspection() {
-            this.loading = true;
-            axios.get('api/inspections/' + this.inspection_uuid)
-                .then(response => {
-                    this.loading = false;
-                    this.inspection_form = response.data.data;
-                })
-                .catch(error => {
-                    this.loading = false;
-                    this.handleErrors(error);
-                });
+        async getInspection() {
+            try {
+                this.loading = true;
+                const response = await getInspection(this.inspection_uuid);
+                this.inspection_form = response.data.data;
+                this.loading = false;
+            } catch (error) {
+                this.loading = false;
+                this.handleErrors(error);
+            }
         },
         save() {
             let formData = {
