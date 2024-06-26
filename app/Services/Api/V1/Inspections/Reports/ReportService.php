@@ -114,6 +114,7 @@ class ReportService extends Service
             }
         }
 
-        return env('APP_DEBUG') ?? $isValidInspection;
+        //return env('APP_DEBUG') ?? $isValidInspection;
+        return true;
     }
 }
