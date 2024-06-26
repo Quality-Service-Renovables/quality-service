@@ -144,7 +144,7 @@ class InspectionFormService extends Service
                 ])->get();
 
                 if (count($sections)) {
-                    $fields = CtInspectionSection::whereIn(
+                    $fields = CtInspectionForm::whereIn(
                         'ct_inspection_section_id', $sections->pluck('ct_inspection_section_id'))
                         ->get();
                     if ($fields) {
