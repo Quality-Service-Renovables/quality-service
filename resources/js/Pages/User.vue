@@ -413,7 +413,7 @@ export default {
 
 
 
-<style>
+<style scoped>
 /*
  * FilePond Custom Styles
  */
