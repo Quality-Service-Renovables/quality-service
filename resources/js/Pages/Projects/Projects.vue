@@ -131,6 +131,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             <ActionButton text="Editar" icon="mdi-pencil"
                                                 v-if="hasPermissionTo('projects.update')" @click="editItem(item)"
                                                 size="small" />
+                                            <ActionButton text="Cancelar proyecto" icon="mdi-table-cancel"
+                                                v-if="hasPermissionTo('projects.update')" size="small"/>
                                             <ActionButton text="Eliminar" icon="mdi-delete"
                                                 v-if="hasPermissionTo('projects.delete')" @click="deleteItem(item)"
                                                 size="small" />
@@ -165,15 +167,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 size="small" @click="formDialog(item)" color="text-primary" />
                                             <ActionButton text="Finalizar proyecto" icon="mdi-note-check"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_iniciado', 'inspeccion_iniciada']) && item.inspections.length > 0"
-                                                size="small" />
+                                                size="small" color="text-primary"/>
                                             <ActionButton text="Validar proyecto" icon="mdi-check-circle-outline"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_finalizado'])"
                                                 size="small" />
                                             <ActionButton text="Cerrar proyecto" icon="mdi-close-circle-outline"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_validado'])"
-                                                size="small" />
-                                            <ActionButton text="Cancelar proyecto" icon="mdi-table-cancel"
-                                                v-if="hasPermissionTo('projects.update')" size="small" />
+                                                size="small" color="text-primary"/>
+                                            
                                         </div>
                                     </template>
                                 </v-data-table>
@@ -865,25 +866,9 @@ export default {
         },
         generatePdf(item) {
             toast.warning('Solicitando documento, espere...');
-            axios.get('inspection/get-document/' + item.inspections[0].inspection_uuid, {
-                responseType: 'blob'
-            })
+            axios.get('inspection/get-document/' + item.inspections[0].inspection_uuid)
                 .then(response => {
-                    // Crear un objeto de URL del BLOB recibido
-                    const url = window.URL.createObjectURL(new Blob([response.data]));
-                    // Crear enlace para descargar
-                    const link = document.createElement('a');
-                    link.href = url;
-                    // El nombre del archivo para descargar puede ser definido aquí.
-                    // Usando una cadena de texto estática para este ejemplo. Cambia esto según lo necesites
-                    link.setAttribute('download', 'inspection.pdf');
-                    // Agregar el enlace al documento
-                    document.body.appendChild(link);
-                    // Simular clic en el enlace para descargar
-                    link.click();
-                    // Eliminar el enlace después de la descarga
-                    document.body.removeChild(link);
-                    toast.success('Documento generado');
+                    window.open(response.data.data, '_blank');
                 })
                 .catch(error => {
                     toast.error('No fue posible recuperar el documento');

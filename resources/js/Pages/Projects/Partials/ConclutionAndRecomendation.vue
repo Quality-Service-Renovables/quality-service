@@ -11,15 +11,17 @@
             </v-card-text>
             <v-card-text>
                 <p class="text-grey mb-2 text-h6">Conclusiones:</p>
-                <QuillEditor v-model:content="inspection_form.conclusion" theme="snow" toolbar="essential"
-                    heigth="100%" contentType="html" />
+                <QuillEditor v-model:content="inspection_form.conclusion" theme="snow" toolbar="essential" heigth="100%"
+                    contentType="html" v-if="!loading" />
+                <v-skeleton-loader type="paragraph" v-else></v-skeleton-loader>
             </v-card-text>
             <v-card-text>
                 <p class="text-grey mb-2 text-h6">Recomendaciones:</p>
                 <QuillEditor v-model:content="inspection_form.recomendations" theme="snow" toolbar="essential"
-                    heigth="100%" contentType="html" />
+                    heigth="100%" contentType="html" v-if="!loading" />
+                <v-skeleton-loader type="paragraph" v-else></v-skeleton-loader>
             </v-card-text>
-            <v-card-text>
+            <v-card-text v-if="!loading">
                 <PrimaryButton @click="save">Guardar</PrimaryButton>
             </v-card-text>
         </div>
@@ -27,7 +29,6 @@
 </template>
 
 <script>
-
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -47,6 +48,7 @@ export default {
     },
     data() {
         return {
+            loading: false,
             inspection_form: {
                 resume: '',
                 conclusion: '',
@@ -54,7 +56,8 @@ export default {
                 ct_inspection_code: '',
                 equipment_uuid: '',
                 status_code: '',
-                client_uuid: ''
+                client_uuid: '',
+                project_uuid: '',
             }
         }
     },
@@ -63,11 +66,14 @@ export default {
     },
     methods: {
         getInspection() {
+            this.loading = true;
             axios.get('api/inspections/' + this.inspection_uuid)
                 .then(response => {
+                    this.loading = false;
                     this.inspection_form = response.data.data;
                 })
                 .catch(error => {
+                    this.loading = false;
                     this.handleErrors(error);
                 });
         },
@@ -79,7 +85,8 @@ export default {
                 ct_inspection_code: this.inspection_form.category.ct_inspection_code,
                 equipment_uuid: this.inspection_form.equipment.equipment_uuid,
                 status_code: this.inspection_form.status.status_code,
-                client_uuid: this.inspection_form.client.client_uuid
+                client_uuid: this.inspection_form.client.client_uuid,
+                project_uuid: this.inspection_form.project.project_uuid,
             }
 
             let request = () => {

@@ -33,7 +33,7 @@ import { mdiCheckBold } from '@mdi/js';
                         <div class="d-flex align-start flex-wrap">
                             <App path="dashboard" title="Dashboard" icon="mdi-monitor-dashboard" v-if="checkVisivility('Dashboard')"/>
                             <App path="projects" title="Proyectos" icon="mdi-folder-text-outline" v-if="checkVisivility('Proyectos') && hasPermissionTo('projects')"/>
-                            <App path="#" title="Usuarios" icon="mdi-account-group" v-if="checkVisivility('Usuarios') && hasPermissionTo('users')"/>
+                            <App path="users" title="Usuarios" icon="mdi-account-group" v-if="checkVisivility('Usuarios') && hasPermissionTo('users')"/>
                             <App path="roles-permissions" title="Roles y permisos" icon="mdi-account-lock" v-if="checkVisivility('Roles y permisos') && hasPermissionTo('roles')"/>
                             <App path="profile" title="Perfil" icon="mdi-face-man-profile" v-if="checkVisivility('Perfil')"/>
                             <App path="https://www.qualityservicerenovables.com.mx" title="Landing page"

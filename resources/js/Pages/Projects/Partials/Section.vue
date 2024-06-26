@@ -2,10 +2,10 @@
     <div class="max-w-7xl mx-auto sm:px-4 lg:px-6 mb-5 pb-5">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <v-card :loading="dialogFormLoading">
-                <v-card-text>
+                <v-card-text class="padding-0">
                     <v-container>
                         <v-row>
-                            <v-col cols="12">
+                            <v-col cols="12" class="padding-0">
                                 <v-expansion-panels multiple v-model="expandedPanel">
                                     <v-expansion-panel v-for="(section, indexSection) in sectionsForm"
                                         :key="indexSection" class="my-5" :expanded="true">
@@ -24,8 +24,11 @@
                                             <div v-if="section.fields">
                                                 <v-card v-for="(field, indexField) in section.fields" :key="indexField"
                                                     class="my-5">
-                                                    <v-card-title>
+                                                    {{ complementData(field) }}
+                                                    <v-card-title class="d-flex justify-between">
                                                         {{ field.ct_inspection_form }}
+                                                        <v-icon color="success" v-if="field.form_inspection.inspection_form_value">mdi-check</v-icon>
+                                                        <v-icon color="red" v-if="isEmptyField(field) && field.required">mdi-alert-circle-outline</v-icon>
                                                     </v-card-title>
                                                     <v-card-subtitle>
                                                         Campo {{ field.required ? '*Requerido' :
@@ -33,11 +36,11 @@
                                                         }}
                                                     </v-card-subtitle>
                                                     <v-card-text>
-                                                        <QuillEditor v-model:content="field.content" theme="snow"
+                                                        <QuillEditor v-model:content="field.form_inspection.inspection_form_value" theme="snow"
                                                             toolbar="essential" heigth="100%" contentType="html" />
-                                                        <v-text-field v-model="field.comments" variant="outlined"
+                                                        <v-text-field v-model="field.form_inspection.inspection_form_comments" variant="outlined"
                                                             density="compact" class="mt-2"
-                                                            placeholder="Comentarios (opcional)" />
+                                                            placeholder="Comentarios (opcional)" hide-details/>
                                                         <PrimaryButton @click="saveField(field)" class="mt-2">Guardar
                                                         </PrimaryButton>
                                                     </v-card-text>
@@ -63,10 +66,13 @@
                                                                 <v-card
                                                                     v-for="(fieldSub, indexFieldSub) in subSection.fields"
                                                                     :key="indexFieldSub" class="my-5">
-                                                                    <v-card-title>
+                                                                    {{ complementData(fieldSub) }}
+                                                                    <v-card-title class="d-flex justify-between">
                                                                         {{
-                fieldSub.ct_inspection_form
-            }}
+                                                                            fieldSub.ct_inspection_form
+                                                                        }}
+                                                                        <v-icon color="success" v-if="fieldSub.form_inspection.inspection_form_value">mdi-check</v-icon>
+                                                                        <v-icon color="red" v-if="isEmptyField(fieldSub) && fieldSub.required">mdi-alert-circle-outline</v-icon>
                                                                     </v-card-title>
                                                                     <v-card-subtitle>
                                                                         Campo {{
@@ -75,13 +81,13 @@
                                                                         'Opcional' }}
                                                                     </v-card-subtitle>
                                                                     <v-card-text>
-                                                                        <QuillEditor v-model:content="fieldSub.content"
+                                                                        <QuillEditor v-model:content="fieldSub.form_inspection.inspection_form_value"
                                                                             theme="snow" toolbar="essential"
                                                                             heigth="100%" contentType="html" />
-                                                                        <v-text-field v-model="fieldSub.comments"
+                                                                        <v-text-field v-model="fieldSub.form_inspection.inspection_form_comments"
                                                                             variant="outlined" density="compact"
                                                                             class="mt-2"
-                                                                            placeholder="Comentarios (opcional)" />
+                                                                            placeholder="Comentarios (opcional)" hide-details/>
                                                                         <PrimaryButton @click="saveField(fieldSub)"
                                                                             class="mt-2">Guardar</PrimaryButton>
                                                                     </v-card-text>
@@ -158,8 +164,8 @@ export default {
             let formData = {
                 inspection_uuid: this.inspection_uuid,
                 form: [{
-                    inspection_form_value: field.content,
-                    inspection_form_comments: field.comments,
+                    inspection_form_value: field.form_inspection.inspection_form_value,
+                    inspection_form_comments: field.form_inspection.inspection_form_comments,
                     ct_inspection_form_uuid: field.ct_inspection_form_uuid
                 }]
             }
@@ -180,10 +186,33 @@ export default {
                         this.handleErrors(error);
                     });
             }
-        }
+        },
+        complementData(field) {
+            if (field.form_inspection == null) {
+                field.form_inspection = {
+                    inspection_form_value: '',
+                    inspection_form_comments: ''
+                }
+            } 
+        },
+        isEmptyField(field) {
+            if (field.form_inspection.inspection_form_value == null || field.form_inspection.inspection_form_value == '') {
+                return true;
+            } else {
+                return false;
+            }
+        },
     },
     mounted() {
         this.getForm();
     }
 }
 </script>
+
+<style scoped>
+@media screen and (min-width: 412px){
+    .padding-0{
+        padding: 0px !important;
+    }
+}
+</style>
