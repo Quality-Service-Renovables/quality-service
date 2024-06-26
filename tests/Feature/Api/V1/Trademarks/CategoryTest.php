@@ -9,7 +9,7 @@ use App\Models\Trademarks\Category;
 
 test('create', function () {
     $response = $this->post('/api/trademark/categories', [
-        'ct_trademark' => 'Unit Test Trademark Category',
+        'ct_trademark' => 'Unit Test Trademark CtInspection',
     ]);
 
     $jsonResponse = json_decode($response->content(), true, 512, JSON_THROW_ON_ERROR);
@@ -33,7 +33,7 @@ test('update', function () {
     $this->assertNotNull($category, 'Trademark category not found');
 
     $response = $this->put('/api/trademark/categories/'.$category->ct_trademark_uuid, [
-        'ct_trademark' => 'Unit Test Trademark Category',
+        'ct_trademark' => 'Unit Test Trademark CtInspection',
         'active' => false,
     ]);
 

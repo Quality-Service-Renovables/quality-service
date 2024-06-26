@@ -4,7 +4,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Inspections\Category;
+use App\Models\Inspections\Categories\CtInspection;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -16,7 +16,7 @@ class InspectionCategoriesSeeder extends Seeder
     public function run(): void
     {
         foreach ($this->getCategories() as $category) {
-            Category::updateOrCreate(['ct_inspection_code' => $category['ct_inspection_code']], $category);
+            CtInspection::updateOrCreate(['ct_inspection_code' => $category['ct_inspection_code']], $category);
         }
     }
 

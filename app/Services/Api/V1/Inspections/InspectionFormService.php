@@ -4,14 +4,14 @@
 
 /** @noinspection PhpUndefinedMethodInspection */
 
-namespace App\Services\Api\V1\Inspections\Forms;
+namespace App\Services\Api\V1\Inspections;
 
-use App\Models\Inspections\FormInspection;
-use App\Models\Inspections\Categories\FormInspection as CtFormInspection;
-use App\Models\Inspections\Categories\Section;
-use App\Models\Inspections\Category;
-use App\Models\Inspections\CategoryForm;
+use App\Models\Inspections\Categories\CtInspection;
+use App\Models\Inspections\Categories\CtInspectionForm;
+use App\Models\Inspections\Categories\CtInspectionSection;
 use App\Models\Inspections\Inspection;
+use App\Models\Inspections\InspectionForm;
+use App\Services\Api\V1\Inspections\Forms\CategoryForm;
 use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Throwable;
 
-class FormService extends Service
+class InspectionFormService extends Service
 {
     public string $nameService = 'ct_inspection';
 
@@ -35,7 +35,7 @@ class FormService extends Service
             // Control de transacciones
             DB::beginTransaction();
             // En este punto ha sido validada la existencia de la categoría de inspección
-            $inspectionCategory = Category::where([
+            $inspectionCategory = CtInspection::where([
                 'ct_inspection_code' => $request->ct_inspection_code,
             ])->first();
 
@@ -95,7 +95,7 @@ class FormService extends Service
      */
     private function setSection(array $section, int $ctInspectionId, ?int $sectionRelationId = null): int
     {
-        $createdSection = Section::create([
+        $createdSection = CtInspectionSection::create([
             'ct_inspection_section_uuid' => Str::uuid()->toString(),
             'ct_inspection_section' => $section['ct_inspection_section'],
             'ct_inspection_section_code' => create_slug($section['ct_inspection_section']),
@@ -115,7 +115,7 @@ class FormService extends Service
     private function setSectionFields(array $fields, int $inspectionSectionId): void
     {
         foreach ($fields as $field) {
-            CategoryForm::create([
+            CtInspectionForm::create([
                 'ct_inspection_form_uuid' => Str::uuid()->toString(),
                 'ct_inspection_form' => $field['ct_inspection_form'],
                 'ct_inspection_form_code' => create_slug($field['ct_inspection_form']),
@@ -135,16 +135,16 @@ class FormService extends Service
     {
         try {
             $form = [];
-            $inspectionCategory = Category::where([
+            $inspectionCategory = CtInspection::where([
                 'ct_inspection_uuid' => $uuid,
             ])->first();
             if ($inspectionCategory) {
-                $sections = Section::where([
+                $sections = CtInspectionSection::where([
                     'ct_inspection_id' => $inspectionCategory->ct_inspection_id,
                 ])->get();
 
                 if (count($sections)) {
-                    $fields = CategoryForm::whereIn(
+                    $fields = CtInspectionSection::whereIn(
                         'ct_inspection_section_id', $sections->pluck('ct_inspection_section_id'))
                         ->get();
                     if ($fields) {
@@ -214,7 +214,7 @@ class FormService extends Service
             // Control de transacciones
             DB::beginTransaction();
             $inspection = Inspection::where('inspection_uuid', $request->inspection_uuid)->first();
-            $categoryForm = CtFormInspection::all();
+            $categoryForm = CtInspectionForm::all();
             $inspectionForms = [];
             foreach ($request->form as $formInspection) {
                 $categoryFormId = $categoryForm->where(
@@ -225,7 +225,7 @@ class FormService extends Service
                 $formInspection['inspection_id'] = $inspection->inspection_id;
                 $formInspection['ct_inspection_form_id'] = $categoryFormId;
 
-                $inspectionForms[] = FormInspection::create($formInspection);
+                $inspectionForms[] = InspectionForm::create($formInspection);
             }
 
             $this->statusCode = 201;
@@ -264,7 +264,7 @@ class FormService extends Service
             // Campos a registrar
             $fields = [];
             // Obtiene la sección a la cuál se asociará el campo
-            $section = Section::where([
+            $section = CtInspectionSection::where([
                 'ct_inspection_section_uuid' => $request->ct_inspection_section_uuid,
             ])->first();
             // Si la sección existe se registran los campos
@@ -276,7 +276,7 @@ class FormService extends Service
                     $field['ct_inspection_form_code'] = create_slug($field['ct_inspection_form']);
                     $field['ct_inspection_section_id'] = $section->ct_inspection_section_id;
                     // Registro de campos
-                    $fields[] = FormInspection::create($field);
+                    $fields[] = CtInspectionForm::create($field);
                 }
             }
 
@@ -317,7 +317,7 @@ class FormService extends Service
             // Campos a registrar
             $field = null;
             // Obtiene la sección a la cuál se asociará el campo
-            $section = Section::where([
+            $section = CtInspectionSection::where([
                 'ct_inspection_section_uuid' => $request->ct_inspection_section_uuid,
             ])->first();
             // Si la sección existe se registran los campos
@@ -328,7 +328,7 @@ class FormService extends Service
                     'ct_inspection_section_id' => $section->ct_inspection_section_id,
                 ]);
                 // Registro de campos
-                $field = FormInspection::where([
+                $field = CtInspectionForm::where([
                     'ct_inspection_form_uuid' => $request->ct_inspection_form_uuid,
                 ])->update($request->except([
                     'ct_inspection_section_uuid',
@@ -368,7 +368,7 @@ class FormService extends Service
             // Control de transacciones
             DB::beginTransaction();
             // Elimina por soft delete el campo de la sección
-            $formInspection = FormInspection::where([
+            $formInspection = CtInspectionForm::where([
                 'ct_inspection_form_uuid' => $uuid,
             ])->first();
             // Se existe el campo se elimina

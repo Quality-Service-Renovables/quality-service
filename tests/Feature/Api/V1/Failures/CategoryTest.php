@@ -9,8 +9,8 @@ use App\Models\Failures\Category;
 
 test('create', function () {
     $response = $this->post('/api/failure/categories', [
-        'ct_failure' => 'Unit Test Failure Category',
-        'description' => 'Unit Test Failure Category',
+        'ct_failure' => 'Unit Test Failure CtInspection',
+        'description' => 'Unit Test Failure CtInspection',
         'active' => true
     ]);
 
@@ -28,7 +28,7 @@ test('update', function () {
     $this->assertNotNull($failure, 'Failure category not found');
 
     $response = $this->put('/api/failure/categories/'.$failure->ct_failure_uuid, [
-        'ct_failure' => 'Unit Test Failure Category',
+        'ct_failure' => 'Unit Test Failure CtInspection',
         'description' => 'field_updated',
         'active' => true
     ]);

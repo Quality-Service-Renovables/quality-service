@@ -9,7 +9,7 @@ use App\Models\Equipments\Category;
 
 test('create', function () {
     $response = $this->post('/api/equipment/categories', [
-        'ct_equipment' => 'Unit Test Equipment Category',
+        'ct_equipment' => 'Unit Test Equipment CtInspection',
         'description' => 'unit test equipment category',
         'active' => true,
     ]);
@@ -28,7 +28,7 @@ test('update', function () {
     $this->assertNotNull($category, 'Equipment category not found');
 
     $response = $this->put('/api/equipment/categories/'.$category->ct_equipment_uuid, [
-        'ct_equipment' => 'Unit Test Equipment Category',
+        'ct_equipment' => 'Unit Test Equipment CtInspection',
         'description' => 'field_updated',
         'active' => true,
     ]);

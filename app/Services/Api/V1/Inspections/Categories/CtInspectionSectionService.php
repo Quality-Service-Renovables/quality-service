@@ -4,19 +4,19 @@
 
 /** @noinspection PhpUndefinedMethodInspection */
 
-namespace App\Services\Api\V1\Inspections;
+namespace App\Services\Api\V1\Inspections\Categories;
 
-use App\Models\Inspections\Categories\Section;
-use App\Models\Inspections\Category;
+use App\Models\Inspections\Categories\CtInspection;
+use App\Models\Inspections\Categories\CtInspectionSection;
 use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Throwable;
 
-class SectionService extends Service
+class CtInspectionSectionService extends Service
 {
-    public string $nameService = 'inspection_section';
+    public string $nameService = 'ct_inspection_section';
 
     public object $inspection;
 
@@ -31,10 +31,10 @@ class SectionService extends Service
         try {
             // Control Transaction
             DB::beginTransaction();
-            $category = Category::where('ct_inspection_uuid', $request->ct_inspection_uuid)->first();
+            $category = CtInspection::where('ct_inspection_uuid', $request->ct_inspection_uuid)->first();
             // Si es una sub sección se obtiene el identificador de la sección.
             if ($request->ct_inspection_relation_uuid) {
-                $relation = Section::where('ct_inspection_section_uuid',
+                $relation = CtInspectionSection::where('ct_inspection_section_uuid',
                     $request->ct_inspection_relation_uuid)->first();
                 $request->merge([
                     'ct_inspection_relation_id' => $relation->ct_inspection_section_id,
@@ -49,7 +49,7 @@ class SectionService extends Service
             // Set Response
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
-            $this->response['data'] = Section::create($request->except(['ct_inspection_relation_uuid']));
+            $this->response['data'] = CtInspectionSection::create($request->except(['ct_inspection_relation_uuid']));
             // Set Log
             $this->logService->create(
                 $this->nameService,
@@ -81,11 +81,11 @@ class SectionService extends Service
     {
         try {
             // Obtiene las secciones de inspección y su correspondiente categoría
-            $sections = Section::with(['category'])
+            $sections = CtInspectionSection::with(['category'])
                 ->whereNull('ct_inspection_relation_id')->get();
             // Obtiene las sub secciones
             foreach ($sections as $section) {
-                $section->sub_sections = Section::where([
+                $section->sub_sections = CtInspectionSection::where([
                     'ct_inspection_relation_id' => $section->ct_inspection_section_id,
                 ])->get();
             }
@@ -112,10 +112,10 @@ class SectionService extends Service
         try {
             // Control Transaction
             DB::beginTransaction();
-            $category = Category::where('ct_inspection_uuid', $request->ct_inspection_uuid)->first();
+            $category = CtInspection::where('ct_inspection_uuid', $request->ct_inspection_uuid)->first();
             // Si es una sub sección se obtiene el identificador de la sección.
             if ($request->ct_inspection_relation_uuid) {
-                $relation = Section::where('ct_inspection_section_uuid',
+                $relation = CtInspectionSection::where('ct_inspection_section_uuid',
                     $request->ct_inspection_relation_uuid)->first();
                 $request->merge([
                     'ct_inspection_relation_id' => $relation->ct_inspection_section_id,
@@ -127,7 +127,7 @@ class SectionService extends Service
                 'ct_inspection_id' => $category->ct_inspection_id,
             ]);
 
-            $section = Section::where([
+            $section = CtInspectionSection::where([
                 'ct_inspection_section_uuid' => $request->ct_inspection_section_uuid,
             ])->first();
 
@@ -171,11 +171,11 @@ class SectionService extends Service
             // Control Transaction
             DB::beginTransaction();
             // Delete Register
-            $section = Section::where('ct_inspection_section_uuid', $uuid)
+            $section = CtInspectionSection::where('ct_inspection_section_uuid', $uuid)
                 ->first();
             // Elimina sub secciones para evitar secciones huérfanas
             if (! $section->ct_inspection_relation_id) {
-                $subSections = Section::where([
+                $subSections = CtInspectionSection::where([
                     'ct_inspection_relation_id' => $section->ct_inspection_section_id,
                 ])->get();
                 foreach ($subSections as $subSection) {
@@ -210,13 +210,13 @@ class SectionService extends Service
     {
         try {
             // Obtiene las secciones de inspección y su correspondiente categoría
-            $section = Section::with(['category'])
+            $section = CtInspectionSection::with(['category'])
                 ->whereNull('ct_inspection_relation_id')
                 ->where('ct_inspection_section_uuid', '=', $uuid)
                 ->first();
             // Obtiene las sub secciones
             if ($section) {
-                $section->sub_sections = Section::where([
+                $section->sub_sections = CtInspectionSection::where([
                     'ct_inspection_relation_id' => $section->ct_inspection_section_id,
                 ])->get();
             }
@@ -229,16 +229,5 @@ class SectionService extends Service
         }
 
         return $this->response;
-    }
-
-    public function setSections($inspection)
-    {
-        foreach ($inspection->category->sections as $section) {
-            dd($section);
-            $section->sub_sections = Section::where([
-                'ct_inspection_id' => $section->ct_inspection_relation_id,
-                'ct_inspection_relation_id' => null,
-            ])->get();
-        }
     }
 }

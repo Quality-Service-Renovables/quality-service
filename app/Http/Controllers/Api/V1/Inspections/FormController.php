@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Inspections;
 
 use App\Http\Controllers\Controller;
-use App\Services\Api\V1\Inspections\Forms\FormService;
+use App\Services\Api\V1\Inspections\InspectionFormService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,7 +11,7 @@ use Illuminate\Validation\Rule;
 
 class FormController extends Controller
 {
-    protected FormService $service;
+    protected InspectionFormService $service;
 
     /**
      * Create a new instance of the class.
@@ -20,7 +20,7 @@ class FormController extends Controller
      */
     public function __construct()
     {
-        $this->service = new FormService();
+        $this->service = new InspectionFormService();
     }
 
     /**

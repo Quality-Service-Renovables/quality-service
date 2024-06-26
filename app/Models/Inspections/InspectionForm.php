@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class FormInspection extends Model
+class InspectionForm extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -28,6 +28,6 @@ class FormInspection extends Model
 
     public function field(): BelongsTo
     {
-        return $this->belongsTo(Categories\FormInspection::class, 'ct_inspection_form_id', 'ct_inspection_form_id');
+        return $this->belongsTo(Categories\CtInspectionForm::class, 'ct_inspection_form_id', 'ct_inspection_form_id');
     }
 }

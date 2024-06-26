@@ -4,16 +4,16 @@
 
 /** @noinspection PhpUndefinedMethodInspection */
 
-namespace App\Services\Api\V1\Inspections;
+namespace App\Services\Api\V1\Inspections\Categories;
 
-use App\Models\Inspections\Category;
+use App\Models\Inspections\Categories\CtInspection;
 use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Throwable;
 
-class CategoryService extends Service
+class CtInspectionService extends Service
 {
     public string $nameService = 'ct_inspection';
 
@@ -33,7 +33,7 @@ class CategoryService extends Service
                 'ct_inspection_code' => create_slug($request->ct_inspection),
             ]);
             // Create Register
-            $category = Category::create($request->all());
+            $category = CtInspection::create($request->all());
             // Set Response
             $this->statusCode = 201;
             $this->response['message'] = trans('api.created');
@@ -69,7 +69,7 @@ class CategoryService extends Service
     {
         try {
             $this->response['message'] = trans('api.read');
-            $this->response['data'] = Category::all();
+            $this->response['data'] = CtInspection::all();
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);
@@ -96,7 +96,7 @@ class CategoryService extends Service
                 'ct_inspection_code' => create_slug($request->get('ct_inspection')),
             ]);
             // Update Register
-            $category = Category::where('ct_inspection_uuid', $request->ct_inspection_uuid)->first();
+            $category = \App\Models\Inspections\Categories\CtInspection::where('ct_inspection_uuid', $request->ct_inspection_uuid)->first();
             // Si el $category existe (no es nulo), actualízalo con todos los datos de la solicitud.
             $category?->update($request->all());
             // Set Response
@@ -136,7 +136,7 @@ class CategoryService extends Service
             // Control Transaction
             DB::beginTransaction();
             // Delete Register
-            Category::where('ct_inspection_uuid', $uuid)
+            CtInspection::where('ct_inspection_uuid', $uuid)
                 ->update([
                     'deleted_at' => now(),
                 ]);
@@ -166,7 +166,7 @@ class CategoryService extends Service
     {
         try {
             $this->response['message'] = trans('api.show');
-            $category = Category::where([
+            $category = CtInspection::where([
                 'ct_inspection_uuid' => $uuid,
                 'deleted_at' => null,
             ])->first();

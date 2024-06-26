@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\V1\Inspections;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Inspections\CategoryRequest;
-use App\Services\Api\V1\Inspections\CategoryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -14,14 +13,14 @@ use Inertia\Response;
 
 class CategoryController extends Controller
 {
-    protected CategoryService $service;
+    protected \App\Services\Api\V1\Inspections\Categories\CtInspectionService $service;
 
     /**
      * Constructor function for the class.
      */
     public function __construct()
     {
-        $this->service = new CategoryService();
+        $this->service = new \App\Services\Api\V1\Inspections\Categories\CtInspectionService();
     }
 
     /**

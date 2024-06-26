@@ -2,13 +2,12 @@
 
 namespace App\Models\Inspections\Categories;
 
-use App\Models\Inspections\Category;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Section extends Model
+class CtInspectionSection extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -31,7 +30,7 @@ class Section extends Model
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'ct_inspection_id', 'ct_inspection_id');
+        return $this->belongsTo(CtInspection::class, 'ct_inspection_id', 'ct_inspection_id');
     }
     public function subSections()
     {
@@ -39,6 +38,6 @@ class Section extends Model
     }
     public function fields()
     {
-        return $this->hasMany(FormInspection::class, 'ct_inspection_section_id', 'ct_inspection_section_id');
+        return $this->hasMany(CtInspectionForm::class, 'ct_inspection_section_id', 'ct_inspection_section_id');
     }
 }

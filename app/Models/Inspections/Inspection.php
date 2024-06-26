@@ -3,6 +3,7 @@
 namespace App\Models\Inspections;
 
 use App\Models\Clients\Client;
+use App\Models\Inspections\Categories\CtInspection;
 use App\Models\Projects\Project;
 use App\Models\Status\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -48,7 +49,7 @@ class Inspection extends Model
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'ct_inspection_id', 'ct_inspection_id');
+        return $this->belongsTo(CtInspection::class, 'ct_inspection_id', 'ct_inspection_id');
     }
 
     /**
@@ -73,7 +74,7 @@ class Inspection extends Model
      */
     public function forms(): HasMany
     {
-        return $this->hasMany(FormInspection::class, 'inspection_id', 'inspection_id');
+        return $this->hasMany(InspectionForm::class, 'inspection_id', 'inspection_id');
     }
 
     /**

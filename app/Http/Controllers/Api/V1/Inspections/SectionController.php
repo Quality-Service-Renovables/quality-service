@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1\Inspections;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Inspections\SectionRequest;
-use App\Services\Api\V1\Inspections\SectionService;
+use App\Services\Api\V1\Inspections\Categories\CtInspectionSectionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -14,11 +14,11 @@ use Inertia\Response;
 
 class SectionController extends Controller
 {
-    protected SectionService $service;
+    protected CtInspectionSectionService $service;
 
     public function __construct()
     {
-        $this->service = new SectionService();
+        $this->service = new CtInspectionSectionService();
     }
 
     /**

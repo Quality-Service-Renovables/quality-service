@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Models\Inspections;
+namespace App\Models\Inspections\Categories;
 
-use App\Models\Inspections\Categories\Section;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Category extends Model
+class CtInspection extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -32,7 +30,7 @@ class Category extends Model
 
     public function sections(): HasMany
     {
-        return $this->hasMany(Section::class, 'ct_inspection_id', 'ct_inspection_id')
+        return $this->hasMany(CtInspectionSection::class, 'ct_inspection_id', 'ct_inspection_id')
             ->whereNull('ct_inspection_relation_id');
     }
 }
