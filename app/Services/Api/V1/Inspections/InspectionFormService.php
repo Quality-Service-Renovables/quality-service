@@ -220,12 +220,26 @@ class InspectionFormService extends Service
                 $categoryFormId = $categoryForm->where(
                     'ct_inspection_form_uuid', '=', $formInspection['ct_inspection_form_uuid'])
                     ->first()->ct_inspection_form_id;
-
-                $formInspection['inspection_form_uuid'] = Str::uuid()->toString();
+                
+                /*$formInspection['inspection_form_uuid'] = Str::uuid()->toString();
                 $formInspection['inspection_id'] = $inspection->inspection_id;
                 $formInspection['ct_inspection_form_id'] = $categoryFormId;
 
-                $inspectionForms[] = InspectionForm::create($formInspection);
+                $inspectionForms[] = InspectionForm::create($formInspection);*/
+
+                $inspectionFormUuid = InspectionForm::where([
+                    'inspection_id' => $inspection->inspection_id,
+                    'ct_inspection_form_id' => $categoryFormId,
+                ])->first()->inspection_form_uuid ?? Str::uuid()->toString();
+
+                $inspectionForms[] = InspectionForm::updateOrCreate([
+                    'inspection_id' => $inspection->inspection_id,
+                    'ct_inspection_form_id' => $categoryFormId,
+                ], [
+                    'inspection_form_uuid' => $inspectionFormUuid,
+                    'inspection_form_comments' => $formInspection['inspection_form_comments'],
+                    'inspection_form_value' => $formInspection['inspection_form_value'],
+                ]);
             }
 
             $this->statusCode = 201;
