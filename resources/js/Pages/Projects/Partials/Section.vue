@@ -27,7 +27,7 @@
                                                     {{ complementData(field) }}
                                                     <v-card-title class="d-flex justify-between">
                                                         {{ field.ct_inspection_form }}
-                                                        <v-icon color="success" v-if="field.form_inspection.inspection_form_value">mdi-check</v-icon>
+                                                        <v-icon color="success" v-if="field.result.inspection_form_value">mdi-check</v-icon>
                                                         <v-icon color="red" v-if="isEmptyField(field) && field.required">mdi-alert-circle-outline</v-icon>
                                                     </v-card-title>
                                                     <v-card-subtitle>
@@ -36,9 +36,9 @@
                                                         }}
                                                     </v-card-subtitle>
                                                     <v-card-text>
-                                                        <QuillEditor v-model:content="field.form_inspection.inspection_form_value" theme="snow"
+                                                        <QuillEditor v-model:content="field.result.inspection_form_value" theme="snow"
                                                             toolbar="essential" heigth="100%" contentType="html" />
-                                                        <v-text-field v-model="field.form_inspection.inspection_form_comments" variant="outlined"
+                                                        <v-text-field v-model="field.result.inspection_form_comments" variant="outlined"
                                                             density="compact" class="mt-2"
                                                             placeholder="Comentarios (opcional)" hide-details/>
                                                         <PrimaryButton @click="saveField(field)" class="mt-2">Guardar
@@ -71,7 +71,7 @@
                                                                         {{
                                                                             fieldSub.ct_inspection_form
                                                                         }}
-                                                                        <v-icon color="success" v-if="fieldSub.form_inspection.inspection_form_value">mdi-check</v-icon>
+                                                                        <v-icon color="success" v-if="fieldSub.result.inspection_form_value">mdi-check</v-icon>
                                                                         <v-icon color="red" v-if="isEmptyField(fieldSub) && fieldSub.required">mdi-alert-circle-outline</v-icon>
                                                                     </v-card-title>
                                                                     <v-card-subtitle>
@@ -81,10 +81,10 @@
                                                                         'Opcional' }}
                                                                     </v-card-subtitle>
                                                                     <v-card-text>
-                                                                        <QuillEditor v-model:content="fieldSub.form_inspection.inspection_form_value"
+                                                                        <QuillEditor v-model:content="fieldSub.result.inspection_form_value"
                                                                             theme="snow" toolbar="essential"
                                                                             heigth="100%" contentType="html" />
-                                                                        <v-text-field v-model="fieldSub.form_inspection.inspection_form_comments"
+                                                                        <v-text-field v-model="fieldSub.result.inspection_form_comments"
                                                                             variant="outlined" density="compact"
                                                                             class="mt-2"
                                                                             placeholder="Comentarios (opcional)" hide-details/>
@@ -164,8 +164,8 @@ export default {
             let formData = {
                 inspection_uuid: this.inspection_uuid,
                 form: [{
-                    inspection_form_value: field.form_inspection.inspection_form_value,
-                    inspection_form_comments: field.form_inspection.inspection_form_comments,
+                    inspection_form_value: field.result.inspection_form_value,
+                    inspection_form_comments: field.result.inspection_form_comments,
                     ct_inspection_form_uuid: field.ct_inspection_form_uuid
                 }]
             }
@@ -188,15 +188,15 @@ export default {
             }
         },
         complementData(field) {
-            if (field.form_inspection == null) {
-                field.form_inspection = {
+            if (field.result == null) {
+                field.result = {
                     inspection_form_value: '',
                     inspection_form_comments: ''
                 }
             } 
         },
         isEmptyField(field) {
-            if (field.form_inspection.inspection_form_value == null || field.form_inspection.inspection_form_value == '') {
+            if (field.result.inspection_form_value == null || field.result.inspection_form_value == '') {
                 return true;
             } else {
                 return false;
