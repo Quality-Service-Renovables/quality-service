@@ -125,6 +125,9 @@ class UserService extends Service implements ServiceInterface
             } else {
                 $request->merge(['image_profile' => $this->imageDefault]);
             }
+
+            $request->merge(['active' => $request->active == 'true' ? 1 : 0]);
+
             // Registra los atributos de la solicitud al usuario
             $user?->update($request->except([
                 'client_uuid',
