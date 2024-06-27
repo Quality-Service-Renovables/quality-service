@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean('invoice_required')->default(false);
             $table->boolean('send_client_report')->default(false);
             $table->boolean('crypt_report')->default(false);
+            $table->string('key_report')->nullable();
             $table->timestamps();
             $table->softDeletes();
             //INDEX

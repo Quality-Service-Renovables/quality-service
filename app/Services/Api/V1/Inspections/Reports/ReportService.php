@@ -46,7 +46,8 @@ class ReportService extends Service
                 $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
                 // Cifrar el PDF
                 if ($user->client->config && $user->client->config->crypt_report) {
-                    $passReport = 'qsr.2024';
+                    $passReport = Str::random(8);
+                    $this->response['data']['key_report'] = $passReport;
                     $document->getDomPDF()->getCanvas()->get_cpdf()->setEncryption($passReport);
                 }
                 // Nombre del documento

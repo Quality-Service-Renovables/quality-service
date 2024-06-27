@@ -10,6 +10,7 @@ namespace App\Services\Api\V1\Inspections;
 
 use App\Models\Clients\Client;
 use App\Models\Equipments\Equipment;
+use App\Models\Inspections\Categories\CtInspection;
 use App\Models\Inspections\Inspection;
 use App\Models\Projects\Project;
 use App\Models\Status\Status;
@@ -38,7 +39,7 @@ class InspectionService extends Service
         try {
             // Control Transaction
             DB::beginTransaction();
-            $category = \App\Models\Inspections\Categories\CtInspection::where('ct_inspection_code', $request->ct_inspection_code)->first();
+            $category = CtInspection::where('ct_inspection_code', $request->ct_inspection_code)->first();
             $equipment = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
             $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
             $status = Status::with(['category'])
@@ -58,6 +59,8 @@ class InspectionService extends Service
                 ]);
                 // Create Register
                 $inspection = Inspection::create($request->all());
+                $project->status_id = $status->status_id;
+                $project->save();
                 // Set Response
                 $this->statusCode = 201;
                 $this->response['message'] = trans('api.created');
@@ -137,7 +140,7 @@ class InspectionService extends Service
     public function update(Request $request): array
     {
         try {
-            $category = \App\Models\Inspections\Categories\CtInspection::where('ct_inspection_code', $request->ct_inspection_code)->first();
+            $category = CtInspection::where('ct_inspection_code', $request->ct_inspection_code)->first();
             $equipment = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
             $project = Project::where('project_uuid', '=', $request->project_uuid)->first();
 
