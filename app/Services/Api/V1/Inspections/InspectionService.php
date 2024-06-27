@@ -117,7 +117,9 @@ class InspectionService extends Service
                 'equipment.model.trademark',
                 'inspectionEquipments.equipment',
                 'category.sections.subSections.fields.result',
-                'evidences',
+                'evidences' => function ($query) {
+                    $query->orderBy('position');
+                },
                 'status.category',
                 'project',
             ])->get()];
