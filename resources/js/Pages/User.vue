@@ -89,21 +89,21 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         hide-details></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="12">
-                                                                    <v-text-field v-model="editedItem.phone"
-                                                                        label="Teléfono" variant="outlined"
-                                                                        hide-details></v-text-field>
+                                                                    <v-text-field v-model="editedItem.phone" label="Teléfono" v-maska="options" data-maska-reversed
+                                                                    variant="outlined" hide-details/>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select v-model="editedItem.client_uuid"
                                                                         :items="clients" label="Cliente"
                                                                         item-title="client" item-value="client_uuid"
-                                                                        dense variant="outlined" hide-details></v-select>
+                                                                        dense variant="outlined"
+                                                                        hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-select v-model="editedItem.rol" :items="roles"
                                                                         label="Rol" item-title="description"
-                                                                        item-value="name" dense
-                                                                        variant="outlined" hide-details></v-select>
+                                                                        item-value="name" dense variant="outlined"
+                                                                        hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
@@ -178,15 +178,19 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 
+// Plugin Maska for phone number input
+ import { vMaska } from "maska/vue"
+
 // Create component
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
     FilePondPluginImagePreview,
 );
 export default {
+    directives: { maska: vMaska },
     components: {
         Toaster,
-        FilePond
+        FilePond,
     },
     props: {
         users: {
@@ -243,6 +247,10 @@ export default {
                     const source = CancelToken.source();
                     this.updatePhoto(source, load, error, progress);
                 }
+            },
+            options: {
+                mask: "###-###-####",
+                eager: true
             }
         }
     },
