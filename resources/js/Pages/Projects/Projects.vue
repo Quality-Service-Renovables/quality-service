@@ -20,10 +20,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
                                 <v-data-table :headers="headers" :items="projects" fixed-header :search="search">
                                     <template v-slot:item.status.status="{ value, item }">
-                                        <v-chip size="small" class="m-1" v-if="!item.inspections.length">{{ value }}
-                                        </v-chip>
-                                        <v-chip size="small" class="m-1" v-if="item.inspections.length">{{
-        item.inspections[0].status.status }}</v-chip>
+                                        <v-chip size="small" class="m-1">{{ value }}</v-chip>
                                     </template>
                                     <template v-slot:item.employees="{ value }">
                                         <p v-for="(employee, index) in value" :key="index">
@@ -676,7 +673,7 @@ export default {
                 this.inspectionForm.project_name = item.project_name;
                 this.inspectionForm.resume = item.inspections[0].resume;
                 this.inspectionForm.ct_inspection_code = item.inspections[0].category.ct_inspection_code;
-                this.inspectionForm.status_code = item.inspections[0].status.status_code;
+                this.inspectionForm.status_code = item.status.status_code;
                 this.inspectionForm.project_id = item.project_uuid;
                 this.inspectionForm.client_uuid = item.client.client_uuid;
                 this.inspectionForm.ct_equipment_uuid = item.inspections[0].equipment.category.ct_equipment_uuid;
@@ -851,13 +848,7 @@ export default {
 
         // Helpers
         checkStatus(item, status) {
-            let statusAux = null;
-            if (item.inspections.length > 0) {
-                statusAux = item.inspections[0].status.status_code;
-            } else {
-                statusAux = item.status.status_code;
-            }
-            return status.includes(statusAux);
+            return status.includes(item.status.status_code);
         },
         getInspectionEquipmentsByCategory(ct_equipment_uuid) {
             this.inspectionForm.equipment_uuid = null;

@@ -39,7 +39,7 @@
                                                         <v-switch v-model="field.switch_comment" color="secondary"
                                                             label="Comentario" hide-details></v-switch>
                                                     </v-card-subtitle>
-                                                    <v-card-text>
+                                                    <v-card-text class="pt-0">
                                                         <QuillEditor
                                                             v-model:content="field.content.inspection_form_value"
                                                             theme="snow" toolbar="essential" heigth="100%"
@@ -229,9 +229,17 @@ export default {
 </script>
 
 <style scoped>
-@media screen and (min-width: 412px) {
+@media screen and (min-width: 375px) {
     .padding-0 {
         padding: 0px !important;
     }
+}
+
+.ql-toolbar.ql-snow{
+    border-radius: 15px 15px 0px 0px !important;
+}
+
+.ql-container.ql-snow{
+    border-radius: 0px 0px 15px 15px !important;
 }
 </style>

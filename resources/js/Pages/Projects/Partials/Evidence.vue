@@ -1,6 +1,6 @@
 <template>
     <div class="max-w-7xl mx-auto my-auto sm:px-4 lg:px-6 mt-5 mb-5 pb-5">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg pb-5 mb-5">
             <v-row class="d-flex justify-center">
                 <v-col cols="12" lg="4">
                     <EvidenceForm :inspection_uuid="inspection_uuid" @getEvidences="getEvidences" :position="evidences.length+1"/>
@@ -12,7 +12,7 @@
                     <p class="text-h5 mt-4" v-if="evidences.length">Evidencias cargadas</p>
                 </v-col>
                 <v-row v-if="!loading">
-                    <draggable class="dragArea list-group w-full row wrap d-contents" :list="evidences" @change="log">
+                    <draggable class="dragArea list-group w-full d-contents" :list="evidences" @change="log">
                         <v-col cols="12" lg="4" class="list-group-item" v-for="(evidence, index) in evidences"
                             :key="evidence.inspection_evidence_uuid">
                             <EvidenceForm :inspection_uuid="inspection_uuid" :evidence="evidence"
@@ -27,9 +27,7 @@
                         <v-skeleton-loader type="paragraph" />
                     </v-col>
                 </template>
-
             </v-row>
-
         </div>
     </div>
 </template>
@@ -116,6 +114,8 @@ export default defineComponent({
 
 <style scoped>
 .d-contents {
-    display: contents;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 </style>
