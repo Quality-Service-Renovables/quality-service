@@ -131,12 +131,12 @@ class ProjectService extends Service implements ServiceInterface
                 '=',
                 $request->client_uuid
             )->first()->client_id;
-            // Si el estado es correspondiente al proyectos
+            // Si el estado es correspondiente a proyectos
             if (($status && $status->category) && $status->category->ct_status_code === 'proyecto') {
                 // Si el proyecto ha sido cancelado y no se proporcionan comentarios, no es posible proceder.
                 if ($status->status_code === 'proyecto_cancelado' && $request->comments === '') {
                     $this->statusCode = 422;
-                    $this->response['message'] = trans('api.project_cancelled');
+                    $this->response['message'] = trans('api.comments_required');
                 } else {
                     // Agrega atributos a la solicitud
                     $request->merge([
@@ -152,6 +152,7 @@ class ProjectService extends Service implements ServiceInterface
 
                     foreach ($project->inspections as $inspection) {
                         $inspection->client_id = $clientId;
+                        $inspection->status_id = $status->status_id;
                         $inspection->save();
                     }
 
@@ -163,6 +164,13 @@ class ProjectService extends Service implements ServiceInterface
                         $request->all(),
                         $this->response,
                         trans('api.message_log'),
+                    );
+                    // Crear log de auditoria
+                    $this->proyectAudits(
+                        $project->project_id,
+                        $project->status_id,
+                        $this->logService->log->application_log_id,
+                        trans('api.updated')
                     );
                     // Confirmación de transacción
                     DB::commit();
@@ -230,6 +238,27 @@ class ProjectService extends Service implements ServiceInterface
                 ? trans('api.not_found')
                 : trans('api.show');
             $this->response['data'] = $project ? $project->toArray() : [];
+        } catch (Throwable $exceptions) {
+            // Manejo del error
+            $this->setExceptions($exceptions);
+        }
+
+        // Respuesta del módulo
+        return $this->response;
+    }
+
+    public function status(Request $request)
+    {
+        try {
+            // Obtiene categoría del equipo
+            $project = Project::where('project_uuid', $request->project_uuid)->first();
+            $status = Status::where('status_code', $request->status_uuid)->first();
+            $project?->update([
+                'status_id' => $status->status_id
+            ]);
+
+            $this->response['message'] = trans('api.updated');
+            $this->response['data'] = $project;
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);

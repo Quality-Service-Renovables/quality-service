@@ -101,7 +101,6 @@ class ProjectController extends Controller
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
-
     /**
      * Render the equipment component.
      */
@@ -113,7 +112,6 @@ class ProjectController extends Controller
             'projects' => $this->service->response['data'],
         ]);
     }
-
     /**
      * Perform common validation for the request data.
      *
