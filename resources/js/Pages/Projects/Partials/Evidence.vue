@@ -32,6 +32,7 @@
 <script>
 import EvidenceForm from './EvidenceForm.vue';
 import { Toaster, toast } from 'vue-sonner'
+import { getInspection } from '@/Functions/api';
 // Import Vue FilePond
 import vueFilePond from "vue-filepond";
 
