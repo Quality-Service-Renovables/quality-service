@@ -44,8 +44,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
                                                     <v-card-text>
                                                         <v-container>
-                                                            <v-row>
-                                                                <v-col cols="12">
+                                                            <v-row class="justify-center">
+                                                                <v-col cols="6">
                                                                     <file-pond name="evidence" ref="pond"
                                                                         label-idle="Arrastra y suelta tu archivo o <span class='filepond--label-action'>selecciona</span>"
                                                                         :allow-multiple="false"
@@ -69,7 +69,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         labelButtonAbortItemProcessing="Cancelar"
                                                                         labelButtonProcessItem="Subir"
                                                                         imagePreviewHeight='170'
-                                                                        imageCropAspectRatio='1:1'
+                                                                        imageCropAspectRatio="1:1"
                                                                         imageResizeTargetWidth='200'
                                                                         imageResizeTargetHeight='200'
                                                                         stylePanelLayout='compact circle'
