@@ -30,12 +30,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             </v-toolbar-title>
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
-                                            <v-dialog v-model="dialog" width="auto" v-if="hasPermissionTo('users.create') || hasPermissionTo('users.update')">
-                                                <template v-slot:activator="{ props }" v-if="hasPermissionTo('users.create')">
+                                            <v-dialog v-model="dialog" width="auto"
+                                                v-if="hasPermissionTo('users.create') || hasPermissionTo('users.update')">
+                                                <template v-slot:activator="{ props }"
+                                                    v-if="hasPermissionTo('users.create')">
                                                     <v-btn class="mb-2" color="primary" dark v-bind="props"
                                                         icon="mdi-plus"></v-btn>
                                                 </template>
-                                                <v-card>
+                                                <v-card max-width="500">
                                                     <v-card-title>
                                                         <span class="text-h5">{{ formTitle }}</span>
                                                     </v-card-title>
@@ -44,29 +46,69 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         <v-container>
                                                             <v-row>
                                                                 <v-col cols="12">
+                                                                    <file-pond name="evidence" ref="pond"
+                                                                        label-idle="Arrastra y suelta tu archivo o <span class='filepond--label-action'>selecciona</span>"
+                                                                        :allow-multiple="false"
+                                                                        accepted-file-types="image/jpeg, image/png"
+                                                                        :files="myFiles" @init="handleFilePondInit"
+                                                                        :server="serverConfig" instantUpload="false"
+                                                                        allowProcess="true" allowReplace="true"
+                                                                        allowImagePreview="true" allowUndo="false"
+                                                                        labelInvalidField="Tipo de archivo no permitido"
+                                                                        labelFileLoading="Cargando"
+                                                                        labelFileLoadError="Error al subir el archivo"
+                                                                        labelFileProcessing="Procesando"
+                                                                        labelFileProcessingComplete="Proceso completado"
+                                                                        labelFileProcessingAborted="Proceso abortado"
+                                                                        labelFileProcessingError="Error al procesar"
+                                                                        labelTapToCancel="Toca para cancelar"
+                                                                        labelTapToRetry="Toca para reintentar"
+                                                                        labelTapToUndo=""
+                                                                        labelButtonAbortItemLoad="Cancelar"
+                                                                        labelButtonRetryItemLoad="Reintentar"
+                                                                        labelButtonAbortItemProcessing="Cancelar"
+                                                                        labelButtonProcessItem="Subir"
+                                                                        imagePreviewHeight='170'
+                                                                        imageCropAspectRatio='1:1'
+                                                                        imageResizeTargetWidth='200'
+                                                                        imageResizeTargetHeight='200'
+                                                                        stylePanelLayout='compact circle'
+                                                                        styleLoadIndicatorPosition='center bottom'
+                                                                        styleButtonRemoveItemPosition='left bottom'
+                                                                        styleButtonProcessItemPosition='right bottom'
+                                                                        styleProgressIndicatorPosition='right bottom' />
+                                                                </v-col>
+                                                                <v-col cols="12">
                                                                     <v-text-field v-model="editedItem.name"
-                                                                        label="Nombre" variant="solo"
+                                                                        label="Nombre" variant="outlined"
                                                                         hide-details></v-text-field>
                                                                 </v-col>
-                                                                <v-col cols="6">
+                                                                <v-col cols="12">
                                                                     <v-text-field v-model="editedItem.email"
-                                                                        label="Email" variant="solo"
+                                                                        label="Email" variant="outlined"
                                                                         hide-details></v-text-field>
                                                                 </v-col>
-                                                                <v-col cols="6">
+                                                                <v-col cols="12">
                                                                     <v-text-field v-model="editedItem.phone"
-                                                                        label="Teléfono" variant="solo"
+                                                                        label="Teléfono" variant="outlined"
                                                                         hide-details></v-text-field>
                                                                 </v-col>
-                                                                <v-col cols="6">
-                                                                   <v-select v-model="editedItem.client_uuid" :items="clients" label="Cliente" item-title="client" item-value="client_uuid" dense></v-select>
+                                                                <v-col cols="12">
+                                                                    <v-select v-model="editedItem.client_uuid"
+                                                                        :items="clients" label="Cliente"
+                                                                        item-title="client" item-value="client_uuid"
+                                                                        dense variant="outlined" hide-details></v-select>
                                                                 </v-col>
-                                                                <v-col cols="6">
-                                                                   <v-select v-model="editedItem.rol" :items="roles" label="Rol" item-title="description" item-value="name" dense></v-select>
+                                                                <v-col cols="12">
+                                                                    <v-select v-model="editedItem.rol" :items="roles"
+                                                                        label="Rol" item-title="description"
+                                                                        item-value="name" dense
+                                                                        variant="outlined" hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
-                                                                        color="primary" :readonly="editedItem.roles && editedItem.roles[0].name === 'admin'"></v-switch>
+                                                                        color="primary"
+                                                                        :readonly="editedItem.roles && editedItem.roles[0].name === 'admin'"></v-switch>
                                                                 </v-col>
 
                                                             </v-row>
@@ -102,10 +144,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
-                                        <v-icon class="me-2" size="small" @click="editItem(item)" v-if="hasPermissionTo('users.update')">
+                                        <v-icon class="me-2" size="small" @click="editItem(item)"
+                                            v-if="hasPermissionTo('users.update')">
                                             mdi-pencil
                                         </v-icon>
-                                        <v-icon size="small" @click="deleteItem(item)" v-if="hasPermissionTo('users.delete') && item.roles[0].name != 'admin'" >
+                                        <v-icon size="small" @click="deleteItem(item)"
+                                            v-if="hasPermissionTo('users.delete') && item.roles[0].name != 'admin'">
                                             mdi-delete
                                         </v-icon>
                                     </template>
@@ -122,10 +166,27 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 <script>
 import { Toaster, toast } from 'vue-sonner'
+// Import Vue FilePond
+import vueFilePond from "vue-filepond";
+import axios from 'axios';
+// Import FilePond styles
+import "filepond/dist/filepond.min.css";
+// Import image preview plugin styles
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
 
+// Import image preview and file type validation plugins
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+
+// Create component
+const FilePond = vueFilePond(
+    FilePondPluginFileValidateType,
+    FilePondPluginImagePreview,
+);
 export default {
     components: {
         Toaster,
+        FilePond
     },
     props: {
         users: {
@@ -133,45 +194,58 @@ export default {
             required: true
         }
     },
-    data: () => ({
-        search: '',
-        dialog: false,
-        dialogDelete: false,
-        headers: [
-            { title: 'Usuario', key: 'name' },
-            { title: 'Email', key: 'email' },
-            { title: 'Teléfono', key: 'phone' },
-            { title: 'Cliente', key: 'client.client' },
-            { title: 'Rol', key: 'roles[0].description' },
-            { title: 'Estado', key: 'active' },
-            { title: 'Actions', key: 'actions', sortable: false }
-        ],
-        editedIndex: -1,
-        editedItem: {
-            uuid: '',
-            name: '',
-            image_profile: '',
-            phone: '',
-            password: '',
-            password_confirm: '',
-            client_uuid: '',
-            rol: '',
-            active: false,
-        },
-        defaultItem: {
-            uuid: '',
-            name: '',
-            image_profile: '',
-            phone: '',
-            password: '',
-            password_confirm: '',
-            client_uuid: '',
-            rol: '',
-            active: false,
-        },
-        roles: [],
-        clients: [],
-    }),
+    data() {
+        return {
+            search: '',
+            dialog: false,
+            dialogDelete: false,
+            headers: [
+                { title: 'Usuario', key: 'name' },
+                { title: 'Email', key: 'email' },
+                { title: 'Teléfono', key: 'phone' },
+                { title: 'Cliente', key: 'client.client' },
+                { title: 'Rol', key: 'roles[0].description' },
+                { title: 'Estado', key: 'active' },
+                { title: 'Actions', key: 'actions', sortable: false }
+            ],
+            editedIndex: -1,
+            editedItem: {
+                uuid: '',
+                name: '',
+                email: '',
+                image_profile: '',
+                phone: '',
+                password: '',
+                password_confirm: '',
+                client_uuid: '',
+                rol: '',
+                active: false,
+            },
+            defaultItem: {
+                uuid: '',
+                name: '',
+                email: '',
+                image_profile: '',
+                phone: '',
+                password: '',
+                password_confirm: '',
+                client_uuid: '',
+                rol: '',
+                active: false,
+            },
+            roles: [],
+            clients: [],
+            myFiles: [],
+            serverConfig: {
+                process: (fieldName, file, metadata, load, error, progress, abort) => {
+                    this.editedItem.image_profile = file;
+                    const CancelToken = axios.CancelToken;
+                    const source = CancelToken.source();
+                    this.updatePhoto(source, load, error, progress);
+                }
+            }
+        }
+    },
     computed: {
         formTitle() {
             return this.editedIndex === -1 ? 'Nuevo usuario' : 'Editar usuario'
@@ -191,8 +265,23 @@ export default {
             item.active = item.active == "1" ? true : false
             item.client_uuid = item.client.client_uuid;
             item.rol = item.roles[0].name;
+
+            if (item.image_profile) {
+                this.setImage(item.image_profile);
+            }
+
             this.editedItem = Object.assign({}, item)
             this.dialog = true
+        },
+        setImage(image_profile) {
+            this.myFiles = [
+                {
+                    source: image_profile,
+                    options: {
+                        type: 'remote',
+                    },
+                },
+            ];
         },
         deleteItem(item) {
             this.editedIndex = this.users.indexOf(item)
@@ -233,10 +322,10 @@ export default {
         },
         save() {
             if (this.editedIndex > -1) {
-                const putRequest = () => {
-                    return axios.put('api/users/' + this.editedItem.usersuuid, this.editedItem);
+                const request = () => {
+                    return axios.post('api/users/update/' + this.editedItem.uuid, this.editedItem);
                 };
-                toast.promise(putRequest(), {
+                toast.promise(request(), {
                     loading: 'Procesando...',
                     success: (data) => {
                         this.$inertia.reload()
@@ -248,11 +337,11 @@ export default {
                     }
                 });
             } else {
-                const postRequest = () => {
+                const request = () => {
                     return axios.post('api/users', this.editedItem);
                 };
 
-                toast.promise(postRequest(), {
+                toast.promise(request(), {
                     loading: 'Procesando...',
                     success: (data) => {
                         this.$inertia.reload()
@@ -287,6 +376,33 @@ export default {
                     toast.error('Error al cargar los clientes');
                 });
         },
+        updatePhoto(source, load, error, progress) {
+            return axios.post('api/users/update/' + this.editedItem.uuid, this.editedItem, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                cancelToken: source.token,
+                onUploadProgress: (e) => {
+                    progress(e.lengthComputable, e.loaded, e.total);
+                }
+            })
+                .then(response => {
+                    load(response.data.fileId);
+                    setTimeout(() => {
+                        console.log("Se actualizó la foto de perfil");
+                        this.$inertia.reload()
+                        this.setImage(response.data.data.image_profile);
+                    }, 1500);
+                })
+                .catch(thrown => {
+                    if (axios.isCancel(thrown)) {
+                        this.abort(source);
+                    } else {
+                        error('Error al subir la foto.');
+                        this.handleErrors(thrown);
+                    }
+                });
+        },
     },
     mounted() {
         this.getRoles();
@@ -294,3 +410,36 @@ export default {
     }
 }
 </script>
+
+
+
+<style scoped>
+/*
+ * FilePond Custom Styles
+ */
+
+.filepond--drop-label {
+    color: #4c4e53;
+}
+
+.filepond--label-action {
+    text-decoration-color: #babdc0;
+}
+
+.filepond--panel-root {
+    background-color: #edf0f4;
+}
+
+
+/**
+ * Page Styles
+ */
+html {
+    padding: 20vh 0 0;
+}
+
+.filepond--root {
+    width: 170px;
+    margin: 0 auto;
+}
+</style>

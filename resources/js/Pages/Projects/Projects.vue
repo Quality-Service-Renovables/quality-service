@@ -132,7 +132,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 v-if="hasPermissionTo('projects.update')" @click="editItem(item)"
                                                 size="small" />
                                             <ActionButton text="Cancelar proyecto" icon="mdi-table-cancel"
-                                                v-if="hasPermissionTo('projects.update')" size="small"/>
+                                                v-if="hasPermissionTo('projects.update')" size="small" />
                                             <ActionButton text="Eliminar" icon="mdi-delete"
                                                 v-if="hasPermissionTo('projects.delete')" @click="deleteItem(item)"
                                                 size="small" />
@@ -167,14 +167,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 size="small" @click="formDialog(item)" color="text-primary" />
                                             <ActionButton text="Finalizar proyecto" icon="mdi-note-check"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_iniciado', 'inspeccion_iniciada']) && item.inspections.length > 0"
-                                                size="small" color="text-primary"/>
+                                                size="small" color="text-primary" />
                                             <ActionButton text="Validar proyecto" icon="mdi-check-circle-outline"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_finalizado'])"
                                                 size="small" />
                                             <ActionButton text="Cerrar proyecto" icon="mdi-close-circle-outline"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_validado'])"
-                                                size="small" color="text-primary"/>
-                                            
+                                                size="small" color="text-primary" />
+
                                         </div>
                                     </template>
                                 </v-data-table>
@@ -355,7 +355,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 </v-tabs-window-item>
 
                                                 <v-tabs-window-item v-if="tab === 'recomendations'">
-                                                    <ConclutionAndRecomendation :inspection_uuid="inspectionUuid"  />
+                                                    <ConclutionAndRecomendation :inspection_uuid="inspectionUuid" />
                                                 </v-tabs-window-item>
                                             </v-tabs-window>
                                         </v-card-text>
@@ -874,7 +874,7 @@ export default {
                     toast.error('No fue posible recuperar el documento');
                     console.log(error);
                 });
-        }
+        },
     }
 }
 </script>

@@ -73,19 +73,18 @@ export default {
         this.getEvidences();
     },
     methods: {
-        getEvidences() {
+        async getEvidences() {
             this.loading = true;
             this.evidences = [];
-            //axios.get('api/inspection/evidences' + this.inspection_uuid)
-            axios.get('api/inspection/evidences')
-                .then(response => {
-                    this.loading = false;
-                    this.evidences = response.data.data;
-                })
-                .catch(error => {
-                    this.loading = false;
-                    this.handleErrors(error);
-                });
+            try {
+                this.loading = true;
+                const response = await getInspection(this.inspection_uuid);
+                this.evidences = response.data.data.evidences;
+                this.loading = false;
+            } catch (error) {
+                this.loading = false;
+                this.handleErrors(error);
+            }
         },
     },
     components: {
