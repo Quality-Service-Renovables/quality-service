@@ -209,8 +209,10 @@ export default {
                     inspection_form_value: '',
                     inspection_form_comments: ''
                 }
+            }else{
+                field.switch_comment = field.content.inspection_form_value !== '' && field.content.inspection_form_comments !== null && field.content.inspection_form_comments !== "<p><br></p>" ? true : false;
             }
-            field.switch_comment = field.content.inspection_form_comments === null || field.content.inspection_form_comments === "<p><br></p>" ? false : true;
+            
         },
         isEmptyField(field) {
             if (field.content.inspection_form_value == null || field.content.inspection_form_value == '') {
