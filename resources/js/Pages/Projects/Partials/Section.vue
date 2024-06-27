@@ -27,20 +27,28 @@
                                                     {{ complementData(field) }}
                                                     <v-card-title class="d-flex justify-between">
                                                         {{ field.ct_inspection_form }}
-                                                        <v-icon color="success" v-if="field.content.inspection_form_value">mdi-check</v-icon>
-                                                        <v-icon color="red" v-if="isEmptyField(field) && field.required">mdi-alert-circle-outline</v-icon>
+                                                        <v-icon color="success"
+                                                            v-if="field.content.inspection_form_value">mdi-check</v-icon>
+                                                        <v-icon color="red"
+                                                            v-if="isEmptyField(field) && field.required">mdi-alert-circle-outline</v-icon>
                                                     </v-card-title>
-                                                    <v-card-subtitle>
+                                                    <v-card-subtitle class="d-flex align-center justify-between">
                                                         Campo {{ field.required ? '*Requerido' :
                 'Opcional'
                                                         }}
+                                                        <v-switch v-model="field.switch_comment" color="secondary"
+                                                            label="Comentario" hide-details></v-switch>
                                                     </v-card-subtitle>
                                                     <v-card-text>
-                                                        <QuillEditor v-model:content="field.content.inspection_form_value" theme="snow"
-                                                            toolbar="essential" heigth="100%" contentType="html" />
-                                                        <v-text-field v-model="field.content.inspection_form_comments" variant="outlined"
-                                                            density="compact" class="mt-2"
-                                                            placeholder="Comentarios (opcional)" hide-details/>
+                                                        <QuillEditor
+                                                            v-model:content="field.content.inspection_form_value"
+                                                            theme="snow" toolbar="essential" heigth="100%"
+                                                            contentType="html" />
+                                                        <p class="mt-3 text-grey" v-if="field.switch_comment">Comentarios:</p>
+                                                        <QuillEditor
+                                                            v-model:content="field.content.inspection_form_comments"
+                                                            theme="snow" toolbar="essential" heigth="100%"
+                                                            contentType="html" v-if="field.switch_comment"/>
                                                         <PrimaryButton @click="saveField(field)" class="mt-2">Guardar
                                                         </PrimaryButton>
                                                     </v-card-text>
@@ -69,25 +77,33 @@
                                                                     {{ complementData(fieldSub) }}
                                                                     <v-card-title class="d-flex justify-between">
                                                                         {{
-                                                                            fieldSub.ct_inspection_form
-                                                                        }}
-                                                                        <v-icon color="success" v-if="fieldSub.content.inspection_form_value">mdi-check</v-icon>
-                                                                        <v-icon color="red" v-if="isEmptyField(fieldSub) && fieldSub.required">mdi-alert-circle-outline</v-icon>
+                fieldSub.ct_inspection_form
+            }}
+                                                                        <v-icon color="success"
+                                                                            v-if="fieldSub.content.inspection_form_value">mdi-check</v-icon>
+                                                                        <v-icon color="red"
+                                                                            v-if="isEmptyField(fieldSub) && fieldSub.required">mdi-alert-circle-outline</v-icon>
                                                                     </v-card-title>
-                                                                    <v-card-subtitle>
+                                                                    <v-card-subtitle
+                                                                        class="d-flex align-center justify-between">
                                                                         Campo {{
-                    fieldSub.required ?
-                                                                        '*Requerido' :
+                fieldSub.required ?
+                    '*Requerido' :
                                                                         'Opcional' }}
+                                                                        <v-switch v-model="fieldSub.switch_comment"
+                                                                            color="secondary" label="Comentario"
+                                                                            hide-details></v-switch>
                                                                     </v-card-subtitle>
                                                                     <v-card-text>
-                                                                        <QuillEditor v-model:content="fieldSub.content.inspection_form_value"
+                                                                        <QuillEditor
+                                                                            v-model:content="fieldSub.content.inspection_form_value"
                                                                             theme="snow" toolbar="essential"
                                                                             heigth="100%" contentType="html" />
-                                                                        <v-text-field v-model="fieldSub.content.inspection_form_comments"
-                                                                            variant="outlined" density="compact"
-                                                                            class="mt-2"
-                                                                            placeholder="Comentarios (opcional)" hide-details/>
+                                                                        <p class="mt-3 text-grey" v-if="fieldSub.switch_comment">Comentarios:</p>
+                                                                        <QuillEditor
+                                                                            v-model:content="fieldSub.content.inspection_form_comments"
+                                                                            theme="snow" toolbar="essential"
+                                                                            heigth="100%" contentType="html" v-if="fieldSub.switch_comment"/>
                                                                         <PrimaryButton @click="saveField(fieldSub)"
                                                                             class="mt-2">Guardar</PrimaryButton>
                                                                     </v-card-text>
@@ -193,7 +209,8 @@ export default {
                     inspection_form_value: '',
                     inspection_form_comments: ''
                 }
-            } 
+            }
+            field.switch_comment = field.content.inspection_form_comments === null || field.content.inspection_form_comments === "<p><br></p>" ? false : true;
         },
         isEmptyField(field) {
             if (field.content.inspection_form_value == null || field.content.inspection_form_value == '') {
@@ -210,8 +227,8 @@ export default {
 </script>
 
 <style scoped>
-@media screen and (min-width: 412px){
-    .padding-0{
+@media screen and (min-width: 412px) {
+    .padding-0 {
         padding: 0px !important;
     }
 }
