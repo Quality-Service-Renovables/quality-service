@@ -22,6 +22,7 @@
         body {
             text-align: center;
             justify-content: center;
+            font-family: 'dejavu sans', sans-serif;
         }
         table {
             border-spacing: 0;
