@@ -19,6 +19,10 @@ return [
     'updated' => 'Registros actualizados exitosamente.',
     'deleted' => 'Registros eliminados exitosamente.',
     'show' => 'Registro recuperado exitosamente.',
+    // Report
+    'revision' => 'Revisión',
+    'estado' => 'Estado',
+    'comments' => 'Comentarios',
     // Event Responses
     'not_found' => 'Registro no encontrado.',
     'exception' => 'Ha ocurrido un error.',

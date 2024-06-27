@@ -251,7 +251,7 @@ class EquipmentService extends Service implements ServiceInterface
             ],
             [
                 'fileRequest' => 'equipment_diagram_storage',
-                'fileDatabase' => 'equipment_diagrams',
+                'fileDatabase' => 'equipment_diagram',
                 'module' => 'equipment_diagrams',
             ],
         ];

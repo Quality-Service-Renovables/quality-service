@@ -68,6 +68,9 @@
         .page-number:before {
             content: "Página " counter(page);
         }
+        #title-header {
+            color: grey;
+        }
     </style>
 </head>
 

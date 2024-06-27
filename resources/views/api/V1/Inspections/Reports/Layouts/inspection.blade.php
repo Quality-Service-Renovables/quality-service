@@ -6,6 +6,11 @@
             <h4>{{$subSection->ct_inspection_section}}</h4>
             @if(count($subSection->fields))
                 <table class="inspection-table">
+                    <thead>
+                        <th>{{ trans('api.revision') }}</th>
+                        <th>{{ trans('api.estado') }}</th>
+                        <th>{{ trans('api.comments') }}</th>
+                    </thead>
                     @foreach($subSection->fields as $field)
                         <tr style="border-color: red">
                             <td>

@@ -5,5 +5,5 @@
     <p>{{$inspection->client->client}}</p>
     <p style="color: gray">{{$inspection->client->legal_name}}</p>
     <p style="color: gray">{{date("d M Y")}}</p>
-    <p style="font-size: 16px;"><strong>{{$inspection->category->description}}</strong></p>
+    <p style="font-size: 16px;"><small>{!! $inspection->category->description !!}</small></p>
 </div>
