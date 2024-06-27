@@ -108,6 +108,7 @@ class EvidenceController extends Controller
                 Rule::exists('inspections', 'inspection_uuid')
                     ->whereNull('deleted_at'),
             ],
+            'position' => 'required|int'
         ]);
 
         if ($validated->fails()) {
