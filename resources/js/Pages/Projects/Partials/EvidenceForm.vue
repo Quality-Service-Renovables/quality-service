@@ -84,6 +84,10 @@ export default {
         evidence: {
             type: Object,
             required: false
+        },
+        position: {
+            type: Number,
+            required: false
         }
     },
     data() {
@@ -154,8 +158,7 @@ export default {
             // FilePond instance methods are available on `this.$refs.pond`
         },
         save(source, load, error, progress) {
-            // Send the file to the backend using axios
-            console.log("La acción es: ", this.action);
+            this.form.position = this.position;
             if (this.action === 'create') {
                 axios.post('api/inspection/evidences', this.form, {
                     headers: {
