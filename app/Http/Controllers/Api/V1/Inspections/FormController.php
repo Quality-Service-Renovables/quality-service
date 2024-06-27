@@ -68,10 +68,34 @@ class FormController extends Controller
      */
     public function getForm(string $uuid): JsonResponse
     {
-        if (! $this->commonValidation($uuid)) {
+        if (!$this->commonValidation($uuid)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
         $this->service->getForm($uuid);
+
+        return response()->json($this->service->response, $this->service->statusCode);
+    }
+
+    /**
+     * Gets the form related to an inspection.
+     *
+     * @param  string  $uuid  The UUID of the inspection.
+     */
+    public function getFormInspection(string $uuid): JsonResponse
+    {
+        $request = ['inspection_uuid' => $uuid];
+
+        $validated = Validator::make($request, [
+            'inspection_uuid' => 'required|string|min:10|max:255|exists:inspections,inspection_uuid',
+        ]);
+
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->getFormInspection($uuid);
 
         return response()->json($this->service->response, $this->service->statusCode);
     }

@@ -11,7 +11,6 @@ use App\Models\Inspections\Categories\CtInspectionForm;
 use App\Models\Inspections\Categories\CtInspectionSection;
 use App\Models\Inspections\Inspection;
 use App\Models\Inspections\InspectionForm;
-use App\Services\Api\V1\Inspections\Forms\CategoryForm;
 use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -164,6 +163,49 @@ class InspectionFormService extends Service
     }
 
     /**
+     * Retrieves the form for a given inspection category UUID, related to an inspection.
+     *
+     * @param  string  $uuid  The UUID of the inspection.
+     * @return array The form data.
+     */
+    public function getFormInspection(string $uuid): array
+    {
+        try {
+            $form = [];
+            $inspection = Inspection::where('inspection_uuid', $uuid)->first();
+
+            if ($inspection) {
+                $sections = CtInspectionSection::where([
+                    'ct_inspection_id' => $inspection->ct_inspection_id,
+                ])->get();
+
+                if (count($sections)) {
+                    $fields = CtInspectionForm::whereIn(
+                        'ct_inspection_section_id', $sections->pluck('ct_inspection_section_id'))
+                        ->get();
+                    if ($fields) {
+                        foreach ($fields as $key => $field) {
+                            $fields[$key]->content = InspectionForm::where([
+                                'ct_inspection_form_id' => $field->ct_inspection_form_id,
+                                'inspection_id' => $inspection->inspection_id,
+                            ])->first();
+                        }
+                        $form = $this->buildForm($sections, $fields);
+                    }
+                }
+            }
+            // Response
+            $this->response['message'] = trans('api.read');
+            $this->response['data'] = $form;
+        } catch (Throwable $exceptions) {
+            // Manejo del error
+            $this->setExceptions($exceptions);
+        }
+
+        return $this->response;
+    }
+
+    /**
      * Builds the form based on sections and fields.
      *
      * @param  \Illuminate\Support\Collection  $sections  The collection of sections.
@@ -220,7 +262,7 @@ class InspectionFormService extends Service
                 $categoryFormId = $categoryForm->where(
                     'ct_inspection_form_uuid', '=', $formInspection['ct_inspection_form_uuid'])
                     ->first()->ct_inspection_form_id;
-                
+
                 /*$formInspection['inspection_form_uuid'] = Str::uuid()->toString();
                 $formInspection['inspection_id'] = $inspection->inspection_id;
                 $formInspection['ct_inspection_form_id'] = $categoryFormId;

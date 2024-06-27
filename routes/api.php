@@ -71,6 +71,7 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
         ->name('inspection.resources.get-document');
     //---------------------------------------------------------   FORMS    ----------------------------------------------------------
     Route::get('inspection/forms/get-form/{ct_inspection_uuid}', [FormController::class, 'getForm']);
+    Route::get('inspection/forms/get-form-inspection/{inspection_uuid}', [FormController::class, 'getFormInspection']);
     Route::post('inspection/forms/set-form', [FormController::class, 'setForm']);
     Route::post('inspection/forms/set-form-inspection', [FormController::class, 'setFormInspection']);
 
