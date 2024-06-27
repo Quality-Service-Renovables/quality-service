@@ -11,6 +11,7 @@ use App\Services\Api\Audits;
 use App\Services\Service;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Throwable;
 
 class ReportService extends Service
@@ -46,7 +47,7 @@ class ReportService extends Service
                 $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
                 // Cifrar el PDF
                 if ($user->client->config && $user->client->config->crypt_report) {
-                    $passReport = Str::random(8);
+                    $passReport = decrypt($user->client->config->key_report);
                     $this->response['data']['key_report'] = $passReport;
                     $document->getDomPDF()->getCanvas()->get_cpdf()->setEncryption($passReport);
                 }
@@ -61,7 +62,7 @@ class ReportService extends Service
                     ->put($pathStorage, $pdfContent);
                 $this->statusCode = 202;
                 $this->response['message'] = trans('api.document_generated');
-                $this->response['data'] = $pathStorage;
+                $this->response['data']['path_storage'] = $pathStorage;
                 // Crear log de sistema
                 $this->logService->create('inspection_report', [
                     $this->nameService,

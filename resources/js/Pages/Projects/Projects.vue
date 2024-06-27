@@ -859,7 +859,7 @@ export default {
             toast.warning('Solicitando documento, espere...');
             axios.get('inspection/get-document/' + item.inspections[0].inspection_uuid)
                 .then(response => {
-                    window.open(response.data.data, '_blank');
+                    window.open(response.data.data.path_storage, '_blank');
                 })
                 .catch(error => {
                     toast.error('No fue posible recuperar el documento');
