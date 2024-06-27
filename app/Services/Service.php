@@ -113,7 +113,7 @@ class Service
             'clients' => $paths->clients->logos,
             'equipment_images' => $paths->equipments->images,
             'equipment_documents' => $paths->equipments->documents,
-            'equipments_diagrams' => $paths->equipments->diagrams,
+            'equipment_diagrams' => $paths->equipments->diagrams,
             'evidences' => $paths->evidences->inspections,
             'users' => $paths->users->image_profile,
             default => 'tmp',

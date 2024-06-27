@@ -19,6 +19,10 @@ return [
     'updated' => 'Records updated successfully.',
     'deleted' => 'Records deleted successfully.',
     'show' => 'Record retrieved successfully.',
+    // Report
+    'revision' => 'Revision',
+    'estado' => 'State',
+    'comments' => 'Comments',
     // Event Responses
     'not_found' => 'Record not found.',
     'exception' => 'An error has occurred.',
