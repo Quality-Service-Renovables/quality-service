@@ -31,21 +31,21 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
                                             <v-dialog v-model="dialog" width="auto"
-                                                v-if="hasPermissionTo('users.create') || hasPermissionTo('users.update')">
+                                                v-if="hasPermissionTo('users.create') || hasPermissionTo('users.update')" scrollable>
                                                 <template v-slot:activator="{ props }"
                                                     v-if="hasPermissionTo('users.create')">
                                                     <v-btn class="mb-2" color="primary" dark v-bind="props"
                                                         icon="mdi-plus"></v-btn>
                                                 </template>
-                                                <v-card max-width="500">
+                                                <v-card max-width="100%">
                                                     <v-card-title>
                                                         <span class="text-h5">{{ formTitle }}</span>
                                                     </v-card-title>
 
                                                     <v-card-text>
                                                         <v-container>
-                                                            <v-row class="justify-center">
-                                                                <v-col cols="6">
+                                                            <v-row class="justify-center align-center">
+                                                                <v-col cols="12" lg="4">
                                                                     <file-pond name="evidence" ref="pond"
                                                                         label-idle="Arrastra y suelta tu archivo o <span class='filepond--label-action'>selecciona</span>"
                                                                         :allow-multiple="false"
@@ -76,41 +76,56 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         styleLoadIndicatorPosition='center bottom'
                                                                         styleButtonRemoveItemPosition='left bottom'
                                                                         styleButtonProcessItemPosition='right bottom'
-                                                                        styleProgressIndicatorPosition='right bottom' />
+                                                                        styleProgressIndicatorPosition='right bottom' max-width="200"/>
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-text-field v-model="editedItem.name"
                                                                         label="Nombre" variant="outlined"
-                                                                        hide-details></v-text-field>
+                                                                        :rules="[rules.required]"></v-text-field>
                                                                 </v-col>
-                                                                <v-col cols="12">
+                                                                <v-col cols="12" lg="6">
                                                                     <v-text-field v-model="editedItem.email"
                                                                         label="Email" variant="outlined"
-                                                                        hide-details></v-text-field>
+                                                                        :rules="[rules.required, rules.email]"></v-text-field>
                                                                 </v-col>
-                                                                <v-col cols="12">
-                                                                    <v-text-field v-model="editedItem.phone" label="Teléfono" v-maska="options" data-maska-reversed
-                                                                    variant="outlined" hide-details/>
+                                                                <v-col cols="12" lg="6">
+                                                                    <v-text-field v-model="editedItem.phone"
+                                                                        label="Teléfono (opcional)" v-maska="options"
+                                                                        data-maska-reversed variant="outlined"
+                                                                        />
                                                                 </v-col>
-                                                                <v-col cols="12">
+                                                                <v-col cols="12" lg="6">
                                                                     <v-select v-model="editedItem.client_uuid"
                                                                         :items="clients" label="Cliente"
                                                                         item-title="client" item-value="client_uuid"
                                                                         dense variant="outlined"
-                                                                        hide-details></v-select>
+                                                                        :rules="[rules.required]"></v-select>
                                                                 </v-col>
-                                                                <v-col cols="12">
+                                                                <v-col cols="12" lg="6">
                                                                     <v-select v-model="editedItem.rol" :items="roles"
                                                                         label="Rol" item-title="description"
                                                                         item-value="name" dense variant="outlined"
-                                                                        hide-details></v-select>
+                                                                        :rules="[rules.required]"></v-select>
                                                                 </v-col>
-                                                                <v-col cols="12">
+                                                                <v-col cols="12" lg="6" v-if="editedIndex == -1">
+                                                                    <v-text-field v-model="editedItem.password"
+                                                                        label="Contraseña" type="password"
+                                                                        variant="outlined"
+                                                                        :rules="[rules.required, rules.password]"
+                                                                        required></v-text-field>
+                                                                </v-col>
+                                                                <v-col cols="12" lg="6" v-if="editedIndex == -1">
+                                                                    <v-text-field v-model="editedItem.password_confirm"
+                                                                        label="Confirmar contraseña" type="password"
+                                                                        variant="outlined"
+                                                                        :rules="[rules.required, rules.password_confirm]"
+                                                                        required></v-text-field>
+                                                                </v-col>
+                                                                <v-col cols="12" lg="3">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
                                                                         color="primary"
                                                                         :readonly="editedItem.roles && editedItem.roles[0].name === 'admin'"></v-switch>
                                                                 </v-col>
-
                                                             </v-row>
                                                         </v-container>
                                                     </v-card-text>
@@ -135,7 +150,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         <v-btn color="blue-darken-1" variant="text"
                                                             @click="closeDelete">Cancel</v-btn>
                                                         <v-btn color="blue-darken-1" variant="text"
-                                                            @click="deleteItemConfirm(editedItem.usersuuid)">Si,
+                                                            @click="deleteItemConfirm(editedItem.uuid)">Si,
                                                             eliminar</v-btn>
                                                         <v-spacer></v-spacer>
                                                     </v-card-actions>
@@ -179,7 +194,7 @@ import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 
 // Plugin Maska for phone number input
- import { vMaska } from "maska/vue"
+import { vMaska } from "maska/vue"
 
 // Create component
 const FilePond = vueFilePond(
@@ -251,7 +266,27 @@ export default {
             options: {
                 mask: "###-###-####",
                 eager: true
-            }
+            },
+            rules: {
+                required: value => !!value || 'Requerido.',
+                email: value => {
+                    if (!value) return 'Requerido.';
+                    if (!/.+@.+\..+/.test(value)) return 'Email inválido.';
+                    return true;
+                },
+                password: value => {
+                    if (value.length < 8) {
+                        return 'La contraseña debe tener al menos 8 caracteres.';
+                    }
+                    return true;
+                },
+                password_confirm: value => {
+                    if (this.editedItem.password !== '' && (this.editedItem.password === this.editedItem.password_confirm)) {
+                        return true;
+                    }
+                    return "Las contraseñas no coinciden.";
+                },
+            },
         }
     },
     computed: {
@@ -296,9 +331,9 @@ export default {
             this.editedItem = Object.assign({}, item)
             this.dialogDelete = true
         },
-        deleteItemConfirm(item) {
+        deleteItemConfirm(uuid) {
             const putRequest = () => {
-                return axios.delete('api/users/' + item);
+                return axios.delete('api/users/' + uuid);
             };
             toast.promise(putRequest, {
                 loading: 'Procesando...',
@@ -316,8 +351,9 @@ export default {
             this.dialog = false
             this.$nextTick(() => {
                 console.log("Cambiando estatus en close");
-                this.editedItem = Object.assign({}, this.defaultItem)
-                this.editedIndex = -1
+                this.editedItem = Object.assign({}, this.defaultItem);
+                this.editedIndex = -1;
+                this.myFiles = [];
             })
         },
         closeDelete() {
@@ -329,8 +365,8 @@ export default {
             })
         },
         save() {
+            this.editedItem.phone = this.editedItem.phone ? this.editedItem.phone.replace(/-/g, '') : null;
             if (this.editedIndex > -1) {
-                this.editedItem.phone = this.editedItem.phone.replace(/-/g, '');
                 const request = () => {
                     return axios.post('api/users/update/' + this.editedItem.uuid, this.editedItem);
                 };
@@ -412,6 +448,12 @@ export default {
                     }
                 });
         },
+        checkPassword() {
+            if (this.editedItem.password !== '' && (this.editedItem.password === this.editedItem.password_confirm)) {
+                return true;
+            }
+            return false;
+        },
     },
     mounted() {
         this.getRoles();
@@ -437,14 +479,6 @@ export default {
 
 .filepond--panel-root {
     background-color: #edf0f4;
-}
-
-
-/**
- * Page Styles
- */
-html {
-    padding: 20vh 0 0;
 }
 
 .filepond--root {
