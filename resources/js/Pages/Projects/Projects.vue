@@ -126,13 +126,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     <template v-slot:item.actions="{ item }">
                                         <div class="d-flex">
                                             <ActionButton text="Editar" icon="mdi-pencil"
-                                                v-if="hasPermissionTo('projects.update')" @click="editItem(item)"
-                                                size="small" />
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_creado', 'proyecto_asignado', 'proyecto_iniciado'])"
+                                                @click="editItem(item)" size="small" />
                                             <ActionButton text="Cancelar proyecto" icon="mdi-table-cancel"
-                                                v-if="hasPermissionTo('projects.update')" size="small" />
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_creado', 'proyecto_asignado', 'proyecto_iniciado'])"
+                                                size="small" @click="updateStatus(item, 'proyecto_cancelado')" />
                                             <ActionButton text="Eliminar" icon="mdi-delete"
-                                                v-if="hasPermissionTo('projects.delete')" @click="deleteItem(item)"
-                                                size="small" />
+                                                v-if="hasPermissionTo('projects.delete') && checkStatus(item, ['proyecto_creado', 'proyecto_asignado'])"
+                                                @click="deleteItem(item)" size="small" />
                                             <ActionButton text="Asignar técnico" icon="mdi-account-plus-outline"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'proyecto_iniciado'])"
                                                 size="small" @click="asignTechniciensDialog('update', item)"
@@ -142,7 +143,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 size="small" @click="asignInspectionDialog('update', item)"
                                                 color="text-success" />
                                             <ActionButton text="Generar PDF" icon="mdi-file-eye"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'proyecto_iniciado']) && item.inspections.length"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_iniciado', 'proyecto_finalizado', 'proyecto_validado', 'proyecto_cerrado']) && item.inspections.length"
                                                 size="small" @click="generatePdf(item)" color="text-success" />
                                         </div>
                                     </template>
@@ -156,21 +157,20 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado']) && !item.inspections.length"
                                                 size="small" @click="asignInspectionDialog('create', item)"
                                                 color="text-primary" />
-                                            <!--<ActionButton text="Iniciar inspección" icon="mdi-play-speed"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, 'proyecto_asignado') && item.inspections.length > 0"
-                                                size="small" />-->
                                             <ActionButton text="Cargar información" icon="mdi-file-edit"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_iniciado'])"
                                                 size="small" @click="formDialog(item)" color="text-primary" />
                                             <ActionButton text="Finalizar proyecto" icon="mdi-note-check"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_iniciado', 'inspeccion_iniciada']) && item.inspections.length > 0"
-                                                size="small" color="text-primary" />
+                                                v-if="hasPermissionTo('projects.finalize') && checkStatus(item, ['proyecto_iniciado']) && item.inspections.length > 0"
+                                                size="small" color="text-primary"
+                                                @click="updateStatus(item, 'proyecto_finalizado')" />
                                             <ActionButton text="Validar proyecto" icon="mdi-check-circle-outline"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_finalizado'])"
-                                                size="small" />
+                                                v-if="hasPermissionTo('projects.validate') && checkStatus(item, ['proyecto_finalizado'])"
+                                                size="small" @click="updateStatus(item, 'proyecto_validado')" />
                                             <ActionButton text="Cerrar proyecto" icon="mdi-close-circle-outline"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_validado'])"
-                                                size="small" color="text-primary" />
+                                                v-if="hasPermissionTo('projects.close') && checkStatus(item, ['proyecto_validado'])"
+                                                size="small" color="text-primary"
+                                                @click="updateStatus(item, 'proyecto_cerrado')" />
 
                                         </div>
                                     </template>
@@ -377,6 +377,7 @@ import Evidence from '@/Pages/Projects/Partials/Evidence.vue';
 import ConclutionAndRecomendation from '@/Pages/Projects/Partials/ConclutionAndRecomendation.vue';
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import Swal from 'sweetalert2'
 
 export default {
     components: {
@@ -452,7 +453,7 @@ export default {
             project_name: '',
             resume: '',
             ct_inspection_code: null,
-            status_code: 'inspeccion_iniciada',
+            status_code: 'proyecto_iniciado',
             project_id: null,
             client_uuid: null,
             ct_equipment_uuid: null,
@@ -465,7 +466,7 @@ export default {
             project_name: '',
             resume: '',
             ct_inspection_code: null,
-            status_code: 'inspeccion_iniciada',
+            status_code: 'proyecto_iniciado',
             project_id: null,
             client_uuid: null,
             ct_equipment_uuid: null,
@@ -502,42 +503,97 @@ export default {
     methods: {
         // 1 - Save/edit project
         save() {
-            let formData = {
-                project_name: this.editedItem.project_name,
-                description: this.editedItem.description,
-                comments: this.editedItem.comments,
-                client_uuid: this.editedItem.client_uuid,
-            };
             if (this.editedIndex > -1) {
-                formData.status_uuid = this.editedItem.status.status_uuid;
-                const putRequest = () => {
-                    return axios.put('api/projects/' + this.editedItem.project_uuid, formData);
-                };
-                toast.promise(putRequest(), {
-                    loading: 'Procesando...',
-                    success: (data) => {
-                        this.$inertia.reload()
-                        this.close()
-                        return 'Proyecto actualizado correctamente';
+                this.updateProject(this.editedItem);
+            } else {
+                this.saveProject(this.editedItem);
+            }
+        },
+        saveProject(item) {
+            let formData = {
+                project_name: item.project_name,
+                description: item.description,
+                comments: item.comments,
+                client_uuid: item.client_uuid,
+            };
+            const postRequest = () => {
+                return axios.post('api/projects', formData);
+            };
+
+            toast.promise(postRequest(), {
+                loading: 'Procesando...',
+                success: (data) => {
+                    this.$inertia.reload()
+                    this.close()
+                    return 'Proyecto creado correctamente';
+                },
+                error: (data) => {
+                    this.handleErrors(data);
+                }
+            });
+        },
+        updateProject(item, status_code = null) {
+            console.log("Item: ");
+            console.log(item);
+            let formData = {
+                project_name: item.project_name,
+                description: item.description,
+                comments: item.comments,
+                client_uuid: status_code ? item.client.client_uuid : item.client_uuid,
+                status_code: status_code ? status_code : item.status.status_code,
+            };
+            const putRequest = () => {
+                return axios.put('api/projects/' + item.project_uuid, formData);
+            };
+            toast.promise(putRequest(), {
+                loading: 'Procesando...',
+                success: (data) => {
+                    this.$inertia.reload()
+                    this.close()
+                    return 'Proyecto actualizado correctamente';
+                },
+                error: (data) => {
+                    this.handleErrors(data);
+                }
+            });
+        },
+        updateStatus(item, status_code) {
+            if (status_code == 'proyecto_cancelado') {
+                Swal.fire({
+                    title: "Mótivo de cancelación",
+                    input: "text",
+                    inputAttributes: {
+                        autocapitalize: "off"
                     },
-                    error: (data) => {
-                        this.handleErrors(data);
+                    showCancelButton: true,
+                    confirmButtonText: "Cancelar proyecto",
+                    cancelButtonText: "Cancelar",
+                    showLoaderOnConfirm: true,
+                    preConfirm: async (comments) => {
+                        if (comments === '') {
+                            Swal.showValidationMessage('El motivo de cancelación es requerido');
+                        } else {
+                            item.comments = comments;
+                        }
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.updateProject(item, status_code);
                     }
                 });
             } else {
-                const postRequest = () => {
-                    return axios.post('api/projects', formData);
-                };
-
-                toast.promise(postRequest(), {
-                    loading: 'Procesando...',
-                    success: (data) => {
-                        this.$inertia.reload()
-                        this.close()
-                        return 'Proyecto creado correctamente';
-                    },
-                    error: (data) => {
-                        this.handleErrors(data);
+                Swal.fire({
+                    icon: "question",
+                    title: "Confirmación",
+                    text: "¿Estás seguro de cambiar el estatus del proyecto?",
+                    showCancelButton: true,
+                    confirmButtonText: "Continuar",
+                    denyButtonText: `Cancelar`
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        this.updateProject(item, status_code);
                     }
                 });
             }

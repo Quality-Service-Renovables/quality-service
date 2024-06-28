@@ -69,7 +69,7 @@ class ProjectController extends Controller
         $validated = Validator::make($request->all(), [
             'project_uuid' => 'required|uuid|exists:projects,project_uuid',
             'project_name' => 'required|string|min:10|max:255',
-            'status_uuid' => 'required|string|exists:status,status_uuid',
+            'status_code' => 'required|string|exists:status,status_code',
             'client_uuid' => 'required|string|exists:clients,client_uuid',
             'description' => 'nullable|string|min:3|max:255',
             'comments' => 'nullable|string|min:3|max:255',

@@ -124,6 +124,7 @@ export default defineComponent({
 
             axios.put(`/api/inspection/evidence/positions`, { evidences: evidences })
                 .then(() => {
+                    this.getEvidences();
                     this.thereIsChanges = false;
                     this.savingChanges = false;
                     toast.success('Cambios guardados correctamente');

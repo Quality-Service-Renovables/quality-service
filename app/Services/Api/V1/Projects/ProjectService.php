@@ -123,9 +123,9 @@ class ProjectService extends Service implements ServiceInterface
             DB::beginTransaction();
             // Obtiene estado
             $status = Status::with(['category'])
-                ->where('status_uuid',
+                ->where('status_code',
                     '=',
-                    $request->status_uuid)
+                    $request->status_code)
                 ->first();
             $clientId = Client::where('client_uuid',
                 '=',
@@ -147,7 +147,7 @@ class ProjectService extends Service implements ServiceInterface
                     $project = Project::with(['inspections'])
                         ->where('project_uuid', $request->project_uuid)->first();
                     $project?->update($request->except([
-                        'status_uuid', 'client_uuid',
+                        'status_code', 'client_uuid',
                     ]));
 
                     foreach ($project->inspections as $inspection) {
