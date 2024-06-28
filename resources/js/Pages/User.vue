@@ -330,6 +330,7 @@ export default {
         },
         save() {
             if (this.editedIndex > -1) {
+                this.editedItem.phone = this.editedItem.phone.replace(/-/g, '');
                 const request = () => {
                     return axios.post('api/users/update/' + this.editedItem.uuid, this.editedItem);
                 };
@@ -385,7 +386,7 @@ export default {
                 });
         },
         updatePhoto(source, load, error, progress) {
-            return axios.post('api/users/update/' + this.editedItem.uuid, this.editedItem, {
+            return axios.post('api/users/update-picture/' + this.editedItem.uuid, this.editedItem, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
