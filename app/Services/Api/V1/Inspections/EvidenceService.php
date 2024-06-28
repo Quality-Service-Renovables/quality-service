@@ -218,4 +218,40 @@ class EvidenceService extends Service
 
         return $this->response;
     }
+
+    /**
+     * Update evidence positions.
+     *
+     * @param  \Illuminate\Http\Request  $request  The request data.
+     * @return array The response containing the updated category.
+     *
+     * @throws \Exception If there is an error updating the category.
+     */
+    public function positions(Request $request): array
+    {
+        try {
+            // Control Transaction
+            DB::beginTransaction();
+            $evidences = [];
+            foreach($request->evidences as $evidence) {
+                $inspectionEvidence = Evidence::where([
+                    'inspection_evidence_uuid' => $evidence['inspection_evidence_uuid']
+                ])->first();
+                $inspectionEvidence->update([
+                        'position' => $evidence['position'],
+                ]);
+                $evidences[] = $evidence;
+            }
+            $this->response['message'] = trans('api.updated');
+            $this->response['data'] = $evidences;
+            // Commit Transaction
+            DB::commit();
+        } catch (Throwable $exceptions) {
+            DB::rollBack();
+            // Manejo del error
+            $this->setExceptions($exceptions);
+        }
+        // Response
+        return $this->response;
+    }
 }

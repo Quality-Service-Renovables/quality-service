@@ -139,7 +139,28 @@ class EvidenceController extends Controller
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
+    /**
+     * Update evidence position the specified resource.
+     *
+     * @throws \Exception
+     */
+    public function positions(Request $request): JsonResponse
+    {
+        $validated = Validator::make($request->all(), [
+            'evidences.*.inspection_evidence_uuid' => 'required|uuid|exists:inspection_evidences,inspection_evidence_uuid',
+            'evidences.*.position' => 'required|integer',
+        ]);
 
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->positions($request);
+
+        return response()->json($this->service->response, $this->service->statusCode);
+    }
     /**
      * Perform common validation for the request data.
      *
