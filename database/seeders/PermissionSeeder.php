@@ -246,6 +246,22 @@ class PermissionSeeder extends Seeder
                 'description' => 'Módulo de proyectos - Eliminar',
                 'name' => 'projects.delete',
             ],
+            [
+                'description' => 'Módulo de proyectos - Finalizar proyecto',
+                'name' => 'projects.finalize',
+            ],
+            [
+                'description' => 'Módulo de proyectos - Validar proyecto',
+                'name' => 'projects.validate',
+            ],
+            [
+                'description' => 'Módulo de proyectos - Cerrar proyecto',
+                'name' => 'projects.close',
+            ],
+            [
+                'description' => 'Módulo de proyectos - Cancelar proyecto',
+                'name' => 'projects.cancel',
+            ],
 
             // Roles y permisos
             [
@@ -325,6 +341,10 @@ class PermissionSeeder extends Seeder
                     'projects.read',
                     'projects.update',
                     'projects.delete',
+                    'projects.finalize',
+                    'projects.validate',
+                    'projects.close',
+                    'projects.cancel',
                     'roles',
                     'roles.create',
                     'roles.read',
@@ -340,6 +360,8 @@ class PermissionSeeder extends Seeder
                     'failures.read',
                     'projects', 
                     'projects.read',
+                    'projects.update',
+                    'projects.finalize',
                 ],
                 'cliente' => [
                     'projects', 

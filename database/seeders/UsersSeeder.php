@@ -60,8 +60,16 @@ class UsersSeeder extends Seeder
             ],
             [
                 'uuid' => Str::uuid()->toString(),
-                'name' => 'Técnico',
-                'email' => 'tecnico@qsr.mx',
+                'name' => 'Juan M. Aburto Toledo',
+                'email' => 'jburto@qsr.mx',
+                'password' => Hash::make('qsr.2024!'),
+                'client_id' => $client->client_id,
+                'rol' => 'tecnico'
+            ],
+            [
+                'uuid' => Str::uuid()->toString(),
+                'name' => 'Francisco Alan Pineda Toledo',
+                'email' => 'fpineda@qsr.mx',
                 'password' => Hash::make('qsr.2024!'),
                 'client_id' => $client->client_id,
                 'rol' => 'tecnico'
