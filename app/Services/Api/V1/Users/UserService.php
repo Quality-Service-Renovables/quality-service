@@ -50,7 +50,7 @@ class UserService extends Service implements ServiceInterface
             ]);
 
             // Establecer imágen por defecto en caso de no seleccionar alguna.
-            if (! $request->image_profile) {
+            if (!$request->image_profile) {
                 $request->merge(['image_profile' => $this->imageDefault]);
             } else {
                 $request = $this->storeFile($request,
@@ -112,6 +112,52 @@ class UserService extends Service implements ServiceInterface
             $request->merge([
                 'client_id' => $client->client_id,
             ]);
+
+            // Registra los atributos de la solicitud al usuario
+            $user?->update($request->except([
+                'client_uuid',
+            ]));
+            
+            // Asignación de rol
+            $user->syncRoles([$request->rol]);
+            
+            // Respuesta del módulo
+            $this->response['message'] = trans('api.updated');
+            $this->response['data'] = $user;
+            // Registro en log
+            $this->logService->create(
+                $this->nameService,
+                $request->all(),
+                $this->response,
+                trans('api.message_log'),
+            );
+            // Finaliza Transacción
+            DB::commit();
+        } catch (Throwable $exceptions) {
+            DB::rollBack();
+            // Manejo del error
+            $this->setExceptions($exceptions);
+        }
+
+        // Respuesta del módulo
+        return $this->response;
+    }
+
+    /**
+     * Update equipment data
+     *
+     * @param  Request  $request  The request object containing the updated data
+     * @return array Returns an array containing the updated equipment data
+     */
+    public function updatePicture(Request $request): array
+    {
+        try {
+            // Control de transacciones
+            DB::beginTransaction();
+
+            // Obtener el usuario a actualizar
+            $user = User::where('uuid', '=', $request->uuid)->first();
+
             /**
              * Elimina la imágen anterior siempre y cuando no sea la imágen por defecto.
              * Esto con la finalidad de eliminar imágenes huérfanas en la aplicación.
@@ -126,14 +172,11 @@ class UserService extends Service implements ServiceInterface
                 $request->merge(['image_profile' => $this->imageDefault]);
             }
 
-            $request->merge(['active' => $request->active == 'true' ? 1 : 0]);
-
             // Registra los atributos de la solicitud al usuario
-            $user?->update($request->except([
-                'client_uuid',
-            ]));
-            // Asignación de rol
-            $user->assignRole($request->rol);
+            $user?->update([
+                'image_profile' => $request->image_profile,
+            ]);
+
             // Respuesta del módulo
             $this->response['message'] = trans('api.updated');
             $this->response['data'] = $user;
@@ -197,8 +240,8 @@ class UserService extends Service implements ServiceInterface
                 'category', 'status', 'trademark', 'model',
             ])->where('equipment_uuid', $uuid)->first();
             $this->response['message'] = $equipment === null
-                ? trans('api.not_found')
-                : trans('api.show');
+            ? trans('api.not_found')
+            : trans('api.show');
             $this->response['data'] = $equipment ?? [];
         } catch (Throwable $exceptions) {
             // Manejo del error

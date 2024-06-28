@@ -74,7 +74,7 @@ class UserController extends Controller
         $validated = Validator::make($request->all(), [
             'uuid' => 'required|uuid|exists:users,uuid',
             'name' => 'required|string',
-            'image_profile' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            //'image_profile' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'email' => [
                 'required',
                 'email',
@@ -87,7 +87,7 @@ class UserController extends Controller
             //'password_confirm' => 'required_with:password|same:password',
             'client_uuid' => 'nullable|string|exists:clients,client_uuid',
             'rol' => 'required|string|exists:roles,name',
-            'active' => 'required|in:true,false',
+            'active' => 'required|boolean',
         ]);
 
         if ($validated->fails()) {
@@ -97,6 +97,28 @@ class UserController extends Controller
         }
 
         $this->service->update($request);
+
+        return response()->json($this->service->response, $this->service->statusCode);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function updatePicture(Request $request, string $uuid): JsonResponse
+    {
+        $request->merge(['uuid' => $uuid]);
+        $validated = Validator::make($request->all(), [
+            'uuid' => 'required|uuid|exists:users,uuid',
+            'image_profile' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->updatePicture($request);
 
         return response()->json($this->service->response, $this->service->statusCode);
     }

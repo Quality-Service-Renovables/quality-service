@@ -15,7 +15,7 @@ class UserRequest extends CustomRequest
     {
         return [
             'name' => 'required|string',
-            'image_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_profile' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'email' => 'required|email|unique:users,email',
             'phone' => 'nullable|alpha_num',
             'password' => 'required|string|min:4|max:12',
