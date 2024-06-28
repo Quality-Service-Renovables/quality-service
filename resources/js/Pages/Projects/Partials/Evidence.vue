@@ -3,10 +3,11 @@
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg pb-5 mb-5">
             <v-row class="d-flex justify-center">
                 <v-col cols="12" lg="4">
-                    <EvidenceForm :inspection_uuid="inspection_uuid" @getEvidences="getEvidences" :position="evidences.length+1"/>
+                    <EvidenceForm :inspection_uuid="inspection_uuid" @getEvidences="getEvidences"
+                        :position="evidences.length + 1" />
                 </v-col>
             </v-row>
-            <v-row>
+            <v-row class="d-flex justify-center">
                 <v-col cols="12" class="text-center">
                     <v-divider></v-divider>
                     <p class="text-h5 mt-4" v-if="evidences.length">Evidencias cargadas</p>
@@ -16,7 +17,7 @@
                         <v-col cols="12" lg="4" class="list-group-item" v-for="(evidence, index) in evidences"
                             :key="evidence.inspection_evidence_uuid">
                             <EvidenceForm :inspection_uuid="inspection_uuid" :evidence="evidence"
-                                @getEvidences="getEvidences" :position="index+1"/>
+                                @getEvidences="getEvidences" :position="index + 1" />
                         </v-col>
                     </draggable>
                 </v-row>
@@ -28,6 +29,13 @@
                     </v-col>
                 </template>
             </v-row>
+            <!-- Botón flotante -->
+            <v-expand-transition>
+                <v-btn prepend-icon="mdi-content-save-check" variant="flat" color="primary" class="fab m-5"
+                    @click="saveChanges" v-show="thereIsChanges" :loading="savingChanges">
+                    Guardar cambios
+                </v-btn>
+            </v-expand-transition>
         </div>
     </div>
 </template>
@@ -54,6 +62,7 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginImageEdit from "filepond-plugin-image-edit";
+import axios from 'axios';
 
 // Create component
 const FilePond = vueFilePond(
@@ -77,15 +86,11 @@ export default defineComponent({
     data() {
         return {
             enabled: true,
-            list: [
-                { name: 'John', id: 1 },
-                { name: 'Pros', id: 2 },
-                { name: 'Rosi', id: 3 },
-                { name: 'Gerard', id: 4 },
-            ],
             dragging: true,
             evidences: [],
             loading: false,
+            thereIsChanges: false,
+            savingChanges: false
         }
     },
     mounted() {
@@ -93,7 +98,7 @@ export default defineComponent({
     },
     methods: {
         log(event) {
-            console.log(event)
+            this.thereIsChanges = true;
         },
         async getEvidences() {
             this.loading = true;
@@ -108,6 +113,26 @@ export default defineComponent({
                 this.handleErrors(error);
             }
         },
+        saveChanges() {
+            this.savingChanges = true;
+            let evidences = this.evidences.map((e, index) => {
+                return {
+                    inspection_evidence_uuid: e.inspection_evidence_uuid,
+                    position: index + 1
+                }
+            });
+
+            axios.put(`/api/inspection/evidence/positions`, { evidences: evidences })
+                .then(() => {
+                    this.thereIsChanges = false;
+                    this.savingChanges = false;
+                    toast.success('Cambios guardados correctamente');
+                })
+                .catch(error => {
+                    this.savingChanges = false;
+                    this.handleErrors(error);
+                });
+        },
     },
 })
 </script>
@@ -117,5 +142,13 @@ export default defineComponent({
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+}
+
+.fab {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    z-index: 999;
+    border-radius: 20px !important;
 }
 </style>
