@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::resource('inspection/equipments', \App\Http\Controllers\Api\V1\Inspections\EquipmentController::class)
         ->names('inspection.equipments');
     Route::resource('inspection/evidences', EvidenceController::class);
+    Route::put('inspection/evidence/positions', [EvidenceController::class, 'positions']);
     Route::resource('inspection/categories', CategoryController::class)
         ->names('inspection.categories');
 

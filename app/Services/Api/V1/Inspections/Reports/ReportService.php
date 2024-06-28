@@ -6,12 +6,13 @@
 
 namespace App\Services\Api\V1\Inspections\Reports;
 
+use App\Mail\ServiceMail;
 use App\Models\Inspections\Inspection;
 use App\Services\Api\Audits;
 use App\Services\Service;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Throwable;
 
 class ReportService extends Service
@@ -63,6 +64,12 @@ class ReportService extends Service
                 $this->statusCode = 202;
                 $this->response['message'] = trans('api.document_generated');
                 $this->response['data']['path_storage'] = $pathStorage;
+                $mail = [
+                    'to' => ['adrian.olvera21@gmail.com','core.devmx@gmail.com'],
+                    'subject' => 'Reporte de Inspección',
+                    'attachment' => $pathStorage
+                ];
+                Mail::send(new ServiceMail($mail));
                 // Crear log de sistema
                 $this->logService->create('inspection_report', [
                     $this->nameService,
