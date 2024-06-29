@@ -4,7 +4,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Inspections\Category;
+use App\Models\Inspections\Categories\CtInspection;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -16,7 +16,7 @@ class InspectionCategoriesSeeder extends Seeder
     public function run(): void
     {
         foreach ($this->getCategories() as $category) {
-            Category::updateOrCreate(['ct_inspection_code' => $category['ct_inspection_code']], $category);
+            CtInspection::updateOrCreate(['ct_inspection_code' => $category['ct_inspection_code']], $category);
         }
     }
 
@@ -114,6 +114,15 @@ class InspectionCategoriesSeeder extends Seeder
                 'ct_inspection' => 'Inspección mediante robot ',
                 'ct_inspection_code' => 'inspeccion_mediante_robot',
                 'description' => 'Inspección mediante robot ',
+                'is_default' => true,
+                'dependency' => null,
+                'active' => true,
+            ],
+            [
+                'ct_inspection_uuid' => Str::uuid()->toString(),
+                'ct_inspection' => 'Inspección de multiplicadora',
+                'ct_inspection_code' => 'inspeccion_multiplicadora',
+                'description' => 'Esta inspección incluye verificar el estado de los engranajes, rodamientos, lubricación, posibles desgastes o daños y asegurarse de que todos los componentes estén funcionando correctamente y sin vibraciones anormales.',
                 'is_default' => true,
                 'dependency' => null,
                 'active' => true,

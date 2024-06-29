@@ -15,9 +15,11 @@ return new class extends Migration
             $table->id('inspection_evidence_id');
             $table->uuid('inspection_evidence_uuid');
             $table->string('inspection_evidence');
-            $table->string('inspection_evidence_secondary');
+            $table->string('inspection_evidence_secondary')->nullable();
             $table->string('title')->nullable();
             $table->string('description')->nullable();
+            $table->string('title_secondary')->nullable();
+            $table->string('description_secondary')->nullable();
             $table->unsignedBigInteger('inspection_id')->comment('Relation with inspection');
             $table->timestamps();
             $table->softDeletes();

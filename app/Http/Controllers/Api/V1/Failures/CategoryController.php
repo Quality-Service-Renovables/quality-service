@@ -34,7 +34,6 @@ class CategoryController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
      */
     public function store(CategoryRequest $request): JsonResponse
     {
@@ -61,11 +60,6 @@ class CategoryController extends Controller
 
     /**
      * Update a resource in storage.
-     *
-     * @param Request $request
-     * @param string  $uuid
-     *
-     * @return JsonResponse
      */
     public function update(Request $request, string $uuid): JsonResponse
     {
@@ -88,6 +82,7 @@ class CategoryController extends Controller
 
         if ($validated->fails()) {
             $this->service->setFailValidation($validated->errors());
+
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -115,10 +110,8 @@ class CategoryController extends Controller
     /**
      * Perform common validation for the request.
      *
-     * @param array $request The request data.
-     *
+     * @param  array  $request  The request data.
      * @return bool True if the validation passes, false otherwise.
-     *
      */
     private function commonValidation(array $request): bool
     {

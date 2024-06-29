@@ -20,9 +20,13 @@ function handleErrors(data) {
                     toast.error(`Errores en el campo ${field}:`, {
                         description: `${errors.join(", ")}`,
                     });
-                }, 100);
+                }, 500);
             }
+        } else {
+            setTimeout(() => toast.error(`Algo salió mal, por favor intenta de nuevo o comunicate con TI.`), 100);
         }
+    } else {
+        setTimeout(() => toast.error(`Algo salió mal, por favor intenta de nuevo o comunicate con TI.`), 100);
     }
 }
 

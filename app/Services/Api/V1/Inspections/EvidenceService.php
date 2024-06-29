@@ -6,14 +6,13 @@
 
 namespace App\Services\Api\V1\Inspections;
 
-use App\Models\Equipments\Equipment;
-use App\Models\Inspections\Equipment as InspectionEquipment;
 use App\Models\Inspections\Evidence;
 use App\Models\Inspections\Inspection;
 use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Throwable;
 
 class EvidenceService extends Service
 {
@@ -33,14 +32,16 @@ class EvidenceService extends Service
 
             $this->storeFile($request,
                 'evidence_store',
-                'inspection_evidence',
-                'evidences');
+                'evidences',
+                'inspection_evidence'
+            );
 
             if ($request->evidence_store_secondary) {
                 $this->storeFile($request,
                     'evidence_store_secondary',
-                    'inspection_evidence_secondary',
-                    'evidences');
+                    'evidences',
+                    'inspection_evidence_secondary'
+                );
             }
             // Create Register
             $inspectionEquipment = Evidence::create($request->all());
@@ -78,7 +79,7 @@ class EvidenceService extends Service
     public function read(): array
     {
         try {
-            $this->response['message'] = trans('api.readed');
+            $this->response['message'] = trans('api.read');
             $this->response['data'] = Evidence::with(['inspection'])->get();
         } catch (Throwable $exceptions) {
             // Manejo del error
@@ -108,18 +109,28 @@ class EvidenceService extends Service
                 'inspection_id' => $inspection->inspection_id,
             ]);
 
+            // En caso de que se actualicen las evidencias y existan registros previos se depuran.
+            if ($inspection->envidence_store !== $request->inspection_store) {
+                $this->purgeFile($inspection->inspection_evidence_secondary);
+                if ($inspection->evidence_store_secondary) {
+                    $this->purgeFile($inspection->inspection_evidence_secondary);
+                }
+            }
+            // Se registra la evidencia principal y secundaria
             if ($request->evidence_store) {
                 $this->storeFile($request,
                     'evidence_store',
-                    'inspection_evidence',
-                    'evidences');
+                    'evidences',
+                    'inspection_evidence'
+                );
             }
 
             if ($request->evidence_store_secondary) {
                 $this->storeFile($request,
                     'evidence_store_secondary',
-                    'inspection_evidence_secondary',
-                    'evidences');
+                    'evidences',
+                    'inspection_evidence_secondary'
+                );
             }
 
             // Update Register
@@ -165,7 +176,7 @@ class EvidenceService extends Service
             // Control Transaction
             DB::beginTransaction();
             // Delete Register
-            InspectionEquipment::where('inspection_equipment_uuid', $uuid)
+            Evidence::where('inspection_evidence_uuid', $uuid)
                 ->update([
                     'deleted_at' => now(),
                 ]);
@@ -205,6 +216,42 @@ class EvidenceService extends Service
             $this->setExceptions($exceptions);
         }
 
+        return $this->response;
+    }
+
+    /**
+     * Update evidence positions.
+     *
+     * @param  \Illuminate\Http\Request  $request  The request data.
+     * @return array The response containing the updated category.
+     *
+     * @throws \Exception If there is an error updating the category.
+     */
+    public function positions(Request $request): array
+    {
+        try {
+            // Control Transaction
+            DB::beginTransaction();
+            $evidences = [];
+            foreach($request->evidences as $evidence) {
+                $inspectionEvidence = Evidence::where([
+                    'inspection_evidence_uuid' => $evidence['inspection_evidence_uuid']
+                ])->first();
+                $inspectionEvidence->update([
+                        'position' => $evidence['position'],
+                ]);
+                $evidences[] = $evidence;
+            }
+            $this->response['message'] = trans('api.updated');
+            $this->response['data'] = $evidences;
+            // Commit Transaction
+            DB::commit();
+        } catch (Throwable $exceptions) {
+            DB::rollBack();
+            // Manejo del error
+            $this->setExceptions($exceptions);
+        }
+        // Response
         return $this->response;
     }
 }

@@ -78,32 +78,23 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 </v-dialog>
                                                 <!-- Dialog for create and update -->
                                                 <!-- Dialog for show and edit template -->
-                                                <v-dialog v-model="dialogTemplate" max-width="1200px">
+                                                <v-dialog v-model="dialogTemplate" transition="dialog-bottom-transition"
+                                                    fullscreen>
                                                     <v-card>
-                                                        <v-card-title>
-                                                            <span class="text-h5">Template</span>
-                                                        </v-card-title>
+                                                        <v-toolbar>
+                                                            <v-btn icon="mdi-close" @click="closeTemplate"></v-btn>
+                                                            <v-toolbar-title>Template</v-toolbar-title>
+                                                            <v-spacer></v-spacer>
+                                                            <v-toolbar-items>
+                                                                <v-btn text="Cerrar" variant="text"
+                                                                    @click="closeTemplate"></v-btn>
+                                                            </v-toolbar-items>
+                                                        </v-toolbar>
                                                         <v-card-text>
-                                                            <v-container v-if="template">
-                                                                <v-btn class="text-none text-subtitle-1 me-1 mb-2"
-                                                                    color="primary" size="small">
-                                                                    Agregar sección
-                                                                </v-btn>
-                                                                <v-divider class="border"></v-divider>
-
-                                                                <Template :template="template"></Template>
-
+                                                            <v-container v-if="editedItem.template">
+                                                                <TemplateInspectionCategory :item="editedItem"></TemplateInspectionCategory>
                                                             </v-container>
                                                         </v-card-text>
-                                                        <v-card-actions>
-                                                            <v-spacer></v-spacer>
-                                                            <v-btn color="blue-darken-1" variant="text" @click="closeTemplate">
-                                                                Cancelar
-                                                            </v-btn>
-                                                            <v-btn color="blue-darken-1" variant="text" @click="save">
-                                                                Guardar
-                                                            </v-btn>
-                                                        </v-card-actions>
                                                     </v-card>
                                                 </v-dialog>
                                                 <!-- Dialog for show and edit template -->
@@ -126,18 +117,20 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
-                                        <v-icon class="me-2" size="small" @click="editItem(item)"
-                                            v-if="hasPermissionTo('inspections.update')">
-                                            mdi-pencil
-                                        </v-icon>
-                                        <v-icon class="me-2" size="small" @click="showTemplate(item)"
-                                            v-if="hasPermissionTo('inspections.update')">
-                                            mdi-file-tree-outline
-                                        </v-icon>
-                                        <v-icon size="small" @click="deleteItem(item)"
-                                            v-if="hasPermissionTo('inspections.delete')">
-                                            mdi-delete
-                                        </v-icon>
+                                        <div class="d-flex">
+                                            <v-icon class="me-2" size="small" @click="editItem(item)"
+                                                v-if="hasPermissionTo('inspections.update')">
+                                                mdi-pencil
+                                            </v-icon>
+                                            <v-icon class="me-2" size="small" @click="showTemplate(item)"
+                                                v-if="hasPermissionTo('inspections.update')">
+                                                mdi-file-tree-outline
+                                            </v-icon>
+                                            <v-icon size="small" @click="deleteItem(item)"
+                                                v-if="hasPermissionTo('inspections.delete')">
+                                                mdi-delete
+                                            </v-icon>
+                                        </div>
                                     </template>
                                 </v-data-table>
                             </v-col>
@@ -154,12 +147,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { router } from '@inertiajs/vue3'
 import { Toaster, toast } from 'vue-sonner'
 import Swal from 'sweetalert2';
-import Template from './Template.vue';
+import TemplateInspectionCategory from './InspectionCategory/Template.vue';
 
 export default {
     components: {
         Toaster,
-        Template
+        TemplateInspectionCategory
     },
     props: {
         ct_inspections: {
@@ -181,18 +174,21 @@ export default {
         ],
         editedIndex: -1,
         editedItem: {
+            ct_inspection_code: '',
             ct_inspection_uuid: '',
             ct_inspection: '',
             description: '',
             active: false,
+            template: {}
         },
         defaultItem: {
+            ct_inspection_code: '',
             ct_inspection_uuid: '',
             ct_inspection: '',
             description: '',
             active: false,
+            template: {}
         },
-        template: {}
     }),
     computed: {
         formTitle() {
@@ -253,7 +249,7 @@ export default {
         },
         closeTemplate() {
             this.dialogTemplate = false
-            this.template = {}
+            this.editedItem.template = {}
         },
         save() {
             if (this.editedIndex > -1) {
@@ -302,12 +298,12 @@ export default {
             return value ? 'green' : 'red';
         },
         showTemplate(item) {
-            this.dialogTemplate = true;
+            this.editedItem = Object.assign({}, item)
             console.log("Consultando template de inspección " + item.ct_inspection_uuid);
             return axios.get('api/inspection/forms/get-form/' + item.ct_inspection_uuid)
                 .then(response => {
-                    console.log(response.data.data);
-                    this.template = response.data.data;
+                    this.editedItem.template = response.data.data;
+                    this.dialogTemplate = true;
                 })
                 .catch(error => {
                     console.log(error);

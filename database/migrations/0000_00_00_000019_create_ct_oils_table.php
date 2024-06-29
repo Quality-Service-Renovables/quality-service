@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('ct_oil_uuid');
             $table->string('ct_oil');
             $table->string('ct_oil_code');
-            $table->longText('description')->nullable()->comment('Oil Category Description');
+            $table->longText('description')->nullable()->comment('Oil CtInspection Description');
             $table->boolean('is_default')->default(false);
             $table->unsignedBigInteger('dependency')->nullable();
             $table->bigInteger('level')->default(1);

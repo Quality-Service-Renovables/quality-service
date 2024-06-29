@@ -15,7 +15,7 @@ class EquipmentRequest extends CustomRequest
     public function rules(): array
     {
         return [
-            'equipment_uuid' => [
+            'equipments.*.equipment_uuid' => [
                 'required',
                 'string',
                 'min:1',

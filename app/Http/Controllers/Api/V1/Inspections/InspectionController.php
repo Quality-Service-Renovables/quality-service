@@ -2,20 +2,25 @@
 
 namespace App\Http\Controllers\Api\V1\Inspections;
 
-use Inertia\Inertia;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
-use App\Services\Api\V1\Inspections\InspectionService;
 use App\Http\Requests\Api\Inspections\InspectionRequest;
+use App\Services\Api\V1\Inspections\InspectionService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Inertia\Inertia;
 use Inertia\Response;
 
 class InspectionController extends Controller
 {
     protected Inspectionservice $service;
 
+    /**
+     * Class constructor.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->service = new InspectionService();
@@ -29,6 +34,7 @@ class InspectionController extends Controller
     public function index(): JsonResponse
     {
         $this->service->read();
+
         return response()->json($this->service->response, $this->service->statusCode);
     }
 
@@ -69,6 +75,7 @@ class InspectionController extends Controller
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -101,10 +108,15 @@ class InspectionController extends Controller
                     ->whereNot('ct_inspection_uuid', $uuid)
                     ->whereNull('deleted_at'),
             ],
+            'equipment_uuid' => 'required|uuid|exists:equipments,equipment_uuid',
+            'project_uuid' => 'required|string|exists:projects,project_uuid',
+            'diagnosis_user_id' => 'nullable|int|exists:users,id',
+            'client_uuid' => 'required|uuid|exists:clients,client_uuid',
         ]);
 
         if ($validated->fails()) {
             $this->service->setFailValidation($validated->errors());
+
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -133,6 +145,8 @@ class InspectionController extends Controller
 
     /**
      * Render the project component.
+     *
+     * @throws \Exception
      */
     public function component(): Response
     {

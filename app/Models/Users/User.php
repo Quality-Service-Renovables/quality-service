@@ -6,6 +6,7 @@ namespace App\Models\Users;
 //use App\Models\AuthGuards\Role;
 use App\Models\Clients\Client;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -24,8 +25,12 @@ class User extends Authenticatable
     protected $fillable = [
         'uuid',
         'name',
+        'image_profile',
         'email',
+        'phone',
         'password',
+        'active',
+        'client_id',
     ];
 
     /**
@@ -36,6 +41,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'id',
+        'client_id',
     ];
 
     /**
@@ -51,7 +58,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function client()
+    public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class, 'client_id', 'client_id');
     }

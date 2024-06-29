@@ -9,10 +9,10 @@ namespace App\Services\Api\V1\OIls;
 use App\Models\Oils\Category;
 use App\Services\Api\ServiceInterface;
 use App\Services\Service;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Throwable;
 
 class CategoryService extends Service implements ServiceInterface
 {
@@ -30,28 +30,26 @@ class CategoryService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             // Agrega atributos a la solicitud
-            $request->merge(['ct_oil_uuid' => Str::uuid()->toString()]);
-            $request->merge(['ct_oil_code' => create_slug($request->get('ct_oil'))]);
-            // Registra los atributos de la solicitud a la categoria
-            $category = Category::create($request->all());
+            $request->merge([
+                'ct_oil_uuid' => Str::uuid()->toString(),
+                'ct_oil_code' => create_slug($request->get('ct_oil')),
+            ]);
             // Define parámetros de respuesta
             $this->statusCode = 201;
-            $this->response['data'] = $category;
+            $this->response['data'] = Category::create($request->all());
             // Registro en log
             $this->logService->create(
                 $this->nameService,
                 $request->all(),
                 $this->response,
-                'Create oil category request',
+                trans('api.message_log'),
             );
             // Finaliza Transacción
             DB::commit();
-        } catch (Exception $exception) {
+        } catch (Throwable $exceptions) {
             DB::rollBack();
-            // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            // Manejo del error
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -69,32 +67,28 @@ class CategoryService extends Service implements ServiceInterface
         try {
             // Control de transacciones
             DB::beginTransaction();
-            // Asignación de identificadores
-            $slug = create_slug($request->get('ct_oil'));
             // Agregar elementos al request
             $request->merge([
-                'ct_oil_code' => $slug,
+                'ct_oil_code' => create_slug($request->ct_oil),
             ]);
-            // Actualiza categoria de aceite
-            Category::where('ct_oil_uuid', $request->ct_oil_uuid)->update($request->all());
-            // Recupera categoria de aceite actualizada
-            $equipmentUpdated = Category::where('ct_oil_uuid', $request->ct_oil_uuid)->first();
-            $this->response['data'] = $equipmentUpdated;
+            // Actualiza categoría de aceite
+            $equipment = Category::where('ct_oil_uuid', $request->ct_oil_uuid)->first();
+            $equipment?->update($request->all());
+            // Respuesta de servicio
+            $this->response['data'] = $equipment;
             // Registro de log
             $this->logService->create(
                 $this->nameService,
                 $request->all(),
                 $this->response,
-                'Update oil category request',
+                trans('api.message_log'),
             );
             // Confirmación de transacción
             DB::commit();
-        } catch (Exception $exception) {
+        } catch (Throwable $exceptions) {
             DB::rollBack();
-            // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            // Manejo del error
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -109,7 +103,6 @@ class CategoryService extends Service implements ServiceInterface
     public function read(): array
     {
         $this->response['data'] = Category::all();
-
         // Respuesta del módulo
         return $this->response;
     }
@@ -123,22 +116,20 @@ class CategoryService extends Service implements ServiceInterface
     public function delete(string $uuid): array
     {
         try {
-            // Aplica soft delete a la categoria del aceite especificado por medio de su uuid
+            // Aplica soft delete a la categoría del aceite especificado por medio de su uuid
             Category::where('ct_oil_uuid', $uuid)->update(['deleted_at' => now()]);
             // Registro en Log
             $this->logService->create(
                 $this->nameService,
                 compact('uuid'),
                 $this->response,
-                'Delete equipment category request',
+                trans('api.message_log'),
             );
             // Parámetros de respuesta
-            $this->response['message'] = 'Category deleted successfully';
-        } catch (Exception $exception) {
-            // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            $this->response['message'] = trans('api.deleted');
+        } catch (Throwable $exceptions) {
+            // Manejo del error
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo
@@ -154,16 +145,14 @@ class CategoryService extends Service implements ServiceInterface
     public function show(string $uuid): array
     {
         try {
-            // Obtiene categoria del aceite
+            // Obtiene categoría del aceite
             $category = Category::where('ct_oil_uuid', $uuid)->first();
-            $this->response['message'] = $category === null ? 'Category not found' : 'Category found';
-            $this->response['data'] = $category ?? [];
-        } catch (Exception $exception) {
+            $this->response['message'] = $category === null ? trans('api.not_found') : trans('api.read');
+            $this->response['data'] = $category ? $category->toArray() : [];
+        } catch (Throwable $exceptions) {
             DB::rollBack();
-            // Parámetros de respuesta en caso de error
-            $this->response['status'] = 'error';
-            $this->response['message'] = $exception->getMessage();
-            $this->statusCode = 500;
+            // Manejo del error
+            $this->setExceptions($exceptions);
         }
 
         // Respuesta del módulo

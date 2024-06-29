@@ -6,6 +6,7 @@
 namespace Database\Seeders;
 
 use App\Models\Clients\Client;
+use App\Models\Clients\Config;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -17,7 +18,11 @@ class ClientsSeeder extends Seeder
     public function run(): void
     {
         foreach ($this->getClients() as $client) {
-            Client::updateOrCreate(['client_code' => $client['client_code']], $client);
+            $currentClient = Client::updateOrCreate(['client_code' => $client['client_code']], $client);
+            Config::updateOrCreate(['client_id' => $currentClient->client_id], [
+                'client_configuration_uuid' => Str::uuid()->toString(),
+                'client_id' => $currentClient->client_id,
+            ]);
         }
     }
 

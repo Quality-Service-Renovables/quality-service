@@ -34,6 +34,7 @@ use Throwable;
 class EquipmentService extends Service implements ServiceInterface
 {
     public string $nameService = 'equipment_service';
+
     private string $imageDefault = 'img/equipments/default.png';
 
     /**
@@ -84,7 +85,7 @@ class EquipmentService extends Service implements ServiceInterface
      */
     public function read(): array
     {
-        $this->response['message'] = trans('api.readed');
+        $this->response['message'] = trans('api.read');
         $this->response['data'] = Equipment::with([
             'category', 'status', 'trademark', 'model',
         ])->get();
@@ -107,7 +108,23 @@ class EquipmentService extends Service implements ServiceInterface
             $this->setRequest($request);
             // Actualiza Equipo
             $equipment = Equipment::where('equipment_uuid', $request->equipment_uuid)->first();
-            $equipment?->update($request->all());
+            /**
+             * Elimina la imágen anterior siempre y cuando no sea la imágen por defecto.
+             * Esto con la finalidad de eliminar imágenes huérfanas en la aplicación.
+             * */
+            if ($equipment->equipment_image && $equipment->equipment_image !== $request->equipment_image) {
+                $this->purgeFile($equipment->equipment_image);
+            }
+
+            $equipment?->update($request->except([
+                'ct_equipment_code',
+                'trademark_code',
+                'trademark_model_code',
+                'status_code',
+                'equipment_image_storage',
+                'equipment_diagram_storage',
+                'manual_storage',
+            ]));
             $this->response['message'] = trans('api.updated');
             $this->response['data'] = $equipment;
             // Registro de log
@@ -165,14 +182,14 @@ class EquipmentService extends Service implements ServiceInterface
     public function show(string $uuid): array
     {
         try {
-            // Obtiene categoria del equipo
+            // Obtiene categoría del equipo
             $equipment = Equipment::with([
                 'category', 'status', 'trademark', 'model',
             ])->where('equipment_uuid', $uuid)->first();
             $this->response['message'] = $equipment === null
                 ? trans('api.not_found')
                 : trans('api.show');
-            $this->response['data'] = $equipment ?? [];
+            $this->response['data'] = $equipment ? $equipment->toArray() : [];
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);
@@ -215,86 +232,39 @@ class EquipmentService extends Service implements ServiceInterface
     /**
      * Sets the request fields for the equipment.
      *
-     * @param Request $request The request object.
+     * @param  Request  $request  The request object.
      *
-     * @return void
      * @throws \JsonException
      */
     private function setFields(Request $request): void
     {
-        $paths = $this->getApplicationPaths();
-
-        // Si se ha seleccionado una imagen para el equipo se guarda en el storage
-        if ($request->hasFile('equipment_image_storage')) {
-            $this->addFileToRequest(
-                $request,
-                'equipment_image_storage',
-                'equipment_image',
-                $paths->equipments->images
-            );
-        }
-
-        // Si se ha seleccionado un manual para el equipo se guarda en el storage
-        if ($request->hasFile('manual_storage')) {
-            $this->addFileToRequest(
-                $request,
-                'manual_storage',
-                'manual',
-                $paths->equipments->documents
-            );
-        }
-
-        // Si se ha seleccionado un diagrama para el equipo se guarda en el storage
-        if ($request->hasFile('equipment_diagram_storage')) {
-            $this->addFileToRequest(
-                $request,
-                'equipment_diagram_storage',
-                'equipment_diagram',
-                $paths->equipments->diagrams
-            );
-        }
-
-        $removeAttributes = [
-            'ct_equipment_code',
-            'trademark_code',
-            'trademark_model_code',
-            'status_code',
-            'equipment_image_storage',
-            'equipment_diagram_storage',
-            'manual_storage',
+        $filesToProcess = [
+            [
+                'fileRequest' => 'equipment_image_storage',
+                'fileDatabase' => 'equipment_image',
+                'module' => 'equipment_images',
+            ],
+            [
+                'fileRequest' => 'manual_storage',
+                'fileDatabase' => 'manual',
+                'module' => 'equipment_documents',
+            ],
+            [
+                'fileRequest' => 'equipment_diagram_storage',
+                'fileDatabase' => 'equipment_diagram',
+                'module' => 'equipment_diagrams',
+            ],
         ];
 
-        foreach ($removeAttributes as $removeAttribute) {
-            $request->request->remove($removeAttribute);
+        foreach ($filesToProcess as $file) {
+            if ($request->hasFile($file['fileRequest'])) {
+                $this->storeFile(
+                    $request,
+                    $file['fileRequest'],
+                    $file['module'],
+                    $file['fileDatabase']
+                );
+            }
         }
-    }
-
-    /**
-     * Adds a file to the request and removes the original file field.
-     *
-     * @param  Request  $request  The request object.
-     * @param  string  $fileField  The file field in the request.
-     * @param  string  $newField  The new field key to replace the original with in the request.
-     * @param  string  $storagePath  The storage path for the file.
-     *
-     * @throws \JsonException
-     */
-    private function addFileToRequest(Request $request, string $fileField, string $newField, string $storagePath): void
-    {
-        // Si existe una imagen o manual anterior se purga el archivo
-        if ($request->$newField) {
-            $this->purgeFile($request->$newField);
-        }
-        // Eliminar atributo
-        $request->offsetUnset($newField);
-        // Guardar imagen o manual y obtener ruta
-        $path = $request
-            ->file($fileField)
-            ->store($storagePath, 'public_direct');
-
-        // Agregar el atributo a la solicitud
-        $request->merge([
-            $newField => $this->getApplicationPaths()->application.$path,
-        ]);
     }
 }

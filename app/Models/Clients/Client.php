@@ -4,6 +4,8 @@ namespace App\Models\Clients;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model
@@ -30,4 +32,14 @@ class Client extends Model
         'active',
     ];
     protected $hidden = ['client_id'];
+
+    /**
+     * Get the related configuration for the application.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function config(): BelongsTo
+    {
+        return $this->belongsTo(Config::class, 'client_id', 'client_id');
+    }
 }

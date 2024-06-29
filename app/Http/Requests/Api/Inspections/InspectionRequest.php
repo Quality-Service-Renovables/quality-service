@@ -15,7 +15,7 @@ class InspectionRequest extends CustomRequest
     public function rules(): array
     {
         return [
-            'resume' => 'required|string',
+            'resume' => 'required',
             'conclusion' => 'required|string',
             'recomendations' => 'nullable|string',
             'ct_inspection_code' => [
@@ -26,6 +26,10 @@ class InspectionRequest extends CustomRequest
                 Rule::exists('ct_inspections', 'ct_inspection_code')
                     ->whereNull('deleted_at'),
             ],
+            'equipment_uuid' => 'required|uuid|exists:equipments,equipment_uuid',
+            'project_uuid' => 'required|string|exists:projects,project_uuid',
+            'diagnosis_user_id' => 'nullable|int|exists:users,id',
+            'client_uuid' => 'required|uuid|exists:clients,client_uuid',
         ];
     }
 }

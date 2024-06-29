@@ -14,6 +14,14 @@ class EquipmentController extends Controller
 {
     protected EquipmentService $service;
 
+    /**
+     * EquipmentController constructor.
+     *
+     * Initializes an instance of the EquipmentController class.
+     * Creates an instance of the EquipmentService class and assigns it to the $service property.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->service = new EquipmentService();
@@ -84,10 +92,9 @@ class EquipmentController extends Controller
      */
     public function update(Request $request, string $uuid): JsonResponse
     {
-        $request->merge(['inspection_equipment_uuid' => $uuid]);
+        $request->merge(['inspection_uuid' => $uuid]);
         $validated = Validator::make($request->all(), [
-            'inspection_equipment_uuid' => 'required|uuid|exists:inspection_equipments,inspection_equipment_uuid',
-            'equipment_uuid' => [
+            'equipments.*.equipment_uuid' => [
                 'required',
                 'string',
                 'min:1',

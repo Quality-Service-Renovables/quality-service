@@ -6,9 +6,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Inspections\Categories\Section;
-use App\Models\Inspections\Category;
-use App\Models\Inspections\CategoryForm;
+use App\Models\Inspections\Categories\CtInspection;
+use App\Models\Inspections\Categories\CtInspectionForm;
+use App\Models\Inspections\Categories\CtInspectionSection;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -21,7 +21,7 @@ class InspectionSectionsSeeder extends Seeder
     {
         // SECTION
         foreach ($this->getInspectionSections() as $section) {
-            $inspectionSection = Section::updateOrCreate([
+            $inspectionSection = CtInspectionSection::updateOrCreate([
                 'ct_inspection_section_code' => $section['ct_inspection_section_code'],
             ], [
                 'ct_inspection_section_uuid' => $section['ct_inspection_section_uuid'],
@@ -30,7 +30,7 @@ class InspectionSectionsSeeder extends Seeder
             ]);
             // SUB SECTION
             foreach ($section['sub_sections'] as $subSection) {
-                $inspectionSubSection = Section::updateOrCreate([
+                $inspectionSubSection = CtInspectionSection::updateOrCreate([
                     'ct_inspection_section_code' => $subSection['ct_inspection_section_code'],
                 ], [
                     'ct_inspection_section_uuid' => $subSection['ct_inspection_section_uuid'],
@@ -41,7 +41,7 @@ class InspectionSectionsSeeder extends Seeder
                 // FIELDS
                 foreach ($subSection['fields'] as $field) {
                     $field['ct_inspection_section_id'] = $inspectionSubSection->ct_inspection_section_id;
-                    CategoryForm::updateOrCreate([
+                    CtInspectionForm::updateOrCreate([
                         'ct_inspection_form_code' => $field['ct_inspection_form_code'],
                     ], $field);
                 }
@@ -54,9 +54,9 @@ class InspectionSectionsSeeder extends Seeder
      */
     private function getInspectionSections(): array
     {
-        $category = Category::all();
+        $category = CtInspection::all();
         $multiplicator = $category
-            ->where('ct_inspection_code', '=', 'inspeccion_integral_estado_turbinas')
+            ->where('ct_inspection_code', '=', 'inspeccion_multiplicadora')
             ->first()->ct_inspection_id;
 
         return [

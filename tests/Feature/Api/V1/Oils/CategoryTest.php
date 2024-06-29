@@ -9,8 +9,8 @@ use App\Models\Oils\Category;
 
 test('create', function () {
     $response = $this->post('/api/oil/categories', [
-        'ct_oil' => 'Unit Test Oil Category',
-        'description' => 'Unit Test Oil Category',
+        'ct_oil' => 'Unit Test Oil CtInspection',
+        'description' => 'Unit Test Oil CtInspection',
         'active' => true,
     ]);
     $response->assertStatus(201);
@@ -28,7 +28,7 @@ test('update', function () {
     $this->assertNotNull($category, 'Oil category not found');
 
     $response = $this->put('/api/oil/categories/'.$category->ct_oil_uuid, [
-        'ct_oil' => 'Unit Test Oil Category',
+        'ct_oil' => 'Unit Test Oil CtInspection',
         'description' => 'field_updated',
         'active' => true,
     ]);

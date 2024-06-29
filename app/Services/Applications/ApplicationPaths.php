@@ -25,7 +25,7 @@ trait ApplicationPaths
     /**
      * @throws \JsonException
      */
-    protected function getApplicationPaths()
+    public function getApplicationPaths()
     {
         $storagePath = $this->getStoragePath();
 
@@ -41,15 +41,18 @@ trait ApplicationPaths
             ],
             'evidences' => [
                 'inspections' => 'img/inspections',
+                'reports' => 'docs/inspections',
+            ],
+            'users' => [
+                'image_profile' => 'img/users/profiles',
             ],
         ];
+
         return json_decode(json_encode($paths, JSON_THROW_ON_ERROR), false, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
      * Get the storage path for the application.
-     *
-     * @return string
      */
     private function getStoragePath(): string
     {

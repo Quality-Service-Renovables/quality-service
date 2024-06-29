@@ -8,6 +8,7 @@ namespace App\Models\Status;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Status extends Model
@@ -24,5 +25,10 @@ class Status extends Model
         'active',
     ];
 
-    protected $hidden = ['status_id'];
+    protected $hidden = ['status_id', 'ct_status_id'];
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'ct_status_id', 'ct_status_id');
+    }
 }

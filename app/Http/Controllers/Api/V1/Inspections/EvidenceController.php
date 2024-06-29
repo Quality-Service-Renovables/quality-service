@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\V1\Inspections;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Inspections\EquipmentRequest;
 use App\Http\Requests\Api\Inspections\EvidenceRequest;
 use App\Services\Api\V1\Inspections\EvidenceService;
 use Illuminate\Http\JsonResponse;
@@ -15,6 +14,13 @@ class EvidenceController extends Controller
 {
     protected EvidenceService $service;
 
+    /**
+     * Constructor.
+     *
+     * Initializes an instance of the class.
+     *
+     * @throws \Exception if evidence service fails to instantiate.
+     */
     public function __construct()
     {
         $this->service = new EvidenceService();
@@ -102,6 +108,7 @@ class EvidenceController extends Controller
                 Rule::exists('inspections', 'inspection_uuid')
                     ->whereNull('deleted_at'),
             ],
+            'position' => 'required|int'
         ]);
 
         if ($validated->fails()) {
@@ -122,7 +129,7 @@ class EvidenceController extends Controller
      */
     public function destroy(string $uuid): JsonResponse
     {
-        $request = ['inspection_equipment_uuid' => $uuid];
+        $request = ['inspection_evidence_uuid' => $uuid];
 
         if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
@@ -132,7 +139,28 @@ class EvidenceController extends Controller
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
+    /**
+     * Update evidence position the specified resource.
+     *
+     * @throws \Exception
+     */
+    public function positions(Request $request): JsonResponse
+    {
+        $validated = Validator::make($request->all(), [
+            'evidences.*.inspection_evidence_uuid' => 'required|uuid|exists:inspection_evidences,inspection_evidence_uuid',
+            'evidences.*.position' => 'required|integer',
+        ]);
 
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->positions($request);
+
+        return response()->json($this->service->response, $this->service->statusCode);
+    }
     /**
      * Perform common validation for the request data.
      *
