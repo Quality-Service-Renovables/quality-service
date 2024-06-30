@@ -31,7 +31,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
                                             <v-dialog v-model="dialog" width="auto"
-                                                v-if="hasPermissionTo('users.create') || hasPermissionTo('users.update')" scrollable>
+                                                v-if="hasPermissionTo('users.create') || hasPermissionTo('users.update')"
+                                                scrollable>
                                                 <template v-slot:activator="{ props }"
                                                     v-if="hasPermissionTo('users.create')">
                                                     <v-btn class="mb-2" color="primary" dark v-bind="props"
@@ -68,15 +69,16 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         labelButtonRetryItemLoad="Reintentar"
                                                                         labelButtonAbortItemProcessing="Cancelar"
                                                                         labelButtonProcessItem="Subir"
-                                                                        imagePreviewHeight='170'
-                                                                        imageCropAspectRatio="1:1"
+                                                                        imagePreviewHeight=170
+                                                                        imageCropAspectRatio='1:1'
                                                                         imageResizeTargetWidth='200'
                                                                         imageResizeTargetHeight='200'
                                                                         stylePanelLayout='compact circle'
                                                                         styleLoadIndicatorPosition='center bottom'
+                                                                        styleProgressIndicatorPosition='right bottom'
                                                                         styleButtonRemoveItemPosition='left bottom'
                                                                         styleButtonProcessItemPosition='right bottom'
-                                                                        styleProgressIndicatorPosition='right bottom' max-width="200"/>
+                                                                        />
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-text-field v-model="editedItem.name"
@@ -91,8 +93,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 <v-col cols="12" lg="6">
                                                                     <v-text-field v-model="editedItem.phone"
                                                                         label="Teléfono (opcional)" v-maska="options"
-                                                                        data-maska-reversed variant="outlined"
-                                                                        />
+                                                                        data-maska-reversed variant="outlined" />
                                                                 </v-col>
                                                                 <v-col cols="12" lg="6">
                                                                     <v-select v-model="editedItem.client_uuid"
@@ -192,6 +193,9 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css
 // Import image preview and file type validation plugins
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+import FilePondPluginImageCrop from "filepond-plugin-image-crop";
+import FilePondPluginImageResize from "filepond-plugin-image-resize";
+import FilePondPluginImageTransform from "filepond-plugin-image-transform";
 
 // Plugin Maska for phone number input
 import { vMaska } from "maska/vue"
@@ -200,6 +204,9 @@ import { vMaska } from "maska/vue"
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
     FilePondPluginImagePreview,
+    FilePondPluginImageCrop,
+    FilePondPluginImageResize,
+    FilePondPluginImageTransform
 );
 export default {
     directives: { maska: vMaska },
@@ -469,7 +476,7 @@ export default {
  * FilePond Custom Styles
  */
 
-.filepond--drop-label {
+/*.filepond--drop-label {
     color: #4c4e53;
 }
 
@@ -484,5 +491,5 @@ export default {
 .filepond--root {
     width: 170px;
     margin: 0 auto;
-}
+}*/
 </style>
