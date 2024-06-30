@@ -110,14 +110,15 @@ import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFilePoster from "filepond-plugin-file-poster";
 import FilePondPluginImageEditor from "@pqina/filepond-plugin-image-editor";
-
+import FilePondPluginImageTransform from "filepond-plugin-image-transform";
 
 // Create component
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
     FilePondPluginImagePreview,
     FilePondPluginImageEditor,
-    FilePondPluginFilePoster
+    FilePondPluginFilePoster,
+    FilePondPluginImageTransform
 );
 export default {
     props: {
