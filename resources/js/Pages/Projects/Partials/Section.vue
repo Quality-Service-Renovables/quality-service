@@ -23,7 +23,7 @@
                                             <!-- Campos -->
                                             <div v-if="section.fields">
                                                 <v-card v-for="(field, indexField) in section.fields" :key="indexField"
-                                                    class="my-5">
+                                                    class="my-5" :loading="field.loading">
                                                     {{ complementData(field) }}
                                                     <v-card-title class="d-flex justify-between">
                                                         {{ field.ct_inspection_form }}
@@ -49,7 +49,7 @@
                                                             v-model:content="field.content.inspection_form_comments"
                                                             theme="snow" toolbar="essential" heigth="100%"
                                                             contentType="html" v-if="field.switch_comment"/>
-                                                        <PrimaryButton @click="saveField(field)" class="mt-2">Guardar
+                                                        <PrimaryButton @click="saveField(field)" class="mt-2" :disabled="field.loading">Guardar
                                                         </PrimaryButton>
                                                     </v-card-text>
                                                 </v-card>
@@ -73,7 +73,7 @@
                                                             <div v-if="subSection.fields">
                                                                 <v-card
                                                                     v-for="(fieldSub, indexFieldSub) in subSection.fields"
-                                                                    :key="indexFieldSub" class="my-5">
+                                                                    :key="indexFieldSub" class="my-5" :loading="fieldSub.loading">
                                                                     {{ complementData(fieldSub) }}
                                                                     <v-card-title class="d-flex justify-between">
                                                                         {{
@@ -105,7 +105,7 @@
                                                                             theme="snow" toolbar="essential"
                                                                             heigth="100%" contentType="html" v-if="fieldSub.switch_comment"/>
                                                                         <PrimaryButton @click="saveField(fieldSub)"
-                                                                            class="mt-2">Guardar</PrimaryButton>
+                                                                            class="mt-2" :disabled="fieldSub.loading">Guardar</PrimaryButton>
                                                                     </v-card-text>
                                                                 </v-card>
                                                             </div>
@@ -176,6 +176,7 @@ export default {
             this.$emit('closeSectionDialog');
         },
         saveField(field) {
+            field.loading = true;
 
             let formData = {
                 inspection_uuid: this.inspection_uuid,
@@ -191,14 +192,21 @@ export default {
 
             if (formData.form[0].inspection_form_value == null || formData.form[0].inspection_form_value == '') {
                 toast.error('El campo no puede estar vacío');
+                field.loading = false;
                 return;
             } else {
                 axios.post('api/inspection/forms/set-form-inspection', formData)
                     .then(response => {
+                        field.loading = false;
                         toast.success('Campo guardado correctamente');
-                        this.getForm();
+                        if(response.data.data.length > 0){
+                            field.content = response.data.data[0];
+                        }else{
+                            this.getForm();
+                        }
                     })
                     .catch(error => {
+                        field.loading = false;
                         this.handleErrors(error);
                     });
             }
@@ -209,8 +217,9 @@ export default {
                     inspection_form_value: '',
                     inspection_form_comments: ''
                 }
+                field.switch_comment = false;
             }else{
-                field.switch_comment = field.content.inspection_form_value !== '' && field.content.inspection_form_comments !== null && field.content.inspection_form_comments !== "<p><br></p>" ? true : false;
+                field.switch_comment = field.content.inspection_form_comments !== "" && field.content.inspection_form_comments !== null && field.content.inspection_form_comments !== "<p><br></p>" ? true : false;
             }
             
         },
