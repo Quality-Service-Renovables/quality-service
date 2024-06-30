@@ -11,7 +11,12 @@
             labelTapToRetry="Toca para reintentar" labelTapToUndo="Toca para deshacer"
             labelButtonAbortItemLoad="Cancelar" labelButtonRetryItemLoad="Reintentar"
             labelButtonAbortItemProcessing="Cancelar" labelButtonProcessItem="Subir"
-            :class="evidence ? 'min-height' : ''" />
+            :class="evidence ? 'min-height' : ''" 
+            :imageEditor="myEditor"
+            allowImageEditor="true"
+            imageEditorAllowEdit="true"
+            imageEditorWriteImage="true"
+            />
 
         <v-card-title>
             <v-text-field label="Título" v-model="form.title" variant="outlined" hide-details
@@ -63,17 +68,56 @@ import vueFilePond from "vue-filepond";
 import axios from 'axios';
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
+import "filepond-plugin-file-poster/dist/filepond-plugin-file-poster.min.css";
 // Import image preview plugin styles
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
+// Import Pintura styles
+import "@pqina/pintura/pintura.css";
+
+// Import Pintura
+import {
+    // editor
+    createDefaultImageReader,
+    createDefaultImageWriter,
+    locale_en_gb,
+
+    // plugins
+    setPlugins,
+    plugin_crop,
+    plugin_crop_locale_en_gb,
+    plugin_filter,
+    plugin_filter_defaults,
+    plugin_filter_locale_en_gb,
+    plugin_finetune,
+    plugin_finetune_defaults,
+    plugin_finetune_locale_en_gb,
+    plugin_annotate,
+    plugin_annotate_locale_en_gb,
+    markup_editor_defaults,
+    markup_editor_locale_en_gb,
+
+    // filepond
+    openEditor,
+    processImage,
+    createDefaultImageOrienter,
+    legacyDataToImageState,
+} from "@pqina/pintura";
+
+setPlugins(plugin_crop, plugin_finetune, plugin_filter, plugin_annotate);
 
 // Import image preview and file type validation plugins
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+import FilePondPluginFilePoster from "filepond-plugin-file-poster";
+import FilePondPluginImageEditor from "@pqina/filepond-plugin-image-editor";
+
 
 // Create component
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
     FilePondPluginImagePreview,
+    FilePondPluginImageEditor,
+    FilePondPluginFilePoster
 );
 export default {
     props: {
@@ -93,6 +137,39 @@ export default {
     data() {
         return {
             myFiles: [],
+            myEditor: {
+                // map legacy data objects to new imageState objects
+                legacyDataToImageState: legacyDataToImageState,
+
+                // used to create the editor, receives editor configuration, should return an editor instance
+                createEditor: openEditor,
+
+                // Required, used for reading the image data
+                imageReader: [createDefaultImageReader],
+
+                // optionally. can leave out when not generating a preview thumbnail and/or output image
+                imageWriter: [createDefaultImageWriter],
+
+                // used to generate poster images, runs an editor in the background
+                imageProcessor: processImage,
+
+                // editor options
+                editorOptions: {
+                    utils: ["crop", "finetune", "filter", "annotate"],
+                    imageOrienter: createDefaultImageOrienter(),
+                    ...plugin_finetune_defaults,
+                    ...plugin_filter_defaults,
+                    ...markup_editor_defaults,
+                    locale: {
+                        ...locale_en_gb,
+                        ...plugin_crop_locale_en_gb,
+                        ...plugin_finetune_locale_en_gb,
+                        ...plugin_filter_locale_en_gb,
+                        ...plugin_annotate_locale_en_gb,
+                        ...markup_editor_locale_en_gb,
+                    },
+                },
+            },
             action: 'create',
             dialogDelete: false,
             isHoveredDelete: false,
@@ -241,5 +318,25 @@ export default {
 <style scoped>
 .min-height {
     min-height: 300px;
+}
+
+/* bright / dark mode */
+.pintura-editor {
+  --color-background: 255, 255, 255;
+  --color-foreground: 10, 10, 10;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color: #fff;
+    background: #111;
+  }
+
+  .pintura-editor {
+    --color-background: 10, 10, 10;
+    --color-foreground: 255, 255, 255;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
 }
 </style>
