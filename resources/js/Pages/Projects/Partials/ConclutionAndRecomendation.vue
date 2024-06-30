@@ -4,7 +4,7 @@
             <v-card-text>
                 <p class="text-grey mb-2 text-h5 font-weight-bold">
                     Define las
-                    concluciones y recomendaciones de la
+                    conclusiones y recomendaciones de la
                     inspección realizada
                 </p>
                 <v-divider></v-divider>
