@@ -92,9 +92,31 @@ export default {
     },
     methods: {
         async saveSection() {
+            console.log(this.$refs.sectionCardRef);
             if (this.$refs.sectionCardRef) {
                 await this.$refs.sectionCardRef[0].saveSection('create', this.item.ct_inspection_uuid, this.sectionForm.name, null);
                 this.resetForm();
+            } else {
+                const postRequest = () => {
+                    return axios.post('api/inspection/sections', {
+                        ct_inspection_uuid: this.item.ct_inspection_uuid,
+                        ct_inspection_section: this.sectionForm.name,
+                        ct_inspection_relation_uuid: null,
+                    })
+                };
+
+                await toast.promise(postRequest(), {
+                    loading: 'Creando sección...',
+                    success: (data) => {
+                        this.resetForm();
+                        this.dialog = false;
+                        this.updateSections();
+                        return 'Sección creada correctamente';
+                    },
+                    error: (data) => {
+                        this.handleErrors(data);
+                    }
+                });
             }
         },
         /**
