@@ -34,7 +34,7 @@
             margin-bottom: 10px; /* Espacio entre imágenes */
         }
         p {
-            font-weight: bold;
+            /*font-weight: bold;*/
             font-size: 14px;
             margin-bottom: 5px; /* Espacio inferior entre título y descripción */
         }
