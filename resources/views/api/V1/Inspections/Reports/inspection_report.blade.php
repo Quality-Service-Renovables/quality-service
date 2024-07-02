@@ -8,30 +8,46 @@
     <meta name="theme-color" content="#c40000" />
     <meta NAME="keywords" CONTENT="quality, service, renovables, eólico, energía" />
     <meta NAME="description" CONTENT="Servicios profesionales técnicos industriales, especializados en mecatrónica dentro de sector eólico y las nuevas fuentes de energías renovables" />
-    <!-- Add to homescreen for Chrome on Android -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <!-- Add to homescreen for Safari on iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="#c40000">
-    <meta name="apple-mobile-web-app-title" content="QSR App">
-    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <style>
         body {
             text-align: center;
             justify-content: center;
-            font-family: 'dejavu sans', sans-serif;
+            font-family: Arial, sans-serif; /* Utilizamos una fuente legible */
+            margin: 20px; /* Margen exterior */
         }
         table {
             border-spacing: 0;
             border-collapse: collapse;
             width: 100%;
         }
-        .inspection-table {
+
+        .inspection-evidence table td {
+            width: 50%;
+            vertical-align: top;
+            padding: 10px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 10px; /* Espacio entre imágenes */
+        }
+        p {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px; /* Espacio inferior entre título y descripción */
+        }
+        span {
+            font-size: 12px;
+            color: #555;
+            display: block; /* Asegura que el texto de descripción esté debajo del título */
+        }
+
+        .inspection-table thead th {
             border: 1px solid black;
         }
+
         .inspection-table tr td {
             border: 1px solid black;
         }

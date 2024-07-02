@@ -64,12 +64,15 @@ class ReportService extends Service
                 $this->statusCode = 202;
                 $this->response['message'] = trans('api.document_generated');
                 $this->response['data']['path_storage'] = $pathStorage;
-                $mail = [
-                    'to' => ['adrian.olvera21@gmail.com','core.devmx@gmail.com'],
-                    'subject' => 'Reporte de Inspección',
-                    'attachment' => $pathStorage
-                ];
-                Mail::send(new ServiceMail($mail));
+                // Cifrar el PDF
+                if ($user->client->config && $user->client->config->send_email) {
+                    $mail = [
+                        'to' => ['adrian.olvera21@gmail.com','core.devmx@gmail.com'],
+                        'subject' => 'Reporte de Inspección',
+                        'attachment' => $pathStorage
+                    ];
+                    Mail::send(new ServiceMail($mail));
+                }
                 // Crear log de sistema
                 $this->logService->create('inspection_report', [
                     $this->nameService,
