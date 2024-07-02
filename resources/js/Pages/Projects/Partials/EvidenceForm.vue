@@ -90,7 +90,7 @@ export default {
             type: Object,
             required: false
         },
-        position: {
+        positionAux: {
             type: Number,
             required: false
         }
@@ -163,7 +163,7 @@ export default {
             // FilePond instance methods are available on `this.$refs.pond`
         },
         save(source, load, error, progress) {
-            this.form.position = this.position;
+            this.form.position = this.positionAux;
             if (this.action === 'create') {
                 axios.post('api/inspection/evidences', this.form, {
                     headers: {

@@ -4,7 +4,7 @@
             <v-row class="d-flex justify-center">
                 <v-col cols="12" lg="4">
                     <EvidenceForm :inspection_uuid="inspection_uuid" @getEvidences="getEvidences"
-                        :position="evidences.length + 1" />
+                        :positionAux="evidences.length + 1" />
                 </v-col>
             </v-row>
             <v-row class="d-flex justify-center">
@@ -17,7 +17,7 @@
                         <v-col cols="12" lg="4" class="list-group-item" v-for="(evidence, index) in evidences"
                             :key="evidence.inspection_evidence_uuid">
                             <EvidenceForm :inspection_uuid="inspection_uuid" :evidence="evidence"
-                                @getEvidences="getEvidences" :position="index + 1" />
+                                @getEvidences="getEvidences" :positionAux="index + 1" />
                         </v-col>
                     </draggable>
                 </v-row>
@@ -107,6 +107,7 @@ export default defineComponent({
                 this.loading = true;
                 const response = await getInspection(this.inspection_uuid);
                 this.evidences = response.data.data.evidences;
+                this.evidences = this.evidences.sort((a, b) => a.position - b.position);
                 this.loading = false;
             } catch (error) {
                 this.loading = false;
