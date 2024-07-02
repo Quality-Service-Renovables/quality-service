@@ -1,28 +1,29 @@
 <?php
 
-use App\Http\Controllers\Api\SessionController;
-use App\Http\Controllers\Api\V1\AuthGuards\PermissionController;
-use App\Http\Controllers\Api\V1\AuthGuards\RoleController;
-use App\Http\Controllers\Api\V1\AuthGuards\RolePermissionController;
-use App\Http\Controllers\Api\V1\Clients\ClientController;
-use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
-use App\Http\Controllers\Api\V1\Failures\FailureController;
-use App\Http\Controllers\Api\V1\Inspections\CategoryController;
-use App\Http\Controllers\Api\V1\Inspections\EvidenceController;
-use App\Http\Controllers\Api\V1\Inspections\FormController;
-use App\Http\Controllers\Api\V1\Inspections\InspectionController;
-use App\Http\Controllers\Api\V1\Inspections\Reports\ReportController;
-use App\Http\Controllers\Api\V1\Inspections\Resources\ResourceController;
-use App\Http\Controllers\Api\V1\Inspections\SectionController;
-use App\Http\Controllers\Api\V1\Oils\OilController;
-use App\Http\Controllers\Api\V1\Projects\EmployeeController;
-use App\Http\Controllers\Api\V1\Projects\ProjectController;
-use App\Http\Controllers\Api\V1\Status\StatusController;
-use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
-use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
-use App\Http\Controllers\Api\V1\Users\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\SessionController;
+use App\Http\Controllers\Api\V1\Oils\OilController;
+use App\Http\Controllers\Api\V1\Users\UserController;
+use App\Http\Controllers\Api\V1\Status\StatusController;
+use App\Http\Controllers\Api\V1\Clients\ClientController;
+use App\Http\Controllers\Api\V1\AuthGuards\RoleController;
+use App\Http\Controllers\Api\V1\Failures\FailureController;
+use App\Http\Controllers\Api\V1\Inspections\FormController;
+use App\Http\Controllers\Api\V1\Inspections\RiskController;
+use App\Http\Controllers\Api\V1\Projects\ProjectController;
+use App\Http\Controllers\Api\V1\Projects\EmployeeController;
+use App\Http\Controllers\Api\V1\Inspections\SectionController;
+use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
+use App\Http\Controllers\Api\V1\Inspections\CategoryController;
+use App\Http\Controllers\Api\V1\Inspections\EvidenceController;
+use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
+use App\Http\Controllers\Api\V1\AuthGuards\PermissionController;
+use App\Http\Controllers\Api\V1\Inspections\InspectionController;
+use App\Http\Controllers\Api\V1\AuthGuards\RolePermissionController;
+use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
+use App\Http\Controllers\Api\V1\Inspections\Reports\ReportController;
+use App\Http\Controllers\Api\V1\Inspections\Resources\ResourceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -108,4 +109,6 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::resource('auth-guard/permissions', PermissionController::class);
     Route::get('auth-guard/permissions-grouped', [PermissionController::class, 'grouped']);
     Route::resource('auth-guard/role-permissions', RolePermissionController::class);
+
+    Route::resource('risks', RiskController::class);
 });

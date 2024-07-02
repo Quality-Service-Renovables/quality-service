@@ -39,7 +39,7 @@
                                                         <div class="d-flex gap-5">
                                                             <v-switch v-model="field.switch_comment" color="secondary"
                                                                 label="Comentario" hide-details></v-switch>
-                                                            <v-switch v-model="field.switch_risk" color="secondary"
+                                                            <v-switch v-model="field.switch_ct_risk" color="secondary"
                                                                 label="Riesgo" hide-details></v-switch>
                                                         </div>
                                                     </v-card-subtitle>
@@ -55,16 +55,17 @@
                                                             v-model:content="field.content.inspection_form_comments"
                                                             theme="snow" toolbar="essential" heigth="100%"
                                                             contentType="html" v-if="field.switch_comment" />
-                                                        <!-- Risk Selector -->
-                                                        <p class="mt-3 text-grey" v-if="field.switch_risk">
+                                                        <!-- ct_risk Selector -->
+                                                        <p class="mt-3 text-grey" v-if="field.switch_ct_risk">
                                                             Riesgo:</p>
-                                                        <v-select v-model="field.content.risk_uuid" :items="risks"
-                                                            item-title="risk" item-value="risk_uuid" variant="outlined"
-                                                            hide-details v-if="field.switch_risk" class="w-50" density="compact">
+                                                        <v-select v-model="field.content.ct_risk_uuid" :items="ct_risks"
+                                                            item-title="ct_risk" item-value="ct_risk_uuid"
+                                                            variant="outlined" hide-details v-if="field.switch_ct_risk"
+                                                            class="w-50" density="compact">
                                                             <template v-slot:item="{ props, item }">
-                                                                <v-list-item v-bind="props" :title="item.raw.risk"
-                                                                    :style="{ 'background-color': item.raw.color }"
-                                                                    value="risk"></v-list-item>
+                                                                <v-list-item v-bind="props" :title="item.raw.ct_risk"
+                                                                    :style="{ 'background-color': item.raw.ct_color }"
+                                                                    value="ct_risk"></v-list-item>
                                                             </template>
                                                         </v-select>
                                                         <!-- Save Button -->
@@ -115,7 +116,7 @@
                                                                             <v-switch v-model="fieldSub.switch_comment"
                                                                                 color="secondary" label="Comentario"
                                                                                 hide-details></v-switch>
-                                                                            <v-switch v-model="fieldSub.switch_risk"
+                                                                            <v-switch v-model="fieldSub.switch_ct_risk"
                                                                                 color="secondary" label="Riesgo"
                                                                                 hide-details></v-switch>
                                                                         </div>
@@ -134,20 +135,21 @@
                                                                             theme="snow" toolbar="essential"
                                                                             heigth="100%" contentType="html"
                                                                             v-if="fieldSub.switch_comment" />
-                                                                        <!-- Risk Selector -->
+                                                                        <!-- ct_risk Selector -->
                                                                         <p class="mt-3 text-grey"
-                                                                            v-if="fieldSub.switch_risk">
+                                                                            v-if="fieldSub.switch_ct_risk">
                                                                             Riesgo:</p>
-                                                                        <v-select v-model="fieldSub.content.risk_uuid"
-                                                                            :items="risks" item-title="risk"
-                                                                            item-value="risk_uuid" variant="outlined"
-                                                                            hide-details v-if="fieldSub.switch_risk"
+                                                                        <v-select
+                                                                            v-model="fieldSub.content.ct_risk_uuid"
+                                                                            :items="ct_risks" item-title="ct_risk"
+                                                                            item-value="ct_risk_uuid" variant="outlined"
+                                                                            hide-details v-if="fieldSub.switch_ct_risk"
                                                                             class="w-50" density="compact">
                                                                             <template v-slot:item="{ props, item }">
                                                                                 <v-list-item v-bind="props"
-                                                                                    :title="item.raw.risk"
-                                                                                    :style="{ 'background-color': item.raw.color }"
-                                                                                    value="risk"></v-list-item>
+                                                                                    :title="item.raw.ct_risk"
+                                                                                    :style="{ 'background-color': item.raw.ct_color }"
+                                                                                    value="ct_risk"></v-list-item>
                                                                             </template>
                                                                         </v-select>
                                                                         <!-- Save Button -->
@@ -205,38 +207,7 @@ export default {
             dialogFormLoading: false,
             sectionsForm: [],
             expandedPanel: [0, 1, 2, 3, 4, 5, 6],
-            risks: [
-                {
-                    risk_uuid: 1,
-                    risk: 'Normal',
-                    color: '#9c0',
-                    description: 'Componente o elemento en buen estado, apto para seguir funcionando de manera normal y eficiente. En ocasiones puede observarse un desgaste propio del funcionamiento normal de la máquina.'
-                },
-                {
-                    risk_uuid: 2,
-                    risk: 'Leve',
-                    color: '#fffd99',
-                    description: 'Componente o elemento en el que se han apreciado daños o defectos leves. No impide el funcionamiento normal del aerogenerador, pero puede evolucionar de forma negativa. Debe realizarse un seguimiento de la máquina de forma que se inspeccione nuevamente en un plazo no superior a 1 año.'
-                },
-                {
-                    risk_uuid: 3,
-                    risk: 'Moderado',
-                    color: '#fc9',
-                    description: 'Componente o elemento en el que ya se aprecian daños o defectos desarrollados. Estos defectos evolucionarán con seguridad a una categoría superior y pueden poner en peligro a medio plazo la integridad de la máquina. Sin embargo, esto no impide el funcionamiento eficaz de la máquina. Debe realizarse un seguimiento de la máquina de forma que se inspeccione nuevamente en un plazo no superior a 6 meses.'
-                },
-                {
-                    risk_uuid: 4,
-                    risk: 'Grave',
-                    color: '#ff9901',
-                    description: 'Componente o elemento en el que se aprecian con claridad daños o defectos plenamente desarrollados. La máquina puede seguir funcionando, pero ello ocasionará un agravamiento muy rápido de los defectos presentes. Debe realizarse una vigilancia estrecha de la máquina de forma que se inspeccione con una periodicidad mensual para comprobar su evolución y poder anticiparse al fallo del componente.'
-                },
-                {
-                    risk_uuid: 5,
-                    risk: 'Peligro',
-                    color: '#ff0001',
-                    description: 'Existen daños severos en algún componente de la máquina que impiden o afectan gravemente a su buen funcionamiento. De seguir en funcionamiento, con seguridad se producirá un fallo catastrófico que puede dañar uno o más componentes, ocasionar daños a las personas o al medioambiente. Debe ser reparado de forma inmediata.'
-                }
-            ]
+            ct_risks: []
         }
     },
     methods: {
@@ -264,7 +235,7 @@ export default {
                     inspection_form_value: field.content.inspection_form_value,
                     inspection_form_comments: field.content.inspection_form_comments,
                     ct_inspection_form_uuid: field.ct_inspection_form_uuid,
-                    risk_uuid: field.content.risk_uuid
+                    ct_risk_uuid: field.content.ct_risk_uuid
                 }]
             }
 
@@ -297,13 +268,13 @@ export default {
                 field.content = {
                     inspection_form_value: '',
                     inspection_form_comments: '',
-                    risk_uuid: null
+                    ct_risk_uuid: null
                 }
                 field.switch_comment = false;
-                field.switch_risk = false;
+                field.switch_ct_risk = false;
             } else {
                 field.switch_comment = field.content.inspection_form_comments !== "" && field.content.inspection_form_comments !== null && field.content.inspection_form_comments !== "<p><br></p>" ? true : false;
-                field.switch_risk = field.content.risk_uuid && field.content.risk_uuid !== null ? true : false;
+                field.switch_ct_risk = field.content.ct_risk_uuid && field.content.ct_risk_uuid !== null ? true : false;
             }
 
         },
@@ -314,9 +285,19 @@ export default {
                 return false;
             }
         },
+        getRisks() {
+            axios.get('api/risks')
+                .then(response => {
+                    this.ct_risks = response.data.data;
+                })
+                .catch(error => {
+                    this.handleErrors(error);
+                });
+        },
     },
     mounted() {
         this.getForm();
+        this.getRisks();
     }
 }
 </script>
