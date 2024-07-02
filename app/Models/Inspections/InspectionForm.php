@@ -25,7 +25,7 @@ class InspectionForm extends Model
         'ct_risk_id'
     ];
 
-    protected $hidden = ['inspection_id', 'ct_inspection_form_id', 'ct_risk_id'];
+    protected $hidden = ['inspection_id', 'ct_inspection_form_id'];
 
     public function field(): BelongsTo
     {

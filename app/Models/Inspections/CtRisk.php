@@ -23,6 +23,4 @@ class CtRisk extends Model
         'ct_description_secondary',
         'ct_color',
     ];
-
-    protected $hidden = ['ct_risk_id'];
 }

@@ -263,8 +263,6 @@ class InspectionFormService extends Service
                 $categoryFormId = $categoryForm->where(
                     'ct_inspection_form_uuid', '=', $formInspection['ct_inspection_form_uuid'])
                     ->first()->ct_inspection_form_id;
-                
-                $ctRiskId = CtRisk::where('ct_risk_uuid', $formInspection['ct_risk_uuid'])->first()->ct_risk_id;
 
                 /*$formInspection['inspection_form_uuid'] = Str::uuid()->toString();
                 $formInspection['inspection_id'] = $inspection->inspection_id;
@@ -284,7 +282,7 @@ class InspectionFormService extends Service
                     'inspection_form_uuid' => $inspectionFormUuid,
                     'inspection_form_comments' => $formInspection['inspection_form_comments'],
                     'inspection_form_value' => $formInspection['inspection_form_value'],
-                    'ct_risk_id' => $ctRiskId,
+                    'ct_risk_id' => $formInspection['ct_risk_id'],
                 ]);
             }
 

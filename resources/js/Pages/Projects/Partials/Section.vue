@@ -58,8 +58,8 @@
                                                         <!-- ct_risk Selector -->
                                                         <p class="mt-3 text-grey" v-if="field.switch_ct_risk">
                                                             Riesgo:</p>
-                                                        <v-select v-model="field.content.ct_risk_uuid" :items="ct_risks"
-                                                            item-title="ct_risk" item-value="ct_risk_uuid"
+                                                        <v-select v-model="field.content.ct_risk_id" :items="ct_risks"
+                                                            item-title="ct_risk" item-value="ct_risk_id"
                                                             variant="outlined" hide-details v-if="field.switch_ct_risk"
                                                             class="w-50" density="compact">
                                                             <template v-slot:item="{ props, item }">
@@ -140,9 +140,9 @@
                                                                             v-if="fieldSub.switch_ct_risk">
                                                                             Riesgo:</p>
                                                                         <v-select
-                                                                            v-model="fieldSub.content.ct_risk_uuid"
+                                                                            v-model="fieldSub.content.ct_risk_id"
                                                                             :items="ct_risks" item-title="ct_risk"
-                                                                            item-value="ct_risk_uuid" variant="outlined"
+                                                                            item-value="ct_risk_id" variant="outlined"
                                                                             hide-details v-if="fieldSub.switch_ct_risk"
                                                                             class="w-50" density="compact">
                                                                             <template v-slot:item="{ props, item }">
@@ -235,7 +235,7 @@ export default {
                     inspection_form_value: field.content.inspection_form_value,
                     inspection_form_comments: field.content.inspection_form_comments,
                     ct_inspection_form_uuid: field.ct_inspection_form_uuid,
-                    ct_risk_uuid: field.content.ct_risk_uuid
+                    ct_risk_id: field.content.ct_risk_id
                 }]
             }
 
@@ -268,13 +268,13 @@ export default {
                 field.content = {
                     inspection_form_value: '',
                     inspection_form_comments: '',
-                    ct_risk_uuid: null
+                    ct_risk_id: null
                 }
                 field.switch_comment = false;
                 field.switch_ct_risk = false;
             } else {
                 field.switch_comment = field.content.inspection_form_comments !== "" && field.content.inspection_form_comments !== null && field.content.inspection_form_comments !== "<p><br></p>" ? true : false;
-                field.switch_ct_risk = field.content.ct_risk_uuid && field.content.ct_risk_uuid !== null ? true : false;
+                field.switch_ct_risk = field.content.ct_risk_id && field.content.ct_risk_id !== null ? true : false;
             }
 
         },
