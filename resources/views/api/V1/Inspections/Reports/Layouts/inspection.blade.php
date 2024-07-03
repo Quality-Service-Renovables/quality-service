@@ -14,9 +14,10 @@
                         <td>
                             <small>{{ $field->ct_inspection_form }}</small>
                         </td>
-                        <td><small>{!! $field->result->inspection_form_value ?? '' !!}</small></td>
-                        <td>
+                        <td ><small>{!! $field->result->inspection_form_value ?? '' !!}</small></td>
+                        <td style="background-color: <?= $field->result->risk->ct_color ?? '' ?>">
                             <small>{!! $field->result->inspection_form_comments ?? '' !!}</small>
+                            {{ $field->result->ct_risk_id }}
                         </td>
                     </tr>
                 @endforeach
@@ -40,7 +41,7 @@
                                     <small>{{ $field->ct_inspection_form }}</small>
                                 </td>
                                 <td><small>{!! $field->result->inspection_form_value ?? '' !!}</small></td>
-                                <td>
+                                <td style="background-color: <?= $field->result->risk->ct_color ?? '' ?>">
                                     <small>{!! $field->result->inspection_form_comments ?? '' !!}</small>
                                 </td>
                             </tr>
