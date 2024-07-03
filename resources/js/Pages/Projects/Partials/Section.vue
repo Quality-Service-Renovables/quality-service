@@ -38,7 +38,7 @@
                                                             <v-switch v-model="field.switch_comment" color="red"
                                                                 label="Comentario" hide-details></v-switch>
                                                             <v-switch v-model="field.switch_ct_risk" color="red"
-                                                                label="Riesgo" hide-details></v-switch>
+                                                                label="Riesgo" hide-details @click="setRiesgo(field)"></v-switch>
                                                             <v-icon color="success"
                                                                 v-if="field.content.inspection_form_value">mdi-check</v-icon>
                                                             <v-icon color="red"
@@ -119,7 +119,7 @@
                                                                                 hide-details></v-switch>
                                                                             <v-switch v-model="fieldSub.switch_ct_risk"
                                                                                 color="red" label="Riesgo"
-                                                                                hide-details></v-switch>
+                                                                                hide-details @click="setRiesgo(fieldSub)"></v-switch>
                                                                             <v-icon color="success"
                                                                                 v-if="fieldSub.content.inspection_form_value">mdi-check</v-icon>
                                                                             <v-icon color="red"
@@ -310,6 +310,14 @@ export default {
             });
             return color.length > 0 ? color[0].ct_color : '';
         },
+        setRiesgo(field){
+            if(field.switch_ct_risk == true){
+                field.switch_ct_risk = false;
+                field.content.ct_risk_id = null;
+            }else if(field.switch_ct_risk == false){
+                field.switch_ct_risk = true;
+            }
+        }
     },
     mounted() {
         this.getForm();
