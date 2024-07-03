@@ -6,17 +6,18 @@
 
 namespace App\Services\Api\V1\Inspections;
 
+use Throwable;
+use App\Services\Service;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\Inspections\CtRisk;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use App\Models\Inspections\Inspection;
+use App\Models\Inspections\InspectionForm;
 use App\Models\Inspections\Categories\CtInspection;
 use App\Models\Inspections\Categories\CtInspectionForm;
 use App\Models\Inspections\Categories\CtInspectionSection;
-use App\Models\Inspections\Inspection;
-use App\Models\Inspections\InspectionForm;
-use App\Services\Service;
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Throwable;
 
 class InspectionFormService extends Service
 {
@@ -145,7 +146,7 @@ class InspectionFormService extends Service
                 if (count($sections)) {
                     $fields = CtInspectionForm::whereIn(
                         'ct_inspection_section_id', $sections->pluck('ct_inspection_section_id'))
-                        ->with("result")->get();
+                        ->with("result.risk")->get();
                     if ($fields) {
                         $form = $this->buildForm($sections, $fields);
                     }
@@ -281,6 +282,7 @@ class InspectionFormService extends Service
                     'inspection_form_uuid' => $inspectionFormUuid,
                     'inspection_form_comments' => $formInspection['inspection_form_comments'],
                     'inspection_form_value' => $formInspection['inspection_form_value'],
+                    'ct_risk_id' => $formInspection['ct_risk_id'],
                 ]);
             }
 

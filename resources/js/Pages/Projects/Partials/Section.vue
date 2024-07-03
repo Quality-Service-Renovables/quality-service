@@ -36,20 +36,41 @@
                                                         Campo {{ field.required ? '*Requerido' :
                 'Opcional'
                                                         }}
-                                                        <v-switch v-model="field.switch_comment" color="secondary"
-                                                            label="Comentario" hide-details></v-switch>
+                                                        <div class="d-flex gap-5">
+                                                            <v-switch v-model="field.switch_comment" color="secondary"
+                                                                label="Comentario" hide-details></v-switch>
+                                                            <v-switch v-model="field.switch_ct_risk" color="secondary"
+                                                                label="Riesgo" hide-details></v-switch>
+                                                        </div>
                                                     </v-card-subtitle>
                                                     <v-card-text class="pt-0">
                                                         <QuillEditor
                                                             v-model:content="field.content.inspection_form_value"
                                                             theme="snow" toolbar="essential" heigth="100%"
                                                             contentType="html" />
-                                                        <p class="mt-3 text-grey" v-if="field.switch_comment">Comentarios:</p>
+                                                        <!-- Comments Field -->
+                                                        <p class="mt-3 text-grey" v-if="field.switch_comment">
+                                                            Comentarios:</p>
                                                         <QuillEditor
                                                             v-model:content="field.content.inspection_form_comments"
                                                             theme="snow" toolbar="essential" heigth="100%"
-                                                            contentType="html" v-if="field.switch_comment"/>
-                                                        <PrimaryButton @click="saveField(field)" class="mt-2" :disabled="field.loading">Guardar
+                                                            contentType="html" v-if="field.switch_comment" />
+                                                        <!-- ct_risk Selector -->
+                                                        <p class="mt-3 text-grey" v-if="field.switch_ct_risk">
+                                                            Riesgo:</p>
+                                                        <v-select v-model="field.content.ct_risk_id" :items="ct_risks"
+                                                            item-title="ct_risk" item-value="ct_risk_id"
+                                                            variant="outlined" hide-details v-if="field.switch_ct_risk"
+                                                            class="w-50" density="compact">
+                                                            <template v-slot:item="{ props, item }">
+                                                                <v-list-item v-bind="props" :title="item.raw.ct_risk"
+                                                                    :style="{ 'background-color': item.raw.ct_color }"
+                                                                    value="ct_risk"></v-list-item>
+                                                            </template>
+                                                        </v-select>
+                                                        <!-- Save Button -->
+                                                        <PrimaryButton @click="saveField(field)" class="mt-2"
+                                                            :disabled="field.loading">Guardar
                                                         </PrimaryButton>
                                                     </v-card-text>
                                                 </v-card>
@@ -73,7 +94,8 @@
                                                             <div v-if="subSection.fields">
                                                                 <v-card
                                                                     v-for="(fieldSub, indexFieldSub) in subSection.fields"
-                                                                    :key="indexFieldSub" class="my-5" :loading="fieldSub.loading">
+                                                                    :key="indexFieldSub" class="my-5"
+                                                                    :loading="fieldSub.loading">
                                                                     {{ complementData(fieldSub) }}
                                                                     <v-card-title class="d-flex justify-between">
                                                                         {{
@@ -89,23 +111,51 @@
                                                                         Campo {{
                 fieldSub.required ?
                     '*Requerido' :
-                                                                        'Opcional' }}
-                                                                        <v-switch v-model="fieldSub.switch_comment"
-                                                                            color="secondary" label="Comentario"
-                                                                            hide-details></v-switch>
+                    'Opcional' }}
+                                                                        <div class="d-flex gap-5">
+                                                                            <v-switch v-model="fieldSub.switch_comment"
+                                                                                color="secondary" label="Comentario"
+                                                                                hide-details></v-switch>
+                                                                            <v-switch v-model="fieldSub.switch_ct_risk"
+                                                                                color="secondary" label="Riesgo"
+                                                                                hide-details></v-switch>
+                                                                        </div>
                                                                     </v-card-subtitle>
                                                                     <v-card-text>
                                                                         <QuillEditor
                                                                             v-model:content="fieldSub.content.inspection_form_value"
                                                                             theme="snow" toolbar="essential"
                                                                             heigth="100%" contentType="html" />
-                                                                        <p class="mt-3 text-grey" v-if="fieldSub.switch_comment">Comentarios:</p>
+                                                                        <!-- Comments Field -->
+                                                                        <p class="mt-3 text-grey"
+                                                                            v-if="fieldSub.switch_comment">Comentarios:
+                                                                        </p>
                                                                         <QuillEditor
                                                                             v-model:content="fieldSub.content.inspection_form_comments"
                                                                             theme="snow" toolbar="essential"
-                                                                            heigth="100%" contentType="html" v-if="fieldSub.switch_comment"/>
+                                                                            heigth="100%" contentType="html"
+                                                                            v-if="fieldSub.switch_comment" />
+                                                                        <!-- ct_risk Selector -->
+                                                                        <p class="mt-3 text-grey"
+                                                                            v-if="fieldSub.switch_ct_risk">
+                                                                            Riesgo:</p>
+                                                                        <v-select
+                                                                            v-model="fieldSub.content.ct_risk_id"
+                                                                            :items="ct_risks" item-title="ct_risk"
+                                                                            item-value="ct_risk_id" variant="outlined"
+                                                                            hide-details v-if="fieldSub.switch_ct_risk"
+                                                                            class="w-50" density="compact">
+                                                                            <template v-slot:item="{ props, item }">
+                                                                                <v-list-item v-bind="props"
+                                                                                    :title="item.raw.ct_risk"
+                                                                                    :style="{ 'background-color': item.raw.ct_color }"
+                                                                                    value="ct_risk"></v-list-item>
+                                                                            </template>
+                                                                        </v-select>
+                                                                        <!-- Save Button -->
                                                                         <PrimaryButton @click="saveField(fieldSub)"
-                                                                            class="mt-2" :disabled="fieldSub.loading">Guardar</PrimaryButton>
+                                                                            class="mt-2" :disabled="fieldSub.loading">
+                                                                            Guardar</PrimaryButton>
                                                                     </v-card-text>
                                                                 </v-card>
                                                             </div>
@@ -156,7 +206,8 @@ export default {
         return {
             dialogFormLoading: false,
             sectionsForm: [],
-            expandedPanel: [0, 1, 2, 3, 4, 5, 6]
+            expandedPanel: [0, 1, 2, 3, 4, 5, 6],
+            ct_risks: []
         }
     },
     methods: {
@@ -183,7 +234,8 @@ export default {
                 form: [{
                     inspection_form_value: field.content.inspection_form_value,
                     inspection_form_comments: field.content.inspection_form_comments,
-                    ct_inspection_form_uuid: field.ct_inspection_form_uuid
+                    ct_inspection_form_uuid: field.ct_inspection_form_uuid,
+                    ct_risk_id: field.content.ct_risk_id
                 }]
             }
 
@@ -199,9 +251,9 @@ export default {
                     .then(response => {
                         field.loading = false;
                         toast.success('Campo guardado correctamente');
-                        if(response.data.data.length > 0){
+                        if (response.data.data.length > 0) {
                             field.content = response.data.data[0];
-                        }else{
+                        } else {
                             this.getForm();
                         }
                     })
@@ -215,13 +267,16 @@ export default {
             if (field.content == null) {
                 field.content = {
                     inspection_form_value: '',
-                    inspection_form_comments: ''
+                    inspection_form_comments: '',
+                    ct_risk_id: null
                 }
                 field.switch_comment = false;
-            }else{
+                field.switch_ct_risk = false;
+            } else {
                 field.switch_comment = field.content.inspection_form_comments !== "" && field.content.inspection_form_comments !== null && field.content.inspection_form_comments !== "<p><br></p>" ? true : false;
+                field.switch_ct_risk = field.content.ct_risk_id && field.content.ct_risk_id !== null ? true : false;
             }
-            
+
         },
         isEmptyField(field) {
             if (field.content.inspection_form_value == null || field.content.inspection_form_value == '') {
@@ -230,9 +285,19 @@ export default {
                 return false;
             }
         },
+        getRisks() {
+            axios.get('api/risks')
+                .then(response => {
+                    this.ct_risks = response.data.data;
+                })
+                .catch(error => {
+                    this.handleErrors(error);
+                });
+        },
     },
     mounted() {
         this.getForm();
+        this.getRisks();
     }
 }
 </script>
@@ -244,11 +309,11 @@ export default {
     }
 }
 
-.ql-toolbar.ql-snow{
+.ql-toolbar.ql-snow {
     border-radius: 15px 15px 0px 0px !important;
 }
 
-.ql-container.ql-snow{
+.ql-container.ql-snow {
     border-radius: 0px 0px 15px 15px !important;
 }
 </style>
