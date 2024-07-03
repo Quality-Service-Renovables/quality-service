@@ -12,7 +12,7 @@
                     <v-divider></v-divider>
                     <p class="text-h5 mt-4" v-if="evidences.length">Evidencias cargadas</p>
                 </v-col>
-                <v-row v-if="!loading">
+                <template v-if="!loading">
                     <draggable class="dragArea list-group w-full d-contents" :list="evidences" @change="log">
                         <v-col cols="12" lg="4" class="list-group-item" v-for="(evidence, index) in evidences"
                             :key="evidence.inspection_evidence_uuid">
@@ -20,7 +20,7 @@
                                 @getEvidences="getEvidences" :positionAux="index + 1" />
                         </v-col>
                     </draggable>
-                </v-row>
+                </template>
                 <template v-else>
                     <v-col cols="12" lg="4" v-for="i in 3" :key="i">
                         <v-skeleton-loader type="card"></v-skeleton-loader>

@@ -1,19 +1,21 @@
 <template>
     <v-card class="pb-0" border="dashed thin dark md">
-        <file-pond name="evidence" ref="pond"
-            label-idle="Arrastra y suelta tu archivo o <span class='filepond--label-action'>selecciona</span>"
-            :allow-multiple="false" accepted-file-types="image/jpeg, image/png" :files="myFiles"
-            @init="handleFilePondInit" :server="serverConfig" instantUpload="false" allowProcess="true"
-            allowReplace="true" allowImagePreview="true" labelInvalidField="Tipo de archivo no permitido"
-            labelFileLoading="Cargando" labelFileLoadError="Error al subir el archivo" labelFileProcessing="Procesando"
-            labelFileProcessingComplete="Proceso completado" labelFileProcessingAborted="Proceso abortado"
-            labelFileProcessingError="Error al procesar" labelTapToCancel="Toca para cancelar"
-            labelTapToRetry="Toca para reintentar" labelTapToUndo="Toca para deshacer"
-            labelButtonAbortItemLoad="Cancelar" labelButtonRetryItemLoad="Reintentar"
-            labelButtonAbortItemProcessing="Cancelar" labelButtonProcessItem="Subir"
-            :class="evidence ? 'min-height' : ''" 
-            />
-
+        <div class="container-img">
+            <file-pond name="evidence" ref="pond"
+                label-idle="Arrastra y suelta tu archivo o <span class='filepond--label-action'>selecciona</span>"
+                :allow-multiple="false" accepted-file-types="image/jpeg, image/png" :files="myFiles"
+                @init="handleFilePondInit" :server="serverConfig" instantUpload="false" allowProcess="true"
+                allowReplace="true" allowImagePreview="true" labelInvalidField="Tipo de archivo no permitido"
+                labelFileLoading="Cargando" labelFileLoadError="Error al subir el archivo"
+                labelFileProcessing="Procesando" labelFileProcessingComplete="Proceso completado"
+                labelFileProcessingAborted="Proceso abortado" labelFileProcessingError="Error al procesar"
+                labelTapToCancel="Toca para cancelar" labelTapToRetry="Toca para reintentar"
+                labelTapToUndo="Toca para deshacer" labelButtonAbortItemLoad="Cancelar"
+                labelButtonRetryItemLoad="Reintentar" labelButtonAbortItemProcessing="Cancelar"
+                labelButtonProcessItem="Subir" :class="evidence ? 'min-height' : ''" />
+            <v-btn icon="mdi-pencil" density="compact" class="bg-grey-darken-3 btn-edit"
+                @click="editImageDialog"></v-btn>
+        </div>
         <v-card-title>
             <v-text-field label="Título" v-model="form.title" variant="outlined" hide-details
                 density="compact"></v-text-field>
@@ -248,23 +250,15 @@ export default {
     min-height: 300px;
 }
 
-/* bright / dark mode */
-.pintura-editor {
-  --color-background: 255, 255, 255;
-  --color-foreground: 10, 10, 10;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+.container-img {
+    position: relative;
+    overflow: hidden;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color: #fff;
-    background: #111;
-  }
-
-  .pintura-editor {
-    --color-background: 10, 10, 10;
-    --color-foreground: 255, 255, 255;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
-  }
+.btn-edit {
+    position: absolute;
+    bottom: 35px;
+    z-index: 1;
+    left: 24px;
 }
 </style>
