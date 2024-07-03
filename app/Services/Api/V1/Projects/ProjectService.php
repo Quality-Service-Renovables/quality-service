@@ -96,16 +96,30 @@ class ProjectService extends Service implements ServiceInterface
      */
     public function read(): array
     {
+        $user = auth()->user();
         $this->response['message'] = trans('api.read');
-        $this->response['data'] = Project::with([
+
+        $query = Project::with([
             'client',
             'status',
             'employees.user',
             'inspections.status',
             'inspections.category',
             'inspections.equipment.category',
-            'inspections.inspectionEquipments.equipment'
-        ])->get();
+            'inspections.inspectionEquipments.equipment',
+        ]);
+
+        if ($user->hasRole('tecnico')) {
+            $query->where(function ($query) use ($user) {
+                $query->whereHas('employees', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                });
+            });
+        } else if ($user->hasRole('cliente')) {
+            $query->where('client_id', $user->client_id);
+        }
+
+        $this->response['data'] = $query->get();
 
         return $this->response;
     }
@@ -232,11 +246,11 @@ class ProjectService extends Service implements ServiceInterface
         try {
             // Obtiene categoría del equipo
             $project = Project::with([
-                'client', 'status', 'employees.user', 'inspections'
+                'client', 'status', 'employees.user', 'inspections',
             ])->where('project_uuid', $uuid)->first();
             $this->response['message'] = $project === null
-                ? trans('api.not_found')
-                : trans('api.show');
+            ? trans('api.not_found')
+            : trans('api.show');
             $this->response['data'] = $project ? $project->toArray() : [];
         } catch (Throwable $exceptions) {
             // Manejo del error
@@ -254,7 +268,7 @@ class ProjectService extends Service implements ServiceInterface
             $project = Project::where('project_uuid', $request->project_uuid)->first();
             $status = Status::where('status_code', $request->status_uuid)->first();
             $project?->update([
-                'status_id' => $status->status_id
+                'status_id' => $status->status_id,
             ]);
 
             $this->response['message'] = trans('api.updated');
