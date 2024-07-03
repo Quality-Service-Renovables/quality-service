@@ -38,7 +38,9 @@ class ReportService extends Service
                 'equipment.model.trademark',
                 'category.sections.subSections.fields.result',
                 'inspectionEquipments.equipment',
-                'evidences',
+                'evidences' => function($query) {
+                    $query->orderBy('position', 'asc');
+                },
                 'project',
             ])->where('inspection_uuid', $uuid)->first();
             // Valida si la inspección tiene información.

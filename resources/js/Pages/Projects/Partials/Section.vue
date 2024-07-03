@@ -11,8 +11,10 @@
                                         :key="indexSection" class="my-5" :expanded="true">
 
                                         <v-expansion-panel-title class="text-h6">
-                                            {{ section.section_details.ct_inspection_section
-                                            }}
+                                            <v-chip variant="elevated">
+                                                {{ section.section_details.ct_inspection_section
+                                                }}
+                                            </v-chip>
                                             <v-card-subtitle class="ml-2 mt-0 pt-0">
                                                 Sección
                                             </v-card-subtitle>
@@ -26,24 +28,29 @@
                                                     class="my-5" :loading="field.loading">
                                                     {{ complementData(field) }}
                                                     <v-card-title class="d-flex justify-between">
-                                                        {{ field.ct_inspection_form }}
-                                                        <v-icon color="success"
-                                                            v-if="field.content.inspection_form_value">mdi-check</v-icon>
-                                                        <v-icon color="red"
-                                                            v-if="isEmptyField(field) && field.required">mdi-alert-circle-outline</v-icon>
-                                                    </v-card-title>
-                                                    <v-card-subtitle class="d-flex align-center justify-between">
-                                                        Campo {{ field.required ? '*Requerido' :
-                'Opcional'
-                                                        }}
-                                                        <div class="d-flex gap-5">
-                                                            <v-switch v-model="field.switch_comment" color="secondary"
-                                                                label="Comentario" hide-details></v-switch>
-                                                            <v-switch v-model="field.switch_ct_risk" color="secondary"
-                                                                label="Riesgo" hide-details></v-switch>
+                                                        <div class="d-flex align-center">
+                                                            <v-chip>
+                                                                {{ field.ct_inspection_form }}
+                                                            </v-chip>
+                                                            <v-card-subtitle>Campo</v-card-subtitle>
                                                         </div>
-                                                    </v-card-subtitle>
+                                                        <div class="d-flex align-center gap-5">
+                                                            <v-switch v-model="field.switch_comment" color="red"
+                                                                label="Comentario" hide-details></v-switch>
+                                                            <v-switch v-model="field.switch_ct_risk" color="red"
+                                                                label="Riesgo" hide-details @click="setRiesgo(field)"></v-switch>
+                                                            <v-icon color="success"
+                                                                v-if="field.content.inspection_form_value">mdi-check</v-icon>
+                                                            <v-icon color="red"
+                                                                v-if="isEmptyField(field) && field.required">mdi-alert-circle-outline</v-icon>
+                                                        </div>
+
+                                                    </v-card-title>
                                                     <v-card-text class="pt-0">
+                                                        <p class="text-grey">Contenido ({{
+                field.required ?
+                    '*Requerido' :
+                    'Opcional' }}):</p>
                                                         <QuillEditor
                                                             v-model:content="field.content.inspection_form_value"
                                                             theme="snow" toolbar="essential" heigth="100%"
@@ -61,7 +68,8 @@
                                                         <v-select v-model="field.content.ct_risk_id" :items="ct_risks"
                                                             item-title="ct_risk" item-value="ct_risk_id"
                                                             variant="outlined" hide-details v-if="field.switch_ct_risk"
-                                                            class="w-50" density="compact">
+                                                            class="w-50 rounded" density="compact"
+                                                            :style="{ 'background-color': getBgColor(field.content.ct_risk_id) }">
                                                             <template v-slot:item="{ props, item }">
                                                                 <v-list-item v-bind="props" :title="item.raw.ct_risk"
                                                                     :style="{ 'background-color': item.raw.ct_color }"
@@ -83,8 +91,9 @@
                                                         v-for="(subSection, indexSubSection) in section.sub_sections"
                                                         :key="indexSubSection" class="my-5">
                                                         <v-expansion-panel-title class="text-h6">
-                                                            {{ subSection.ct_inspection_section
-                                                            }}
+                                                            <v-chip variant="elevated">{{
+                subSection.ct_inspection_section
+            }}</v-chip>
                                                             <v-card-subtitle class="ml-2 mt-0 pt-0">
                                                                 Sub-sección
                                                             </v-card-subtitle>
@@ -98,30 +107,31 @@
                                                                     :loading="fieldSub.loading">
                                                                     {{ complementData(fieldSub) }}
                                                                     <v-card-title class="d-flex justify-between">
-                                                                        {{
+                                                                        <div class="d-flex align-center">
+                                                                            <v-chip>{{
                 fieldSub.ct_inspection_form
-            }}
-                                                                        <v-icon color="success"
-                                                                            v-if="fieldSub.content.inspection_form_value">mdi-check</v-icon>
-                                                                        <v-icon color="red"
-                                                                            v-if="isEmptyField(fieldSub) && fieldSub.required">mdi-alert-circle-outline</v-icon>
-                                                                    </v-card-title>
-                                                                    <v-card-subtitle
-                                                                        class="d-flex align-center justify-between">
-                                                                        Campo {{
-                fieldSub.required ?
-                    '*Requerido' :
-                    'Opcional' }}
-                                                                        <div class="d-flex gap-5">
+            }}</v-chip>
+                                                                            <v-card-subtitle>Campo</v-card-subtitle>
+                                                                        </div>
+                                                                        <div class="d-flex align-center gap-5">
                                                                             <v-switch v-model="fieldSub.switch_comment"
-                                                                                color="secondary" label="Comentario"
+                                                                                color="red" label="Comentario"
                                                                                 hide-details></v-switch>
                                                                             <v-switch v-model="fieldSub.switch_ct_risk"
-                                                                                color="secondary" label="Riesgo"
-                                                                                hide-details></v-switch>
+                                                                                color="red" label="Riesgo"
+                                                                                hide-details @click="setRiesgo(fieldSub)"></v-switch>
+                                                                            <v-icon color="success"
+                                                                                v-if="fieldSub.content.inspection_form_value">mdi-check</v-icon>
+                                                                            <v-icon color="red"
+                                                                                v-if="isEmptyField(fieldSub) && fieldSub.required">mdi-alert-circle-outline</v-icon>
                                                                         </div>
-                                                                    </v-card-subtitle>
-                                                                    <v-card-text>
+
+                                                                    </v-card-title>
+                                                                    <v-card-text class="pt-0">
+                                                                        <p class="text-grey"> Contenido ({{
+                fieldSub.required ?
+                    '*Requerido' :
+                    'Opcional' }}):</p>
                                                                         <QuillEditor
                                                                             v-model:content="fieldSub.content.inspection_form_value"
                                                                             theme="snow" toolbar="essential"
@@ -139,12 +149,12 @@
                                                                         <p class="mt-3 text-grey"
                                                                             v-if="fieldSub.switch_ct_risk">
                                                                             Riesgo:</p>
-                                                                        <v-select
-                                                                            v-model="fieldSub.content.ct_risk_id"
+                                                                        <v-select v-model="fieldSub.content.ct_risk_id"
                                                                             :items="ct_risks" item-title="ct_risk"
                                                                             item-value="ct_risk_id" variant="outlined"
                                                                             hide-details v-if="fieldSub.switch_ct_risk"
-                                                                            class="w-50" density="compact">
+                                                                            class="w-50 rounded" density="compact"
+                                                                            :style="{ 'background-color': getBgColor(fieldSub.content.ct_risk_id) }">
                                                                             <template v-slot:item="{ props, item }">
                                                                                 <v-list-item v-bind="props"
                                                                                     :title="item.raw.ct_risk"
@@ -294,6 +304,20 @@ export default {
                     this.handleErrors(error);
                 });
         },
+        getBgColor(ct_risk_id) {
+            let color = this.ct_risks.filter(risk => {
+                return ct_risk_id === risk.ct_risk_id;
+            });
+            return color.length > 0 ? color[0].ct_color : '';
+        },
+        setRiesgo(field){
+            if(field.switch_ct_risk == true){
+                field.switch_ct_risk = false;
+                field.content.ct_risk_id = null;
+            }else if(field.switch_ct_risk == false){
+                field.switch_ct_risk = true;
+            }
+        }
     },
     mounted() {
         this.getForm();
