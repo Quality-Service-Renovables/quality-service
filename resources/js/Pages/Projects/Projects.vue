@@ -143,7 +143,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 size="small" @click="asignInspectionDialog('update', item)"
                                                 color="text-success" />
                                             <ActionButton text="Generar PDF" icon="mdi-file-eye"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_iniciado', 'proyecto_finalizado', 'proyecto_validado', 'proyecto_cerrado']) && item.inspections.length"
+                                                v-if="checkPermissionToPdf(item)"
                                                 size="small" @click="generatePdf(item)" color="text-success" />
                                         </div>
                                     </template>
@@ -921,6 +921,13 @@ export default {
                     toast.error('No fue posible recuperar el documento');
                     console.log(error);
                 });
+        },
+        checkPermissionToPdf(item) {
+            if (this.$page.props.auth.role.name === 'admin' || this.$page.props.auth.role.name === 'tecnico'){
+                return this.hasPermissionTo('projects.read') && this.checkStatus(item, ['proyecto_iniciado', 'proyecto_finalizado', 'proyecto_validado', 'proyecto_cerrado']) && item.inspections.length
+            }else{
+                return this.hasPermissionTo('projects.read') && this.checkStatus(item, ['proyecto_cerrado']) && item.inspections.length
+            }
         },
     }
 }
