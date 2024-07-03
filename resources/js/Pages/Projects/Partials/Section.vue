@@ -20,7 +20,6 @@
                                             </v-card-subtitle>
                                         </v-expansion-panel-title>
 
-
                                         <v-expansion-panel-text>
                                             <!-- Campos -->
                                             <div v-if="section.fields">
@@ -40,9 +39,9 @@
                                                             <v-switch v-model="field.switch_ct_risk" color="red"
                                                                 label="Riesgo" hide-details @click="setRiesgo(field)"></v-switch>
                                                             <v-icon color="success"
-                                                                v-if="field.content.inspection_form_value">mdi-check</v-icon>
+                                                                v-if="!isEmptyField(field.content.inspection_form_value)">mdi-check</v-icon>
                                                             <v-icon color="red"
-                                                                v-if="isEmptyField(field) && field.required">mdi-alert-circle-outline</v-icon>
+                                                                v-if="isEmptyField(field.content.inspection_form_value) && field.required">mdi-alert-circle-outline</v-icon>
                                                         </div>
 
                                                     </v-card-title>
@@ -121,9 +120,9 @@
                                                                                 color="red" label="Riesgo"
                                                                                 hide-details @click="setRiesgo(fieldSub)"></v-switch>
                                                                             <v-icon color="success"
-                                                                                v-if="fieldSub.content.inspection_form_value">mdi-check</v-icon>
+                                                                                v-if="!isEmptyField(fieldSub.content.inspection_form_value)">mdi-check</v-icon>
                                                                             <v-icon color="red"
-                                                                                v-if="isEmptyField(fieldSub) && fieldSub.required">mdi-alert-circle-outline</v-icon>
+                                                                                v-if="isEmptyField(fieldSub.content.inspection_form_value) && fieldSub.required">mdi-alert-circle-outline</v-icon>
                                                                         </div>
 
                                                                     </v-card-title>
@@ -249,11 +248,8 @@ export default {
                 }]
             }
 
-            console.log("formData: ");
-            console.log(formData);
-
-            if (formData.form[0].inspection_form_value == null || formData.form[0].inspection_form_value == '') {
-                toast.error('El campo no puede estar vacío');
+            if (this.isEmptyField(formData.form[0].inspection_form_value)) {
+                toast.error('El contenido no puede estar vacío');
                 field.loading = false;
                 return;
             } else {
@@ -289,7 +285,7 @@ export default {
 
         },
         isEmptyField(field) {
-            if (field.content.inspection_form_value == null || field.content.inspection_form_value == '') {
+            if (field == null || field == '' || field == '<p><br></p>') {
                 return true;
             } else {
                 return false;
