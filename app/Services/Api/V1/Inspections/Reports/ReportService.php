@@ -42,7 +42,7 @@ class ReportService extends Service
                 'project',
             ])->where('inspection_uuid', $uuid)->first();
             // Valida si la inspección tiene información.
-            if ($this->isValidInspection($inspection)) {
+            if ($inspection && $this->isValidInspection($inspection)) {
                 $inspection->provider = $user->client;
                 // Generación de la vista en base a la información de la colección.
                 $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
