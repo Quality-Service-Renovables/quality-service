@@ -34,10 +34,11 @@
                                                             <v-card-subtitle>Campo</v-card-subtitle>
                                                         </div>
                                                         <div class="d-flex align-center gap-5">
-                                                            <v-switch v-model="field.switch_comment"
+                                                            <v-switch v-model="field.switch_comment" color="blue" 
                                                                 label="Comentario" hide-details></v-switch>
-                                                            <v-switch v-model="field.switch_ct_risk"
-                                                                label="Riesgo" hide-details @click="setRiesgo(field)"></v-switch>
+                                                            <v-switch v-model="field.switch_ct_risk" color="blue" 
+                                                                label="Riesgo" hide-details
+                                                                @click="setRiesgo(field)"></v-switch>
                                                             <v-icon color="success"
                                                                 v-if="!isEmptyField(field.content.inspection_form_value)">mdi-check</v-icon>
                                                             <v-icon color="red"
@@ -114,11 +115,12 @@
                                                                         </div>
                                                                         <div class="d-flex align-center gap-5">
                                                                             <v-switch v-model="fieldSub.switch_comment"
-                                                                                color="green" label="Comentario"
+                                                                                color="blue"  label="Comentario"
                                                                                 hide-details></v-switch>
                                                                             <v-switch v-model="fieldSub.switch_ct_risk"
-                                                                                color="green" label="Riesgo"
-                                                                                hide-details @click="setRiesgo(fieldSub)"></v-switch>
+                                                                                color="blue"  label="Riesgo"
+                                                                                hide-details
+                                                                                @click="setRiesgo(fieldSub)"></v-switch>
                                                                             <v-icon color="success"
                                                                                 v-if="!isEmptyField(fieldSub.content.inspection_form_value)">mdi-check</v-icon>
                                                                             <v-icon color="red"
@@ -306,11 +308,11 @@ export default {
             });
             return color.length > 0 ? color[0].ct_color : '';
         },
-        setRiesgo(field){
-            if(field.switch_ct_risk == true){
+        setRiesgo(field) {
+            if (field.switch_ct_risk == true) {
                 field.switch_ct_risk = false;
                 field.content.ct_risk_id = null;
-            }else if(field.switch_ct_risk == false){
+            } else if (field.switch_ct_risk == false) {
                 field.switch_ct_risk = true;
             }
         }
