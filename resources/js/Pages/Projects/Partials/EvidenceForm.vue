@@ -234,12 +234,10 @@ export default {
                 })
                     .then(response => {
                         load(response.data.fileId);
-                        /*setTimeout(() => {
-                            console.log("Se actualizó la evidencia");
-                            this.$emit('getEvidences');
-                        }, 2000);*/
-                        let evidence = response.data.data;
-                        this.setEvidence(evidence)
+                        setTimeout(() => {
+                            let evidence = response.data.data;
+                            this.setEvidence(evidence)
+                        }, 2000);
                     })
                     .catch(thrown => {
                         this.form.loading = false;

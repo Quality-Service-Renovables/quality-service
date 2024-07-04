@@ -55,24 +55,17 @@ export default {
                     height: '700px',
                 },
                 menuBarPosition: 'bottom',
-                theme: whiteTheme, // or whiteTheme
+                theme: whiteTheme,
                 locale: locale_es_ES,
-                // Ocultamos los botones de load y download
             },
-
-            //cssMaxWidth: 700,
-            //cssMaxHeight: 500,
         });
     },
     methods: {
         saveImage() {
-            console.log("Save image");
             const dataURL = this.imageEditor.toDataURL();
-            console.log(dataURL);
             // Convertimos el dataURL a un objeto File
             const blob = this.dataURLtoBlob(dataURL);
             const file = new File([blob], 'image.png', { type: 'image/png' });
-            console.log(file);
             this.form.evidence_store = file;
             this.updateImage();
         },
