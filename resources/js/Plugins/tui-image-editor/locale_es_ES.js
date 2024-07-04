@@ -17,6 +17,14 @@ var locale_es_ES = {
     'Hand': 'Mano',
     'ZoomIn': 'Acercar',
     'ZoomOut': 'Alejar',
+    'Free': 'Libre',
+    'Straight': 'Recto',
+    'Left': 'Izquierda',
+    'Center': 'Centro',
+    'Right': 'Derecha',
+    'Bold': 'Negrita',
+    'Italic': 'Cursiva',
+    'Underline': 'Subrayado',
 }
 
 export default locale_es_ES;
