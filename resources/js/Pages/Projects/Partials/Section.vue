@@ -26,14 +26,14 @@
                                                 <v-card v-for="(field, indexField) in section.fields" :key="indexField"
                                                     class="my-5" :loading="field.loading">
                                                     {{ complementData(field) }}
-                                                    <v-card-title class="d-flex justify-between">
+                                                    <v-card-title class="d-lg-flex justify-between">
                                                         <div class="d-flex align-center">
                                                             <v-chip color="primary">
                                                                 {{ field.ct_inspection_form }}
                                                             </v-chip>
                                                             <v-card-subtitle>Campo</v-card-subtitle>
                                                         </div>
-                                                        <div class="d-flex align-center gap-5">
+                                                        <div class="d-flex align-center gap-3">
                                                             <v-switch v-model="field.switch_comment" color="blue" 
                                                                 label="Comentario" hide-details></v-switch>
                                                             <v-switch v-model="field.switch_ct_risk" color="blue" 
@@ -106,14 +106,14 @@
                                                                     :key="indexFieldSub" class="my-5"
                                                                     :loading="fieldSub.loading">
                                                                     {{ complementData(fieldSub) }}
-                                                                    <v-card-title class="d-flex justify-between">
+                                                                    <v-card-title class="d-lg-flex justify-between">
                                                                         <div class="d-flex align-center">
                                                                             <v-chip color="primary">{{
                 fieldSub.ct_inspection_form
             }}</v-chip>
                                                                             <v-card-subtitle>Campo</v-card-subtitle>
                                                                         </div>
-                                                                        <div class="d-flex align-center gap-5">
+                                                                        <div class="d-lg-flex align-center gap-3">
                                                                             <v-switch v-model="fieldSub.switch_comment"
                                                                                 color="blue"  label="Comentario"
                                                                                 hide-details></v-switch>
