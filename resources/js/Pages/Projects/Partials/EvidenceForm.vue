@@ -1,5 +1,5 @@
 <template>
-    <v-card class="pb-0" border="dashed thin dark md">
+    <v-card class="pb-0" border="dashed thin dark md" v-if="!form.loading">
         <div class="container-img">
             <file-pond name="evidence" ref="pond"
                 label-idle="Arrastra y suelta tu archivo o <span class='filepond--label-action'>selecciona</span>"
@@ -14,7 +14,7 @@
                 labelButtonRetryItemLoad="Reintentar" labelButtonAbortItemProcessing="Cancelar"
                 labelButtonProcessItem="Subir" :class="evidence ? 'min-height' : ''" />
             <v-btn icon="mdi-pencil" density="compact" class="bg-grey-darken-3 btn-edit"
-                @click="dialogEditImage = true"></v-btn>
+                @click="openEditImageDialog" v-if="evidence"></v-btn>
         </div>
         <v-card-title>
             <v-text-field label="Título" v-model="form.title" variant="outlined" hide-details
@@ -42,6 +42,13 @@
             </v-btn>
         </v-card-actions>
     </v-card>
+    <v-card v-else class="pb-0" border="dashed thin dark md">
+        <v-skeleton-loader type="card"></v-skeleton-loader>
+        <v-skeleton-loader type="paragraph" />
+        <v-skeleton-loader type="paragraph" />
+        <v-skeleton-loader type="paragraph" />
+        <br>
+    </v-card>
     <!-- Dialog delete image-->
     <v-dialog v-model="dialogDelete" max-width="500px">
         <v-card>
@@ -57,14 +64,14 @@
         </v-card>
     </v-dialog>
     <!-- Dialog edit image-->
-    <v-dialog v-model="dialogEditImage" class="width-edit">
+    <v-dialog v-model="editImage" class="width-edit">
         <v-card title="Editando imágen de evidencia">
             <v-card-text>
-                <ImageEditor :evidence="evidence" />
+                <ImageEditor :evidence="evidence" :form="form" @closeEditImageDialog="closeEditImageDialog" @setEvidence="setEvidence"/>
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn text="Cancelar" variant="text" @click="dialogEditImage = false"></v-btn>
+                <v-btn text="Cancelar" variant="text" @click="closeEditImageDialog"></v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -130,6 +137,7 @@ export default {
                 description: null,
                 description_secondary: null,
                 inspection_evidence_secondary: null,
+                loading: false,
             },
             formDefault: {
                 inspection_uuid: this.inspection_uuid,
@@ -140,6 +148,7 @@ export default {
                 description: null,
                 description_secondary: null,
                 inspection_evidence_secondary: null,
+                loading: false,
             },
             serverConfig: {
                 process: (fieldName, file, metadata, load, error, progress, abort) => {
@@ -157,29 +166,30 @@ export default {
                     this.save(source, load, error, progress);
                 }
             },
-            dialogEditImage: false,
+            editImage: false,
         };
     },
     mounted() {
         if (this.evidence) {
             this.action = 'update';
-            this.form.evidence_store = this.evidence.inspection_evidence;
-            //this.form.evidence_store_secondary = this.evidence.inspection_evidence_secondary;
-            this.form.title = this.evidence.title;
-            //this.form.title_secondary = this.evidence.title_secondary;
-            this.form.description = this.evidence.description;
-            //this.form.description_secondary = this.evidence.description_secondary;
+            this.setEvidence(this.evidence);
+        }
+    },
+    methods: {
+        setEvidence(evidence){
+            this.form.evidence_store = evidence.inspection_evidence;
+            this.form.title = evidence.title;
+            this.form.description = evidence.description;
+            this.form.loading = false;
             this.myFiles = [
                 {
-                    source: this.evidence.inspection_evidence,
+                    source: evidence.inspection_evidence,
                     options: {
                         type: 'remote',
                     },
                 },
             ];
-        }
-    },
-    methods: {
+        },
         handleFilePondInit() {
             // FilePond instance methods are available on `this.$refs.pond`
         },
@@ -212,6 +222,7 @@ export default {
                         }
                     });
             } else if (this.action === 'update') {
+                this.form.loading = true;
                 axios.post('api/inspection/evidences/update/' + this.evidence.inspection_evidence_uuid, this.form, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
@@ -223,12 +234,15 @@ export default {
                 })
                     .then(response => {
                         load(response.data.fileId);
-                        setTimeout(() => {
+                        /*setTimeout(() => {
                             console.log("Se actualizó la evidencia");
                             this.$emit('getEvidences');
-                        }, 2000);
+                        }, 2000);*/
+                        let evidence = response.data.data;
+                        this.setEvidence(evidence)
                     })
                     .catch(thrown => {
+                        this.form.loading = false;
                         if (axios.isCancel(thrown)) {
                             this.abort(source);
                         } else {
@@ -252,7 +266,13 @@ export default {
                 .catch(error => {
                     this.handleErrors(error);
                 });
-
+        },
+        openEditImageDialog() {
+            this.form.position = this.positionAux;
+            this.editImage = true;
+        },
+        closeEditImageDialog() {
+            this.editImage = false;
         },
     },
 };

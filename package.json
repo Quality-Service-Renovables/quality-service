@@ -26,6 +26,7 @@
         "@rotsen/vue-filerobot-image-editor": "^0.2.0",
         "@vueup/vue-quill": "^1.2.0",
         "cropperjs": "^1.6.2",
+        "file-saver": "^2.0.5",
         "filepond": "^4.31.1",
         "filepond-plugin-file-poster": "^2.5.1",
         "filepond-plugin-file-validate-type": "^1.2.9",
