@@ -12,7 +12,7 @@
                     <v-divider></v-divider>
                     <p class="text-h5 mt-4" v-if="evidences.length">Evidencias cargadas</p>
                 </v-col>
-                <v-row v-if="!loading">
+                <template v-if="!loading">
                     <draggable class="dragArea list-group w-full d-contents" :list="evidences" @change="log">
                         <v-col cols="12" lg="4" class="list-group-item" v-for="(evidence, index) in evidences"
                             :key="evidence.inspection_evidence_uuid">
@@ -20,7 +20,7 @@
                                 @getEvidences="getEvidences" :positionAux="index + 1" />
                         </v-col>
                     </draggable>
-                </v-row>
+                </template>
                 <template v-else>
                     <v-col cols="12" lg="4" v-for="i in 3" :key="i">
                         <v-skeleton-loader type="card"></v-skeleton-loader>
@@ -42,38 +42,14 @@
 <script>
 import { defineComponent } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
-
 import EvidenceForm from './EvidenceForm.vue';
 import { Toaster, toast } from 'vue-sonner'
 import { getInspection } from '@/Functions/api';
-// Import Vue FilePond
-import vueFilePond from "vue-filepond";
-
-// Import FilePond styles
-import "filepond/dist/filepond.min.css";
-
-// Import FilePond plugins
-// Please note that you need to install these plugins separately
-
-// Import image preview plugin styles
-import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
-
-// Import image preview and file type validation plugins
-import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
-import FilePondPluginImagePreview from "filepond-plugin-image-preview";
-import FilePondPluginImageEdit from "filepond-plugin-image-edit";
 import axios from 'axios';
 
-// Create component
-const FilePond = vueFilePond(
-    FilePondPluginFileValidateType,
-    FilePondPluginImagePreview,
-    FilePondPluginImageEdit
-);
 export default defineComponent({
     components: {
         draggable: VueDraggableNext,
-        FilePond,
         Toaster,
         EvidenceForm
     },

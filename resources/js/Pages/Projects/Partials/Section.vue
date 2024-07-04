@@ -11,7 +11,7 @@
                                         :key="indexSection" class="my-5" :expanded="true">
 
                                         <v-expansion-panel-title class="text-h6">
-                                            <v-chip variant="elevated">
+                                            <v-chip color="primary" variant="elevated">
                                                 {{ section.section_details.ct_inspection_section
                                                 }}
                                             </v-chip>
@@ -26,18 +26,19 @@
                                                 <v-card v-for="(field, indexField) in section.fields" :key="indexField"
                                                     class="my-5" :loading="field.loading">
                                                     {{ complementData(field) }}
-                                                    <v-card-title class="d-flex justify-between">
+                                                    <v-card-title class="d-lg-flex justify-between">
                                                         <div class="d-flex align-center">
-                                                            <v-chip>
+                                                            <v-chip color="primary">
                                                                 {{ field.ct_inspection_form }}
                                                             </v-chip>
                                                             <v-card-subtitle>Campo</v-card-subtitle>
                                                         </div>
-                                                        <div class="d-flex align-center gap-5">
-                                                            <v-switch v-model="field.switch_comment" color="red"
+                                                        <div class="d-flex align-center gap-3">
+                                                            <v-switch v-model="field.switch_comment" color="blue" 
                                                                 label="Comentario" hide-details></v-switch>
-                                                            <v-switch v-model="field.switch_ct_risk" color="red"
-                                                                label="Riesgo" hide-details @click="setRiesgo(field)"></v-switch>
+                                                            <v-switch v-model="field.switch_ct_risk" color="blue" 
+                                                                label="Riesgo" hide-details
+                                                                @click="setRiesgo(field)"></v-switch>
                                                             <v-icon color="success"
                                                                 v-if="!isEmptyField(field.content.inspection_form_value)">mdi-check</v-icon>
                                                             <v-icon color="red"
@@ -90,7 +91,7 @@
                                                         v-for="(subSection, indexSubSection) in section.sub_sections"
                                                         :key="indexSubSection" class="my-5">
                                                         <v-expansion-panel-title class="text-h6">
-                                                            <v-chip variant="elevated">{{
+                                                            <v-chip color="primary" variant="elevated">{{
                 subSection.ct_inspection_section
             }}</v-chip>
                                                             <v-card-subtitle class="ml-2 mt-0 pt-0">
@@ -105,20 +106,21 @@
                                                                     :key="indexFieldSub" class="my-5"
                                                                     :loading="fieldSub.loading">
                                                                     {{ complementData(fieldSub) }}
-                                                                    <v-card-title class="d-flex justify-between">
+                                                                    <v-card-title class="d-lg-flex justify-between">
                                                                         <div class="d-flex align-center">
-                                                                            <v-chip>{{
+                                                                            <v-chip color="primary">{{
                 fieldSub.ct_inspection_form
             }}</v-chip>
                                                                             <v-card-subtitle>Campo</v-card-subtitle>
                                                                         </div>
-                                                                        <div class="d-flex align-center gap-5">
+                                                                        <div class="d-lg-flex align-center gap-3">
                                                                             <v-switch v-model="fieldSub.switch_comment"
-                                                                                color="red" label="Comentario"
+                                                                                color="blue"  label="Comentario"
                                                                                 hide-details></v-switch>
                                                                             <v-switch v-model="fieldSub.switch_ct_risk"
-                                                                                color="red" label="Riesgo"
-                                                                                hide-details @click="setRiesgo(fieldSub)"></v-switch>
+                                                                                color="blue"  label="Riesgo"
+                                                                                hide-details
+                                                                                @click="setRiesgo(fieldSub)"></v-switch>
                                                                             <v-icon color="success"
                                                                                 v-if="!isEmptyField(fieldSub.content.inspection_form_value)">mdi-check</v-icon>
                                                                             <v-icon color="red"
@@ -306,11 +308,11 @@ export default {
             });
             return color.length > 0 ? color[0].ct_color : '';
         },
-        setRiesgo(field){
-            if(field.switch_ct_risk == true){
+        setRiesgo(field) {
+            if (field.switch_ct_risk == true) {
                 field.switch_ct_risk = false;
                 field.content.ct_risk_id = null;
-            }else if(field.switch_ct_risk == false){
+            } else if (field.switch_ct_risk == false) {
                 field.switch_ct_risk = true;
             }
         }

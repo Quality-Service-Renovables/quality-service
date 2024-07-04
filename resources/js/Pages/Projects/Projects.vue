@@ -319,9 +319,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     </v-card>
                                 </v-dialog>
 
-                                <!-- Dialog para cargar informaciónd de secciones de la inspección -->
+                                <!-- Dialog para cargar información de secciones de la inspección -->
                                 <v-dialog v-model="dialogForm" v-if="hasPermissionTo('projects.update')"
-                                    transition="dialog-bottom-transition" fullscreen>
+                                    transition="dialog-bottom-transition" fullscreen persistent>
                                     <v-toolbar>
                                         <v-btn icon="mdi-close" @click="closeSectionDialog()"></v-btn>
                                         <v-toolbar-title class="w-100">
