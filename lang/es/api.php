@@ -32,6 +32,7 @@ return [
     'inspection_equipment_exist' => 'El equipo ya ha sido asignado a la inspección.',
     'inspection_not_found' => 'Inspección no encontrada',
     'document_generated' => 'Documento generado',
+    'user_assigned' => 'El usuario no puede ser eliminado, ha sido asignado a un proyecto.',
     // Status Catalog
     'status_projects' => 'Estado de proyectos, codigo: proyecto',
     'status_inspections' => 'Estado de proyectos, codigo: inspeccion',
