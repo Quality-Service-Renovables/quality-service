@@ -14,7 +14,7 @@
                 labelButtonRetryItemLoad="Reintentar" labelButtonAbortItemProcessing="Cancelar"
                 labelButtonProcessItem="Subir" :class="evidence ? 'min-height' : ''" />
             <v-btn icon="mdi-pencil" density="compact" class="bg-grey-darken-3 btn-edit"
-                @click="editImageDialog"></v-btn>
+                @click="dialogEditImage = true"></v-btn>
         </div>
         <v-card-title>
             <v-text-field label="Título" v-model="form.title" variant="outlined" hide-details
@@ -42,6 +42,7 @@
             </v-btn>
         </v-card-actions>
     </v-card>
+    <!-- Dialog delete image-->
     <v-dialog v-model="dialogDelete" max-width="500px">
         <v-card>
             <v-card-title class="text-h5 text-center">¿Estás seguro de
@@ -52,6 +53,18 @@
                 <v-btn color="blue-darken-1" variant="text" @click="deleteEvidence()">Si,
                     eliminar</v-btn>
                 <v-spacer></v-spacer>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+    <!-- Dialog edit image-->
+    <v-dialog v-model="dialogEditImage" class="width-edit">
+        <v-card title="Editando imágen de evidencia">
+            <v-card-text>
+                <ImageEditor :evidence="evidence" />
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn text="Cancelar" variant="text" @click="dialogEditImage = false"></v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -74,7 +87,7 @@ import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFilePoster from "filepond-plugin-file-poster";
 import FilePondPluginImageTransform from "filepond-plugin-image-transform";
-
+import ImageEditor from './ImageEditor.vue';
 // Create component
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
@@ -83,6 +96,11 @@ const FilePond = vueFilePond(
     FilePondPluginImageTransform
 );
 export default {
+    components: {
+        FilePond,
+        Toaster,
+        ImageEditor
+    },
     props: {
         inspection_uuid: {
             type: String,
@@ -138,7 +156,8 @@ export default {
 
                     this.save(source, load, error, progress);
                 }
-            }
+            },
+            dialogEditImage: false,
         };
     },
     mounted() {
@@ -236,10 +255,6 @@ export default {
 
         },
     },
-    components: {
-        FilePond,
-        Toaster,
-    },
 };
 </script>
 
@@ -260,5 +275,15 @@ export default {
     bottom: 35px;
     z-index: 1;
     left: 24px;
+}
+
+.width-edit {
+    width: 800px;
+}
+
+@media screen and (max-width: 600px) {
+    .width-edit {
+        width: 100% !important;
+    }
 }
 </style>
