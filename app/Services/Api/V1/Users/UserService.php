@@ -117,10 +117,10 @@ class UserService extends Service implements ServiceInterface
             $user?->update($request->except([
                 'client_uuid',
             ]));
-            
+
             // Asignación de rol
             $user->syncRoles([$request->rol]);
-            
+
             // Respuesta del módulo
             $this->response['message'] = trans('api.updated');
             $this->response['data'] = $user;
@@ -208,15 +208,22 @@ class UserService extends Service implements ServiceInterface
     public function delete(string $uuid): array
     {
         try {
-            // Aplica soft delete al equipo especificado por medio de su uuid
-            User::where('uuid', $uuid)->update(['deleted_at' => now()]);
-            $this->logService->create(
-                $this->nameService,
-                compact('uuid'),
-                $this->response,
-                trans('api.message_log'),
-            );
-            $this->response['message'] = trans('api.deleted');
+            $user = User::with(['projectEmployees'])
+                ->where('uuid', $uuid)->first();
+
+            if ($user && $user->projectEmployees) {
+                $this->response['message'] = trans('api.user_assigned');
+            } else {
+                // Aplica soft delete al equipo especificado por medio de su uuid
+                $this->logService->create(
+                    $this->nameService,
+                    compact('uuid'),
+                    $this->response,
+                    trans('api.message_log'),
+                );
+                $user->delete();
+                $this->response['message'] = trans('api.deleted');
+            }
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);

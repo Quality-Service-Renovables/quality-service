@@ -32,6 +32,7 @@ return [
     'inspection_equipment_exist' => 'Inspection equipment already exist.',
     'inspection_not_found' => 'Inspection not found.',
     'document_generated' => 'Document generated',
+    'user_assigned' => 'The user cannot be deleted, they have been assigned to a project.',
     // Status Catalog
     'status_projects' => 'Status project, code: proyecto',
     'status_inspections' => 'Status project, code: inspeccion',
