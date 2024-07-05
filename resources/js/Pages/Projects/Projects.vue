@@ -167,6 +167,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                             <ActionButton text="Validar proyecto" icon="mdi-check-circle-outline"
                                                 v-if="hasPermissionTo('projects.validate') && checkStatus(item, ['proyecto_finalizado'])"
                                                 size="small" @click="updateStatus(item, 'proyecto_validado')" />
+                                            <ActionButton text="Regresar estatus" icon="mdi-restore"
+                                                v-if="hasPermissionTo('projects.validate') && checkStatus(item, ['proyecto_finalizado'])"
+                                                size="small" @click="updateStatus(item, 'proyecto_iniciado')" color="text-red"/>
                                             <ActionButton text="Cerrar proyecto" icon="mdi-close-circle-outline"
                                                 v-if="hasPermissionTo('projects.close') && checkStatus(item, ['proyecto_validado'])"
                                                 size="small" color="text-primary"
