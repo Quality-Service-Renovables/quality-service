@@ -5,7 +5,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 <template>
     <Toaster position="top-right" richColors :visibleToasts="10" />
-
     <Head title="Proyectos de inspección" />
     <AuthenticatedLayout>
         <template #header>
