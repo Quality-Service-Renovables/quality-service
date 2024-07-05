@@ -1,6 +1,6 @@
 <template>
     <div class="max-w-7xl mx-auto sm:px-4 lg:px-6 mb-5 pb-5">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="overflow-hidden shadow-sm sm:rounded-lg">
             <v-card :loading="dialogFormLoading">
                 <v-card-text class="padding-0">
                     <v-container>
@@ -8,7 +8,7 @@
                             <v-col cols="12" class="padding-0">
                                 <v-expansion-panels multiple v-model="expandedPanel">
                                     <v-expansion-panel v-for="(section, indexSection) in sectionsForm"
-                                        :key="indexSection" class="my-5" :expanded="true">
+                                        :key="indexSection" class="my-5 border" :expanded="true">
 
                                         <v-expansion-panel-title class="text-h6">
                                             <v-chip color="primary" variant="elevated">
@@ -24,7 +24,7 @@
                                             <!-- Campos -->
                                             <div v-if="section.fields">
                                                 <v-card v-for="(field, indexField) in section.fields" :key="indexField"
-                                                    class="my-5" :loading="field.loading">
+                                                    class="my-5 border" :loading="field.loading">
                                                     {{ complementData(field) }}
                                                     <v-card-title class="d-lg-flex justify-between">
                                                         <div class="d-flex align-center">
@@ -89,7 +89,7 @@
                                                 <v-expansion-panels multiple>
                                                     <v-expansion-panel
                                                         v-for="(subSection, indexSubSection) in section.sub_sections"
-                                                        :key="indexSubSection" class="my-5">
+                                                        :key="indexSubSection" class="my-5 border">
                                                         <v-expansion-panel-title class="text-h6">
                                                             <v-chip color="primary" variant="elevated">{{
                 subSection.ct_inspection_section
@@ -103,7 +103,7 @@
                                                             <div v-if="subSection.fields">
                                                                 <v-card
                                                                     v-for="(fieldSub, indexFieldSub) in subSection.fields"
-                                                                    :key="indexFieldSub" class="my-5"
+                                                                    :key="indexFieldSub" class="my-5 border"
                                                                     :loading="fieldSub.loading">
                                                                     {{ complementData(fieldSub) }}
                                                                     <v-card-title class="d-lg-flex justify-between">

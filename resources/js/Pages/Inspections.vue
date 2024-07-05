@@ -9,7 +9,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     <Head title="Categorias de Inspecciones" />
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Categorias de Inspecciones</h2>
+            <h2 class="font-semibold text-xl leading-tight">Categorias de Inspecciones</h2>
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
@@ -79,7 +79,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 <!-- Dialog for create and update -->
                                                 <!-- Dialog for show and edit template -->
                                                 <v-dialog v-model="dialogTemplate" transition="dialog-bottom-transition"
-                                                    fullscreen>
+                                                    fullscreen persistent>
                                                     <v-card>
                                                         <v-toolbar>
                                                             <v-btn icon="mdi-close" @click="closeTemplate"></v-btn>

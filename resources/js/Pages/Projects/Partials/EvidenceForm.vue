@@ -1,6 +1,6 @@
 <template>
-    <v-card class="pb-0" border="dashed thin dark md" v-if="!form.loading">
-        <div class="container-img">
+    <v-card class="p-0" border="dashed thin dark md" v-if="!form.loading">
+        <div class="container-img p-0">
             <file-pond name="evidence" ref="pond"
                 label-idle="Arrastra y suelta tu archivo o <span class='filepond--label-action'>selecciona</span>"
                 :allow-multiple="false" accepted-file-types="image/jpeg, image/png" :files="myFiles"
@@ -12,7 +12,7 @@
                 labelTapToCancel="Toca para cancelar" labelTapToRetry="Toca para reintentar"
                 labelTapToUndo="Toca para deshacer" labelButtonAbortItemLoad="Cancelar"
                 labelButtonRetryItemLoad="Reintentar" labelButtonAbortItemProcessing="Cancelar"
-                labelButtonProcessItem="Subir" :class="evidence ? 'min-height' : ''" />
+                labelButtonProcessItem="Subir" :class="evidence ? 'min-height' : ''"/>
             <v-btn icon="mdi-pencil" density="compact" class="bg-grey-darken-3 btn-edit"
                 @click="openEditImageDialog" v-if="evidence"></v-btn>
         </div>

@@ -10,3 +10,6 @@
     background-color: #c10202;
     color: white;
 }
+input, textarea, select {
+	background-color: revert !important;
+}

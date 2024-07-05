@@ -1,6 +1,6 @@
 <template>
     <div class="max-w-7xl mx-auto my-auto sm:px-4 lg:px-6 mt-5 mb-5 pb-5">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg pb-5 mb-5">
+        <div class="overflow-hidden shadow-sm sm:rounded-lg pb-5 mb-5">
             <v-row class="d-flex justify-center">
                 <v-col cols="12" lg="4">
                     <EvidenceForm :inspection_uuid="inspection_uuid" @getEvidences="getEvidences"
