@@ -7,7 +7,7 @@
             <PrimaryButton @click="dialog = true" class="me-2" :prependIcon="'mdi-plus'">
                 Agregar sección
             </PrimaryButton>
-            <SecondaryButton @click="updateSections" :prependIcon="'mdi-reload'">
+            <SecondaryButton @click="updateSections" :prependIcon="'mdi-reload'" :loading="loading">
                 Recargar
             </SecondaryButton>
         </div>
@@ -124,21 +124,17 @@ export default {
          */
         async updateSections() {
             this.loading = true;
-            const getRequest = () => {
-                return axios.get(`api/inspection/forms/get-form/${this.item.ct_inspection_uuid}`);
-            };
 
-            await toast.promise(getRequest(), {
-                loading: 'Actualizando secciones...',
-                success: (data) => {
+            await axios.get(`api/inspection/forms/get-form/${this.item.ct_inspection_uuid}`)
+                .then(response => {
                     this.loading = false;
-                    this.item.template.sections = data.data.data.sections;
-                    return 'Template actualizado correctamente';
-                },
-                error: (data) => {
+                    this.item.template.sections = response.data.data.sections;
+                    toast.success('Template actualizado correctamente');
+                })
+                .catch(error => {
+                    this.loading = false;
                     this.handleErrors(data);
-                }
-            });
+                });
         },
         resetForm() {
             this.dialog = false;

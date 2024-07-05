@@ -79,7 +79,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 <!-- Dialog for create and update -->
                                                 <!-- Dialog for show and edit template -->
                                                 <v-dialog v-model="dialogTemplate" transition="dialog-bottom-transition"
-                                                    fullscreen>
+                                                    fullscreen persistent>
                                                     <v-card>
                                                         <v-toolbar>
                                                             <v-btn icon="mdi-close" @click="closeTemplate"></v-btn>

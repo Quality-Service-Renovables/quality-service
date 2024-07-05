@@ -241,6 +241,7 @@ export default {
             });
         },
         updateSections() {
+            console.log("Llego a updateSections en SectionCard");
             this.$emit('update-sections');
         },
         resetFormSection() {
