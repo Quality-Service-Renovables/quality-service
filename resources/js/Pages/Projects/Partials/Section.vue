@@ -1,6 +1,6 @@
 <template>
     <div class="max-w-7xl mx-auto sm:px-4 lg:px-6 mb-5 pb-5">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="overflow-hidden shadow-sm sm:rounded-lg">
             <v-card :loading="dialogFormLoading">
                 <v-card-text class="padding-0">
                     <v-container>
