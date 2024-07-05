@@ -7,6 +7,14 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 
+import { useTheme } from 'vuetify'
+
+const theme = useTheme()
+
+function toggleTheme() {
+    theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+}
+
 const showingNavigationDropdown = ref(false);
 </script>
 
@@ -118,7 +126,11 @@ const showingNavigationDropdown = ref(false);
             <!-- Page Heading -->
             <header class="shadow" v-if="$slots.header">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header" />
+                    <div class="d-flex justify-between">
+                        <slot name="header" />
+                        <v-btn :icon="theme.global.current.value.dark ? 'mdi-lightbulb-on' : 'mdi-lightbulb-on-10'"
+                            @click="toggleTheme" variant="tonal" size="x-small"></v-btn>
+                    </div>
                 </div>
             </header>
 

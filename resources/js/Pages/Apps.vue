@@ -3,13 +3,7 @@ import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import App from '@/Components/App.vue';
 import { mdiCheckBold } from '@mdi/js';
-import { useTheme } from 'vuetify'
 
-const theme = useTheme()
-
-function toggleTheme() {
-    theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
-}
 </script>
 
 <template>
@@ -17,10 +11,7 @@ function toggleTheme() {
     <Head title="Dashboard" />
     <AuthenticatedLayout>
         <template #header>
-            <div class="d-flex justify-between">
-                <h2 class="font-semibold text-xl leading-tight">Dashboard</h2>
-            <v-btn icon="mdi-lightbulb-on-50" @click="toggleTheme" variant="tonal" size="x-small"></v-btn>
-            </div>
+            <h2 class="font-semibold text-xl leading-tight">Dashboard</h2>
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
