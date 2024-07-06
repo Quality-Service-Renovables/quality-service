@@ -59,25 +59,29 @@
                                                         <p class="mt-3 text-grey" v-if="field.switch_comment">
                                                             Comentarios:</p>
                                                         <v-row v-if="field.switch_comment">
-                                                            <v-col cols="12">
+                                                            <v-col cols="12" lg="8">
                                                                 <QuillEditor
                                                                     v-model:content="field.content.inspection_form_comments"
-                                                                    theme="snow" toolbar="essential"
-                                                                    contentType="html" v-if="field.switch_comment" />
+                                                                    theme="snow" toolbar="essential" contentType="html"
+                                                                    v-if="field.switch_comment" />
                                                             </v-col>
-                                                            <!--<v-col cols="4">
-                                                                <v-card class="mx-auto border card-suggestions" color="primary" variant="outlined">
-                                                                    <v-card-subtitle class="mt-2 mb-0"><span class="mdi mdi-lightbulb-on-outline"></span> Sugerencias</v-card-subtitle>
-                                                                    <v-card-text class="pt-1">
-                                                                        <v-card variant="tonal" class="my-1">
-                                                                            <p class="m-1">Lorem ipsum dolor sit amet consectetur adipisicing</p>
-                                                                        </v-card>
-                                                                        <v-card variant="tonal" class="my-1">
-                                                                            <p class="m-1">Lorem ipsum dolor sit amet consectetur adipisicing</p>
+                                                            <v-col cols="12" lg="4" v-if="suggestions.length">
+                                                                <v-card class="mx-auto border" color="primary"
+                                                                    variant="outlined">
+                                                                    <v-card-subtitle class="mt-2 mb-0"><span
+                                                                            class="mdi mdi-lightbulb-on-outline"></span>
+                                                                        Sugerencias</v-card-subtitle>
+                                                                    <v-card-text
+                                                                        class="pt-1 card-suggestions overflow-y-auto">
+                                                                        <v-card variant="tonal" class="my-1"
+                                                                            v-for="(sueggest, idx_sueggest) in getSuggestions(field)"
+                                                                            :key="idx_sueggest"
+                                                                            @click="setComment(field, sueggest.text)">
+                                                                            <p class="m-1">{{ sueggest.text }}</p>
                                                                         </v-card>
                                                                     </v-card-text>
                                                                 </v-card>
-                                                            </v-col>-->
+                                                            </v-col>
                                                         </v-row>
                                                         <!-- ct_risk Selector -->
                                                         <p class="mt-3 text-grey" v-if="field.switch_ct_risk">
@@ -155,13 +159,38 @@
                                                                             heigth="100%" contentType="html" />
                                                                         <!-- Comments Field -->
                                                                         <p class="mt-3 text-grey"
-                                                                            v-if="fieldSub.switch_comment">Comentarios:
+                                                                            v-if="fieldSub.switch_comment">
+                                                                            Comentarios:
                                                                         </p>
-                                                                        <QuillEditor
-                                                                            v-model:content="fieldSub.content.inspection_form_comments"
-                                                                            theme="snow" toolbar="essential"
-                                                                            heigth="100%" contentType="html"
-                                                                            v-if="fieldSub.switch_comment" />
+                                                                        <v-row v-if="fieldSub.switch_comment">
+                                                                            <v-col cols="12" lg="8">
+                                                                                <QuillEditor
+                                                                                    v-model:content="fieldSub.content.inspection_form_comments"
+                                                                                    theme="snow" toolbar="essential"
+                                                                                    heigth="100%" contentType="html"
+                                                                                    v-if="fieldSub.switch_comment" />
+                                                                            </v-col>
+                                                                            <v-col cols="12" lg="4" v-if="suggestions.length">
+                                                                                <v-card class="mx-auto border"
+                                                                                    color="primary" variant="outlined">
+                                                                                    <v-card-subtitle
+                                                                                        class="mt-2 mb-0"><span
+                                                                                            class="mdi mdi-lightbulb-on-outline"></span>
+                                                                                        Sugerencias</v-card-subtitle>
+                                                                                    <v-card-text
+                                                                                        class="pt-1 card-suggestions overflow-y-auto">
+                                                                                        <v-card variant="tonal"
+                                                                                            class="my-1"
+                                                                                            v-for="(sueggest, idx_sueggest) in getSuggestions(fieldSub)"
+                                                                                            :key="idx_sueggest"
+                                                                                            @click="setComment(fieldSub, sueggest.text)">
+                                                                                            <p class="m-1">{{
+                                                                                                sueggest.text }}</p>
+                                                                                        </v-card>
+                                                                                    </v-card-text>
+                                                                                </v-card>
+                                                                            </v-col>
+                                                                        </v-row>
                                                                         <!-- ct_risk Selector -->
                                                                         <p class="mt-3 text-grey"
                                                                             v-if="fieldSub.switch_ct_risk">
@@ -234,7 +263,33 @@ export default {
             dialogFormLoading: false,
             sectionsForm: [],
             expandedPanel: [0, 1, 2, 3, 4, 5, 6],
-            ct_risks: []
+            ct_risks: [],
+            suggestions: [
+                {
+                    id: 1,
+                    text: 'Funciona normalmente.'
+                },
+                /*{
+                    id: 2,
+                    text: 'Estado correcto.'
+                },
+                {
+                    id: 3,
+                    text: 'Estado normal.'
+                },*/
+                {
+                    id: 4,
+                    text: 'No se realiza.'
+                },
+                {
+                    id: 5,
+                    text: 'No se detecta.'
+                },
+                /*{
+                    id: 6,
+                    text: 'Estado OK.'
+                },*/
+            ]
         }
     },
     methods: {
@@ -331,7 +386,13 @@ export default {
             } else if (field.switch_ct_risk == false) {
                 field.switch_ct_risk = true;
             }
-        }
+        },
+        getSuggestions(field) {
+            return this.suggestions;
+        },
+        setComment(field, comment) {
+            field.content.inspection_form_comments = field.content.inspection_form_comments + comment;
+        },
     },
     mounted() {
         this.getForm();
@@ -356,8 +417,16 @@ export default {
     height: auto !important;
 }
 
-.card-suggestions{
-    min-height: 300px !important;
-    max-height: 300px !important;
+.card-suggestions {
+    max-height: 200px !important;
+}
+
+.sticky-subtitle {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    /* Asegura que el subtítulo esté por encima del contenido */
+    background-color: white;
+    /* Mantén el mismo color de fondo para el subtítulo */
 }
 </style>
