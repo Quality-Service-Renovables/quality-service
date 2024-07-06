@@ -34,9 +34,9 @@
                                                             <v-card-subtitle>Campo</v-card-subtitle>
                                                         </div>
                                                         <div class="d-flex align-center gap-3">
-                                                            <v-switch v-model="field.switch_comment" color="blue" 
+                                                            <v-switch v-model="field.switch_comment" color="blue"
                                                                 label="Comentario" hide-details></v-switch>
-                                                            <v-switch v-model="field.switch_ct_risk" color="blue" 
+                                                            <v-switch v-model="field.switch_ct_risk" color="blue"
                                                                 label="Riesgo" hide-details
                                                                 @click="setRiesgo(field)"></v-switch>
                                                             <v-icon color="success"
@@ -58,10 +58,27 @@
                                                         <!-- Comments Field -->
                                                         <p class="mt-3 text-grey" v-if="field.switch_comment">
                                                             Comentarios:</p>
-                                                        <QuillEditor
-                                                            v-model:content="field.content.inspection_form_comments"
-                                                            theme="snow" toolbar="essential" heigth="100%"
-                                                            contentType="html" v-if="field.switch_comment" />
+                                                        <v-row v-if="field.switch_comment">
+                                                            <v-col cols="12">
+                                                                <QuillEditor
+                                                                    v-model:content="field.content.inspection_form_comments"
+                                                                    theme="snow" toolbar="essential"
+                                                                    contentType="html" v-if="field.switch_comment" />
+                                                            </v-col>
+                                                            <!--<v-col cols="4">
+                                                                <v-card class="mx-auto border card-suggestions" color="primary" variant="outlined">
+                                                                    <v-card-subtitle class="mt-2 mb-0"><span class="mdi mdi-lightbulb-on-outline"></span> Sugerencias</v-card-subtitle>
+                                                                    <v-card-text class="pt-1">
+                                                                        <v-card variant="tonal" class="my-1">
+                                                                            <p class="m-1">Lorem ipsum dolor sit amet consectetur adipisicing</p>
+                                                                        </v-card>
+                                                                        <v-card variant="tonal" class="my-1">
+                                                                            <p class="m-1">Lorem ipsum dolor sit amet consectetur adipisicing</p>
+                                                                        </v-card>
+                                                                    </v-card-text>
+                                                                </v-card>
+                                                            </v-col>-->
+                                                        </v-row>
                                                         <!-- ct_risk Selector -->
                                                         <p class="mt-3 text-grey" v-if="field.switch_ct_risk">
                                                             Riesgo:</p>
@@ -115,11 +132,10 @@
                                                                         </div>
                                                                         <div class="d-lg-flex align-center gap-3">
                                                                             <v-switch v-model="fieldSub.switch_comment"
-                                                                                color="blue"  label="Comentario"
+                                                                                color="blue" label="Comentario"
                                                                                 hide-details></v-switch>
                                                                             <v-switch v-model="fieldSub.switch_ct_risk"
-                                                                                color="blue"  label="Riesgo"
-                                                                                hide-details
+                                                                                color="blue" label="Riesgo" hide-details
                                                                                 @click="setRiesgo(fieldSub)"></v-switch>
                                                                             <v-icon color="success"
                                                                                 v-if="!isEmptyField(fieldSub.content.inspection_form_value)">mdi-check</v-icon>
@@ -324,7 +340,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 @media screen and (min-width: 375px) {
     .padding-0 {
         padding: 0px !important;
@@ -332,10 +348,16 @@ export default {
 }
 
 .ql-toolbar.ql-snow {
-    border-radius: 15px 15px 0px 0px !important;
+    border-radius: 5px 5px 0px 0px !important;
 }
 
-.ql-container.ql-snow {
-    border-radius: 0px 0px 15px 15px !important;
+.ql-container {
+    border-radius: 0px 0px 5px 5px !important;
+    height: auto !important;
+}
+
+.card-suggestions{
+    min-height: 300px !important;
+    max-height: 300px !important;
 }
 </style>
