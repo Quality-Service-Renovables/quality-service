@@ -253,11 +253,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     v-if="hasPermissionTo('projects.update')">
                                     <v-card :loading="loadingInspectionDialog" :disabled="loadingInspectionDialog">
                                         <v-card-title>
-                                            <span class="text-h5" v-if="!this.inspectionForm.isUpdating">Asignando
+                                            <span class="text-h5" v-if="!inspectionForm.isUpdating">Asignando
                                                 inspección al
                                                 proyecto "{{
         inspectionForm.project_name }}"</span>
-                                            <span class="text-h5" v-if="this.inspectionForm.isUpdating">Actualizando
+                                            <span class="text-h5" v-if="inspectionForm.isUpdating">Actualizando
                                                 inspección
                                                 al proyecto "{{
         inspectionForm.project_name }}"</span>
@@ -328,7 +328,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <v-btn icon="mdi-close" @click="closeSectionDialog()"></v-btn>
                                         <v-toolbar-title class="w-100">
                                             Carga de información
-                                            <p><small>Proyecto: "{{ this.inspectionForm.project_name }}"</small></p>
+                                            <p><small>Proyecto: "{{ inspectionForm.project_name }}"</small></p>
                                         </v-toolbar-title>
                                         <v-spacer></v-spacer>
                                     </v-toolbar>
@@ -342,18 +342,18 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
                                         <v-card-text class="mt-10">
                                             <v-tabs-window v-model="tab">
-                                                <v-tabs-window-item v-if="tab === 'sections'">
+                                                <v-tabs-window-item value="sections">
                                                     <Section :dialogForm="dialogForm"
                                                         :ct_inspection_uuid="ctInspectionUuid"
                                                         :inspection_uuid="inspectionUuid"
                                                         @closeSectionDialog="closeSectionDialog" />
                                                 </v-tabs-window-item>
 
-                                                <v-tabs-window-item v-if="tab === 'evidences'">
+                                                <v-tabs-window-item value="evidences">
                                                     <Evidence :inspection_uuid="inspectionUuid" />
                                                 </v-tabs-window-item>
 
-                                                <v-tabs-window-item v-if="tab === 'recomendations'">
+                                                <v-tabs-window-item value="recomendations">
                                                     <ConclutionAndRecomendation :inspection_uuid="inspectionUuid" />
                                                 </v-tabs-window-item>
                                             </v-tabs-window>
