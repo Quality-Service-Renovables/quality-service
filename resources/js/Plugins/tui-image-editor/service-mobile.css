@@ -33,12 +33,7 @@
         position: inherit !important;
     }
 
-    .lower-canvas{
-        width: 100% !important;
-        height: auto !important;
-    }
-
-    .upper-canvas{
+    .lower-canvas, .upper-canvas{
         width: 100% !important;
         height: auto !important;
     }
