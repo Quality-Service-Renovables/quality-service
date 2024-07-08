@@ -29,7 +29,7 @@
 
     .tui-image-editor{
         width: 100% !important;
-        padding: 10px !important;
+        padding: .2rem !important;
         position: inherit !important;
     }
 
@@ -38,4 +38,8 @@
         height: auto !important;
     }
 
+    .upper-canvas{
+        width: 100% !important;
+        height: auto !important;
+    }
 }
