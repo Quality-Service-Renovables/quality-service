@@ -3,7 +3,7 @@
 
     <v-row>
         <v-col cols="12" sm="12">
-            <v-data-table :headers="headers" :items="roles" fixed-header :search="search" :loading="loadingRoles">
+            <v-data-table :headers="headers" :items="roles" fixed-header :search="search" :mobile="isMobile()" :loading="loadingRoles">
                 <template v-slot:top>
                     <v-toolbar flat>
                         <v-toolbar-title class="ml-1">

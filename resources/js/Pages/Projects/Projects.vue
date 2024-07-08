@@ -16,8 +16,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                     <v-card>
                         <v-row>
                             <v-col cols="12" sm="12">
-
-                                <v-data-table :headers="headers" :items="projects" fixed-header :search="search">
+                                <v-data-table :headers="headers" :items="projects" fixed-header :search="search" :mobile="isMobile()">
                                     <template v-slot:item.status.status="{ value, item }">
                                         <v-chip size="small" class="m-1">{{ value }}</v-chip>
                                     </template>

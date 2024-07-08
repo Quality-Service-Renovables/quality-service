@@ -17,7 +17,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                     <v-card>
                         <v-row>
                             <v-col cols="12" sm="12">
-                                <v-data-table :headers="headers" :items="equipments" fixed-header :search="search">
+                                <v-data-table :headers="headers" :items="equipments" fixed-header :search="search" :mobile="isMobile()">
                                     <template v-slot:item.equipment_image="{ item }">
                                         <v-avatar :image="'../../' + item.equipment_image" size="40" class="ma-1 avatar"
                                             @click="showImage(item.equipment_image)"></v-avatar>

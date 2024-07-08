@@ -1,4 +1,5 @@
 import { toast } from "vue-sonner";
+import { useDisplay } from "vuetify";
 
 function handleErrors(data) {
     if (data.response) {
@@ -23,10 +24,22 @@ function handleErrors(data) {
                 }, 500);
             }
         } else {
-            setTimeout(() => toast.error(`Algo salió mal, por favor intenta de nuevo o comunicate con TI.`), 100);
+            setTimeout(
+                () =>
+                    toast.error(
+                        `Algo salió mal, por favor intenta de nuevo o comunicate con TI.`
+                    ),
+                100
+            );
         }
     } else {
-        setTimeout(() => toast.error(`Algo salió mal, por favor intenta de nuevo o comunicate con TI.`), 100);
+        setTimeout(
+            () =>
+                toast.error(
+                    `Algo salió mal, por favor intenta de nuevo o comunicate con TI.`
+                ),
+            100
+        );
     }
 }
 
@@ -34,9 +47,23 @@ function hasPermissionTo(permission) {
     return this.$page.props.auth.permissions.includes(permission);
 }
 
+function isMobile() {
+    let mobile = false;
+    const display = useDisplay();
+    const updateMobile = () => {
+        mobile = display.mobile.value;
+    };
+    updateMobile();
+    window.addEventListener("resize", updateMobile);
+    this.removeResizeListener = () =>
+        window.removeEventListener("resize", updateMobile);
+    return mobile;
+}
+
 export default {
     methods: {
         handleErrors,
         hasPermissionTo,
+        isMobile,
     },
 };
