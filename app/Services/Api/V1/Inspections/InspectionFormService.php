@@ -446,4 +446,23 @@ class InspectionFormService extends Service
         // Respuesta del módulo
         return $this->response;
     }
+
+    public function getFieldSuggestions(string $uuid)
+    {
+        try {
+            $categoryForm = CtInspectionForm::where([
+                'ct_inspection_form_uuid' => $uuid
+            ])->first();
+            $inspectionForms = InspectionForm::where([
+                'ct_inspection_form_id' => $categoryForm->ct_inspection_form_id,
+            ])->get();
+            $this->response['message'] = trans('api.read');
+            $this->response['data'] = $inspectionForms->pluck('inspection_form_comments');
+        } catch (Throwable $exceptions) {
+            // Manejo del error
+            $this->setExceptions($exceptions);
+        }
+        // Respuesta del módulo
+        return $this->response;
+    }
 }

@@ -100,6 +100,24 @@ class FormController extends Controller
         return response()->json($this->service->response, $this->service->statusCode);
     }
 
+    public function getFieldSuggestions($uuid): JsonResponse
+    {
+        $request = ['ct_inspection_form_uuid' => $uuid];
+        $validated = Validator::make($request, [
+            'ct_inspection_form_uuid' => 'required|string|min:10|max:255|exists:ct_inspection_forms,ct_inspection_form_uuid',
+        ]);
+
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->getFieldSuggestions($uuid);
+
+        return response()->json($this->service->response, $this->service->statusCode);
+    }
+
     /**
      * Sets the form fields.
      *
