@@ -45,7 +45,7 @@ export default {
         this.imageEditor = new ImageEditor(document.querySelector('#tui-image-editor-container'), {
             includeUI: {
                 loadImage: {
-                    path: this.evidence.inspection_evidence,
+                    path: this.form.evidence_store,
                     name: 'SampleImage',
                 },
                 menu: ['crop', 'text', 'draw'],
