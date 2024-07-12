@@ -59,7 +59,7 @@ class OilController extends Controller
      */
     public function show(string $uuid): JsonResponse
     {
-        if (! $this->commonValidation($uuid)) {
+        if (!$this->commonValidation($uuid)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -75,7 +75,7 @@ class OilController extends Controller
     {
         $this->service->read();
 
-        $this->service->response['message'] = 'Api edit request not available: '.$uuid;
+        $this->service->response['message'] = 'Api edit request not available: ' . $uuid;
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
@@ -125,7 +125,7 @@ class OilController extends Controller
      */
     public function destroy(string $uuid): JsonResponse
     {
-        if (! $this->commonValidation($uuid)) {
+        if (!$this->commonValidation($uuid)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -149,7 +149,8 @@ class OilController extends Controller
     /**
      * Perform common validation for a given UUID.
      *
-     * @param  string  $uuid  The UUID to validate.
+     * @param string $uuid The UUID to validate.
+     *
      * @return bool True if the validation passes, false otherwise.
      */
     private function commonValidation(string $uuid): bool

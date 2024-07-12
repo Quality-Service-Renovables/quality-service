@@ -30,6 +30,7 @@ class Trademark extends Model
     {
         return $this->hasOne(Category::class, 'ct_trademark_id', 'ct_trademark_id');
     }
+
     /**
      * Retrieve all models associated with this trademark.
      *

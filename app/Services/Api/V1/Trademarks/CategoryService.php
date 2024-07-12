@@ -32,7 +32,8 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Create a new trademark category
      *
-     * @param  \Illuminate\Http\Request  $request  The HTTP request instance
+     * @param \Illuminate\Http\Request $request The HTTP request instance
+     *
      * @return array Returns an array containing the created trademark category
      */
     public function create(Request $request): array
@@ -85,7 +86,8 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Updates a category.
      *
-     * @param  Request  $request  The request containing the updated category information.
+     * @param Request $request The request containing the updated category information.
+     *
      * @return array The response containing the message and data of the updated category.
      */
     public function update(Request $request): array
@@ -122,7 +124,8 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Delete a category
      *
-     * @param  string  $uuid  The UUID of the category to delete
+     * @param string $uuid The UUID of the category to delete
+     *
      * @return array The response data
      */
     public function delete(string $uuid): array
@@ -151,7 +154,8 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Retrieves the category and its associated trademarks based on its UUID.
      *
-     * @param  string  $uuid  The UUID of the category.
+     * @param string $uuid The UUID of the category.
+     *
      * @return array The response containing the message and data.
      */
     public function show(string $uuid): array

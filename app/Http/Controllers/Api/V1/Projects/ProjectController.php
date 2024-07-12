@@ -8,7 +8,6 @@ use App\Services\Api\V1\Projects\ProjectService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -51,7 +50,7 @@ class ProjectController extends Controller
     {
         $request = (['project_uuid' => $uuid]);
 
-        if (! $this->commonValidation($request)) {
+        if (!$this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -93,7 +92,7 @@ class ProjectController extends Controller
     {
         $request = ['project_uuid' => $uuid];
 
-        if (! $this->commonValidation($request)) {
+        if (!$this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -101,6 +100,7 @@ class ProjectController extends Controller
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
+
     /**
      * Render the equipment component.
      */
@@ -112,6 +112,7 @@ class ProjectController extends Controller
             'projects' => $this->service->response['data'],
         ]);
     }
+
     /**
      * Perform common validation for the request data.
      *

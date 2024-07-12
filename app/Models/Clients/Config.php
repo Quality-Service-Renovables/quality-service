@@ -20,5 +20,5 @@ class Config extends Model
         'send_client_report',
         'crypt_report',
     ];
-    protected $hidden = ['client_configuration_id','client_id'];
+    protected $hidden = ['client_configuration_id', 'client_id'];
 }

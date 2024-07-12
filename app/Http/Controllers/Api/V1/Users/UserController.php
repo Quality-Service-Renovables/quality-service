@@ -130,7 +130,7 @@ class UserController extends Controller
     {
         $request = ['uuid' => $uuid];
 
-        if (! $this->commonValidation($request)) {
+        if (!$this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 

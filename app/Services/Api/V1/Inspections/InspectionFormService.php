@@ -6,18 +6,17 @@
 
 namespace App\Services\Api\V1\Inspections;
 
-use Throwable;
-use App\Services\Service;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\Models\Inspections\CtRisk;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use App\Models\Inspections\Inspection;
-use App\Models\Inspections\InspectionForm;
 use App\Models\Inspections\Categories\CtInspection;
 use App\Models\Inspections\Categories\CtInspectionForm;
 use App\Models\Inspections\Categories\CtInspectionSection;
+use App\Models\Inspections\Inspection;
+use App\Models\Inspections\InspectionForm;
+use App\Services\Service;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Throwable;
 
 class InspectionFormService extends Service
 {
@@ -26,7 +25,8 @@ class InspectionFormService extends Service
     /**
      * Sets the form for a given request.
      *
-     * @param  Request  $request  The HTTP request object.
+     * @param Request $request The HTTP request object.
+     *
      * @return array The response array.
      */
     public function setForm(Request $request): array
@@ -71,9 +71,9 @@ class InspectionFormService extends Service
     /**
      * Sets the sub-sections for a given section.
      *
-     * @param  array  $subSections  The array of sub-sections.
-     * @param  int  $ctInspectionId  The inspection category ID.
-     * @param  int  $sectionRelationId  The ID of the parent section.
+     * @param array $subSections       The array of sub-sections.
+     * @param int   $ctInspectionId    The inspection category ID.
+     * @param int   $sectionRelationId The ID of the parent section.
      */
     private function setSubSection(array $subSections, int $ctInspectionId, int $sectionRelationId): void
     {
@@ -88,9 +88,10 @@ class InspectionFormService extends Service
     /**
      * Create a new inspection section.
      *
-     * @param  array  $section  The section data.
-     * @param  int  $ctInspectionId  The ID of the inspection.
-     * @param  int|null  $sectionRelationId  The ID of the parent section relation (optional).
+     * @param array    $section           The section data.
+     * @param int      $ctInspectionId    The ID of the inspection.
+     * @param int|null $sectionRelationId The ID of the parent section relation (optional).
+     *
      * @return int The ID of the created section.
      */
     private function setSection(array $section, int $ctInspectionId, ?int $sectionRelationId = null): int
@@ -109,8 +110,8 @@ class InspectionFormService extends Service
     /**
      * Sets the section fields for a given inspection section.
      *
-     * @param  array  $fields  The array of fields to be created.
-     * @param  int  $inspectionSectionId  The ID of the inspection section.
+     * @param array $fields              The array of fields to be created.
+     * @param int   $inspectionSectionId The ID of the inspection section.
      */
     private function setSectionFields(array $fields, int $inspectionSectionId): void
     {
@@ -128,7 +129,8 @@ class InspectionFormService extends Service
     /**
      * Retrieves the form for a given inspection category UUID.
      *
-     * @param  string  $uuid  The UUID of the inspection category.
+     * @param string $uuid The UUID of the inspection category.
+     *
      * @return array The form data.
      */
     public function getForm(string $uuid): array
@@ -166,7 +168,8 @@ class InspectionFormService extends Service
     /**
      * Retrieves the form for a given inspection category UUID, related to an inspection.
      *
-     * @param  string  $uuid  The UUID of the inspection.
+     * @param string $uuid The UUID of the inspection.
+     *
      * @return array The form data.
      */
     public function getFormInspection(string $uuid): array
@@ -209,8 +212,9 @@ class InspectionFormService extends Service
     /**
      * Builds the form based on sections and fields.
      *
-     * @param  \Illuminate\Support\Collection  $sections  The collection of sections.
-     * @param  \Illuminate\Support\Collection  $fields  The collection of fields.
+     * @param \Illuminate\Support\Collection $sections The collection of sections.
+     * @param \Illuminate\Support\Collection $fields   The collection of fields.
+     *
      * @return array The built form.
      */
     private function buildForm(Collection $sections, Collection $fields): array
@@ -311,7 +315,8 @@ class InspectionFormService extends Service
     /**
      * Sets the form fields for a given inspection form.
      *
-     * @param  Request  $request  The request object containing the form data.
+     * @param Request $request The request object containing the form data.
+     *
      * @return array The response data.
      */
     public function setFormFields(Request $request): array
@@ -417,7 +422,8 @@ class InspectionFormService extends Service
     /**
      * Deletes a form field by UUID.
      *
-     * @param  string  $uuid  The UUID of the form field to be deleted.
+     * @param string $uuid The UUID of the form field to be deleted.
+     *
      * @return array The response array containing the status code, message, and data.
      */
     public function deleteFormField(string $uuid): array
@@ -451,7 +457,7 @@ class InspectionFormService extends Service
     {
         try {
             $categoryForm = CtInspectionForm::where([
-                'ct_inspection_form_uuid' => $uuid
+                'ct_inspection_form_uuid' => $uuid,
             ])->first();
             $inspectionForms = InspectionForm::where([
                 'ct_inspection_form_id' => $categoryForm->ct_inspection_form_id,

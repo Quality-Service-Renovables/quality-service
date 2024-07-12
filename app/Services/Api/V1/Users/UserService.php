@@ -20,7 +20,6 @@
 namespace App\Services\Api\V1\Users;
 
 use App\Models\Clients\Client;
-use App\Models\Equipments\Category;
 use App\Models\Equipments\Equipment;
 use App\Models\Users\User;
 use App\Services\Api\ServiceInterface;
@@ -95,7 +94,8 @@ class UserService extends Service implements ServiceInterface
     /**
      * Update equipment data
      *
-     * @param  Request  $request  The request object containing the updated data
+     * @param Request $request The request object containing the updated data
+     *
      * @return array Returns an array containing the updated equipment data
      */
     public function update(Request $request): array
@@ -146,7 +146,8 @@ class UserService extends Service implements ServiceInterface
     /**
      * Update equipment data
      *
-     * @param  Request  $request  The request object containing the updated data
+     * @param Request $request The request object containing the updated data
+     *
      * @return array Returns an array containing the updated equipment data
      */
     public function updatePicture(Request $request): array
@@ -202,7 +203,8 @@ class UserService extends Service implements ServiceInterface
     /**
      * Delete equipment by UUID.
      *
-     * @param  string  $uuid  The UUID of the equipment to be deleted.
+     * @param string $uuid The UUID of the equipment to be deleted.
+     *
      * @return array The response array with status, message, and data.
      */
     public function delete(string $uuid): array
@@ -236,7 +238,8 @@ class UserService extends Service implements ServiceInterface
     /**
      * Retrieves a category by UUID
      *
-     * @param  string  $uuid  The UUID of the category to retrieve
+     * @param string $uuid The UUID of the category to retrieve
+     *
      * @return array Returns an array containing the status, message, and data of the response
      */
     public function show(string $uuid): array
@@ -247,8 +250,8 @@ class UserService extends Service implements ServiceInterface
                 'category', 'status', 'trademark', 'model',
             ])->where('equipment_uuid', $uuid)->first();
             $this->response['message'] = $equipment === null
-            ? trans('api.not_found')
-            : trans('api.show');
+                ? trans('api.not_found')
+                : trans('api.show');
             $this->response['data'] = $equipment ?? [];
         } catch (Throwable $exceptions) {
             // Manejo del error
@@ -262,7 +265,8 @@ class UserService extends Service implements ServiceInterface
     /**
      * Retrieves users based on their role.
      *
-     * @param  string  $rol  The role to filter users.
+     * @param string $rol The role to filter users.
+     *
      * @return array The response containing the users.
      */
     public function getRolUsers(string $rol): array

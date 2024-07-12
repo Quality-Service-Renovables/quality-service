@@ -8,7 +8,6 @@ use App\Services\Api\V1\Projects\EmployeeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Inertia\Response;
 
 class EmployeeController extends Controller
 {

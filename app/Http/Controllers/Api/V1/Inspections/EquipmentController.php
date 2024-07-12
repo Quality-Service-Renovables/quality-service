@@ -67,7 +67,7 @@ class EquipmentController extends Controller
     {
         $request = (['inspection_equipment_uuid' => $uuid]);
 
-        if (! $this->commonValidation($request)) {
+        if (!$this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -75,12 +75,13 @@ class EquipmentController extends Controller
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
+
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $uuid): JsonResponse
     {
-        $this->service->response['message'] = 'Api edit request not available: '.$uuid;
+        $this->service->response['message'] = 'Api edit request not available: ' . $uuid;
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
@@ -131,7 +132,7 @@ class EquipmentController extends Controller
     {
         $request = ['inspection_equipment_uuid' => $uuid];
 
-        if (! $this->commonValidation($request)) {
+        if (!$this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
