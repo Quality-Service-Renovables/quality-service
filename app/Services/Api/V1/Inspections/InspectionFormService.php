@@ -461,7 +461,7 @@ class InspectionFormService extends Service
             ])->first();
             $inspectionForms = InspectionForm::where([
                 'ct_inspection_form_id' => $categoryForm->ct_inspection_form_id,
-            ])->get();
+            ])->whereNotNull("inspection_form_comments")->get();
             $this->response['message'] = trans('api.read');
             $this->response['data'] = $inspectionForms->pluck('inspection_form_comments');
         } catch (Throwable $exceptions) {
