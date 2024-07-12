@@ -62,7 +62,7 @@ class TrademarkController extends Controller
     {
         $request = (['trademark_uuid' => $uuid]);
 
-        if (! $this->commonValidation($request)) {
+        if (!$this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -118,7 +118,7 @@ class TrademarkController extends Controller
     {
         $request = ['trademark_uuid' => $uuid];
 
-        if (! $this->commonValidation($request)) {
+        if (!$this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 

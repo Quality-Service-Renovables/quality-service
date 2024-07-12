@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1\Inspections;
 
-use Inertia\Response;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Services\Api\V1\Inspections\RiskService;
 use App\Http\Requests\Api\Inspections\CategoryRequest;
+use App\Services\Api\V1\Inspections\RiskService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class RiskController extends Controller
 {

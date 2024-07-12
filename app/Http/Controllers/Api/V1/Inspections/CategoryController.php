@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Inspections;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Inspections\CategoryRequest;
+use App\Services\Api\V1\Inspections\Categories\CtInspectionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -13,14 +14,14 @@ use Inertia\Response;
 
 class CategoryController extends Controller
 {
-    protected \App\Services\Api\V1\Inspections\Categories\CtInspectionService $service;
+    protected CtInspectionService $service;
 
     /**
      * Constructor function for the class.
      */
     public function __construct()
     {
-        $this->service = new \App\Services\Api\V1\Inspections\Categories\CtInspectionService();
+        $this->service = new CtInspectionService();
     }
 
     /**
@@ -60,7 +61,7 @@ class CategoryController extends Controller
      */
     public function show(string $uuid): JsonResponse
     {
-        if (! $this->commonValidation($uuid)) {
+        if (!$this->commonValidation($uuid)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -125,7 +126,7 @@ class CategoryController extends Controller
      */
     public function destroy(string $uuid): JsonResponse
     {
-        if (! $this->commonValidation($uuid)) {
+        if (!$this->commonValidation($uuid)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -151,7 +152,8 @@ class CategoryController extends Controller
     /**
      * Perform common validation for the given UUID.
      *
-     * @param  string  $uuid  The UUID to validate.
+     * @param string $uuid The UUID to validate.
+     *
      * @return bool True if the validation passes, false otherwise.
      */
     private function commonValidation(string $uuid): bool

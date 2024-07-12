@@ -45,12 +45,12 @@ class Service
      * Sets the response message to the exception message.
      * Sets the status code to 500.
      *
-     * @param  Throwable  $exceptions  The exception object.
+     * @param Throwable $exceptions The exception object.
      */
     public function setExceptions(Throwable $exceptions): void
     {
         $this->response['status'] = 'error';
-        $this->response['message'] = $exceptions->getMessage().' Line: '.$exceptions->getLine();
+        $this->response['message'] = $exceptions->getMessage() . ' Line: ' . $exceptions->getLine();
         $this->statusCode = 500;
     }
 
@@ -61,7 +61,7 @@ class Service
      * Updates the status value to 'fail'.
      * Updates the message value to the provided errors.
      *
-     * @param  mixed  $errors  The validation errors.
+     * @param mixed $errors The validation errors.
      */
     public function setFailValidation(mixed $errors): void
     {
@@ -89,12 +89,12 @@ class Service
              * clonada del Request, en caso de proveer el nombre personalizado en el
              * atributo $path se retorna sobre este atributo la ruta de guardado del documento.
              **/
-            if (($file === $path) || ! $path) {
+            if (($file === $path) || !$path) {
                 $path = $file;
                 $request = new Request($request->except($file));
             }
             $request->merge([
-                $path => $this->getApplicationPaths()->application.$pathStorage,
+                $path => $this->getApplicationPaths()->application . $pathStorage,
             ]);
         }
 

@@ -5,7 +5,7 @@ namespace App\Services\Api;
 use App\Models\Projects\Audits as ProjectAudits;
 use Illuminate\Support\Str;
 
-Trait Audits
+trait Audits
 {
     public function proyectAudits(int $project, int $status, int $log, string $comments = null)
     {
