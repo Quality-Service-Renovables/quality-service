@@ -61,7 +61,7 @@ class CategoryController extends Controller
     {
         $request = (['ct_equipment_uuid' => $uuid]);
 
-        if (! $this->commonValidation($request)) {
+        if (!$this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -77,7 +77,7 @@ class CategoryController extends Controller
     {
         $this->service->read();
 
-        $this->service->response['message'] = 'Api edit request not available: '.$uuid;
+        $this->service->response['message'] = 'Api edit request not available: ' . $uuid;
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
@@ -122,7 +122,7 @@ class CategoryController extends Controller
     {
         $request = ['ct_equipment_uuid' => $uuid];
 
-        if (! $this->commonValidation($request)) {
+        if (!$this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 

@@ -9,6 +9,7 @@
  *
  * @since    2024.1
  */
+
 namespace App\Models\Trademarks;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;

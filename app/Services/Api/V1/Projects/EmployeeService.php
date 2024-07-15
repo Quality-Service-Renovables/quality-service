@@ -40,7 +40,8 @@ class EmployeeService extends Service implements ServiceInterface
     /**
      * Create a new equipment
      *
-     * @param  Request  $request  The request object
+     * @param Request $request The request object
+     *
      * @return array Returns an array containing the created equipment data
      */
     public function create(Request $request): array
@@ -114,7 +115,8 @@ class EmployeeService extends Service implements ServiceInterface
     /**
      * Update equipment data
      *
-     * @param  Request  $request  The request object containing the updated data
+     * @param Request $request The request object containing the updated data
+     *
      * @return array Returns an array containing the updated equipment data
      */
     public function update(Request $request): array
@@ -164,7 +166,8 @@ class EmployeeService extends Service implements ServiceInterface
     /**
      * Delete equipment by UUID.
      *
-     * @param  string  $uuid  The UUID of the equipment to be deleted.
+     * @param string $uuid The UUID of the equipment to be deleted.
+     *
      * @return array The response array with status, message, and data.
      */
     public function delete(string $uuid): array
@@ -191,7 +194,8 @@ class EmployeeService extends Service implements ServiceInterface
     /**
      * Retrieves a category by UUID
      *
-     * @param  string  $uuid  The UUID of the category to retrieve
+     * @param string $uuid The UUID of the category to retrieve
+     *
      * @return array Returns an array containing the status, message, and data of the response
      */
     public function show(string $uuid): array
@@ -202,8 +206,8 @@ class EmployeeService extends Service implements ServiceInterface
                 'user', 'project',
             ])->where('project_employee_uuid', $uuid)->first();
             $this->response['message'] = $project === null
-            ? trans('api.not_found')
-            : trans('api.show');
+                ? trans('api.not_found')
+                : trans('api.show');
             $this->response['data'] = $project ? $project->toArray() : [];
         } catch (Throwable $exceptions) {
             // Manejo del error

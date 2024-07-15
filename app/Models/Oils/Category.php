@@ -1,6 +1,7 @@
 <?php
 
 /** @noinspection UnknownInspectionInspection */
+
 /** @noinspection LaravelUnknownEloquentFactoryInspection */
 
 namespace App\Models\Oils;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Category extends Model
 {
     use HasFactory, SoftDeletes;
+
     protected $table = 'ct_oils';
     protected $primaryKey = 'ct_oil_id';
     protected $fillable = [

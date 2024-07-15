@@ -27,7 +27,8 @@ class StatusService extends Service implements ServiceInterface
     /**
      * Create a new status
      *
-     * @param  Request  $request  The request object containing the status data
+     * @param Request $request The request object containing the status data
+     *
      * @return array Returns an array containing the created status data
      */
     public function create(Request $request): array
@@ -66,7 +67,8 @@ class StatusService extends Service implements ServiceInterface
     /**
      * Update status request
      *
-     * @param  Request  $request  The request object containing the data to update the status
+     * @param Request $request The request object containing the data to update the status
+     *
      * @return array Returns an array containing the updated status data
      *
      * @throws Exception Throws an exception if an error occurs during the update
@@ -120,7 +122,8 @@ class StatusService extends Service implements ServiceInterface
     /**
      * Delete a status record by UUID
      *
-     * @param  string  $uuid  The UUID of the status record to delete
+     * @param string $uuid The UUID of the status record to delete
+     *
      * @return array Returns an array containing the response data
      */
     public function delete(string $uuid): array
@@ -144,10 +147,12 @@ class StatusService extends Service implements ServiceInterface
         // Respuesta del módulo
         return $this->response;
     }
+
     /**
      * Retrieve a status by its UUID
      *
-     * @param  string  $uuid  The UUID of the status to retrieve
+     * @param string $uuid The UUID of the status to retrieve
+     *
      * @return array Returns an array containing the status data or an empty array if the status was not found
      */
     public function show(string $uuid): array

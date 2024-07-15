@@ -30,4 +30,9 @@ class CtInspectionForm extends Model
     {
         return $this->belongsTo(InspectionForm::class, 'ct_inspection_form_id', 'ct_inspection_form_id');
     }
+
+    public function inspectionForms()
+    {
+        return $this->hasMany(InspectionForm::class, 'ct_inspection_form_id', 'ct_inspection_form_id');
+    }
 }

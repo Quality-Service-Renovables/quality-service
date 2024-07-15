@@ -22,7 +22,8 @@ class TrademarkService extends Service implements ServiceInterface
     /**
      * Creates a new trademark based on the provided request data.
      *
-     * @param  Request  $request  The request object containing the trademark data.
+     * @param Request $request The request object containing the trademark data.
+     *
      * @return array The response array containing the created trademark data.
      *
      * @throws Throwable If an error occurs during the creation process.
@@ -79,7 +80,8 @@ class TrademarkService extends Service implements ServiceInterface
     /**
      * Updates a trademark based on the provided request.
      *
-     * @param  Request  $request  The request object containing the trademark data.
+     * @param Request $request The request object containing the trademark data.
+     *
      * @return array The response array containing the updated trademark data.
      */
     public function update(Request $request): array
@@ -91,7 +93,7 @@ class TrademarkService extends Service implements ServiceInterface
             $request->merge([
                 'trademark_code' => create_slug($request->trademark),
                 'ct_trademark_id' => Category::where('ct_trademark_code', $request->ct_trademark_code)
-                ->first()->ct_trademark_id,
+                    ->first()->ct_trademark_id,
             ]);
             // Actualiza marca
             $trademark = Trademark::where('trademark_uuid', $request->trademark_uuid)->first();
@@ -120,7 +122,8 @@ class TrademarkService extends Service implements ServiceInterface
     /**
      * Deletes a trademark by its UUID.
      *
-     * @param  string  $uuid  The UUID of the trademark to be deleted.
+     * @param string $uuid The UUID of the trademark to be deleted.
+     *
      * @return array The response array containing the result of the delete operation.
      */
     public function delete(string $uuid): array
@@ -149,7 +152,8 @@ class TrademarkService extends Service implements ServiceInterface
     /**
      * Retrieves the category of a trademark based on its UUID.
      *
-     * @param  string  $uuid  The UUID of the trademark.
+     * @param string $uuid The UUID of the trademark.
+     *
      * @return array The response array containing the message and the category data.
      */
     public function show(string $uuid): array
