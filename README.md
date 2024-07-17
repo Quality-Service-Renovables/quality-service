@@ -3,7 +3,6 @@
 
 ## Application Web Service
 
-
 Plantilla de proyecto Laravel con Vue 3, componentes incluidos
 
 - Laravel 11
