@@ -21,8 +21,7 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Create a new oil category
      *
-     * @param Request $request The request object containing the category data
-     *
+     * @param  Request  $request  The request object containing the category data
      * @return array Returns an array containing the response data
      */
     public function create(Request $request): array
@@ -60,8 +59,7 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Update a category
      *
-     * @param Request $request The request object
-     *
+     * @param  Request  $request  The request object
      * @return array Returns an array containing the updated category data
      */
     public function update(Request $request): array
@@ -112,8 +110,7 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Deletes a category from the database.
      *
-     * @param string $uuid The UUID of the category to be deleted.
-     *
+     * @param  string  $uuid  The UUID of the category to be deleted.
      * @return array The response data indicating the success of
      */
     public function delete(string $uuid): array
@@ -142,8 +139,7 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Retrieves a category from the database by its UUID.
      *
-     * @param string $uuid The UUID of the category.
-     *
+     * @param  string  $uuid  The UUID of the category.
      * @return array The response data containing the category.
      */
     public function show(string $uuid): array

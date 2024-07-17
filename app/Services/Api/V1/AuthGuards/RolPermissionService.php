@@ -19,20 +19,23 @@
 
 namespace App\Services\Api\V1\AuthGuards;
 
-use App\Services\Api\ServiceInterface;
 use App\Services\Service;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\Status\Status;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use App\Models\Equipments\Category;
+use App\Models\Equipments\Equipment;
+use App\Services\Api\ServiceInterface;
+use Spatie\Permission\Models\Permission;
 
 class RolPermissionService extends Service implements ServiceInterface
 {
     public string $nameService = 'rol_permission_service';
 
     public function create(Request $request): array
-    {
-    }
+    {}
 
     /**
      * Retrieve all equipment data
@@ -52,8 +55,7 @@ class RolPermissionService extends Service implements ServiceInterface
     /**
      * Update equipment data
      *
-     * @param Request $request The request object containing the updated data
-     *
+     * @param  Request  $request  The request object containing the updated data
      * @return array Returns an array containing the updated equipment data
      */
     public function update(Request $request): array
@@ -100,22 +102,18 @@ class RolPermissionService extends Service implements ServiceInterface
     /**
      * Delete equipment by UUID.
      *
-     * @param string $uuid The UUID of the equipment to be deleted.
-     *
+     * @param  string  $uuid  The UUID of the equipment to be deleted.
      * @return array The response array with status, message, and data.
      */
     public function delete(string $uuid): array
-    {
-    }
+    {}
 
     /**
      * Retrieves a category by UUID
      *
-     * @param string $uuid The UUID of the category to retrieve
-     *
+     * @param  string  $uuid  The UUID of the category to retrieve
      * @return array Returns an array containing the status, message, and data of the response
      */
     public function show(string $uuid): array
-    {
-    }
+    {}
 }

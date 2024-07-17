@@ -6,6 +6,7 @@ namespace App\Models\Users;
 //use App\Models\AuthGuards\Role;
 use App\Models\Clients\Client;
 use App\Models\Projects\Employee;
+use App\Models\Projects\Project;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

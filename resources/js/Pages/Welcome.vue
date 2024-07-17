@@ -49,10 +49,10 @@ function handleImageError() {
                         <div class="flex justify-center">
                             <Link
                                 v-if="$page.props.auth.user"
-                                :href="route('home')"
+                                :href="route('dashboard')"
                                 class="mt-4 text-white py-2 px-4 bg-gray-900 hover:bg-blue-700 rounded"
                             >
-                                Home
+                                Dashboard
                             </Link>
 
                             <template v-else>

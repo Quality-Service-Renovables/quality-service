@@ -1,35 +1,35 @@
 <?php
 
-use App\Http\Controllers\Api\V1\AuthGuards\RolePermissionController;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Api\V1\Oils\OilController;
+use App\Http\Controllers\Api\V1\Users\UserController;
 use App\Http\Controllers\Api\V1\Clients\ClientController;
+use App\Http\Controllers\Api\V1\Failures\FailureController;
+use App\Http\Controllers\Api\V1\Projects\ProjectController;
 use App\Http\Controllers\Api\V1\Equipments\CategoryController;
 use App\Http\Controllers\Api\V1\Equipments\EquipmentController;
-use App\Http\Controllers\Api\V1\Failures\FailureController;
-use App\Http\Controllers\Api\V1\Inspections\CategoryController as InspectionCategoryController;
-use App\Http\Controllers\Api\V1\Inspections\Reports\ReportController;
-use App\Http\Controllers\Api\V1\Oils\OilController;
-use App\Http\Controllers\Api\V1\Projects\ProjectController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkController;
+use App\Http\Controllers\Api\V1\Inspections\InspectionController;
+use App\Http\Controllers\Api\V1\AuthGuards\RolePermissionController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
-use App\Http\Controllers\Api\V1\Users\UserController;
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\Api\V1\Inspections\Reports\ReportController;
+use App\Http\Controllers\Api\V1\Inspections\CategoryController as InspectionCategoryController;
 
 Route::get('/', function () {
-    /*return Inertia::render('Welcome', [
+    return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
-    ]);*/
-    return redirect('index');
+    ]);
 });
 
-Route::get('/home', function () {
+Route::get('/dashboard', function () {
     return Inertia::render('Apps');
-})->middleware(['auth', 'verified'])->name('home');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -56,7 +56,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/models', [TrademarkModelController::class, 'component'])->name('models');
     });
 
-    //Oils
+     //Oils
     Route::group(['middleware' => ['permission:oils']], function () {
         Route::get('/oils', [OilController::class, 'component'])->name('oils');
     });
@@ -93,10 +93,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/users', [UserController::class, 'component'])->name('users');
     });
 
-    Route::get('/index/{any?}', function ($any = null) {
-        return redirect('index/' . $any);
-    })->where('any', '.*');
-
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
