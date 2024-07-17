@@ -35,8 +35,7 @@ class FailureService extends Service implements ServiceInterface
     /**
      * Creates a new failure.
      *
-     * @param Request $request The request object.
-     *
+     * @param  Request  $request  The request object.
      * @return array The response data.
      *
      */
@@ -91,8 +90,7 @@ class FailureService extends Service implements ServiceInterface
     /**
      * Update equipment data
      *
-     * @param Request $request The request object containing the updated data
-     *
+     * @param  Request  $request  The request object containing the updated data
      * @return array Returns an array containing the updated equipment data
      */
     public function update(Request $request): array
@@ -133,8 +131,7 @@ class FailureService extends Service implements ServiceInterface
     /**
      * Delete equipment by UUID.
      *
-     * @param string $uuid The UUID of the equipment to be deleted.
-     *
+     * @param  string  $uuid  The UUID of the equipment to be deleted.
      * @return array The response array with status, message, and data.
      */
     public function delete(string $uuid): array
@@ -161,8 +158,7 @@ class FailureService extends Service implements ServiceInterface
     /**
      * Retrieves the information of a failure with its category.
      *
-     * @param string $uuid The UUID of the equipment.
-     *
+     * @param  string  $uuid  The UUID of the equipment.
      * @return array The formatted response data.
      *
      * @throws \Throwable

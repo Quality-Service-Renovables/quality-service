@@ -2,10 +2,11 @@
 
 namespace App\Models\Inspections;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Inspections\CtRisk;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class InspectionForm extends Model
 {
@@ -22,7 +23,7 @@ class InspectionForm extends Model
         'inspection_form_comments',
         'inspection_id',
         'ct_inspection_form_id',
-        'ct_risk_id',
+        'ct_risk_id'
     ];
 
     protected $hidden = ['inspection_id', 'ct_inspection_form_id'];

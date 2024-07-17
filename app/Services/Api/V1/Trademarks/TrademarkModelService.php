@@ -22,8 +22,7 @@ class TrademarkModelService extends Service implements ServiceInterface
     /**
      * Creates a new TrademarkModel record.
      *
-     * @param Request $request The HTTP request object.
-     *
+     * @param  Request  $request  The HTTP request object.
      * @return array The array containing the response data.
      */
     public function create(Request $request): array
@@ -79,8 +78,7 @@ class TrademarkModelService extends Service implements ServiceInterface
     /**
      * Updates a TrademarkModel based on the provided request data.
      *
-     * @param \Illuminate\Http\Request $request The request data.
-     *
+     * @param  \Illuminate\Http\Request  $request  The request data.
      * @return array The array containing the response data.
      */
     public function update(Request $request): array
@@ -122,8 +120,7 @@ class TrademarkModelService extends Service implements ServiceInterface
     /**
      * Delete a trademark by UUID
      *
-     * @param string $uuid The UUID of the trademark to be deleted
-     *
+     * @param  string  $uuid  The UUID of the trademark to be deleted
      * @return array Returns an array containing the response data
      */
     public function delete(string $uuid): array
@@ -152,8 +149,7 @@ class TrademarkModelService extends Service implements ServiceInterface
     /**
      * Show a trademark model by UUID
      *
-     * @param string $uuid The UUID of the trademark model
-     *
+     * @param  string  $uuid  The UUID of the trademark model
      * @return array Returns an array containing the trademark model data
      */
     public function show(string $uuid): array

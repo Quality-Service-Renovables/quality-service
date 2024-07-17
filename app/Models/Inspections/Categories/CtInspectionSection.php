@@ -32,12 +32,10 @@ class CtInspectionSection extends Model
     {
         return $this->belongsTo(CtInspection::class, 'ct_inspection_id', 'ct_inspection_id');
     }
-
     public function subSections()
     {
         return $this->hasMany(__CLASS__, 'ct_inspection_relation_id', 'ct_inspection_section_id');
     }
-
     public function fields()
     {
         return $this->hasMany(CtInspectionForm::class, 'ct_inspection_section_id', 'ct_inspection_section_id');

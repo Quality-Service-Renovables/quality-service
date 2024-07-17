@@ -59,7 +59,7 @@ class StatusController extends Controller
      */
     public function show(string $uuid): JsonResponse
     {
-        if (!$this->commonValidation($uuid)) {
+        if (! $this->commonValidation($uuid)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -75,7 +75,7 @@ class StatusController extends Controller
     {
         $this->service->read();
 
-        $this->service->response['message'] = 'Api edit request not available: ' . $uuid;
+        $this->service->response['message'] = 'Api edit request not available: '.$uuid;
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
@@ -119,7 +119,7 @@ class StatusController extends Controller
      */
     public function destroy(string $uuid): JsonResponse
     {
-        if (!$this->commonValidation($uuid)) {
+        if (! $this->commonValidation($uuid)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 

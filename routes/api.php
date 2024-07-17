@@ -56,6 +56,8 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //######################################################## PROJECTS #########################################################
     Route::resource('projects', ProjectController::class);
     Route::resource('project/employees', EmployeeController::class);
+    Route::get('employee/get-projects', [EmployeeController::class, 'getProjects'])
+        ->name('employee.get-projects');
     //######################################################## INSPECTIONS #########################################################
     Route::resource('inspections', InspectionController::class);
     Route::resource('inspection/sections', SectionController::class);
@@ -75,7 +77,6 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //---------------------------------------------------------   FORMS    ----------------------------------------------------------
     Route::get('inspection/forms/get-form/{ct_inspection_uuid}', [FormController::class, 'getForm']);
     Route::get('inspection/forms/get-form-inspection/{inspection_uuid}', [FormController::class, 'getFormInspection']);
-    Route::get('inspection/forms/get-field-suggestions/{ct_inspection_form_uuid}', [FormController::class, 'getFieldSuggestions']);
     Route::post('inspection/forms/set-form', [FormController::class, 'setForm']);
     Route::post('inspection/forms/set-form-inspection', [FormController::class, 'setFormInspection']);
 
