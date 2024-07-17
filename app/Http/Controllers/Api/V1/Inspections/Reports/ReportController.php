@@ -30,7 +30,7 @@ class ReportController extends Controller
     public function getDocument(string $uuid): JsonResponse|Response
     {
         $request = (['inspection_uuid' => $uuid]);
-        if (!$this->commonValidation($request)) {
+        if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 

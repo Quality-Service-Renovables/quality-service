@@ -54,7 +54,7 @@
                                                         <QuillEditor
                                                             v-model:content="field.content.inspection_form_value"
                                                             theme="snow" toolbar="essential" heigth="100%"
-                                                            contentType="html"/>
+                                                            contentType="html" />
                                                         <!-- Comments Field -->
                                                         <p class="mt-3 text-grey" v-if="field.switch_comment">
                                                             Comentarios:</p>
@@ -63,25 +63,23 @@
                                                                 <QuillEditor
                                                                     v-model:content="field.content.inspection_form_comments"
                                                                     theme="snow" toolbar="essential" contentType="html"
-                                                                    v-if="field.switch_comment" @click="getSuggestions(field)"/>
+                                                                    v-if="field.switch_comment" />
                                                             </v-col>
-                                                            <v-col cols="12" lg="4">
+                                                            <v-col cols="12" lg="4" v-if="suggestions.length">
                                                                 <v-card class="mx-auto border" color="primary"
                                                                     variant="outlined">
                                                                     <v-card-subtitle class="mt-2 mb-0"><span
                                                                             class="mdi mdi-lightbulb-on-outline"></span>
                                                                         Sugerencias</v-card-subtitle>
                                                                     <v-card-text
-                                                                        class="py-1 card-suggestions overflow-y-auto" v-if="!field.loadingSuggestions">
+                                                                        class="pt-1 card-suggestions overflow-y-auto">
                                                                         <v-card variant="tonal" class="my-1"
-                                                                            v-for="(sueggest, idx_sueggest) in field.suggestions"
+                                                                            v-for="(sueggest, idx_sueggest) in getSuggestions(field)"
                                                                             :key="idx_sueggest"
-                                                                            @click="setComment(field, sueggest)">
-                                                                            <div class="m-1" v-html="sueggest"></div>
+                                                                            @click="setComment(field, sueggest.text)">
+                                                                            <p class="m-1">{{ sueggest.text }}</p>
                                                                         </v-card>
                                                                     </v-card-text>
-                                                                    <v-skeleton-loader type="paragraph" v-else></v-skeleton-loader>
-                                                                    <v-card-text class="pt-0 card-suggestions overflow-y-auto" v-if="!field.suggestions">No hay sugerencias</v-card-text>
                                                                 </v-card>
                                                             </v-col>
                                                         </v-row>
@@ -170,9 +168,9 @@
                                                                                     v-model:content="fieldSub.content.inspection_form_comments"
                                                                                     theme="snow" toolbar="essential"
                                                                                     heigth="100%" contentType="html"
-                                                                                    v-if="fieldSub.switch_comment" @click="getSuggestions(fieldSub)"/>
+                                                                                    v-if="fieldSub.switch_comment" />
                                                                             </v-col>
-                                                                            <v-col cols="12" lg="4">
+                                                                            <v-col cols="12" lg="4" v-if="suggestions.length">
                                                                                 <v-card class="mx-auto border"
                                                                                     color="primary" variant="outlined">
                                                                                     <v-card-subtitle
@@ -180,17 +178,16 @@
                                                                                             class="mdi mdi-lightbulb-on-outline"></span>
                                                                                         Sugerencias</v-card-subtitle>
                                                                                     <v-card-text
-                                                                                        class="py-1 card-suggestions overflow-y-auto" v-if="!fieldSub.loadingSuggestions">
+                                                                                        class="pt-1 card-suggestions overflow-y-auto">
                                                                                         <v-card variant="tonal"
                                                                                             class="my-1"
-                                                                                            v-for="(sueggest, idx_sueggest) in fieldSub.suggestions"
+                                                                                            v-for="(sueggest, idx_sueggest) in getSuggestions(fieldSub)"
                                                                                             :key="idx_sueggest"
-                                                                                            @click="setComment(fieldSub, sueggest)">
-                                                                                            <div class="m-1" v-html="sueggest"></div>
+                                                                                            @click="setComment(fieldSub, sueggest.text)">
+                                                                                            <p class="m-1">{{
+                                                                                                sueggest.text }}</p>
                                                                                         </v-card>
                                                                                     </v-card-text>
-                                                                                    <v-skeleton-loader type="paragraph" v-else></v-skeleton-loader>
-                                                                                    <v-card-text class="pt-0 card-suggestions overflow-y-auto" v-if="!fieldSub.suggestions">No hay sugerencias</v-card-text>
                                                                                 </v-card>
                                                                             </v-col>
                                                                         </v-row>
@@ -267,7 +264,32 @@ export default {
             sectionsForm: [],
             expandedPanel: [0, 1, 2, 3, 4, 5, 6],
             ct_risks: [],
-            suggestions: []
+            suggestions: [
+                {
+                    id: 1,
+                    text: 'Funciona normalmente.'
+                },
+                /*{
+                    id: 2,
+                    text: 'Estado correcto.'
+                },
+                {
+                    id: 3,
+                    text: 'Estado normal.'
+                },*/
+                {
+                    id: 4,
+                    text: 'No se realiza.'
+                },
+                {
+                    id: 5,
+                    text: 'No se detecta.'
+                },
+                /*{
+                    id: 6,
+                    text: 'Estado OK.'
+                },*/
+            ]
         }
     },
     methods: {
@@ -310,7 +332,6 @@ export default {
                         toast.success('Campo guardado correctamente');
                         if (response.data.data.length > 0) {
                             field.content = response.data.data[0];
-                            this.getSuggestions(field);
                         } else {
                             this.getForm();
                         }
@@ -366,20 +387,11 @@ export default {
                 field.switch_ct_risk = true;
             }
         },
-        async getSuggestions(field) {
-            field.loadingSuggestions = true;
-            await axios.get('api/inspection/forms/get-field-suggestions/' + field.ct_inspection_form_uuid)
-                .then(response => {
-                    field.loadingSuggestions = false;
-                    field.suggestions = response.data.data;
-                })
-                .catch(error => {
-                    field.loadingSuggestions = false;
-                    this.handleErrors(error);
-                });
+        getSuggestions(field) {
+            return this.suggestions;
         },
         setComment(field, comment) {
-            field.content.inspection_form_comments = comment;
+            field.content.inspection_form_comments = field.content.inspection_form_comments + comment;
         },
     },
     mounted() {

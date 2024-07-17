@@ -18,7 +18,6 @@ use Throwable;
 class ReportService extends Service
 {
     use Audits;
-
     public string $nameService = 'inspection_report';
 
     /**
@@ -39,7 +38,7 @@ class ReportService extends Service
                 'equipment.model.trademark',
                 'category.sections.subSections.fields.result',
                 'inspectionEquipments.equipment',
-                'evidences' => function ($query) {
+                'evidences' => function($query) {
                     $query->orderBy('position', 'asc');
                 },
                 'project',
@@ -56,11 +55,11 @@ class ReportService extends Service
                     $document->getDomPDF()->getCanvas()->get_cpdf()->setEncryption($passReport);
                 }
                 // Nombre del documento
-                $filename = $inspection->category->ct_inspection_code . '_' . now()->format('Y-m-d_His') . '.pdf';
+                $filename = $inspection->category->ct_inspection_code.'_'.now()->format('Y-m-d_His').'.pdf';
                 // Obtener el contenido PDF como una cadena
                 $pdfContent = $document->output();
                 $paths = $this->getApplicationPaths();
-                $pathStorage = $paths->evidences->reports . '/' . $filename;
+                $pathStorage = $paths->evidences->reports.'/'.$filename;
                 // Registro de reporte en el storage
                 Storage::disk('public_direct')
                     ->put($pathStorage, $pdfContent);
@@ -70,9 +69,9 @@ class ReportService extends Service
                 // Cifrar el PDF
                 if ($user->client->config && $user->client->config->send_email) {
                     $mail = [
-                        'to' => ['adrian.olvera21@gmail.com', 'core.devmx@gmail.com'],
+                        'to' => ['adrian.olvera21@gmail.com','core.devmx@gmail.com'],
                         'subject' => 'Reporte de Inspección',
-                        'attachment' => $pathStorage,
+                        'attachment' => $pathStorage
                     ];
                     Mail::send(new ServiceMail($mail));
                 }
@@ -117,7 +116,7 @@ class ReportService extends Service
                 }
                 // En caso de encontrar campos en la sub sección se valida que tengan resultados.
                 if ($section->subSections->isNotEmpty()) {
-                    foreach ($section->subSections as $subSection) {
+                    foreach($section->subSections as $subSection) {
                         foreach ($subSection->fields as $field) {
                             if (!$field->result) {
                                 $this->response['data']['fields_without_results'][] = $field;

@@ -37,8 +37,7 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Create a new equipment category
      *
-     * @param Request $request The request object
-     *
+     * @param  Request  $request  The request object
      * @return array Returns an array containing the response data
      */
     public function create(Request $request): array
@@ -79,8 +78,7 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Update equipment
      *
-     * @param Request $request The request object containing the updated equipment data
-     *
+     * @param  Request  $request  The request object containing the updated equipment data
      * @return array Returns an array containing the updated equipment data or error response
      */
     public function update(Request $request): array
@@ -133,8 +131,7 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Delete a category from the database.
      *
-     * @param string $uuid The UUID of the category to delete.
-     *
+     * @param  string  $uuid  The UUID of the category to delete.
      * @return array The response array indicating the result of the delete operation.
      */
     public function delete(string $uuid): array
@@ -163,8 +160,7 @@ class CategoryService extends Service implements ServiceInterface
     /**
      * Show a specific category from the database based on its UUID.
      *
-     * @param string $uuid The UUID of the category.
-     *
+     * @param  string  $uuid  The UUID of the category.
      * @return array The response array containing the category information.
      */
     public function show(string $uuid): array

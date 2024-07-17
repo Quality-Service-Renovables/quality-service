@@ -20,8 +20,7 @@ class CtInspectionService extends Service
     /**
      * Create a new category.
      *
-     * @param \Illuminate\Http\Request $request The request object.
-     *
+     * @param  \Illuminate\Http\Request  $request  The request object.
      * @return array The response containing the created category.
      */
     public function create(Request $request): array
@@ -82,8 +81,7 @@ class CtInspectionService extends Service
     /**
      * Update a category.
      *
-     * @param \Illuminate\Http\Request $request The request data.
-     *
+     * @param  \Illuminate\Http\Request  $request  The request data.
      * @return array The response containing the updated category.
      *
      * @throws \Exception If there is an error updating the category.
@@ -98,7 +96,7 @@ class CtInspectionService extends Service
                 'ct_inspection_code' => create_slug($request->get('ct_inspection')),
             ]);
             // Update Register
-            $category = CtInspection::where('ct_inspection_uuid', $request->ct_inspection_uuid)->first();
+            $category = \App\Models\Inspections\Categories\CtInspection::where('ct_inspection_uuid', $request->ct_inspection_uuid)->first();
             // Si el $category existe (no es nulo), actualízalo con todos los datos de la solicitud.
             $category?->update($request->all());
             // Set Response
@@ -127,8 +125,7 @@ class CtInspectionService extends Service
     /**
      * Delete a category by UUID.
      *
-     * @param string $uuid The UUID of the category to delete.
-     *
+     * @param  string  $uuid  The UUID of the category to delete.
      * @return array The response indicating the result of the deletion.
      *
      * @throws \Exception If there is an error deleting the category.
@@ -160,8 +157,7 @@ class CtInspectionService extends Service
     /**
      * Retrieve a specific category.
      *
-     * @param string $uuid The UUID of the category to retrieve.
-     *
+     * @param  string  $uuid  The UUID of the category to retrieve.
      * @return array The response containing the category.
      *
      * @throws \Exception If there is an error retrieving the category.

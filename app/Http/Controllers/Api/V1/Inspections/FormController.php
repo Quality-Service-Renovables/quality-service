@@ -26,8 +26,7 @@ class FormController extends Controller
     /**
      * Sets the form data based on the request.
      *
-     * @param Request $request The HTTP request.
-     *
+     * @param  Request  $request  The HTTP request.
      * @return JsonResponse The JSON response.
      */
     public function setForm(Request $request): JsonResponse
@@ -40,7 +39,7 @@ class FormController extends Controller
     /**
      * Sets the form inspection.
      *
-     * @param Request $request The request object.
+     * @param  Request  $request  The request object.
      */
     public function setFormInspection(Request $request): JsonResponse
     {
@@ -65,7 +64,7 @@ class FormController extends Controller
     /**
      * Gets the form.
      *
-     * @param string $uuid The UUID of the form.
+     * @param  string  $uuid  The UUID of the form.
      */
     public function getForm(string $uuid): JsonResponse
     {
@@ -80,7 +79,7 @@ class FormController extends Controller
     /**
      * Gets the form related to an inspection.
      *
-     * @param string $uuid The UUID of the inspection.
+     * @param  string  $uuid  The UUID of the inspection.
      */
     public function getFormInspection(string $uuid): JsonResponse
     {
@@ -101,28 +100,10 @@ class FormController extends Controller
         return response()->json($this->service->response, $this->service->statusCode);
     }
 
-    public function getFieldSuggestions($uuid): JsonResponse
-    {
-        $request = ['ct_inspection_form_uuid' => $uuid];
-        $validated = Validator::make($request, [
-            'ct_inspection_form_uuid' => 'required|string|min:10|max:255|exists:ct_inspection_forms,ct_inspection_form_uuid',
-        ]);
-
-        if ($validated->fails()) {
-            $this->service->setFailValidation($validated->errors());
-
-            return response()->json($this->service->response, $this->service->statusCode);
-        }
-
-        $this->service->getFieldSuggestions($uuid);
-
-        return response()->json($this->service->response, $this->service->statusCode);
-    }
-
     /**
      * Sets the form fields.
      *
-     * @param Request $request The request object.
+     * @param  Request  $request  The request object.
      */
     public function setFormFields(Request $request): JsonResponse
     {
@@ -146,9 +127,8 @@ class FormController extends Controller
     /**
      * Updates a form field.
      *
-     * @param Request $request The HTTP request.
-     * @param string  $uuid    The UUID of the form field.
-     *
+     * @param  Request  $request  The HTTP request.
+     * @param  string  $uuid  The UUID of the form field.
      * @return JsonResponse The JSON response containing the result of the update.
      */
     public function updateFormField(Request $request, string $uuid): JsonResponse
@@ -184,8 +164,7 @@ class FormController extends Controller
     /**
      * Deletes a form field.
      *
-     * @param string $uuid The UUID of the form field to delete.
-     *
+     * @param  string  $uuid  The UUID of the form field to delete.
      * @return JsonResponse The JSON response.
      */
     public function deleteFormField(string $uuid): JsonResponse
@@ -210,8 +189,7 @@ class FormController extends Controller
     /**
      * Performs common validation for a form field.
      *
-     * @param string $uuid The UUID of the form field.
-     *
+     * @param  string  $uuid  The UUID of the form field.
      * @return bool True if the validation passes, false otherwise.
      */
     private function commonValidation(string $uuid): bool

@@ -19,6 +19,7 @@ namespace App\Services\Applications;
 
 use App\Models\Application\Log;
 use Exception;
+use Illuminate\Log\Logger;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 

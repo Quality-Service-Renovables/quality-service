@@ -67,7 +67,7 @@ class EvidenceController extends Controller
     {
         $request = (['inspection_evidence_uuid' => $uuid]);
 
-        if (!$this->commonValidation($request)) {
+        if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -81,7 +81,7 @@ class EvidenceController extends Controller
      */
     public function edit(string $uuid): JsonResponse
     {
-        $this->service->response['message'] = 'Api edit request not available: ' . $uuid;
+        $this->service->response['message'] = 'Api edit request not available: '.$uuid;
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
@@ -108,7 +108,7 @@ class EvidenceController extends Controller
                 Rule::exists('inspections', 'inspection_uuid')
                     ->whereNull('deleted_at'),
             ],
-            'position' => 'required|int',
+            'position' => 'required|int'
         ]);
 
         if ($validated->fails()) {
@@ -131,7 +131,7 @@ class EvidenceController extends Controller
     {
         $request = ['inspection_evidence_uuid' => $uuid];
 
-        if (!$this->commonValidation($request)) {
+        if (! $this->commonValidation($request)) {
             return response()->json($this->service->response, $this->service->statusCode);
         }
 
@@ -139,7 +139,6 @@ class EvidenceController extends Controller
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
-
     /**
      * Update evidence position the specified resource.
      *
@@ -162,7 +161,6 @@ class EvidenceController extends Controller
 
         return response()->json($this->service->response, $this->service->statusCode);
     }
-
     /**
      * Perform common validation for the request data.
      *
