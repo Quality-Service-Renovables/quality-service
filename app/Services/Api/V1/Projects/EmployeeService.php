@@ -21,6 +21,7 @@ namespace App\Services\Api\V1\Projects;
 
 use App\Models\Projects\Employee;
 use App\Models\Projects\Project;
+use App\Models\Projects\ProjectEmployee;
 use App\Models\Status\Status;
 use App\Models\Users\User;
 use App\Services\Api\Audits;
@@ -40,8 +41,7 @@ class EmployeeService extends Service implements ServiceInterface
     /**
      * Create a new equipment
      *
-     * @param Request $request The request object
-     *
+     * @param  Request  $request  The request object
      * @return array Returns an array containing the created equipment data
      */
     public function create(Request $request): array
@@ -115,8 +115,7 @@ class EmployeeService extends Service implements ServiceInterface
     /**
      * Update equipment data
      *
-     * @param Request $request The request object containing the updated data
-     *
+     * @param  Request  $request  The request object containing the updated data
      * @return array Returns an array containing the updated equipment data
      */
     public function update(Request $request): array
@@ -166,8 +165,7 @@ class EmployeeService extends Service implements ServiceInterface
     /**
      * Delete equipment by UUID.
      *
-     * @param string $uuid The UUID of the equipment to be deleted.
-     *
+     * @param  string  $uuid  The UUID of the equipment to be deleted.
      * @return array The response array with status, message, and data.
      */
     public function delete(string $uuid): array
@@ -194,8 +192,7 @@ class EmployeeService extends Service implements ServiceInterface
     /**
      * Retrieves a category by UUID
      *
-     * @param string $uuid The UUID of the category to retrieve
-     *
+     * @param  string  $uuid  The UUID of the category to retrieve
      * @return array Returns an array containing the status, message, and data of the response
      */
     public function show(string $uuid): array
@@ -206,8 +203,8 @@ class EmployeeService extends Service implements ServiceInterface
                 'user', 'project',
             ])->where('project_employee_uuid', $uuid)->first();
             $this->response['message'] = $project === null
-                ? trans('api.not_found')
-                : trans('api.show');
+            ? trans('api.not_found')
+            : trans('api.show');
             $this->response['data'] = $project ? $project->toArray() : [];
         } catch (Throwable $exceptions) {
             // Manejo del error
@@ -216,5 +213,21 @@ class EmployeeService extends Service implements ServiceInterface
 
         // Respuesta del módulo
         return $this->response;
+    }
+
+    /**
+     * Get the projects assigned to the authenticated user
+     *
+     * @return void
+     */
+    public function getProjects(): void
+    {
+        $user = auth()->user();
+        $projects = ProjectEmployee::with(['project'])
+            ->where(['user_id' => $user->id])->get();
+        $this->response['message'] = count($projects)
+            ? trans('api.read')
+            : trans('api.not_found');
+        $this->response['data'] = $projects;
     }
 }
