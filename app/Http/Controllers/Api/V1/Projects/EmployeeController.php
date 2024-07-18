@@ -8,6 +8,7 @@ use App\Services\Api\V1\Projects\EmployeeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Inertia\Response;
 
 class EmployeeController extends Controller
 {
@@ -89,6 +90,13 @@ class EmployeeController extends Controller
         }
 
         $this->service->delete($uuid);
+
+        return response()->json($this->service->response, $this->service->statusCode);
+    }
+
+    public function getProjects(): JsonResponse
+    {
+        $this->service->getProjects();
 
         return response()->json($this->service->response, $this->service->statusCode);
     }

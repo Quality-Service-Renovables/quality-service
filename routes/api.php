@@ -56,6 +56,7 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     //######################################################## PROJECTS #########################################################
     Route::resource('projects', ProjectController::class);
     Route::resource('project/employees', EmployeeController::class);
+    Route::get('employee/get-projects', [EmployeeController::class, 'getProjects']);
     //######################################################## INSPECTIONS #########################################################
     Route::resource('inspections', InspectionController::class);
     Route::resource('inspection/sections', SectionController::class);
