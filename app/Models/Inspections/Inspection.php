@@ -25,6 +25,7 @@ class Inspection extends Model
         'resume',
         'conclusion',
         'recomendations',
+        'location',
         'ct_inspection_id',
         'equipment_id',
         'client_id',

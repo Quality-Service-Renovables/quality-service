@@ -296,6 +296,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                             clearable></v-select>
                                                     </v-col>
                                                     <v-col cols="12">
+                                                        <v-text-field v-model="inspectionForm.location"
+                                                                        label="Ubicación" variant="outlined" hide-details
+                                                                        required></v-text-field>
+                                                    </v-col>
+                                                    <v-col cols="12">
                                                         <p class="text-grey mb-2">Define el resumen de la inspección a
                                                             realizar
                                                         </p>
@@ -460,6 +465,7 @@ export default {
             ct_equipment_uuid: null,
             equipment_uuid: [],
             equipments_uuid: [],
+            location
         },
         defaultInspectionForm: {
             isUpdating: false,
@@ -473,6 +479,7 @@ export default {
             ct_equipment_uuid: null,
             equipment_uuid: [],
             equipments_uuid: [],
+            location
         },
         errorAssigningInspection: false,
 
@@ -737,6 +744,7 @@ export default {
                 this.getInspectionEquipmentsByCategory(this.inspectionForm.ct_equipment_uuid);
                 this.inspectionForm.equipment_uuid = item.inspections[0].equipment.equipment_uuid;
                 this.inspectionForm.equipments_uuid = item.inspections[0].inspection_equipments.map(equipment => equipment.equipment.equipment_uuid);
+                this.inspectionForm.location = item.inspections[0].location;
             } else if (action == 'create') {
                 this.inspectionForm.isUpdating = false;
                 this.inspectionForm.project_name = item.project_name;
@@ -772,7 +780,8 @@ export default {
                         status_code: this.inspectionForm.status_code,
                         equipment_uuid: this.inspectionForm.equipment_uuid,
                         project_uuid: this.inspectionForm.project_id,
-                        client_uuid: this.inspectionForm.client_uuid
+                        client_uuid: this.inspectionForm.client_uuid,
+                        location: this.inspectionForm.location
                     }
                     request = () => {
                         return axios.post('api/inspections', formData);
@@ -788,7 +797,8 @@ export default {
                         status_code: this.inspectionForm.status_code,
                         equipment_uuid: this.inspectionForm.equipment_uuid,
                         project_uuid: this.inspectionForm.project_id,
-                        client_uuid: this.inspectionForm.client_uuid
+                        client_uuid: this.inspectionForm.client_uuid,
+                        location: this.inspectionForm.location
                     }
                 }
 

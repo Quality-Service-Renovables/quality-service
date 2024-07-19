@@ -10,7 +10,7 @@
     </tr>
     <tr>
         <td><strong>Ubicación: </strong></td>
-        <td colspan="2">{{$inspection->equipment->location}}</td>
+        <td colspan="2">{{$inspection->location}}</td>
     </tr>
     <tr>
         <td><strong>Fabricante del equipo: </strong></td>

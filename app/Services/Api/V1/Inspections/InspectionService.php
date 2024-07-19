@@ -58,6 +58,7 @@ class InspectionService extends Service
                         ->first()->client_id,
                     'status_id' => $status->status_id,
                     'project_id' => $project->project_id,
+                    'location' => $request->location,
                 ]);
                 // Create Register
                 $inspection = Inspection::create($request->all());
