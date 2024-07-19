@@ -42,7 +42,7 @@ class MobileAppService extends Service
                 'user_id' => $user->id,
             ])->get();
             // Define parámetros de respuesta
-            $this->statusCode = 201;
+            $this->statusCode = 200;
             $this->response['message'] = trans('api.created');
             $this->response['data'] = compact('projects');
         } catch (Throwable $exceptions) {
