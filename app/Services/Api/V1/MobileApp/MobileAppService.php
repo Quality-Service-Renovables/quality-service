@@ -6,14 +6,11 @@
 
 namespace App\Services\Api\V1\MobileApp;
 
-use App\Models\Projects\ProjectEmployee;
-use App\Models\Trademarks\Category;
-use App\Models\Trademarks\Trademark;
-use App\Services\Api\ServiceInterface;
+use App\Models\Status\Category;
+use App\Models\Status\Status;
 use App\Services\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Throwable;
 
 class MobileAppService extends Service
@@ -33,18 +30,35 @@ class MobileAppService extends Service
     {
         try {
             $user = auth()->user();
-            /**
-             * 1. Recuperar información del proyecto asociado al usuario
-             * 2. Recuperar información de los clientes
-             */
-            $projects = ProjectEmployee::with(['project'])
-                ->where([
-                'user_id' => $user->id,
-            ])->get();
+
+            $categoryStatus = Category::where([
+                'ct_status_code' => 'proyecto'
+            ])->first();
+
+            $status = Status::where([
+                    'ct_status_id' => $categoryStatus->ct_status_id,
+                ])->get();
+
+            $status->each(function ($status) use ($user) {
+                $status->projects = DB::table('project_employees')
+                    ->join('projects', 'projects.project_id', '=', 'project_employees.project_id')
+                    ->join('status', 'status.status_id', '=', 'projects.status_id')
+                    ->whereNull('project_employees.deleted_at')
+                    ->whereNull('projects.deleted_at')
+                    ->whereNull('status.deleted_at')
+                    ->where([
+                        'status.status_id' => $status->status_id,
+                        'project_employees.user_id' => $user->id
+                    ])
+                    ->select('projects.*')
+                    ->get();
+            });
             // Define parámetros de respuesta
             $this->statusCode = 200;
             $this->response['message'] = trans('api.created');
-            $this->response['data'] = compact('projects');
+            $this->response['data'] = [
+                'status' => $status,
+            ];
         } catch (Throwable $exceptions) {
             // Parámetros de respuesta en caso de error
             $this->setExceptions($exceptions);
