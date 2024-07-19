@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\MobileApp\MobileAppController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SessionController;
@@ -106,6 +107,9 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::resource('failures', FailureController::class);
     Route::resource('failure/categories', \App\Http\Controllers\Api\V1\Failures\CategoryController::class)
         ->names('failure.categories');
+
+    //######################################################### MOBIL APPLICATION ##########################################################
+    Route::get('application/sync', [MobileAppController::class, 'sync']);
     //######################################################## AUTH GUARDS ##########################################################
     Route::resource('auth-guard/roles', RoleController::class);
     Route::resource('auth-guard/permissions', PermissionController::class);
