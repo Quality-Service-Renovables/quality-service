@@ -55,6 +55,7 @@ class EquipmentService extends Service implements ServiceInterface
             $this->setRequest($request);
             // En caso de que no se detecte una imágen se establece una por defecto
             $request->equipment_image = $request->equipment_image ?? $this->imageDefault;
+            
             // Registra los atributos de la solicitud al equipo
             $equipment = Equipment::create($request->all());
             $this->statusCode = 201;
@@ -88,7 +89,7 @@ class EquipmentService extends Service implements ServiceInterface
     {
         $this->response['message'] = trans('api.read');
         $this->response['data'] = Equipment::with([
-            'category', 'status', 'trademark', 'model',
+            'category', 'status',
         ])->get();
 
         return $this->response;
@@ -120,8 +121,6 @@ class EquipmentService extends Service implements ServiceInterface
 
             $equipment?->update($request->except([
                 'ct_equipment_code',
-                'trademark_code',
-                'trademark_model_code',
                 'status_code',
                 'equipment_image_storage',
                 'equipment_diagram_storage',
@@ -216,15 +215,11 @@ class EquipmentService extends Service implements ServiceInterface
     {
         // Obtiene identificadores de códigos
         $categoryId = Category::where('ct_equipment_code', $request->get('ct_equipment_code'))->first()->ct_equipment_id;
-        $trademarkId = Trademark::where('trademark_code', $request->get('trademark_code'))->first()->trademark_id;
-        $trademarkModelId = TrademarkModel::where('trademark_model_code', $request->get('trademark_model_code'))->first()->trademark_model_id;
         $statusId = Status::where('status_code', $request->get('status_code'))->first()->status_id;
         // Agrupa el contenido a insertar en la solicitud
         $extraAttributes = [
             'equipment_code' => create_slug($request->equipment),
             'ct_equipment_id' => $categoryId,
-            'trademark_id' => $trademarkId,
-            'trademark_model_id' => $trademarkModelId,
             'status_id' => $statusId,
         ];
         // Agrupa contenido en la solicitud
