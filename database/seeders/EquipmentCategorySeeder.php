@@ -51,14 +51,6 @@ class EquipmentCategorySeeder extends Seeder
                 'is_default' => true,
                 'active' => true,
             ],
-            [
-                'ct_equipment_uuid' => Str::uuid()->toString(),
-                'ct_equipment' => 'Equipos de inspección',
-                'ct_equipment_code' => 'inspeccion',
-                'description' => 'Equipos utilizados durante la inspección',
-                'is_default' => true,
-                'active' => true,
-            ],
         ];
     }
 }
