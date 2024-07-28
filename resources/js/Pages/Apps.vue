@@ -60,12 +60,12 @@ import { mdiCheckBold } from '@mdi/js';
                                 v-if="checkVisivility('Inspecciones') && hasPermissionTo('inspections')" />
                             <App path="failures" title="Fallas" icon="mdi-playlist-remove"
                                 v-if="checkVisivility('Fallas') && hasPermissionTo('failures')" />
-                            <App path="trademarks" title="Marcas" icon="mdi-playlist-star"
+                            <!--<App path="trademarks" title="Marcas" icon="mdi-playlist-star"
                                 v-if="checkVisivility('Marcas') && hasPermissionTo('trademarks')" />
                             <App path="models" title="Modelos" icon="mdi-format-list-text"
                                 v-if="checkVisivility('Modelos') && hasPermissionTo('models')" />
                             <App path="oils" title="Aceites" icon="mdi-barrel"
-                                v-if="checkVisivility('Aceites') && hasPermissionTo('oils')" />
+                                v-if="checkVisivility('Aceites') && hasPermissionTo('oils')" />-->
                         </div>
                     </v-col>
                 </v-row>

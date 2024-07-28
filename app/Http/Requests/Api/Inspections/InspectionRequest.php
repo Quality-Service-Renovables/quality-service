@@ -18,6 +18,8 @@ class InspectionRequest extends CustomRequest
             'resume' => 'required',
             'conclusion' => 'required|string',
             'recomendations' => 'nullable|string',
+            'location' => 'nullable|string',
+            'equipment_fields_report' => 'nullable|string',
             'ct_inspection_code' => [
                 'required',
                 'string',
@@ -26,7 +28,6 @@ class InspectionRequest extends CustomRequest
                 Rule::exists('ct_inspections', 'ct_inspection_code')
                     ->whereNull('deleted_at'),
             ],
-            'equipment_uuid' => 'required|uuid|exists:equipments,equipment_uuid',
             'project_uuid' => 'required|string|exists:projects,project_uuid',
             'diagnosis_user_id' => 'nullable|int|exists:users,id',
             'client_uuid' => 'required|uuid|exists:clients,client_uuid',

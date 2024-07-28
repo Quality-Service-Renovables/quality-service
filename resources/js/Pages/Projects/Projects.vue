@@ -5,6 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 <template>
     <Toaster position="top-right" richColors :visibleToasts="10" />
+
     <Head title="Proyectos de inspección" />
     <AuthenticatedLayout>
         <template #header>
@@ -16,7 +17,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                     <v-card>
                         <v-row>
                             <v-col cols="12" sm="12">
-                                <v-data-table :headers="headers" :items="projects" fixed-header :search="search" :mobile="isMobile()">
+                                <v-data-table :headers="headers" :items="projects" fixed-header :search="search"
+                                    :mobile="isMobile()">
                                     <template v-slot:item.status.status="{ value, item }">
                                         <v-chip size="small" class="m-1">{{ value }}</v-chip>
                                     </template>
@@ -141,8 +143,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 size="small" @click="asignInspectionDialog('update', item)"
                                                 color="text-success" />
                                             <ActionButton text="Generar PDF" icon="mdi-file-eye"
-                                                v-if="checkPermissionToPdf(item)"
-                                                size="small" @click="generatePdf(item)" color="text-success" />
+                                                v-if="checkPermissionToPdf(item)" size="small"
+                                                @click="generatePdf(item)" color="text-success" />
                                         </div>
                                     </template>
                                     <template v-slot:item.inspection_actions="{ item }">
@@ -167,7 +169,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 size="small" @click="updateStatus(item, 'proyecto_validado')" />
                                             <ActionButton text="Regresar estatus" icon="mdi-restore"
                                                 v-if="hasPermissionTo('projects.validate') && checkStatus(item, ['proyecto_finalizado'])"
-                                                size="small" @click="updateStatus(item, 'proyecto_iniciado')" color="text-red"/>
+                                                size="small" @click="updateStatus(item, 'proyecto_iniciado')"
+                                                color="text-red" />
                                             <ActionButton text="Cerrar proyecto" icon="mdi-close-circle-outline"
                                                 v-if="hasPermissionTo('projects.close') && checkStatus(item, ['proyecto_validado'])"
                                                 size="small" color="text-primary"
@@ -276,37 +279,52 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         <v-select v-model="inspectionForm.ct_equipment_uuid"
                                                             :items="inspectionsEquipmentsCategories"
                                                             item-title="ct_equipment" item-value="ct_equipment_uuid"
-                                                            label="Seleccionar categoría de equipo" variant="outlined"
-                                                            hide-details required
-                                                            @update:modelValue="getInspectionEquipmentsByCategory(inspectionForm.ct_equipment_uuid)"></v-select>
+                                                            label="Seleccionar categoría de equipo a inspeccionar"
+                                                            variant="outlined" hide-details required
+                                                            @update:modelValue="setEquipmentFields(inspectionForm.ct_equipment_uuid)"></v-select>
                                                     </v-col>
                                                     <v-col cols="6">
-                                                        <v-select v-model="inspectionForm.equipment_uuid"
+                                                        <v-select v-model="inspectionForm.equipments_uuid"
                                                             :items="equipmentsByCategory" item-title="equipment"
                                                             item-value="equipment_uuid"
-                                                            label="Seleccionar equipo a inspeccionar" variant="outlined"
-                                                            hide-details clearable></v-select>
-                                                    </v-col>
-                                                    <v-col cols="12">
-                                                        <v-select v-model="inspectionForm.equipments_uuid"
-                                                            :items="inspectionsEquipmentsToUseInInspections"
-                                                            item-title="equipment" item-value="equipment_uuid"
-                                                            label="Seleccionar equipos a utilizar en la inspcección"
+                                                            label="Seleccionar equipos a utilizar en la inspección"
                                                             variant="outlined" hide-details multiple chips
                                                             clearable></v-select>
                                                     </v-col>
                                                     <v-col cols="12">
                                                         <v-text-field v-model="inspectionForm.location"
-                                                                        label="Ubicación" variant="outlined" hide-details
-                                                                        required></v-text-field>
+                                                            label="Ubicación" variant="outlined" hide-details
+                                                            required></v-text-field>
                                                     </v-col>
                                                     <v-col cols="12">
                                                         <p class="text-grey mb-2">Define el resumen de la inspección a
-                                                            realizar
+                                                            realizar (opcional)
                                                         </p>
                                                         <QuillEditor v-model:content="inspectionForm.resume"
                                                             theme="snow" toolbar="essential" heigth="100%"
                                                             contentType="html" />
+                                                    </v-col>
+                                                    <v-col cols="12">
+                                                        <p class="text-grey mb-2">Define los datos del equipo a
+                                                            inspeccionar
+                                                        </p>
+                                                        <v-row v-if="inspectionForm.fields.length">
+                                                            <v-col cols="6"
+                                                                v-for="(field, index) in inspectionForm.fields"
+                                                                :key="index">
+                                                                <v-text-field v-model="field.value"
+                                                                    :label="field.name + ' (' + isRequiredLabel(field.required) + ')'"
+                                                                    variant="outlined" hide-details
+                                                                    required></v-text-field>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <v-row v-else>
+                                                            <v-col cols="12">
+                                                                <p class="text-red mb-2">*No se han definido campos para
+                                                                    la
+                                                                    categoría seleccionada</p>
+                                                            </v-col>
+                                                        </v-row>
                                                     </v-col>
                                                 </v-row>
                                             </v-container>
@@ -465,7 +483,8 @@ export default {
             ct_equipment_uuid: null,
             equipment_uuid: [],
             equipments_uuid: [],
-            location
+            location,
+            fields: []
         },
         defaultInspectionForm: {
             isUpdating: false,
@@ -479,7 +498,8 @@ export default {
             ct_equipment_uuid: null,
             equipment_uuid: [],
             equipments_uuid: [],
-            location
+            location,
+            fields: []
         },
         errorAssigningInspection: false,
 
@@ -732,6 +752,12 @@ export default {
             this.editingProjectUuid = item.project_uuid;
 
             if (action == 'update') {
+                this.inspectionForm.equipments_uuid = [];
+
+                console.log("Asignar inspección - update");
+                console.log("INSPECCIÓN: ");
+                console.log(item.inspections[0]);
+
                 this.inspectionForm.isUpdating = true;
                 this.inspectionForm.inspection_uuid = item.inspections[0].inspection_uuid;
                 this.inspectionForm.project_name = item.project_name;
@@ -740,12 +766,16 @@ export default {
                 this.inspectionForm.status_code = item.status.status_code;
                 this.inspectionForm.project_id = item.project_uuid;
                 this.inspectionForm.client_uuid = item.client.client_uuid;
-                this.inspectionForm.ct_equipment_uuid = item.inspections[0].equipment.category.ct_equipment_uuid;
-                this.getInspectionEquipmentsByCategory(this.inspectionForm.ct_equipment_uuid);
-                this.inspectionForm.equipment_uuid = item.inspections[0].equipment.equipment_uuid;
+                this.inspectionForm.ct_equipment_uuid = item.inspections[0].inspection_equipments.length > 0 ? item.inspections[0].inspection_equipments[0].equipment.category.ct_equipment_uuid : null;
+                console.log("item.inspections[0].inspection_equipments:");
+                console.log(item.inspections[0].inspection_equipments);
                 this.inspectionForm.equipments_uuid = item.inspections[0].inspection_equipments.map(equipment => equipment.equipment.equipment_uuid);
                 this.inspectionForm.location = item.inspections[0].location;
+                this.inspectionForm.equipment_fields_report = item.inspections[0].equipment_fields_report;
+                this.setEquipmentFields(this.inspectionForm.ct_equipment_uuid);
+
             } else if (action == 'create') {
+                console.log("Asignar inspección - create");
                 this.inspectionForm.isUpdating = false;
                 this.inspectionForm.project_name = item.project_name;
                 this.inspectionForm.project_id = item.project_uuid;
@@ -781,7 +811,8 @@ export default {
                         equipment_uuid: this.inspectionForm.equipment_uuid,
                         project_uuid: this.inspectionForm.project_id,
                         client_uuid: this.inspectionForm.client_uuid,
-                        location: this.inspectionForm.location
+                        location: this.inspectionForm.location,
+                        equipment_fields_report: JSON.stringify(this.inspectionForm.fields)
                     }
                     request = () => {
                         return axios.post('api/inspections', formData);
@@ -798,7 +829,8 @@ export default {
                         equipment_uuid: this.inspectionForm.equipment_uuid,
                         project_uuid: this.inspectionForm.project_id,
                         client_uuid: this.inspectionForm.client_uuid,
-                        location: this.inspectionForm.location
+                        location: this.inspectionForm.location,
+                        equipment_fields_report: JSON.stringify(this.inspectionForm.fields)
                     }
                 }
 
@@ -917,10 +949,24 @@ export default {
         checkStatus(item, status) {
             return status.includes(item.status.status_code);
         },
-        getInspectionEquipmentsByCategory(ct_equipment_uuid) {
-            this.inspectionForm.equipment_uuid = null;
-            let equipments = this.inspectionsEquipmentsCategories.find(category => category.ct_equipment_uuid === ct_equipment_uuid).equipments;
-            this.equipmentsByCategory = equipments.length > 0 ? equipments : [];
+        setEquipmentFields(ct_equipment_uuid) {
+            if (ct_equipment_uuid) {
+                this.inspectionForm.fields = null;
+                //this.inspectionForm.equipments_uuid = [];
+                let equipments = this.inspectionsEquipmentsCategories.find(category => category.ct_equipment_uuid === ct_equipment_uuid);
+                this.inspectionForm.fields = equipments.required_fields_report && equipments.required_fields_report.length > 0 ? JSON.parse(equipments.required_fields_report).fields : [];
+                let fields = JSON.parse(this.inspectionForm.equipment_fields_report);
+
+                this.inspectionForm.fields.forEach(field => {
+                    if (fields && fields.length > 0) {
+                        let fieldReport = fields.find(f => f.key === field.key);
+                        field.value = fieldReport ? fieldReport.value : '';
+                    } else {
+                        field.value = '';
+                    }
+                });
+                this.equipmentsByCategory = equipments.equipments.length > 0 ? equipments.equipments : [];
+            }
         },
         generatePdf(item) {
             toast.warning('Solicitando documento, espere...');
@@ -934,11 +980,14 @@ export default {
                 });
         },
         checkPermissionToPdf(item) {
-            if (this.$page.props.auth.role.name === 'admin' || this.$page.props.auth.role.name === 'tecnico'){
+            if (this.$page.props.auth.role.name === 'admin' || this.$page.props.auth.role.name === 'tecnico') {
                 return this.hasPermissionTo('projects.read') && this.checkStatus(item, ['proyecto_iniciado', 'proyecto_finalizado', 'proyecto_validado', 'proyecto_cerrado']) && item.inspections.length
-            }else{
+            } else {
                 return this.hasPermissionTo('projects.read') && this.checkStatus(item, ['proyecto_cerrado']) && item.inspections.length
             }
+        },
+        isRequiredLabel(required) {
+            return required ? 'Requerido' : 'Opcional';
         },
     }
 }

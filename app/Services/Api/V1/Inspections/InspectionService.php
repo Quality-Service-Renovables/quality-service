@@ -53,7 +53,6 @@ class InspectionService extends Service
                 $request->merge([
                     'inspection_uuid' => Str::uuid()->toString(),
                     'ct_inspection_id' => $category->ct_inspection_id,
-                    'equipment_id' => $equipment->equipment_id,
                     'client_id' => Client::where('client_uuid', '=', $request->client_uuid)
                         ->first()->client_id,
                     'status_id' => $status->status_id,
@@ -156,7 +155,6 @@ class InspectionService extends Service
                 // Establecer atributos para registro
                 $request->merge([
                     'ct_inspection_id' => $category->ct_inspection_id,
-                    'equipment_id' => $equipment->equipment_id,
                     'client_id' => Client::where('client_uuid', '=', $request->client_uuid)
                         ->first()->client_id,
                     'project_id' => $project->project_id,
@@ -240,7 +238,7 @@ class InspectionService extends Service
             $inspection = Inspection::with([
                 'client',
                 'equipment.model.trademark',
-                'inspectionEquipments.equipment',
+                'inspectionEquipments.equipment.category',
                 'category.sections.subSections.fields.result',
                 'evidences',
                 'status.category',
