@@ -32,6 +32,7 @@ class InitialSeeder extends Seeder
             //Catalogos
             InspectionSectionsSeeder::class,
             PermissionSeeder::class,
+            RisksSeeder::class
         ]);
     }
 }
