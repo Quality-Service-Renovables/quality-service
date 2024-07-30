@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('ct_inspection_sections', static function (Blueprint $table) {
-            $table->dropUnique('ct_inspection_sections_ct_inspection_section_code_unique');
+            #$table->dropUnique('ct_inspection_sections_ct_inspection_section_code_unique');
         });
     }
 

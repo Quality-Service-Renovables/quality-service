@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('inspections', function (Blueprint $table) {
             $table->dropForeign('fk_inspecion_equipment');
             $table->dropColumn('equipment_id');
-            $table->dropIndex('equipment_id');
+            #$table->dropIndex('equipment_id');
         });
     }
 
