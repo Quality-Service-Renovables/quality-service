@@ -15,8 +15,8 @@ class InspectionRequest extends CustomRequest
     public function rules(): array
     {
         return [
-            'resume' => 'required',
-            'conclusion' => 'required|string',
+            'resume' => 'nullable|string',
+            'conclusion' => 'nullable|string',
             'recomendations' => 'nullable|string',
             'location' => 'nullable|string',
             'equipment_fields_report' => 'nullable|string',

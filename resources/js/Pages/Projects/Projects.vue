@@ -357,13 +357,16 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     <v-card>
                                         <v-tabs v-model="tab" align-tabs="center"
                                             class="position-fixed w-100 bg-primary-color">
+                                            <v-tab value="information">Información</v-tab>
                                             <v-tab value="sections">Secciones</v-tab>
-                                            <v-tab value="evidences">Evidencias</v-tab>
                                             <v-tab value="recomendations">Concluciones y Recomendaciones</v-tab>
                                         </v-tabs>
 
                                         <v-card-text class="mt-10">
                                             <v-tabs-window v-model="tab">
+                                                <v-tabs-window-item value="information">
+                                                    <Information :inspection_uuid="inspectionUuid" :project="project"/>
+                                                </v-tabs-window-item>
                                                 <v-tabs-window-item value="sections">
                                                     <Section :dialogForm="dialogForm"
                                                         :ct_inspection_uuid="ctInspectionUuid"
@@ -371,9 +374,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         @closeSectionDialog="closeSectionDialog" />
                                                 </v-tabs-window-item>
 
-                                                <v-tabs-window-item value="evidences">
+                                                <!--<v-tabs-window-item value="evidences">
                                                     <Evidence :inspection_uuid="inspectionUuid" />
-                                                </v-tabs-window-item>
+                                                </v-tabs-window-item>-->
 
                                                 <v-tabs-window-item value="recomendations">
                                                     <ConclutionAndRecomendation :inspection_uuid="inspectionUuid" />
@@ -398,6 +401,7 @@ import ActionButton from '@/Pages/Projects/Partials/ActionButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Section from '@/Pages/Projects/Partials/Section.vue';
 import Evidence from '@/Pages/Projects/Partials/Evidence.vue';
+import Information from '@/Pages/Projects/Partials/Information.vue';
 import ConclutionAndRecomendation from '@/Pages/Projects/Partials/ConclutionAndRecomendation.vue';
 import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
@@ -508,6 +512,7 @@ export default {
         ctInspectionUuid: '',
         tab: 'sections',
         inspectionUuid: null,
+        project: null,
     }),
     computed: {
         formTitle() {
@@ -894,9 +899,10 @@ export default {
         // Sections
         formDialog(item) {
             this.dialogForm = true;
-            this.ctInspectionUuid = item.inspections[0].category.ct_inspection_uuid;
-            this.inspectionUuid = item.inspections[0].inspection_uuid;
+            this.ctInspectionUuid = item.inspections.length > 0 ? item.inspections[0].category.ct_inspection_uuid : null;
+            this.inspectionUuid = item.inspections.length > 0 ? item.inspections[0].inspection_uuid : null;
             this.inspectionForm.project_name = item.project_name;
+            this.project = item;
         },
         closeSectionDialog() {
             this.dialogForm = false;
