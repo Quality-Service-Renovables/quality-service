@@ -2,7 +2,12 @@
     <div class="max-w-7xl mx-auto sm:px-4 lg:px-6 mb-5 pb-5">
         <div class="overflow-hidden shadow-sm sm:rounded-lg">
             <v-card :loading="dialogFormLoading">
-                <v-card-text class="padding-0">
+                <v-card-text class="">
+                    <p class="text-grey mb-2 text-h5 font-weight-bold">
+                        Carga de evidencias
+                    </p>
+                    <p class="text-primary">Rellena la información relacionada con las evidencias de la inspección.</p>
+                    <v-divider></v-divider>
                     <v-container>
                         <v-row>
                             <v-col cols="12" class="padding-0">
