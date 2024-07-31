@@ -182,12 +182,11 @@ export default {
 
 
             if (ct_equipment_uuid) {
-                console.log("Entro al if...");
                 this.inspection_form.fields = null;
                 //this.inspection_form.equipments_uuid = [];
                 let equipments = this.inspectionsEquipmentsCategories.find(category => category.ct_equipment_uuid === ct_equipment_uuid);
                 this.inspection_form.fields = equipments.required_fields_report && equipments.required_fields_report.length > 0 ? JSON.parse(equipments.required_fields_report).fields : [];
-                let fields = JSON.parse(this.inspection_form.equipment_fields_report);
+                let fields = this.inspection_form.equipment_fields_report != null ? JSON.parse(this.inspection_form.equipment_fields_report) : null;
 
                 this.inspection_form.fields.forEach(field => {
                     if (fields && fields.length > 0) {
@@ -223,6 +222,7 @@ export default {
             return new Promise((resolve, reject) => {
                 let request = null;
                 if (!this.isUpdating) {
+                    console.log("Creando inspección");
                     let formData = {
                         resume: this.inspection_form.resume,
                         conclusion: 'Por definir',
@@ -240,6 +240,7 @@ export default {
                         return axios.post('api/inspections', formData);
                     };
                 } else {
+                    console.log("Actualizando inspección");
                     request = () => {
                         return axios.put('api/inspections/' + this.inspection_form.inspection_uuid, formData);
                     };
@@ -262,6 +263,7 @@ export default {
                     loading: !this.isUpdating ? 'Asignando inspección...' : 'Actualizando inspección...',
                     success: (data) => {
                         this.inspection_form.inspection_uuid = data.data.data.inspection_uuid;
+                        this.$emit('setInspectionUuid', this.inspection_form.inspection_uuid);
                         let label = !this.isUpdating ? 'Inspección asignada correctamente' : 'Inspección actualizada correctamente';
                         resolve(label);
                         return label;
@@ -284,12 +286,12 @@ export default {
                 const request = () => {
                     if (!this.isUpdating) {
                         return axios.post('api/inspection/equipments', {
-                            inspection_uuid: this.inspection_uuid,
+                            inspection_uuid: this.inspection_form.inspection_uuid,
                             equipments: equipments
                         });
                     } else {
-                        return axios.put('api/inspection/equipments/' + this.inspection_uuid, {
-                            inspection_uuid: this.inspection_uuid,
+                        return axios.put('api/inspection/equipments/' + this.inspection_form.inspection_uuid, {
+                            inspection_uuid: this.inspection_form.inspection_uuid,
                             equipments: equipments
                         });
                     }

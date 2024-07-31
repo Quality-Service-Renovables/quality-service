@@ -153,12 +153,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_creado'])"
                                                 size="small" @click="asignTechniciensDialog('create', item)"
                                                 color="text-primary" />
-                                            <ActionButton text="Asignar inspección" icon="mdi-table-plus"
+                                            <!--<ActionButton text="Asignar inspección" icon="mdi-table-plus"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado']) && !item.inspections.length"
                                                 size="small" @click="asignInspectionDialog('create', item)"
-                                                color="text-primary" />
+                                                color="text-primary" />-->
                                             <ActionButton text="Cargar información" icon="mdi-file-edit"
-                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_iniciado'])"
+                                                v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'proyecto_iniciado'])"
                                                 size="small" @click="formDialog(item)" color="text-primary" />
                                             <ActionButton text="Finalizar proyecto" icon="mdi-note-check"
                                                 v-if="hasPermissionTo('projects.finalize') && checkStatus(item, ['proyecto_iniciado']) && item.inspections.length > 0"
@@ -365,7 +365,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <v-card-text class="mt-10">
                                             <v-tabs-window v-model="tab">
                                                 <v-tabs-window-item value="information">
-                                                    <Information :inspection_uuid="inspectionUuid" :project="project"/>
+                                                    <Information :inspection_uuid="inspectionUuid" :project="project" @setInspectionUuid="setInspectionUuid"/>
                                                 </v-tabs-window-item>
                                                 <v-tabs-window-item value="sections">
                                                     <Section :dialogForm="dialogForm"
@@ -995,6 +995,9 @@ export default {
         isRequiredLabel(required) {
             return required ? 'Requerido' : 'Opcional';
         },
+        setInspectionUuid(inspectionUuid) {
+            this.inspectionUuid = inspectionUuid;
+        }
     }
 }
 </script>
