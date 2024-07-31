@@ -31,6 +31,8 @@ class InspectionRequest extends CustomRequest
             'project_uuid' => 'required|string|exists:projects,project_uuid',
             'diagnosis_user_id' => 'nullable|int|exists:users,id',
             'client_uuid' => 'required|uuid|exists:clients,client_uuid',
+            'escala_condicion' => 'nullable|string',
+            'ct_risk_id' => 'required|int|exists:ct_risks,ct_risk_id',
         ];
     }
 }
