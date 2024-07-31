@@ -10,22 +10,22 @@
                     <v-divider class="my-3"></v-divider>
                     <v-row>
                         <v-col cols="12">
-                            <v-select v-model="inspection_form.ct_inspection_code" :items="inspections"
+                            <v-autocomplete v-model="inspection_form.ct_inspection_code" :items="inspections"
                                 item-title="ct_inspection" item-value="ct_inspection_code"
-                                label="Seleccionar inspección" variant="outlined" hide-details required></v-select>
+                                label="Seleccionar inspección" variant="outlined" hide-details required></v-autocomplete>
                         </v-col>
                         <v-col cols="12" lg="6">
-                            <v-select v-model="inspection_form.ct_equipment_uuid"
+                            <v-autocomplete v-model="inspection_form.ct_equipment_uuid"
                                 :items="inspectionsEquipmentsCategories" item-title="ct_equipment"
                                 item-value="ct_equipment_uuid" label="Seleccionar categoría de equipo a inspeccionar"
                                 variant="outlined" hide-details required
-                                @update:modelValue="setEquipmentFields(inspection_form.ct_equipment_uuid)"></v-select>
+                                @update:modelValue="setEquipmentFields(inspection_form.ct_equipment_uuid)"></v-autocomplete>
                         </v-col>
                         <v-col cols="12" lg="6">
-                            <v-select v-model="inspection_form.equipments_uuid" :items="equipmentsByCategory"
+                            <v-autocomplete v-model="inspection_form.equipments_uuid" :items="equipmentsByCategory"
                                 item-title="equipment" item-value="equipment_uuid"
                                 label="Seleccionar equipos a utilizar en la inspección" variant="outlined" hide-details
-                                multiple chips clearable></v-select>
+                                multiple chips clearable></v-autocomplete>
                         </v-col>
                         <v-col cols="12">
                             <v-text-field v-model="inspection_form.location" label="Ubicación" variant="outlined"
@@ -69,7 +69,7 @@
                                 toolbar="essential" heigth="100%" contentType="html" />
                             <p class="mt-3 text-grey">
                                 Riesgo:</p>
-                            <v-select v-model="inspection_form.ct_risk_id" :items="ct_risks" item-title="ct_risk"
+                            <v-autocomplete v-model="inspection_form.ct_risk_id" :items="ct_risks" item-title="ct_risk"
                                 item-value="ct_risk_id" variant="outlined" hide-details class="w-50 rounded"
                                 density="compact"
                                 :style="{ 'background-color': getBgColor(inspection_form.ct_risk_id) }">
@@ -78,7 +78,7 @@
                                         :style="{ 'background-color': item.raw.ct_color }"
                                         value="ct_risk"></v-list-item>
                                 </template>
-                            </v-select>
+                            </v-autocomplete>
                         </v-col>
                     </v-row>
                     <PrimaryButton @click="asignInspection()" :disabled="false" :loading="false" class="mt-3">

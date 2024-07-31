@@ -48,17 +48,17 @@
                 field.required ?
                     '*Requerido' :
                     'Opcional' }}):</p>
-                                                                <v-select v-model="field.content.inspection_form_value"
+                                                                <v-autocomplete v-model="field.content.inspection_form_value"
                                                                     :items="failures" item-title="failure"
                                                                     item-value="failure" variant="outlined" hide-details
                                                                     class="rounded" density="compact">
-                                                                </v-select>
+                                                                </v-autocomplete>
                                                             </v-col>
                                                             <v-col cols="12" lg="6">
                                                                 <!-- ct_risk Selector -->
                                                                 <p class="text-grey">
                                                                     Riesgo:</p>
-                                                                <v-select v-model="field.content.ct_risk_id"
+                                                                <v-autocomplete v-model="field.content.ct_risk_id"
                                                                     :items="ct_risks" item-title="ct_risk"
                                                                     item-value="ct_risk_id" variant="outlined"
                                                                     hide-details class="rounded" density="compact"
@@ -69,7 +69,7 @@
                                                                             :style="{ 'background-color': item.raw.ct_color }"
                                                                             value="ct_risk"></v-list-item>
                                                                     </template>
-                                                                </v-select>
+                                                                </v-autocomplete>
                                                             </v-col>
 
                                                         </v-row>
@@ -161,20 +161,20 @@
                 fieldSub.required ?
                     '*Requerido' :
                     'Opcional' }}):</p>
-                                                                                <v-select
+                                                                                <v-autocomplete
                                                                                     v-model="fieldSub.content.inspection_form_value"
                                                                                     :items="failures"
                                                                                     item-title="failure"
                                                                                     item-value="failure"
                                                                                     variant="outlined" hide-details
                                                                                     class="rounded" density="compact">
-                                                                                </v-select>
+                                                                                </v-autocomplete>
                                                                             </v-col>
                                                                             <v-col cols="12" lg="6">
                                                                                 <!-- ct_risk Selector -->
                                                                                 <p class="text-grey">
                                                                                     Riesgo:</p>
-                                                                                <v-select
+                                                                                <v-autocomplete
                                                                                     v-model="fieldSub.content.ct_risk_id"
                                                                                     :items="ct_risks"
                                                                                     item-title="ct_risk"
@@ -190,7 +190,7 @@
                                                                                             :style="{ 'background-color': item.raw.ct_color }"
                                                                                             value="ct_risk"></v-list-item>
                                                                                     </template>
-                                                                                </v-select>
+                                                                                </v-autocomplete>
                                                                             </v-col>
                                                                         </v-row>
                                                                         <!-- Comments Field -->
