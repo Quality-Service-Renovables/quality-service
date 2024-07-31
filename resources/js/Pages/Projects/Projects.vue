@@ -138,10 +138,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'proyecto_iniciado'])"
                                                 size="small" @click="asignTechniciensDialog('update', item)"
                                                 color="text-success" />
-                                            <ActionButton text="Asignar inspección" icon="mdi-table-plus"
+                                            <!--<ActionButton text="Asignar inspección" icon="mdi-table-plus"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_asignado', 'proyecto_iniciado']) && item.inspections.length"
                                                 size="small" @click="asignInspectionDialog('update', item)"
-                                                color="text-success" />
+                                                color="text-success" />-->
                                             <ActionButton text="Generar PDF" icon="mdi-file-eye"
                                                 v-if="checkPermissionToPdf(item)" size="small"
                                                 @click="generatePdf(item)" color="text-success" />
