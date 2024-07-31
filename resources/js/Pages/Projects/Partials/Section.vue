@@ -56,7 +56,7 @@
                                                                 <v-autocomplete v-model="field.content.inspection_form_value"
                                                                     :items="failures" item-title="failure"
                                                                     item-value="failure" variant="outlined" hide-details
-                                                                    class="rounded" density="compact">
+                                                                    class="rounded" density="compact" clearable>
                                                                 </v-autocomplete>
                                                             </v-col>
                                                             <v-col cols="12" lg="6">
@@ -67,7 +67,7 @@
                                                                     :items="ct_risks" item-title="ct_risk"
                                                                     item-value="ct_risk_id" variant="outlined"
                                                                     hide-details class="rounded" density="compact"
-                                                                    :style="{ 'background-color': getBgColor(field.content.ct_risk_id) }">
+                                                                    :style="{ 'background-color': getBgColor(field.content.ct_risk_id) }" clearable>
                                                                     <template v-slot:item="{ props, item }">
                                                                         <v-list-item v-bind="props"
                                                                             :title="item.raw.ct_risk"
@@ -172,7 +172,7 @@
                                                                                     item-title="failure"
                                                                                     item-value="failure"
                                                                                     variant="outlined" hide-details
-                                                                                    class="rounded" density="compact">
+                                                                                    class="rounded" density="compact" clearable>
                                                                                 </v-autocomplete>
                                                                             </v-col>
                                                                             <v-col cols="12" lg="6">
@@ -187,7 +187,7 @@
                                                                                     variant="outlined" hide-details
                                                                                     class="rounded"
                                                                                     density="compact"
-                                                                                    :style="{ 'background-color': getBgColor(fieldSub.content.ct_risk_id) }">
+                                                                                    :style="{ 'background-color': getBgColor(fieldSub.content.ct_risk_id) }" clearable>
                                                                                     <template
                                                                                         v-slot:item="{ props, item }">
                                                                                         <v-list-item v-bind="props"
@@ -328,11 +328,11 @@ export default {
                 }]
             }
 
-            if (this.isEmptyField(formData.form[0].inspection_form_value)) {
+            /*if (this.isEmptyField(formData.form[0].inspection_form_value)) {
                 toast.error('El contenido no puede estar vacío');
                 field.loading = false;
                 return;
-            } else {
+            } else {*/
                 axios.post('api/inspection/forms/set-form-inspection', formData)
                     .then(response => {
                         field.loading = false;
@@ -348,7 +348,7 @@ export default {
                         field.loading = false;
                         this.handleErrors(error);
                     });
-            }
+            //}
         },
         complementData(field) {
             if (field.content == null) {
