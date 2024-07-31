@@ -78,7 +78,6 @@
                                                             </v-col>
 
                                                         </v-row>
-
                                                         <!-- Comments Field -->
                                                         <p class="mt-3 text-grey">
                                                             Comentarios:</p>
@@ -112,6 +111,12 @@
                                                                         v-if="!field.suggestions">No hay
                                                                         sugerencias</v-card-text>
                                                                 </v-card>
+                                                            </v-col>
+                                                        </v-row>
+                                                        <!-- Photo evidences -->
+                                                        <v-row>
+                                                            <v-col cols="12" lg="3">
+                                                                <EvidenceForm :inspection_uuid="inspection_uuid"/>
                                                             </v-col>
                                                         </v-row>
                                                         <!-- Save Button -->
@@ -266,6 +271,7 @@
 <script>
 import { QuillEditor } from '@vueup/vue-quill'
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import EvidenceForm from '@/Pages/Projects/Partials/EvidenceForm.vue';
 import axios from 'axios';
 import { Toaster, toast } from 'vue-sonner'
 
@@ -273,7 +279,8 @@ export default {
     components: {
         QuillEditor,
         PrimaryButton,
-        Toaster
+        Toaster,
+        EvidenceForm
     },
     props: {
         dialogForm: {
