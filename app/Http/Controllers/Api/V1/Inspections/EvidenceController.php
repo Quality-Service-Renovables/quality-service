@@ -109,6 +109,7 @@ class EvidenceController extends Controller
                     ->whereNull('deleted_at'),
             ],
             'position' => 'required|int',
+            'inspection_form_id' => 'required|integer|exists:inspection_forms,inspection_form_id',
         ]);
 
         if ($validated->fails()) {

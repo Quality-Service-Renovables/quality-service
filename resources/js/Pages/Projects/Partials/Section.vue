@@ -115,9 +115,7 @@
                                                         </v-row>
                                                         <!-- Photo evidences -->
                                                         <v-row>
-                                                            <v-col cols="12" lg="3">
-                                                                <EvidenceForm :inspection_uuid="inspection_uuid"/>
-                                                            </v-col>
+                                                                <Evidence :inspection_uuid="inspection_uuid" :inspection_form_id="field.content.inspection_form_id"/>
                                                         </v-row>
                                                         <!-- Save Button -->
                                                         <PrimaryButton @click="saveField(field)" class="mt-2"
@@ -271,7 +269,7 @@
 <script>
 import { QuillEditor } from '@vueup/vue-quill'
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import EvidenceForm from '@/Pages/Projects/Partials/EvidenceForm.vue';
+import Evidence from '@/Pages/Projects/Partials/Evidence.vue';
 import axios from 'axios';
 import { Toaster, toast } from 'vue-sonner'
 
@@ -280,7 +278,7 @@ export default {
         QuillEditor,
         PrimaryButton,
         Toaster,
-        EvidenceForm
+        Evidence
     },
     props: {
         dialogForm: {

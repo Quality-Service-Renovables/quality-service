@@ -46,7 +46,6 @@
         <v-skeleton-loader type="card"></v-skeleton-loader>
         <v-skeleton-loader type="paragraph" />
         <v-skeleton-loader type="paragraph" />
-        <v-skeleton-loader type="paragraph" />
         <br>
     </v-card>
     <!-- Dialog delete image-->
@@ -120,6 +119,10 @@ export default {
         positionAux: {
             type: Number,
             required: false
+        },
+        inspection_form_id: {
+            type: String,
+            required: true
         }
     },
     data() {
@@ -138,6 +141,7 @@ export default {
                 description_secondary: null,
                 inspection_evidence_secondary: null,
                 loading: false,
+                inspection_form_id: this.inspection_form_id,
             },
             formDefault: {
                 inspection_uuid: this.inspection_uuid,
@@ -149,9 +153,11 @@ export default {
                 description_secondary: null,
                 inspection_evidence_secondary: null,
                 loading: false,
+                inspection_form_id: this.inspection_form_id,
             },
             serverConfig: {
                 process: (fieldName, file, metadata, load, error, progress, abort) => {
+                    console.log(this.inspection_form_id);
                     this.form.evidence_store = file;
 
                     // Create a CancelToken source
@@ -280,7 +286,7 @@ export default {
 
 <style scoped>
 .min-height {
-    min-height: 300px;
+    min-height: auto !important;
 }
 
 .container-img {
