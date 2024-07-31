@@ -28,7 +28,7 @@ class ReportService extends Service
      *
      * @return array The response containing the document information.
      */
-    public function getDocument(string $uuid): array
+    public function getDocument(string $uuid)
     {
         try {
             // Obtiene datos del usuario
@@ -36,16 +36,16 @@ class ReportService extends Service
             // Obtiene resumen de inspección
             $inspection = Inspection::with([
                 'client',
-                'equipment.model.trademark',
                 'category.sections.subSections.fields.result',
                 'inspectionEquipments.equipment',
-                'evidences' => function ($query) {
-                    $query->orderBy('position', 'asc');
-                },
                 'project',
+                'diagnosis'
             ])->where('inspection_uuid', $uuid)->first();
             // Valida si la inspección tiene información.
             if ($inspection && $this->isValidInspection($inspection)) {
+                $inspection->fields = $inspection->equipment_fields_report
+                    ? json_decode($inspection->equipment_fields_report)
+                    : null;
                 $inspection->provider = $user->client;
                 // Generación de la vista en base a la información de la colección.
                 $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));

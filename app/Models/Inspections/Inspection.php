@@ -6,6 +6,7 @@ use App\Models\Clients\Client;
 use App\Models\Inspections\Categories\CtInspection;
 use App\Models\Projects\Project;
 use App\Models\Status\Status;
+use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -104,5 +105,10 @@ class Inspection extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class, 'project_id', 'project_id');
+    }
+
+    public function diagnosis(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'diagnosis_user_id', 'id');
     }
 }

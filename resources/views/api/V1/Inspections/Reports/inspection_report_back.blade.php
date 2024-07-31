@@ -9,11 +9,11 @@
     <meta NAME="keywords" CONTENT="quality, service, renovables, eólico, energía" />
     <meta NAME="description" CONTENT="Servicios profesionales técnicos industriales, especializados en mecatrónica dentro de sector eólico y las nuevas fuentes de energías renovables" />
     <style>
-/*        body {
+        body {
             text-align: center;
             justify-content: center;
-            font-family: Arial, sans-serif; !* Utilizamos una fuente legible *!
-            margin: 20px; !* Margen exterior *!
+            font-family: Arial, sans-serif; /* Utilizamos una fuente legible */
+            margin: 20px; /* Margen exterior */
         }
         table {
             border-spacing: 0;
@@ -31,17 +31,17 @@
             max-width: 100%;
             height: auto;
             display: block;
-            margin-bottom: 10px; !* Espacio entre imágenes *!
+            margin-bottom: 10px; /* Espacio entre imágenes */
         }
         p {
-            !*font-weight: bold;*!
+            /*font-weight: bold;*/
             font-size: 14px;
-            margin-bottom: 5px; !* Espacio inferior entre título y descripción *!
+            margin-bottom: 5px; /* Espacio inferior entre título y descripción */
         }
         span {
             font-size: 12px;
             color: #555;
-            display: block; !* Asegura que el texto de descripción esté debajo del título *!
+            display: block; /* Asegura que el texto de descripción esté debajo del título */
         }
 
         .inspection-table thead th {
@@ -52,7 +52,7 @@
             border: 1px solid black;
         }
 
-        !** Define the margins of your page **!
+        /** Define the margins of your page **/
         @page {
             margin: 100px 25px;
         }
@@ -86,7 +86,7 @@
         }
         #title-header {
             color: grey;
-        }*/
+        }
     </style>
 </head>
 
@@ -95,13 +95,17 @@
 @include('api.V1.Inspections.Reports.Layouts.footer')
     <!-- Wrap the content of your PDF inside a main tag -->
     <main>
-{{--        @dd($inspection)--}}
-        {{--  Ficha de Resumen  --}}
+        {{--  PORTADA  --}}
         @include('api.V1.Inspections.Reports.Layouts.title')
+        <div class="page-break"></div>
+        {{--  EQUIPO  --}}
+        @include('api.V1.Inspections.Reports.Layouts.equipment')
         <div class="page-break"></div>
         {{--  INSPECCIÓN  --}}
         @include('api.V1.Inspections.Reports.Layouts.inspection')
         <div class="page-break"></div>
+        {{--  EVIDENCIAS  --}}
+        @include('api.V1.Inspections.Reports.Layouts.evidences')
         {{--  CONCLUSIÓN  --}}
         <div class="page-break"></div>
         @include('api.V1.Inspections.Reports.Layouts.conclusion')
