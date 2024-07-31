@@ -169,13 +169,13 @@ export default {
         editedItem: {
             failure_uuid: '',
             failure: '',
-            active: false,
+            active: true,
             ct_failure_code: '',
         },
         defaultItem: {
             failure_uuid: '',
             failure: '',
-            active: false,
+            active: true,
             ct_failure_code: '',
         },
         ct_failures: [],
