@@ -5,16 +5,17 @@
     </v-col>
     <v-col cols="12" lg="9">
         <template v-if="!loading">
-            <draggable class="dragArea list-group w-full d-contents mt-0 pt-0" :list="evidences" @change="log">
-                <v-row>
+            <v-row>
+                <draggable class="dragArea list-group w-full d-contents mt-0 pt-0" :list="evidences" @change="log">
                     <v-col cols="12" lg="4" class="list-group-item" v-for="(evidence, index) in evidences"
                         :key="evidence.inspection_evidence_uuid">
                         <EvidenceForm :inspection_uuid="inspection_uuid" :evidence="evidence"
                             @getEvidences="getEvidences" :positionAux="index + 1"
                             :inspection_form_id="inspection_form_id" />
                     </v-col>
-                </v-row>
-            </draggable>
+                </draggable>
+            </v-row>
+
         </template>
         <template v-else>
             <v-row>
@@ -69,7 +70,7 @@ export default defineComponent({
         }
     },
     mounted() {
-        if(this.inspection_form_id !== null){
+        if (this.inspection_form_id !== null) {
             this.getEvidences();
         }
     },
@@ -120,7 +121,7 @@ export default defineComponent({
 .d-contents {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: left;
 }
 
 .fab {
