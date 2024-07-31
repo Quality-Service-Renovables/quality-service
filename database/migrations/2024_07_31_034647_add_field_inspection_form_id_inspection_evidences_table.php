@@ -15,9 +15,9 @@ return new class extends Migration
             $table->unsignedBigInteger('inspection_form_id')
                 ->after('inspection_id')
                 ->comment('Relation with inspection form');
-            //INDEX
+            // INDEX
             $table->index('inspection_form_id');
-            //FOREIGN KEYS
+            // FOREIGN KEYS
             $table->foreign('inspection_form_id', 'fk_inspection_form_evidences')
                 ->references('inspection_form_id')
                 ->on('inspection_forms');
@@ -29,7 +29,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('inspections', function (Blueprint $table) {
+        Schema::table('inspection_evidences', function (Blueprint $table) {
+            $table->dropForeign(['inspection_form_id']);
+            $table->dropIndex(['inspection_form_id']);
             $table->dropColumn('inspection_form_id');
         });
     }
