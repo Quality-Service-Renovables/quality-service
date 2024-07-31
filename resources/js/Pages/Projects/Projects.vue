@@ -510,7 +510,7 @@ export default {
         // Sections
         dialogForm: false,
         ctInspectionUuid: '',
-        tab: 'sections',
+        tab: 'information',
         inspectionUuid: null,
         project: null,
     }),

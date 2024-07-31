@@ -1,78 +1,106 @@
 <template>
     <div class="max-w-7xl mx-auto sm:px-4 lg:px-6 mb-5 pb-5">
         <div class="overflow-hidden shadow-sm sm:rounded-lg">
-            <v-card-text>
-                <p class="text-grey mb-2 text-h5 font-weight-bold">
-                    Información del proyecto
-                </p>
-                <v-divider></v-divider>
-                <v-row>
-                    <v-col cols="12">
-                        <v-select v-model="inspection_form.ct_inspection_code" :items="inspections"
-                            item-title="ct_inspection" item-value="ct_inspection_code" label="Seleccionar inspección"
-                            variant="outlined" hide-details required></v-select>
-                    </v-col>
-                    <v-col cols="6">
-                        <v-select v-model="inspection_form.ct_equipment_uuid" :items="inspectionsEquipmentsCategories"
-                            item-title="ct_equipment" item-value="ct_equipment_uuid"
-                            label="Seleccionar categoría de equipo a inspeccionar" variant="outlined" hide-details
-                            required
-                            @update:modelValue="setEquipmentFields(inspection_form.ct_equipment_uuid)"></v-select>
-                    </v-col>
-                    <v-col cols="6">
-                        <v-select v-model="inspection_form.equipments_uuid" :items="equipmentsByCategory"
-                            item-title="equipment" item-value="equipment_uuid"
-                            label="Seleccionar equipos a utilizar en la inspección" variant="outlined" hide-details
-                            multiple chips clearable></v-select>
-                    </v-col>
-                    <v-col cols="12">
-                        <v-text-field v-model="inspection_form.location" label="Ubicación" variant="outlined"
-                            hide-details required></v-text-field>
-                    </v-col>
-                    <v-col cols="12">
-                        <p class="text-grey mb-2">Define el resumen de la inspección a
-                            realizar (opcional)
-                        </p>
-                        <QuillEditor v-model:content="inspection_form.resume" theme="snow" toolbar="essential"
-                            heigth="100%" contentType="html" />
-                    </v-col>
-                    <v-col cols="12">
-                        <p class="text-grey mb-2">Define los datos del equipo a
-                            inspeccionar
-                        </p>
-                        <v-row v-if="inspection_form != null && inspection_form.fields.length">
-                            <v-col cols="6" v-for="(field, index) in inspection_form.fields" :key="index">
-                                <v-text-field v-model="field.value"
-                                    :label="field.name + ' (' + isRequiredLabel(field.required) + ')'"
-                                    variant="outlined" hide-details required></v-text-field>
-                            </v-col>
-                        </v-row>
-                        <v-row v-else>
-                            <v-col cols="12">
-                                <p class="text-red mb-2">*No se han definido campos para
-                                    la
-                                    categoría seleccionada</p>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                </v-row>
-                <v-btn color="blue-darken-1" variant="text" @click="asignInspection()" :disabled="false"
-                    :loading="false">
-                    Guardar
-                </v-btn>
-            </v-card-text>
+            <v-card :loading="loading" :disabled="loading">
+                <v-card-text>
+                    <p class="text-grey mb-2 text-h5 font-weight-bold">
+                        Información del proyecto
+                    </p>
+                    <p class="text-primary">Rellena la información relacionada a la inspección a realizar.</p>
+                    <v-divider class="my-3"></v-divider>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-select v-model="inspection_form.ct_inspection_code" :items="inspections"
+                                item-title="ct_inspection" item-value="ct_inspection_code"
+                                label="Seleccionar inspección" variant="outlined" hide-details required></v-select>
+                        </v-col>
+                        <v-col cols="12" lg="6">
+                            <v-select v-model="inspection_form.ct_equipment_uuid"
+                                :items="inspectionsEquipmentsCategories" item-title="ct_equipment"
+                                item-value="ct_equipment_uuid" label="Seleccionar categoría de equipo a inspeccionar"
+                                variant="outlined" hide-details required
+                                @update:modelValue="setEquipmentFields(inspection_form.ct_equipment_uuid)"></v-select>
+                        </v-col>
+                        <v-col cols="12" lg="6">
+                            <v-select v-model="inspection_form.equipments_uuid" :items="equipmentsByCategory"
+                                item-title="equipment" item-value="equipment_uuid"
+                                label="Seleccionar equipos a utilizar en la inspección" variant="outlined" hide-details
+                                multiple chips clearable></v-select>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-text-field v-model="inspection_form.location" label="Ubicación" variant="outlined"
+                                hide-details required></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                            <p class="text-grey mb-1">Define el resumen de la inspección a
+                                realizar (opcional)
+                            </p>
+                            <QuillEditor v-model:content="inspection_form.resume" theme="snow" toolbar="essential"
+                                heigth="100%" contentType="html" />
+                        </v-col>
+                        <v-col cols="12">
+                            <v-row v-if="inspection_form.fields.length">
+                                <v-col cols="12">
+                                    <p class="text-primary">Define los datos del equipo a
+                                        inspeccionar.
+                                    </p>
+                                </v-col>
+                                <v-col cols="12" lg="6" v-for="(field, index) in inspection_form.fields" :key="index">
+                                    <v-text-field v-model="field.value"
+                                        :label="field.name + ' (' + isRequiredLabel(field.required) + ')'"
+                                        variant="outlined" hide-details required></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row v-else>
+                                <v-col cols="12">
+                                    <p class="text-red mb-2">*No se han definido campos para
+                                        la
+                                        categoría seleccionada</p>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col cols="12">
+                            <p class="text-primary mb-2">Define la Escala de condición.</p>
+                            <p class="text-grey mb-1">Escala de condición
+                            </p>
+                            <QuillEditor v-model:content="inspection_form.escala_condicion" theme="snow"
+                                toolbar="essential" heigth="100%" contentType="html" />
+                            <p class="mt-3 text-grey">
+                                Riesgo:</p>
+                            <v-select v-model="inspection_form.ct_risk_id" :items="ct_risks" item-title="ct_risk"
+                                item-value="ct_risk_id" variant="outlined" hide-details class="w-50 rounded"
+                                density="compact"
+                                :style="{ 'background-color': getBgColor(inspection_form.ct_risk_id) }">
+                                <template v-slot:item="{ props, item }">
+                                    <v-list-item v-bind="props" :title="item.raw.ct_risk"
+                                        :style="{ 'background-color': item.raw.ct_color }"
+                                        value="ct_risk"></v-list-item>
+                                </template>
+                            </v-select>
+                        </v-col>
+                    </v-row>
+                    <PrimaryButton @click="asignInspection()" :disabled="false" :loading="false" class="mt-3">
+                        Guardar
+                    </PrimaryButton>
+                </v-card-text>
+            </v-card>
         </div>
     </div>
 </template>
 
 <script>
+import { toast } from 'vue-sonner'
 import { getInspection } from '@/Functions/api';
 import { QuillEditor } from '@vueup/vue-quill'
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 export default {
     components: {
         QuillEditor,
+        PrimaryButton
     },
     props: {
         inspection_uuid: String,
@@ -83,6 +111,7 @@ export default {
             isUpdating: false,
             loading: false,
             inspection_form: {
+                inspection_uuid: null,
                 resume: '',
                 conclusion: '',
                 recomendations: '',
@@ -97,18 +126,17 @@ export default {
             inspectionsEquipmentsToUseInInspections: [],
             loadingInspectionAsignin: false,
             errorAssigningInspection: false,
+            equipmentsByCategory: [],
+            ct_risks: []
         }
     },
     mounted() {
         this.getInspections();
         this.getinspectionsEquipmentsCategories();
+        this.getRisks();
         if (this.inspection_uuid !== null) {
             this.isUpdating = true;
             this.getInspection();
-        } else {
-            this.isUpdating = false;
-            this.inspection_form.project_id = project.project_uuid;
-            this.inspection_form.client_uuid = project.client.client_uuid;
         }
     },
     methods: {
@@ -126,6 +154,9 @@ export default {
                 this.loading = true;
                 const response = await getInspection(this.inspection_uuid);
                 this.inspection_form = response.data.data;
+                this.inspection_form.ct_inspection_code = this.inspection_form.category.ct_inspection_code;
+                this.inspection_form.ct_equipment_uuid = this.inspection_form.inspection_equipments.length > 0 ? this.inspection_form.inspection_equipments[0].equipment.category.ct_equipment_uuid : null;
+                this.inspection_form.equipments_uuid = this.inspection_form.inspection_equipments.map(equipment => equipment.equipment.equipment_uuid);
                 this.setEquipmentFields(this.inspection_form.ct_equipment_uuid);
                 this.loading = false;
             } catch (error) {
@@ -146,7 +177,12 @@ export default {
                 });
         },
         setEquipmentFields(ct_equipment_uuid) {
+            console.log("Entro a setEquipmentFields");
+            console.log("ct_equipment_uuid: " + ct_equipment_uuid);
+
+
             if (ct_equipment_uuid) {
+                console.log("Entro al if...");
                 this.inspection_form.fields = null;
                 //this.inspection_form.equipments_uuid = [];
                 let equipments = this.inspectionsEquipmentsCategories.find(category => category.ct_equipment_uuid === ct_equipment_uuid);
@@ -193,10 +229,12 @@ export default {
                         ct_inspection_code: this.inspection_form.ct_inspection_code,
                         status_code: this.inspection_form.status_code,
                         equipment_uuid: this.inspection_form.equipment_uuid,
-                        project_uuid: this.inspection_form.project_id,
-                        client_uuid: this.inspection_form.client_uuid,
+                        project_uuid: this.project.project_uuid,
+                        client_uuid: this.project.client.client_uuid,
                         location: this.inspection_form.location,
-                        equipment_fields_report: JSON.stringify(this.inspection_form.fields)
+                        equipment_fields_report: JSON.stringify(this.inspection_form.fields),
+                        escala_condicion: this.inspection_form.escala_condicion,
+                        ct_risk_id: this.inspection_form.ct_risk_id
                     }
                     request = () => {
                         return axios.post('api/inspections', formData);
@@ -211,10 +249,12 @@ export default {
                         ct_inspection_code: this.inspection_form.ct_inspection_code,
                         status_code: this.inspection_form.status_code,
                         equipment_uuid: this.inspection_form.equipment_uuid,
-                        project_uuid: this.inspection_form.project_id,
-                        client_uuid: this.inspection_form.client_uuid,
+                        project_uuid: this.project.project_uuid,
+                        client_uuid: this.project.client.client_uuid,
                         location: this.inspection_form.location,
-                        equipment_fields_report: JSON.stringify(this.inspection_form.fields)
+                        equipment_fields_report: JSON.stringify(this.inspection_form.fields),
+                        escala_condicion: this.inspection_form.escala_condicion,
+                        ct_risk_id: this.inspection_form.ct_risk_id
                     }
                 }
 
@@ -269,6 +309,21 @@ export default {
                     }
                 });
             });
+        },
+        getRisks() {
+            axios.get('api/risks')
+                .then(response => {
+                    this.ct_risks = response.data.data;
+                })
+                .catch(error => {
+                    this.handleErrors(error);
+                });
+        },
+        getBgColor(ct_risk_id) {
+            let color = this.ct_risks.filter(risk => {
+                return ct_risk_id === risk.ct_risk_id;
+            });
+            return color.length > 0 ? color[0].ct_color : '';
         },
     }
 }
