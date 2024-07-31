@@ -35,7 +35,7 @@ class Inspection extends Model
         'project_id',
     ];
 
-    protected $hidden = ['inspection_id', 'ct_inspection_id', 'ct_risk_id', 'client_id', 'status_id', 'project_id'];
+    protected $hidden = ['inspection_id', 'ct_inspection_id', 'client_id', 'status_id', 'project_id'];
 
     /**
      * Get the client associated with the inspection.
