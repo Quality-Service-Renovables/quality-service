@@ -53,7 +53,8 @@
                 field.required ?
                     '*Requerido' :
                     'Opcional' }}):</p>
-                                                                <v-autocomplete v-model="field.content.inspection_form_value"
+                                                                <v-autocomplete
+                                                                    v-model="field.content.inspection_form_value"
                                                                     :items="failures" item-title="failure"
                                                                     item-value="failure" variant="outlined" hide-details
                                                                     class="rounded" density="compact" clearable>
@@ -67,7 +68,8 @@
                                                                     :items="ct_risks" item-title="ct_risk"
                                                                     item-value="ct_risk_id" variant="outlined"
                                                                     hide-details class="rounded" density="compact"
-                                                                    :style="{ 'background-color': getBgColor(field.content.ct_risk_id) }" clearable>
+                                                                    :style="{ 'background-color': getBgColor(field.content.ct_risk_id) }"
+                                                                    clearable>
                                                                     <template v-slot:item="{ props, item }">
                                                                         <v-list-item v-bind="props"
                                                                             :title="item.raw.ct_risk"
@@ -114,8 +116,9 @@
                                                             </v-col>
                                                         </v-row>
                                                         <!-- Photo evidences -->
-                                                        <v-row>
-                                                                <Evidence :inspection_uuid="inspection_uuid" :inspection_form_id="field.content.inspection_form_id"/>
+                                                        <v-row v-if="field.content.inspection_form_id">
+                                                            <Evidence :inspection_uuid="inspection_uuid"
+                                                                :inspection_form_id="field.content.inspection_form_id" />
                                                         </v-row>
                                                         <!-- Save Button -->
                                                         <PrimaryButton @click="saveField(field)" class="mt-2"
@@ -175,7 +178,8 @@
                                                                                     item-title="failure"
                                                                                     item-value="failure"
                                                                                     variant="outlined" hide-details
-                                                                                    class="rounded" density="compact" clearable>
+                                                                                    class="rounded" density="compact"
+                                                                                    clearable>
                                                                                 </v-autocomplete>
                                                                             </v-col>
                                                                             <v-col cols="12" lg="6">
@@ -188,9 +192,9 @@
                                                                                     item-title="ct_risk"
                                                                                     item-value="ct_risk_id"
                                                                                     variant="outlined" hide-details
-                                                                                    class="rounded"
-                                                                                    density="compact"
-                                                                                    :style="{ 'background-color': getBgColor(fieldSub.content.ct_risk_id) }" clearable>
+                                                                                    class="rounded" density="compact"
+                                                                                    :style="{ 'background-color': getBgColor(fieldSub.content.ct_risk_id) }"
+                                                                                    clearable>
                                                                                     <template
                                                                                         v-slot:item="{ props, item }">
                                                                                         <v-list-item v-bind="props"
@@ -241,7 +245,11 @@
                                                                                 </v-card>
                                                                             </v-col>
                                                                         </v-row>
-
+                                                                        <!-- Photo evidences -->
+                                                                        <v-row v-if="fieldSub.content.inspection_form_id">
+                                                                            <Evidence :inspection_uuid="inspection_uuid"
+                                                                                :inspection_form_id="fieldSub.content.inspection_form_id" />
+                                                                        </v-row>
                                                                         <!-- Save Button -->
                                                                         <PrimaryButton @click="saveField(fieldSub)"
                                                                             class="mt-2" :disabled="fieldSub.loading">
@@ -338,21 +346,21 @@ export default {
                 field.loading = false;
                 return;
             } else {*/
-                axios.post('api/inspection/forms/set-form-inspection', formData)
-                    .then(response => {
-                        field.loading = false;
-                        toast.success('Campo guardado correctamente');
-                        if (response.data.data.length > 0) {
-                            field.content = response.data.data[0];
-                            this.getSuggestions(field);
-                        } else {
-                            this.getForm();
-                        }
-                    })
-                    .catch(error => {
-                        field.loading = false;
-                        this.handleErrors(error);
-                    });
+            axios.post('api/inspection/forms/set-form-inspection', formData)
+                .then(response => {
+                    field.loading = false;
+                    toast.success('Campo guardado correctamente');
+                    if (response.data.data.length > 0) {
+                        field.content = response.data.data[0];
+                        this.getSuggestions(field);
+                    } else {
+                        this.getForm();
+                    }
+                })
+                .catch(error => {
+                    field.loading = false;
+                    this.handleErrors(error);
+                });
             //}
         },
         complementData(field) {
@@ -360,7 +368,8 @@ export default {
                 field.content = {
                     inspection_form_value: '',
                     inspection_form_comments: '',
-                    ct_risk_id: null
+                    ct_risk_id: null,
+                    inspection_form_id: null
                 }
             }
         },

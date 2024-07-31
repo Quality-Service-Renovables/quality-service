@@ -39,7 +39,7 @@ import { defineComponent } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import EvidenceForm from './EvidenceForm.vue';
 import { Toaster, toast } from 'vue-sonner'
-import { getInspection } from '@/Functions/api';
+import { getEvidences } from '@/Functions/api';
 import axios from 'axios';
 
 export default defineComponent({
@@ -69,7 +69,9 @@ export default defineComponent({
         }
     },
     mounted() {
-        this.getEvidences();
+        if(this.inspection_form_id !== null){
+            this.getEvidences();
+        }
     },
     methods: {
         log(event) {
@@ -80,8 +82,8 @@ export default defineComponent({
             this.evidences = [];
             try {
                 this.loading = true;
-                const response = await getInspection(this.inspection_uuid);
-                this.evidences = response.data.data.evidences;
+                const response = await getEvidences(this.inspection_form_id);
+                this.evidences = response.data.data;
                 this.evidences = this.evidences.sort((a, b) => a.position - b.position);
                 this.loading = false;
             } catch (error) {

@@ -6,17 +6,18 @@
 
 namespace App\Services\Api\V1\Inspections;
 
-use App\Models\Inspections\Categories\CtInspection;
-use App\Models\Inspections\Categories\CtInspectionForm;
-use App\Models\Inspections\Categories\CtInspectionSection;
-use App\Models\Inspections\Inspection;
-use App\Models\Inspections\InspectionForm;
+use Throwable;
 use App\Services\Service;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Throwable;
+use App\Models\Inspections\Evidence;
+use App\Models\Inspections\Inspection;
+use App\Models\Inspections\InspectionForm;
+use App\Models\Inspections\Categories\CtInspection;
+use App\Models\Inspections\Categories\CtInspectionForm;
+use App\Models\Inspections\Categories\CtInspectionSection;
 
 class InspectionFormService extends Service
 {
@@ -192,7 +193,7 @@ class InspectionFormService extends Service
                             $fields[$key]->content = InspectionForm::where([
                                 'ct_inspection_form_id' => $field->ct_inspection_form_id,
                                 'inspection_id' => $inspection->inspection_id,
-                            ])->first();
+                            ])->with("evidences")->first();
                         }
                         $form = $this->buildForm($sections, $fields);
                     }
@@ -206,6 +207,25 @@ class InspectionFormService extends Service
             $this->setExceptions($exceptions);
         }
 
+        return $this->response;
+    }
+
+    /**
+     * Retrieves evidences of a form related to an inspection.
+     *
+     * @param string $uuid The ID of the inspection form.
+     *
+     * @return array The form data.
+     */
+    public function getFormEvidences(string $id): array{
+        try {
+            $evidences = Evidence::where('inspection_form_id', $id)->get();
+            $this->response['message'] = trans('api.read');
+            $this->response['data'] = $evidences;
+        } catch (Throwable $exceptions) {
+            // Manejo del error
+            $this->setExceptions($exceptions);
+        }
         return $this->response;
     }
 

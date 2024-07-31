@@ -9,3 +9,7 @@ const apiClient = axios.create({
 export const getInspection = (inspectionUuid) => {
   return apiClient.get(`/inspections/${inspectionUuid}`);
 };
+
+export const getEvidences = (inspectionFormId) => {
+  return apiClient.get('/inspection/forms/get-form-evidences/' + inspectionFormId);
+};
