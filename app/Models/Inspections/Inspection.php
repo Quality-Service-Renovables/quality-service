@@ -111,4 +111,9 @@ class Inspection extends Model
     {
         return $this->belongsTo(User::class, 'diagnosis_user_id', 'id');
     }
+
+    public function risk(): BelongsTo
+    {
+        return $this->belongsTo(CtRisk::class, 'ct_risk_id', 'ct_risk_id');
+    }
 }

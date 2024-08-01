@@ -1,4 +1,4 @@
-<h3>Conclusión</h3>
+<h3 id="section4">Conclusión</h3>
 <hr><br>
 {!! $inspection->conclusion !!}
 <h3>Recomendaciones</h3>

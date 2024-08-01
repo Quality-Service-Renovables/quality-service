@@ -1,8 +1,8 @@
 <div style="margin-top: 200px;">
-<h1>1.1 Información</h1>
-<table>
+<h3>1.1 Información</h3>
+<table class="inspection-table">
     <thead>
-        <th>Inspección</th>
+        <th colspan="2" style="text-align: left;">{{ $inspection->project->project_name }}</th>
     </thead>
     <tbody>
         <tr>
@@ -11,46 +11,35 @@
         </tr>
         <tr>
             <td>Tipo Inspección:</td>
-            <td></td>
+            <td>{{ $inspection->category->ct_inspection }}</td>
         </tr>
         <tr>
             <td>Equipo Inspección:</td>
-            <td></td>
+            <td>
+                @foreach($inspection->inspectionEquipments as $inspectionEquipment)
+                    {{ $inspectionEquipment->equipment->equipment }}.<br>
+                @endforeach
+            </td>
         </tr>
         <tr>
             <td>Inspector:</td>
-            <td></td>
+            <td>
+                @foreach($inspection->project->employees as $employee)
+                    {{ $employee->user->name }}.<br>
+                @endforeach
+            </td>
         </tr>
         <tr>
             <td>Diagnóstico:</td>
-            <td>{{ $inspection->diagnosis->name }}</td>
+            <td>{{ $inspection->diagnosis->name ?? '' }}</td>
         </tr>
     </tbody>
 </table>
-{{--Emplazamiento--}}
-<table>
-    <thead>
-        <th>Emplazamiento</th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Nombre del Sitio:</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Ubicación:</td>
-            <td>{{ $inspection->location }}</td>
-        </tr>
-        <tr>
-            <td>Número de Máquina:</td>
-            <td></td>
-        </tr>
-    </tbody>
-</table>
+<br>
 {{--Multiplicadora--}}
-<table>
+<table class="inspection-table">
     <thead>
-        <th>Multiplicadora</th>
+        <th colspan="2" style="text-align: left;">Ficha Técnica</th>
     </thead>
     <tbody>
         @foreach($inspection->fields as $field)

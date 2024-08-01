@@ -36,11 +36,14 @@ class ReportService extends Service
             // Obtiene resumen de inspección
             $inspection = Inspection::with([
                 'client',
-                'category.sections.subSections.fields.result',
+                'category.sections.subSections.fields.result.evidences',
+                'category.sections.subSections.fields.result.risk',
                 'inspectionEquipments.equipment',
-                'project',
+                'project.employees.user',
+                'risk',
                 'diagnosis'
             ])->where('inspection_uuid', $uuid)->first();
+//            dd($inspection->category->sections->first()->subSections->first()->fields->first()->result->evidences);
             // Valida si la inspección tiene información.
             if ($inspection && $this->isValidInspection($inspection)) {
                 $inspection->fields = $inspection->equipment_fields_report

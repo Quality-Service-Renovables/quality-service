@@ -9,11 +9,11 @@
     <meta NAME="keywords" CONTENT="quality, service, renovables, eólico, energía" />
     <meta NAME="description" CONTENT="Servicios profesionales técnicos industriales, especializados en mecatrónica dentro de sector eólico y las nuevas fuentes de energías renovables" />
     <style>
-/*        body {
+        body {
             text-align: center;
             justify-content: center;
-            font-family: Arial, sans-serif; !* Utilizamos una fuente legible *!
-            margin: 20px; !* Margen exterior *!
+            font-family: Arial, sans-serif; /* Utilizamos una fuente legible */
+            margin: 20px; /* Margen exterior */
         }
         table {
             border-spacing: 0;
@@ -28,20 +28,21 @@
         }
 
         img {
-            max-width: 100%;
+            max-width: 95%;
             height: auto;
             display: block;
-            margin-bottom: 10px; !* Espacio entre imágenes *!
+            margin-bottom: 10px; /* Espacio entre imágenes */
+            border-radius: 10px;
         }
         p {
-            !*font-weight: bold;*!
+            /*font-weight: bold;*/
             font-size: 14px;
-            margin-bottom: 5px; !* Espacio inferior entre título y descripción *!
+            margin-bottom: 5px; /* Espacio inferior entre título y descripción */
         }
         span {
             font-size: 12px;
             color: #555;
-            display: block; !* Asegura que el texto de descripción esté debajo del título *!
+            display: block; /* Asegura que el texto de descripción esté debajo del título */
         }
 
         .inspection-table thead th {
@@ -52,7 +53,7 @@
             border: 1px solid black;
         }
 
-        !** Define the margins of your page **!
+        /** Define the margins of your page **/
         @page {
             margin: 100px 25px;
         }
@@ -86,7 +87,77 @@
         }
         #title-header {
             color: grey;
-        }*/
+        }
+        ul {
+            list-style-type: none;
+            text-align: left; /* Asegurar que el texto está alineado a la izquierda */
+        }
+        .normal::before {
+            content: "";
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: green;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+        .unusual::before {
+            content: "";
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: yellow;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+        .repair::before {
+            content: "";
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+        .comment {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .comment .author {
+            font-weight: bold;
+            color: #444;
+        }
+
+        .comment p {
+            margin-top: 10px;
+            color: #333;
+        }
+        .badge {
+            display: inline-block;
+            padding: .25em .4em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: left;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: .25rem;
+            color: #444;
+            background-color: #f9f9f9;
+        }
+        .image-badge img {
+            width: 100%; /* Ajusta al tamaño que quieras. */
+            display: block;
+        }
+
+        .image-badge .badge {
+            display: block;  /* Esto coloca el badge en su propia línea, debajo de la imagen. */
+            text-align: left; /* Centra el texto del badge. */
+        }
     </style>
 </head>
 
@@ -94,10 +165,12 @@
 @include('api.V1.Inspections.Reports.Layouts.header')
 @include('api.V1.Inspections.Reports.Layouts.footer')
     <!-- Wrap the content of your PDF inside a main tag -->
-    <main>
-{{--        @dd($inspection)--}}
-        {{--  Ficha de Resumen  --}}
+    <main style="text-align: left">
+        {{--  Ficha Técnica  --}}
         @include('api.V1.Inspections.Reports.Layouts.title')
+        <div class="page-break"></div>
+        {{--  Ficha de Resumen  --}}
+        @include('api.V1.Inspections.Reports.Layouts.resume')
         <div class="page-break"></div>
         {{--  INSPECCIÓN  --}}
         @include('api.V1.Inspections.Reports.Layouts.inspection')

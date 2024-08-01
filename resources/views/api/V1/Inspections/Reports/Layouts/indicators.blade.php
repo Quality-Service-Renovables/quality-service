@@ -1,4 +1,4 @@
-<h3>Apéndice</h3>
+<h3 id="section5">Apéndice</h3>
 <hr><br>
 <table class="inspection-table">
     <tbody>
