@@ -48,7 +48,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         label="Nombre" variant="solo"
                                                                         hide-details></v-text-field>
                                                                 </v-col>
-
+                                                                <v-col cols="12">
+                                                                    <v-textarea v-model="editedItem.description"
+                                                                        label="Descripción" variant="solo"
+                                                                        hide-details></v-textarea>
+                                                                </v-col>
                                                                 <v-col cols="12">
                                                                     <div class="text-right">
                                                                         <v-btn v-if="!showCreateCategoryField"
@@ -161,6 +165,7 @@ export default {
         dialogDelete: false,
         headers: [
             { title: 'Falla', key: 'failure' },
+            { title: 'Descripción', key: 'description' },
             { title: 'Estado', key: 'active' },
             { title: 'Categoría', key: 'category.ct_failure' },
             { title: 'Acciones', key: 'actions', sortable: false }
@@ -169,12 +174,14 @@ export default {
         editedItem: {
             failure_uuid: '',
             failure: '',
+            description: '',
             active: true,
             ct_failure_code: '',
         },
         defaultItem: {
             failure_uuid: '',
             failure: '',
+            description: '',
             active: true,
             ct_failure_code: '',
         },
@@ -246,6 +253,7 @@ export default {
                 const putRequest = () => {
                     return axios.put('api/failures/' + this.editedItem.failure_uuid, {
                         failure: this.editedItem.failure,
+                        description: this.editedItem.description,
                         active: this.editedItem.active,
                         ct_failure_code: this.editedItem.ct_failure_code,
                     });
@@ -265,6 +273,7 @@ export default {
                 const postRequest = () => {
                     return axios.post('api/failures', {
                         failure: this.editedItem.failure,
+                        description: this.editedItem.description,
                         active: this.editedItem.active,
                         ct_failure_code: this.editedItem.ct_failure_code,
                     });

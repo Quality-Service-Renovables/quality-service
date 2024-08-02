@@ -70,6 +70,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         label="Nombre" variant="outlined" hide-details
                                                                         required></v-text-field>
                                                                 </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-text-field v-model="editedItem.title_report"
+                                                                        label="T'itulo del informe" variant="outlined" hide-details
+                                                                        required></v-text-field>
+                                                                </v-col>
                                                                 <v-col cols="6">
                                                                     <v-textarea v-model="editedItem.description"
                                                                         label="Descripción" variant="outlined"
@@ -545,6 +550,7 @@ export default {
         saveProject(item) {
             let formData = {
                 project_name: item.project_name,
+                title_report: item.title_report,
                 description: item.description,
                 comments: item.comments,
                 client_uuid: item.client_uuid,
@@ -570,6 +576,7 @@ export default {
             console.log(item);
             let formData = {
                 project_name: item.project_name,
+                title_report: item.title_report,
                 description: item.description,
                 comments: item.comments,
                 client_uuid: status_code ? item.client.client_uuid : item.client_uuid,

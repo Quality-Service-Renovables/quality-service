@@ -20,8 +20,8 @@ class FailureRequest extends CustomRequest
                 'string',
                 'min:1',
                 'max:255',
-                Rule::unique('failures', 'failure')
-                    ->whereNull('deleted_at'),
+                /*Rule::unique('failures', 'failure')
+                    ->whereNull('deleted_at'),*/
             ],
             'description' => 'nullable|string|min:10|max:255',
             'ct_failure_code' => [

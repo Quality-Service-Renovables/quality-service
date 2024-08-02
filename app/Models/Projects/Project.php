@@ -26,6 +26,7 @@ class Project extends Model
     protected $fillable = [
         'project_uuid',
         'project_name',
+        'title_report',
         'description',
         'comments',
         'active',
