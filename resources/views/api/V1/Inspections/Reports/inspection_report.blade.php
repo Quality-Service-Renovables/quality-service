@@ -232,6 +232,7 @@
         .list{
             color: #000;
             text-decoration: none;
+            font-size: 12px;
         }
         .sub-list{
             margin-left: 15px;
@@ -240,6 +241,10 @@
         .section{
             font-size: 12px;
             margin-bottom: 75px;
+        }
+
+        .section p, .section a{
+            font-size: 12px;
         }
         .w-50{
             width: 50%;
