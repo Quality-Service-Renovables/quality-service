@@ -55,7 +55,9 @@
 
         /** Define the margins of your page **/
         @page {
-            margin: 100px 25px;
+            /* arriba - derecha - abajo - izquierda */
+            /*margin: 100px 25px 0px 25px;*/
+            margin: 100px 25px 0px 25px;
         }
 
         .page-break {
@@ -74,9 +76,9 @@
 
         footer {
             position: fixed;
-            bottom: -60px;
-            left: 0;
-            right: 0;
+            bottom: 60px;
+            left: 25px;
+            right: 25px;
             height: 30px;
             font-size: 10px;
             /*text-align: center;*/
@@ -218,6 +220,33 @@
         .v-center{
             vertical-align: middle;
         }
+
+        .font-12{
+            font-size: 12px;
+        }
+
+        .table-content p{
+            margin-top: 5px;
+        }
+
+        .list{
+            color: #000;
+            text-decoration: none;
+        }
+        .sub-list{
+            margin-left: 15px;
+        }
+
+        .section{
+            font-size: 12px;
+            margin-bottom: 75px;
+        }
+        .w-50{
+            width: 50%;
+        }
+        .bg-gray{
+            background-color: lightgray;
+        }
     </style>
 </head>
 
@@ -229,10 +258,13 @@
         {{--  Ficha Técnica  --}}
         @include('api.V1.Inspections.Reports.Layouts.title')
         <div class="page-break"></div>
-        @include('api.V1.Inspections.Reports.Layouts.introduction')
+        {{--  Avisos  --}}
+        @include('api.V1.Inspections.Reports.Layouts.advices')
         <div class="page-break"></div>
-        {{--  Ficha de Resumen  --}}
-        @include('api.V1.Inspections.Reports.Layouts.resume')
+        {{--  Tabla de contenido  --}}
+        @include('api.V1.Inspections.Reports.Layouts.table-content')
+        @include('api.V1.Inspections.Reports.Layouts.introduction')
+        @include('api.V1.Inspections.Reports.Layouts.information')
         <div class="page-break"></div>
         {{--  INSPECCIÓN  --}}
         @include('api.V1.Inspections.Reports.Layouts.inspection')
