@@ -74,6 +74,7 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
 
     Route::get('inspection/get-document/{inspection_uuid}', [ReportController::class, 'getDocument'])
         ->name('inspection.resources.get-document');
+    Route::get('inspection/stream-document/{inspection_uuid}', [ReportController::class, 'streamDocument'])->name('stream-get');
     //---------------------------------------------------------   FORMS    ----------------------------------------------------------
     Route::get('inspection/forms/get-form/{ct_inspection_uuid}', [FormController::class, 'getForm']);
     Route::get('inspection/forms/get-form-inspection/{inspection_uuid}', [FormController::class, 'getFormInspection']);

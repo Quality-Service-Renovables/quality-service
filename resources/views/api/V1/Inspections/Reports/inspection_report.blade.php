@@ -77,16 +77,21 @@
             bottom: -60px;
             left: 0;
             right: 0;
-            height: 50px;
+            height: 30px;
             font-size: 10px;
-            text-align: center;
+            /*text-align: center;*/
             line-height: 15px;
         }
         .page-number:before {
             content: "Página " counter(page);
+            font-size: 12px;
+            vertical-align: top;
         }
         #title-header {
-            color: grey;
+            color: #c10202;
+            vertical-align: top;
+            font-weight: bold;
+            font-size: 15px;
         }
         ul {
             list-style-type: none;
@@ -158,6 +163,61 @@
             display: block;  /* Esto coloca el badge en su propia línea, debajo de la imagen. */
             text-align: left; /* Centra el texto del badge. */
         }
+
+        .primary-color{
+            color: #c10202;
+        }
+
+        /* COVER */
+        .cover{
+            margin-top: 100px;
+        }
+        .cover td{
+            vertical-align: top;
+        }
+       
+        .space{
+            margin-bottom: 75px;
+        }
+
+        .uppercase{
+            text-transform: uppercase;
+        }
+
+        .italic{
+            font-style: italic;
+        }
+        .justify{
+            text-align: justify;
+        }
+
+        .border{
+            border: 1px solid #000;
+            padding: 5px;
+        }
+
+        .text-left{
+            text-align: left;
+        }
+
+        .text-right{
+            text-align: right;
+        }   
+
+        .text-center{
+            text-align: center;
+        }
+
+        .v-top{
+            vertical-align: top;
+        }
+        .m-0{
+            margin: 0;
+        }
+
+        .v-center{
+            vertical-align: middle;
+        }
     </style>
 </head>
 
@@ -168,6 +228,8 @@
     <main style="text-align: left">
         {{--  Ficha Técnica  --}}
         @include('api.V1.Inspections.Reports.Layouts.title')
+        <div class="page-break"></div>
+        @include('api.V1.Inspections.Reports.Layouts.introduction')
         <div class="page-break"></div>
         {{--  Ficha de Resumen  --}}
         @include('api.V1.Inspections.Reports.Layouts.resume')

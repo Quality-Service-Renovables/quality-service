@@ -41,14 +41,14 @@ class ReportService extends Service
                 'inspectionEquipments.equipment',
                 'project.employees.user',
                 'risk',
-                'diagnosis'
+                'diagnosis',
             ])->where('inspection_uuid', $uuid)->first();
 //            dd($inspection->category->sections->first()->subSections->first()->fields->first()->result->evidences);
             // Valida si la inspección tiene información.
             if ($inspection && $this->isValidInspection($inspection)) {
                 $inspection->fields = $inspection->equipment_fields_report
-                    ? json_decode($inspection->equipment_fields_report)
-                    : null;
+                ? json_decode($inspection->equipment_fields_report)
+                : null;
                 $inspection->provider = $user->client;
                 // Generación de la vista en base a la información de la colección.
                 $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
@@ -134,5 +134,54 @@ class ReportService extends Service
 
         //return env('APP_DEBUG') ?? $isValidInspection;
         return true;
+    }
+
+    public function streamDocument(string $uuid)
+    {
+        try {
+            // Obtiene datos del usuario
+            $user = auth()->user()->load('client.config');
+            // Obtiene resumen de inspección
+            $inspection = Inspection::with([
+                'client',
+                'category.sections.subSections.fields.result.evidences',
+                'category.sections.subSections.fields.result.risk',
+                'inspectionEquipments.equipment',
+                'project.employees.user',
+                'risk',
+                'diagnosis',
+            ])->where('inspection_uuid', $uuid)->first();
+            // Valida si la inspección tiene información.
+            if ($inspection && $this->isValidInspection($inspection)) {
+                $inspection->fields = $inspection->equipment_fields_report
+                ? json_decode($inspection->equipment_fields_report)
+                : null;
+                $inspection->provider = $user->client;
+                // Generación de la vista en base a la información de la colección.
+                $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
+                // Cifrar el PDF
+                if ($user->client->config && $user->client->config->crypt_report) {
+                    $passReport = decrypt($user->client->config->key_report);
+                    $this->response['data']['key_report'] = $passReport;
+                    $document->getDomPDF()->getCanvas()->get_cpdf()->setEncryption($passReport);
+                }
+                // Nombre del documento
+                $filename = $inspection->category->ct_inspection_code . '_' . now()->format('Y-m-d_His') . '.pdf';
+                // Obtener el contenido PDF como una cadena
+                $pdfContent = $document->output();
+               return response($pdfContent, 200, [
+                    'Content-Type' => 'application/pdf',
+                    'Content-Disposition' => 'inline; filename="' . $filename . '"',
+                ]);
+            } else {
+                $this->statusCode = 404;
+                $this->response['message'] = trans('api.inspection_not_found');
+            }
+        } catch (Throwable $exceptions) {
+            // Manejo del error
+            $this->setExceptions($exceptions);
+        }
+
+        return $this->response;
     }
 }

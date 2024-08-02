@@ -1,60 +1,21 @@
-<div style="margin-top: 200px;">
-    <h2 style="text-align: left;">{{ $inspection->project->title_report }}</h2>
-
-    @if ($inspection->client->logo)
-        <img src="{{ $inspection->client->logo }}" width="300px" height="300px" alt="{{ $inspection->client->client }}">
-    @endif
-    <p>{{ $inspection->client->client }}</p>
-    <p style="color: gray">{{ $inspection->client->legal_name }}</p>
-    <p style="color: gray">{{ date('d M Y') }}</p>
-    <p style="font-size: 16px;"><small>{!! $inspection->category->description !!}</small></p>
-
-    <h3>1.1 Información</h3>
-    <table class="inspection-table">
-        <tbody>
-            <tr>
-                <td>Fecha Inspección:</td>
-                <td>{{ $inspection->created_at }}</td>
-            </tr>
-            <tr>
-                <td>Tipo Inspección:</td>
-                <td>{{ $inspection->category->ct_inspection }}</td>
-            </tr>
-            <tr>
-                <td>Equipo Inspección:</td>
-                <td>
-                    @foreach ($inspection->inspectionEquipments as $inspectionEquipment)
-                        {{ $inspectionEquipment->equipment->equipment }}.<br>
-                    @endforeach
-                </td>
-            </tr>
-            <tr>
-                <td>Inspector:</td>
-                <td>
-                    @foreach ($inspection->project->employees as $employee)
-                        {{ $employee->user->name }}.<br>
-                    @endforeach
-                </td>
-            </tr>
-            <tr>
-                <td>Diagnóstico:</td>
-                <td>{{ $inspection->diagnosis->name ?? '' }}</td>
-            </tr>
-        </tbody>
-    </table>
-    <br>
-    {{-- Multiplicadora --}}
-    <table class="inspection-table">
-        <thead>
-            <th colspan="2" style="text-align: left;">Ficha Técnica</th>
-        </thead>
-        <tbody>
-            @foreach ($inspection->fields as $field)
-                <tr>
-                    <td>{{ $field->name }}</td>
-                    <td>{{ $field->value }}</td>
-                </tr>
-            @endforeach
-        </tbody>
+<div class="cover">
+    <table style="width: 100%;"> 
+        <tr style="width: 100%;">
+            <td style="width:40%;">
+                @if ($inspection->client->logo)
+                    <img src="{{ $inspection->client->logo }}" alt="{{ $inspection->client->client }}">
+                @endif
+            </td>
+            <td style="width:60%;">
+                <h3 class="primary-color uppercase" style="margin: 0px;">{!! $inspection->category->description !!}</h>
+                <p style="color: gray" class="space italic">{{ $inspection->project->title_report }}</p>
+                <p>PREPARADO PARA:</p>
+                <p class="primary-color space">{{ $inspection->client->client }}</p>
+                <p>UBICACIÓN:</p>
+                <p class="primary-color space">{{ $inspection->location }}</p>
+                <p>FECHA:</p>
+                <p class="primary-color space">{{ date('d M Y') }}</p>
+            </td>
+        </tr>
     </table>
 </div>
