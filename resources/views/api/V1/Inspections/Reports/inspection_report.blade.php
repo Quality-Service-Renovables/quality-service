@@ -268,8 +268,14 @@
         <div class="page-break"></div>
         {{--  Tabla de contenido  --}}
         @include('api.V1.Inspections.Reports.Layouts.table-content')
+        {{--  Introducción  --}}
         @include('api.V1.Inspections.Reports.Layouts.introduction')
+        {{--  Información  --}}
         @include('api.V1.Inspections.Reports.Layouts.information')
+        <div class="page-break"></div>
+        {{--  Escala de condición  --}}
+        @include('api.V1.Inspections.Reports.Layouts.condition-scale')
+        @include('api.V1.Inspections.Reports.Layouts.resume')
         <div class="page-break"></div>
         {{--  INSPECCIÓN  --}}
         @include('api.V1.Inspections.Reports.Layouts.inspection')

@@ -47,7 +47,7 @@ class FormController extends Controller
         $validated = Validator::make($request->all(), [
             'inspection_uuid' => 'required|string|min:10|max:255|exists:inspections,inspection_uuid',
             'form.*.ct_inspection_form_uuid' => 'required|string|exists:ct_inspection_forms,ct_inspection_form_uuid',
-            'form.*.inspection_form_value' => 'required|string',
+            'form.*.inspection_form_value' => 'nullable|string',
             'form.*.inspection_form_comments' => 'nullable|string',
         ]);
 

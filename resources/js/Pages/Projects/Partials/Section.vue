@@ -116,7 +116,7 @@
                                                             </v-col>
                                                         </v-row>
                                                         <!-- Photo evidences -->
-                                                        <v-row v-if="field.content.inspection_form_id">
+                                                        <v-row v-if="field.content.inspection_form_id && field.content.inspection_form_value != 'No aplica'">
                                                             <Evidence :inspection_uuid="inspection_uuid"
                                                                 :inspection_form_id="field.content.inspection_form_id" />
                                                         </v-row>
@@ -334,7 +334,7 @@ export default {
             let formData = {
                 inspection_uuid: this.inspection_uuid,
                 form: [{
-                    inspection_form_value: field.content.inspection_form_value,
+                    inspection_form_value: field.content.inspection_form_value ?? ' ',
                     inspection_form_comments: field.content.inspection_form_comments,
                     ct_inspection_form_uuid: field.ct_inspection_form_uuid,
                     ct_risk_id: field.content.ct_risk_id

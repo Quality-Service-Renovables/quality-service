@@ -1,7 +1,7 @@
  {{--  2. ESCALA DE CONDICIÓN  --}}
 <div class="section">
-    <h3 class="primary-color uppercase" style="margin: 0px;">ESCALA DE CONDICIÓN</h3>
-    <br>
+    <h3 class="primary-color uppercase" style="margin: 0px;">3. ESCALA DE CONDICIÓN</h3>
+    <p>A continuación se resumen los principales hallazgos de las inspecciones.</p>
     <table class="inspection-table">
         <tbody>
             <tr>
@@ -10,9 +10,14 @@
             </tr>
         </tbody>
     </table>
-    <ul>
-        <li class="normal">Verde: Normal</li>
-        <li class="unusual">Amarillo: No Usual</li>
-        <li class="repair">Rojo: Reparación</li>
-    </ul>
+    <br>
+    <br>
+    <table>
+        @foreach($inspection->risk_catalog as $risk)
+        <tr >
+            <td style="background-color: {!! $risk->ct_color !!};width:20px;height:75px;"></td>
+            <td style="padding:10px;">{{ $risk->ct_description_secondary }}</td>
+        </tr>
+        @endforeach
+    </table>
 </div>

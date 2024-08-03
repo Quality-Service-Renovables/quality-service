@@ -6,14 +6,15 @@
 
 namespace App\Services\Api\V1\Inspections\Reports;
 
-use App\Mail\ServiceMail;
-use App\Models\Inspections\Inspection;
-use App\Services\Api\Audits;
-use App\Services\Service;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use Throwable;
+use App\Mail\ServiceMail;
+use App\Services\Service;
+use App\Services\Api\Audits;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Inspections\CtRisk;
+use Illuminate\Support\Facades\Mail;
+use App\Models\Inspections\Inspection;
+use Illuminate\Support\Facades\Storage;
 
 class ReportService extends Service
 {
@@ -157,6 +158,7 @@ class ReportService extends Service
                 ? json_decode($inspection->equipment_fields_report)
                 : null;
                 $inspection->provider = $user->client;
+                $inspection->risk_catalog = CtRisk::all();
                 // Generación de la vista en base a la información de la colección.
                 $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
                 // Cifrar el PDF
