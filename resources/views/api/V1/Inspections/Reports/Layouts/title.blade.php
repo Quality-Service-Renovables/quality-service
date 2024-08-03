@@ -9,7 +9,7 @@
             <td style="width:60%;">
                 <h3 class="primary-color uppercase" style="margin: 0px;">{!! $inspection->category->description !!}</h>
                 <p style="color: gray" class="space italic">{{ $inspection->project->title_report }}</p>
-                <p>PREPARADO PARA:</p>
+                <p>ELABORADO PARA:</p>
                 <p class="primary-color space">{{ $inspection->client->client }}</p>
                 <p>UBICACIÓN:</p>
                 <p class="primary-color space">{{ $inspection->location }}</p>

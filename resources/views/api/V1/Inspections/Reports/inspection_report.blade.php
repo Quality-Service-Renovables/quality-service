@@ -284,11 +284,7 @@
         @include('api.V1.Inspections.Reports.Layouts.inspection')
         <div class="page-break"></div>
         {{--  CONCLUSIÓN  --}}
-        <div class="page-break"></div>
         @include('api.V1.Inspections.Reports.Layouts.conclusion')
-        {{--  APÉNDICE  --}}
-        <div class="page-break"></div>
-        @include('api.V1.Inspections.Reports.Layouts.indicators')
     </main>
 
 </body>
