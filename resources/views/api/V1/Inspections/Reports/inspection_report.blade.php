@@ -237,7 +237,7 @@
 
         .section{
             font-size: 12px;
-            margin-bottom: 75px;
+            margin-bottom: 70px;
         }
 
         .section p, .section a{
