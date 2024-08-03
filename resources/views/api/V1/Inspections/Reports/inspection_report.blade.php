@@ -28,11 +28,8 @@
         }
 
         img {
-            max-width: 95%;
+            max-width: 100%;
             height: auto;
-            display: block;
-            margin-bottom: 10px; /* Espacio entre imágenes */
-            border-radius: 10px;
         }
         p {
             /*font-weight: bold;*/
@@ -158,7 +155,7 @@
         }
         .image-badge img {
             width: 100%; /* Ajusta al tamaño que quieras. */
-            display: block;
+            max-width: 200px;
         }
 
         .image-badge .badge {
@@ -195,7 +192,7 @@
 
         .border{
             border: 1px solid #000;
-            padding: 5px;
+            padding: 3px;
         }
 
         .text-left{
@@ -251,6 +248,12 @@
         }
         .bg-gray{
             background-color: lightgray;
+        }
+        .m-0{
+            margin: 0;
+        }
+        .p-0{
+            padding: 0;
         }
     </style>
 </head>

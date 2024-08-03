@@ -1,52 +1,59 @@
-{{--  INSPECCIÓN  --}}
-<h3 id="section3">1.6 Inspección</h3>
-@foreach ($inspection->category->sections as $section)
-    <h3>{{ $section->ct_inspection_section }}</h3>
-    @if (count($section->fields))
-        @foreach ($section->fields as $field)
-            <small>{{ $field->ct_inspection_form }}: {!! $field->result->inspection_form_value ?? '' !!}</small><br>
-            @isset($field->result->inspection_form_comments)
-                <div class="comment">
-                    {{--                        <h3 class="author">{{ $field->ct_inspection_form }}: {!! $field->result->inspection_form_value ?? '' !!}</h3>--}}
-                    <p>{!! $field->result->inspection_form_comments ?? '' !!}</p>
-                </div>
-            @endisset
-            @isset($field->result->evidences)
-                @foreach($field->result->evidences as $evidence)
-                    <div class="image-badge">
-                        <img style="border: 10px solid {{ $field->result->risk->ct_color }};"
-                             src="{{$evidence->inspection_evidence}}" alt="{{$evidence->description}}">
-                        <span class="badge">{{ $evidence->title .' '. $evidence->description}}</span>
-                    </div>
-                @endforeach
-            @endisset
-            <hr>
-        @endforeach
-    @endif
-    @if (count($section->subSections))
-        @foreach ($section->subSections as $subSection)
-            <h4>{{ $subSection->ct_inspection_section }}</h4>
-            @if (count($subSection->fields))
-                @foreach ($subSection->fields as $field)
-                    <small>{{ $field->ct_inspection_form }}: {!! $field->result->inspection_form_value ?? '' !!}</small><br>
-                    @isset($field->result->inspection_form_comments)
-                        <div class="comment">
-                            {{--                        <h3 class="author">{{ $field->ct_inspection_form }}: {!! $field->result->inspection_form_value ?? '' !!}</h3>--}}
-                            <p>{!! $field->result->inspection_form_comments ?? '' !!}</p>
-                        </div>
-                    @endisset
-                    @isset($field->result->evidences)
-                        @foreach($field->result->evidences as $evidence)
-                            <div class="image-badge">
-                                <img style="border: 10px solid {{ $field->result->risk->ct_color }};"
-                                     src="{{$evidence->inspection_evidence}}" alt="{{$evidence->description}}">
-                                <span class="badge">{{ $evidence->title .' '. $evidence->description}}</span>
-                            </div>
-                        @endforeach
-                    @endisset
-                    <hr>
-                @endforeach
-            @endif
-        @endforeach
-    @endif
-@endforeach
+<div class="section">
+    {{--  INSPECCIÓN  --}}
+    <h3 class="primary-color uppercase" style="margin: 0px;">6. RESULTADOS PRINCIPALES</h3>
+    @foreach ($inspection->category->sections as $index => $section)
+        <h3 class="primary-color uppercase" style="margin-bottom: 0px;margin-top:15px;">6.{{ $index + 1 }}
+            {{ $section->ct_inspection_section }}</h3>
+        <div class="text-center">
+            <p>Tabla 6.{{ $index + 1 }} {{ $section->ct_inspection_section }}</p>
+        </div>
+        @if (count($section->fields))
+            @foreach ($section->fields as $field)
+                <table style="margin-bottom:10px;">
+                    <tbody>
+
+                        <tr class="text-center">
+                            <td class="bg-gray border" style="width:40%;max-width:40%;">Componente</td>
+                            <td class="bg-gray border" style="width:20%;max-width:20%;">Nivel de riesgo</td>
+                            <td class="bg-gray border" style="width:40%;max-width:40%;">Comentarios</td>
+                        </tr>
+                        <tr>
+                            <td class="border">{{ $field->ct_inspection_form }}</td>
+                            <td class="border text-center" style="background-color: {!! $field->result->risk->ct_color !!}">
+                                {!! $field->result->inspection_form_value ?? '' !!}</td>
+                            <td class="border">
+                                @isset($field->result->inspection_form_comments)
+                                    {!! $field->result->inspection_form_comments ?? '' !!}
+                                @endisset
+                            </td>
+
+                        </tr>
+                        @isset($field->result->evidences)
+                            @if (count($field->result->evidences) > 0)
+                                <tr>
+                                    <td colspan="3" class="border">
+                                            <p class="m-0">Evidencias fotográficas</p>
+                                        <table>
+                                            <tr>
+                                                @foreach ($field->result->evidences as $evidence)
+                                                    <td style="padding:5px;">
+                                                        <img src="{{ $evidence->inspection_evidence }}"
+                                                            alt="{{ $evidence->description }}">
+                                                        <small>{{ $evidence->title . ' - ' . $evidence->description }}</small>
+                                                    </td>
+                                                @endforeach
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            @endif
+                        @endisset
+                    </tbody>
+
+                </table>
+            @endforeach
+        @endif
+    @endforeach
+
+</div>
