@@ -113,7 +113,6 @@ export default {
             inspection_form: {
                 inspection_uuid: null,
                 resume: '',
-                conclusion: '',
                 recomendations: '',
                 ct_inspection_code: '',
                 status_code: '',
@@ -225,7 +224,6 @@ export default {
                     console.log("Creando inspección");
                     let formData = {
                         resume: this.inspection_form.resume,
-                        conclusion: 'Por definir',
                         ct_inspection_code: this.inspection_form.ct_inspection_code,
                         status_code: this.inspection_form.status_code,
                         equipment_uuid: this.inspection_form.equipment_uuid,
@@ -246,7 +244,6 @@ export default {
                     };
                     let formData = {
                         resume: this.inspection_form.resume,
-                        conclusion: 'Por definir',
                         ct_inspection_code: this.inspection_form.ct_inspection_code,
                         status_code: this.inspection_form.status_code,
                         equipment_uuid: this.inspection_form.equipment_uuid,

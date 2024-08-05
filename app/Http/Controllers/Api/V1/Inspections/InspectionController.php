@@ -97,7 +97,7 @@ class InspectionController extends Controller
         $validated = Validator::make($request->all(), [
             'inspection_uuid' => 'required|uuid|exists:inspections,inspection_uuid',
             'resume' => 'required|string',
-            'conclusion' => 'required|string',
+            'conclusion' => 'nullable|string',
             'recomendations' => 'nullable|string',
             'location' => 'nullable|string',
             'equipment_fields_report' => 'nullable|string',

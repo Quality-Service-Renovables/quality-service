@@ -92,10 +92,6 @@
             font-weight: bold;
             font-size: 15px;
         }
-        ul {
-            list-style-type: none;
-            text-align: left; /* Asegurar que el texto está alineado a la izquierda */
-        }
         .normal::before {
             content: "";
             display: inline-block;
