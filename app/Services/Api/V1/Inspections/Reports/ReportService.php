@@ -51,6 +51,7 @@ class ReportService extends Service
                 ? json_decode($inspection->equipment_fields_report)
                 : null;
                 $inspection->provider = $user->client;
+                $inspection->risk_catalog = CtRisk::all();
                 // Generación de la vista en base a la información de la colección.
                 $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
                 // Cifrar el PDF

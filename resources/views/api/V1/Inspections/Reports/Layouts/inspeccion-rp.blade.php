@@ -7,16 +7,15 @@
             <small>{{ $field->ct_inspection_form }}: {!! $field->result->inspection_form_value ?? '' !!}</small><br>
             @isset($field->result->inspection_form_comments)
                 <div class="comment">
-                    {{--                        <h3 class="author">{{ $field->ct_inspection_form }}: {!! $field->result->inspection_form_value ?? '' !!}</h3>--}}
                     <p>{!! $field->result->inspection_form_comments ?? '' !!}</p>
                 </div>
             @endisset
             @isset($field->result->evidences)
-                @foreach($field->result->evidences as $evidence)
+                @foreach ($field->result->evidences as $evidence)
                     <div class="image-badge">
                         <img style="border: 10px solid {{ $field->result->risk->ct_color }};"
-                             src="{{$evidence->inspection_evidence}}" alt="{{$evidence->description}}">
-                        <span class="badge">{{ $evidence->title .' '. $evidence->description}}</span>
+                            src="{{ $evidence->inspection_evidence }}" alt="{{ $evidence->description }}">
+                        <span class="badge">{{ $evidence->title . ' ' . $evidence->description }}</span>
                     </div>
                 @endforeach
             @endisset
@@ -31,16 +30,16 @@
                     <small>{{ $field->ct_inspection_form }}: {!! $field->result->inspection_form_value ?? '' !!}</small><br>
                     @isset($field->result->inspection_form_comments)
                         <div class="comment">
-                            {{--                        <h3 class="author">{{ $field->ct_inspection_form }}: {!! $field->result->inspection_form_value ?? '' !!}</h3>--}}
+                            {{--                        <h3 class="author">{{ $field->ct_inspection_form }}: {!! $field->result->inspection_form_value ?? '' !!}</h3> --}}
                             <p>{!! $field->result->inspection_form_comments ?? '' !!}</p>
                         </div>
                     @endisset
                     @isset($field->result->evidences)
-                        @foreach($field->result->evidences as $evidence)
+                        @foreach ($field->result->evidences as $evidence)
                             <div class="image-badge">
                                 <img style="border: 10px solid {{ $field->result->risk->ct_color }};"
-                                     src="{{$evidence->inspection_evidence}}" alt="{{$evidence->description}}">
-                                <span class="badge">{{ $evidence->title .' '. $evidence->description}}</span>
+                                    src="{{ $evidence->inspection_evidence }}" alt="{{ $evidence->description }}">
+                                <span class="badge">{{ $evidence->title . ' ' . $evidence->description }}</span>
                             </div>
                         @endforeach
                     @endisset
