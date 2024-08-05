@@ -72,15 +72,18 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-text-field v-model="editedItem.title_report"
-                                                                        label="T'itulo del informe" variant="outlined" hide-details
-                                                                        required></v-text-field>
+                                                                        label="T'itulo del informe" variant="outlined"
+                                                                        hide-details required></v-text-field>
                                                                 </v-col>
-                                                                <v-col cols="6">
-                                                                    <v-textarea v-model="editedItem.description"
-                                                                        label="Descripción" variant="outlined"
-                                                                        hide-details required></v-textarea>
+                                                                <v-col cols="12">
+                                                                    <p class="text-grey mb-2">Descripción del proyecto
+                                                                    </p>
+                                                                    <QuillEditor
+                                                                        v-model:content="editedItem.description"
+                                                                        theme="snow" toolbar="essential" heigth="100%"
+                                                                        contentType="html" />
                                                                 </v-col>
-                                                                <v-col cols="6">
+                                                                <v-col cols="12">
                                                                     <v-textarea v-model="editedItem.comments"
                                                                         label="Comentarios" variant="outlined"
                                                                         hide-details></v-textarea>
@@ -370,7 +373,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <v-card-text class="mt-10">
                                             <v-tabs-window v-model="tab">
                                                 <v-tabs-window-item value="information">
-                                                    <Information :inspection_uuid="inspectionUuid" :project="project" @setInspectionUuid="setInspectionUuid"/>
+                                                    <Information :inspection_uuid="inspectionUuid" :project="project"
+                                                        @setInspectionUuid="setInspectionUuid" />
                                                 </v-tabs-window-item>
                                                 <v-tabs-window-item value="sections">
                                                     <Section :dialogForm="dialogForm"

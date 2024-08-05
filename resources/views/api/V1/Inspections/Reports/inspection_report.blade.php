@@ -32,9 +32,10 @@
             height: auto;
         }
         p {
-            /*font-weight: bold;*/
+            margin: 0px;
+            /*font-weight: bold;
             font-size: 14px;
-            margin-bottom: 5px; /* Espacio inferior entre título y descripción */
+            margin-bottom: 5px;*/ /* Espacio inferior entre título y descripción */
         }
         span {
             font-size: 12px;

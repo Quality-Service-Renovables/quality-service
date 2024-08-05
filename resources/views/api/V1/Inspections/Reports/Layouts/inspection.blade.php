@@ -1,6 +1,6 @@
 <div class="section">
     {{--  INSPECCIÓN  --}}
-    <h3 class="primary-color uppercase" style="margin: 0px;">6. RESULTADOS PRINCIPALES</h3>
+    <h3 class="primary-color uppercase">6. RESULTADOS PRINCIPALES</h3>
 
     {{--  Secciones  --}}
     @foreach ($inspection->category->sections as $index => $section)

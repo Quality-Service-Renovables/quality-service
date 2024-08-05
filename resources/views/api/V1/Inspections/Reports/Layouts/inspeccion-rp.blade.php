@@ -1,5 +1,5 @@
 {{--  INSPECCIÓN  --}}
-<h3 class="primary-color uppercase" style="margin: 0px;">6. RESULTADOS PRINCIPALES</h3>
+<h3 class="primary-color uppercase">6. RESULTADOS PRINCIPALES</h3>
 @foreach ($inspection->category->sections as $section)
     <h3>{{ $section->ct_inspection_section }}</h3>
     @if (count($section->fields))
