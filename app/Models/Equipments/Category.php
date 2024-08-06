@@ -24,6 +24,7 @@ class Category extends Model
         'ct_equipment',
         'ct_equipment_code',
         'description',
+        'required_fields_report',
         'active',
     ];
 

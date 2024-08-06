@@ -101,6 +101,7 @@ class CategoryController extends Controller
                     ->whereNull('deleted_at'),
             ],
             'description' => 'required|string|min:3|max:255',
+            'required_fields_report	' => 'nullable|string',
             'active' => 'required|bool',
         ]);
 

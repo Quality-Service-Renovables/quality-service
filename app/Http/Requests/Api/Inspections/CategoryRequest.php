@@ -16,6 +16,7 @@ class CategoryRequest extends CustomRequest
         return [
             'ct_inspection' => 'required|string|min:10|max:255|unique:ct_inspections,ct_inspection,NULL,ct_inspection_uuid,deleted_at,NULL',
             'description' => 'required|string|min:10|max:255',
+            'required_fields_report	' => 'nullable|string',
             'active' => 'required|bool',
         ];
     }
