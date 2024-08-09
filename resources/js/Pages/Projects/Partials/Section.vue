@@ -2,7 +2,12 @@
     <div class="max-w-7xl mx-auto sm:px-4 lg:px-6 mb-5 pb-5">
         <div class="overflow-hidden shadow-sm sm:rounded-lg">
             <v-card :loading="dialogFormLoading">
-                <v-card-text class="padding-0">
+                <v-card-text class="">
+                    <p class="text-grey mb-2 text-h5 font-weight-bold">
+                        Carga de evidencias
+                    </p>
+                    <p class="text-primary">Rellena la información relacionada con las evidencias de la inspección.</p>
+                    <v-divider></v-divider>
                     <v-container>
                         <v-row>
                             <v-col cols="12" class="padding-0">
@@ -34,11 +39,6 @@
                                                             <v-card-subtitle>Campo</v-card-subtitle>
                                                         </div>
                                                         <div class="d-flex align-center gap-3">
-                                                            <v-switch v-model="field.switch_comment" color="blue"
-                                                                label="Comentario" hide-details></v-switch>
-                                                            <v-switch v-model="field.switch_ct_risk" color="blue"
-                                                                label="Riesgo" hide-details
-                                                                @click="setRiesgo(field)"></v-switch>
                                                             <v-icon color="success"
                                                                 v-if="!isEmptyField(field.content.inspection_form_value)">mdi-check</v-icon>
                                                             <v-icon color="red"
@@ -47,23 +47,48 @@
 
                                                     </v-card-title>
                                                     <v-card-text class="pt-0">
-                                                        <p class="text-grey">Contenido ({{
+                                                        <v-row>
+                                                            <v-col cols="12" lg="6">
+                                                                <p class="text-grey">Código de falla ({{
                 field.required ?
                     '*Requerido' :
                     'Opcional' }}):</p>
-                                                        <QuillEditor
-                                                            v-model:content="field.content.inspection_form_value"
-                                                            theme="snow" toolbar="essential" heigth="100%"
-                                                            contentType="html"/>
+                                                                <v-autocomplete
+                                                                    v-model="field.content.inspection_form_value"
+                                                                    :items="failures" item-title="failure"
+                                                                    item-value="failure" variant="outlined" hide-details
+                                                                    class="rounded" density="compact" clearable>
+                                                                </v-autocomplete>
+                                                            </v-col>
+                                                            <v-col cols="12" lg="6">
+                                                                <!-- ct_risk Selector -->
+                                                                <p class="text-grey">
+                                                                    Riesgo:</p>
+                                                                <v-autocomplete v-model="field.content.ct_risk_id"
+                                                                    :items="ct_risks" item-title="ct_risk"
+                                                                    item-value="ct_risk_id" variant="outlined"
+                                                                    hide-details class="rounded" density="compact"
+                                                                    :style="{ 'background-color': getBgColor(field.content.ct_risk_id) }"
+                                                                    clearable>
+                                                                    <template v-slot:item="{ props, item }">
+                                                                        <v-list-item v-bind="props"
+                                                                            :title="item.raw.ct_risk"
+                                                                            :style="{ 'background-color': item.raw.ct_color }"
+                                                                            value="ct_risk"></v-list-item>
+                                                                    </template>
+                                                                </v-autocomplete>
+                                                            </v-col>
+
+                                                        </v-row>
                                                         <!-- Comments Field -->
-                                                        <p class="mt-3 text-grey" v-if="field.switch_comment">
+                                                        <p class="mt-3 text-grey">
                                                             Comentarios:</p>
-                                                        <v-row v-if="field.switch_comment">
+                                                        <v-row>
                                                             <v-col cols="12" lg="8">
                                                                 <QuillEditor
                                                                     v-model:content="field.content.inspection_form_comments"
                                                                     theme="snow" toolbar="essential" contentType="html"
-                                                                    v-if="field.switch_comment" @click="getSuggestions(field)"/>
+                                                                    @click="getSuggestions(field)" />
                                                             </v-col>
                                                             <v-col cols="12" lg="4">
                                                                 <v-card class="mx-auto border" color="primary"
@@ -72,7 +97,8 @@
                                                                             class="mdi mdi-lightbulb-on-outline"></span>
                                                                         Sugerencias</v-card-subtitle>
                                                                     <v-card-text
-                                                                        class="py-1 card-suggestions overflow-y-auto" v-if="!field.loadingSuggestions">
+                                                                        class="py-1 card-suggestions overflow-y-auto"
+                                                                        v-if="!field.loadingSuggestions">
                                                                         <v-card variant="tonal" class="my-1"
                                                                             v-for="(sueggest, idx_sueggest) in field.suggestions"
                                                                             :key="idx_sueggest"
@@ -80,25 +106,20 @@
                                                                             <div class="m-1" v-html="sueggest"></div>
                                                                         </v-card>
                                                                     </v-card-text>
-                                                                    <v-skeleton-loader type="paragraph" v-else></v-skeleton-loader>
-                                                                    <v-card-text class="pt-0 card-suggestions overflow-y-auto" v-if="!field.suggestions">No hay sugerencias</v-card-text>
+                                                                    <v-skeleton-loader type="paragraph"
+                                                                        v-else></v-skeleton-loader>
+                                                                    <v-card-text
+                                                                        class="pt-0 card-suggestions overflow-y-auto"
+                                                                        v-if="!field.suggestions">No hay
+                                                                        sugerencias</v-card-text>
                                                                 </v-card>
                                                             </v-col>
                                                         </v-row>
-                                                        <!-- ct_risk Selector -->
-                                                        <p class="mt-3 text-grey" v-if="field.switch_ct_risk">
-                                                            Riesgo:</p>
-                                                        <v-select v-model="field.content.ct_risk_id" :items="ct_risks"
-                                                            item-title="ct_risk" item-value="ct_risk_id"
-                                                            variant="outlined" hide-details v-if="field.switch_ct_risk"
-                                                            class="w-50 rounded" density="compact"
-                                                            :style="{ 'background-color': getBgColor(field.content.ct_risk_id) }">
-                                                            <template v-slot:item="{ props, item }">
-                                                                <v-list-item v-bind="props" :title="item.raw.ct_risk"
-                                                                    :style="{ 'background-color': item.raw.ct_color }"
-                                                                    value="ct_risk"></v-list-item>
-                                                            </template>
-                                                        </v-select>
+                                                        <!-- Photo evidences -->
+                                                        <v-row v-if="field.content.inspection_form_id /*&& field.content.inspection_form_value != 'No aplica'*/">
+                                                            <Evidence :inspection_uuid="inspection_uuid"
+                                                                :inspection_form_id="field.content.inspection_form_id" />
+                                                        </v-row>
                                                         <!-- Save Button -->
                                                         <PrimaryButton @click="saveField(field)" class="mt-2"
                                                             :disabled="field.loading">Guardar
@@ -137,12 +158,6 @@
                                                                             <v-card-subtitle>Campo</v-card-subtitle>
                                                                         </div>
                                                                         <div class="d-lg-flex align-center gap-3">
-                                                                            <v-switch v-model="fieldSub.switch_comment"
-                                                                                color="blue" label="Comentario"
-                                                                                hide-details></v-switch>
-                                                                            <v-switch v-model="fieldSub.switch_ct_risk"
-                                                                                color="blue" label="Riesgo" hide-details
-                                                                                @click="setRiesgo(fieldSub)"></v-switch>
                                                                             <v-icon color="success"
                                                                                 v-if="!isEmptyField(fieldSub.content.inspection_form_value)">mdi-check</v-icon>
                                                                             <v-icon color="red"
@@ -151,26 +166,56 @@
 
                                                                     </v-card-title>
                                                                     <v-card-text class="pt-0">
-                                                                        <p class="text-grey"> Contenido ({{
+                                                                        <v-row>
+                                                                            <v-col cols="12" lg="6">
+                                                                                <p class="text-grey">Código de falla ({{
                 fieldSub.required ?
                     '*Requerido' :
                     'Opcional' }}):</p>
-                                                                        <QuillEditor
-                                                                            v-model:content="fieldSub.content.inspection_form_value"
-                                                                            theme="snow" toolbar="essential"
-                                                                            heigth="100%" contentType="html" />
+                                                                                <v-autocomplete
+                                                                                    v-model="fieldSub.content.inspection_form_value"
+                                                                                    :items="failures"
+                                                                                    item-title="failure"
+                                                                                    item-value="failure"
+                                                                                    variant="outlined" hide-details
+                                                                                    class="rounded" density="compact"
+                                                                                    clearable>
+                                                                                </v-autocomplete>
+                                                                            </v-col>
+                                                                            <v-col cols="12" lg="6">
+                                                                                <!-- ct_risk Selector -->
+                                                                                <p class="text-grey">
+                                                                                    Riesgo:</p>
+                                                                                <v-autocomplete
+                                                                                    v-model="fieldSub.content.ct_risk_id"
+                                                                                    :items="ct_risks"
+                                                                                    item-title="ct_risk"
+                                                                                    item-value="ct_risk_id"
+                                                                                    variant="outlined" hide-details
+                                                                                    class="rounded" density="compact"
+                                                                                    :style="{ 'background-color': getBgColor(fieldSub.content.ct_risk_id) }"
+                                                                                    clearable>
+                                                                                    <template
+                                                                                        v-slot:item="{ props, item }">
+                                                                                        <v-list-item v-bind="props"
+                                                                                            :title="item.raw.ct_risk"
+                                                                                            :style="{ 'background-color': item.raw.ct_color }"
+                                                                                            value="ct_risk"></v-list-item>
+                                                                                    </template>
+                                                                                </v-autocomplete>
+                                                                            </v-col>
+                                                                        </v-row>
                                                                         <!-- Comments Field -->
-                                                                        <p class="mt-3 text-grey"
-                                                                            v-if="fieldSub.switch_comment">
+                                                                        <p class="mt-3 text-grey">
                                                                             Comentarios:
                                                                         </p>
-                                                                        <v-row v-if="fieldSub.switch_comment">
+                                                                        <v-row>
                                                                             <v-col cols="12" lg="8">
                                                                                 <QuillEditor
                                                                                     v-model:content="fieldSub.content.inspection_form_comments"
                                                                                     theme="snow" toolbar="essential"
                                                                                     heigth="100%" contentType="html"
-                                                                                    v-if="fieldSub.switch_comment" @click="getSuggestions(fieldSub)"/>
+                                                                                    @click="getSuggestions(fieldSub)" />
                                                                             </v-col>
                                                                             <v-col cols="12" lg="4">
                                                                                 <v-card class="mx-auto border"
@@ -180,37 +225,31 @@
                                                                                             class="mdi mdi-lightbulb-on-outline"></span>
                                                                                         Sugerencias</v-card-subtitle>
                                                                                     <v-card-text
-                                                                                        class="py-1 card-suggestions overflow-y-auto" v-if="!fieldSub.loadingSuggestions">
+                                                                                        class="py-1 card-suggestions overflow-y-auto"
+                                                                                        v-if="!fieldSub.loadingSuggestions">
                                                                                         <v-card variant="tonal"
                                                                                             class="my-1"
                                                                                             v-for="(sueggest, idx_sueggest) in fieldSub.suggestions"
                                                                                             :key="idx_sueggest"
                                                                                             @click="setComment(fieldSub, sueggest)">
-                                                                                            <div class="m-1" v-html="sueggest"></div>
+                                                                                            <div class="m-1"
+                                                                                                v-html="sueggest"></div>
                                                                                         </v-card>
                                                                                     </v-card-text>
-                                                                                    <v-skeleton-loader type="paragraph" v-else></v-skeleton-loader>
-                                                                                    <v-card-text class="pt-0 card-suggestions overflow-y-auto" v-if="!fieldSub.suggestions">No hay sugerencias</v-card-text>
+                                                                                    <v-skeleton-loader type="paragraph"
+                                                                                        v-else></v-skeleton-loader>
+                                                                                    <v-card-text
+                                                                                        class="pt-0 card-suggestions overflow-y-auto"
+                                                                                        v-if="!fieldSub.suggestions">No
+                                                                                        hay sugerencias</v-card-text>
                                                                                 </v-card>
                                                                             </v-col>
                                                                         </v-row>
-                                                                        <!-- ct_risk Selector -->
-                                                                        <p class="mt-3 text-grey"
-                                                                            v-if="fieldSub.switch_ct_risk">
-                                                                            Riesgo:</p>
-                                                                        <v-select v-model="fieldSub.content.ct_risk_id"
-                                                                            :items="ct_risks" item-title="ct_risk"
-                                                                            item-value="ct_risk_id" variant="outlined"
-                                                                            hide-details v-if="fieldSub.switch_ct_risk"
-                                                                            class="w-50 rounded" density="compact"
-                                                                            :style="{ 'background-color': getBgColor(fieldSub.content.ct_risk_id) }">
-                                                                            <template v-slot:item="{ props, item }">
-                                                                                <v-list-item v-bind="props"
-                                                                                    :title="item.raw.ct_risk"
-                                                                                    :style="{ 'background-color': item.raw.ct_color }"
-                                                                                    value="ct_risk"></v-list-item>
-                                                                            </template>
-                                                                        </v-select>
+                                                                        <!-- Photo evidences -->
+                                                                        <v-row v-if="fieldSub.content.inspection_form_id">
+                                                                            <Evidence :inspection_uuid="inspection_uuid"
+                                                                                :inspection_form_id="fieldSub.content.inspection_form_id" />
+                                                                        </v-row>
                                                                         <!-- Save Button -->
                                                                         <PrimaryButton @click="saveField(fieldSub)"
                                                                             class="mt-2" :disabled="fieldSub.loading">
@@ -238,6 +277,7 @@
 <script>
 import { QuillEditor } from '@vueup/vue-quill'
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Evidence from '@/Pages/Projects/Partials/Evidence.vue';
 import axios from 'axios';
 import { Toaster, toast } from 'vue-sonner'
 
@@ -245,7 +285,8 @@ export default {
     components: {
         QuillEditor,
         PrimaryButton,
-        Toaster
+        Toaster,
+        Evidence
     },
     props: {
         dialogForm: {
@@ -267,7 +308,8 @@ export default {
             sectionsForm: [],
             expandedPanel: [0, 1, 2, 3, 4, 5, 6],
             ct_risks: [],
-            suggestions: []
+            suggestions: [],
+            failures: []
         }
     },
     methods: {
@@ -292,49 +334,44 @@ export default {
             let formData = {
                 inspection_uuid: this.inspection_uuid,
                 form: [{
-                    inspection_form_value: field.content.inspection_form_value,
+                    inspection_form_value: field.content.inspection_form_value ?? ' ',
                     inspection_form_comments: field.content.inspection_form_comments,
                     ct_inspection_form_uuid: field.ct_inspection_form_uuid,
                     ct_risk_id: field.content.ct_risk_id
                 }]
             }
 
-            if (this.isEmptyField(formData.form[0].inspection_form_value)) {
+            /*if (this.isEmptyField(formData.form[0].inspection_form_value)) {
                 toast.error('El contenido no puede estar vacío');
                 field.loading = false;
                 return;
-            } else {
-                axios.post('api/inspection/forms/set-form-inspection', formData)
-                    .then(response => {
-                        field.loading = false;
-                        toast.success('Campo guardado correctamente');
-                        if (response.data.data.length > 0) {
-                            field.content = response.data.data[0];
-                            this.getSuggestions(field);
-                        } else {
-                            this.getForm();
-                        }
-                    })
-                    .catch(error => {
-                        field.loading = false;
-                        this.handleErrors(error);
-                    });
-            }
+            } else {*/
+            axios.post('api/inspection/forms/set-form-inspection', formData)
+                .then(response => {
+                    field.loading = false;
+                    toast.success('Campo guardado correctamente');
+                    if (response.data.data.length > 0) {
+                        field.content = response.data.data[0];
+                        this.getSuggestions(field);
+                    } else {
+                        this.getForm();
+                    }
+                })
+                .catch(error => {
+                    field.loading = false;
+                    this.handleErrors(error);
+                });
+            //}
         },
         complementData(field) {
             if (field.content == null) {
                 field.content = {
                     inspection_form_value: '',
                     inspection_form_comments: '',
-                    ct_risk_id: null
+                    ct_risk_id: null,
+                    inspection_form_id: null
                 }
-                field.switch_comment = false;
-                field.switch_ct_risk = false;
-            } else {
-                field.switch_comment = field.content.inspection_form_comments !== "" && field.content.inspection_form_comments !== null && field.content.inspection_form_comments !== "<p><br></p>" ? true : false;
-                field.switch_ct_risk = field.content.ct_risk_id && field.content.ct_risk_id !== null ? true : false;
             }
-
         },
         isEmptyField(field) {
             if (field == null || field == '' || field == '<p><br></p>') {
@@ -352,19 +389,20 @@ export default {
                     this.handleErrors(error);
                 });
         },
+        getFailures() {
+            axios.get('api/failures')
+                .then(response => {
+                    this.failures = response.data.data;
+                })
+                .catch(error => {
+                    this.handleErrors(error);
+                });
+        },
         getBgColor(ct_risk_id) {
             let color = this.ct_risks.filter(risk => {
                 return ct_risk_id === risk.ct_risk_id;
             });
             return color.length > 0 ? color[0].ct_color : '';
-        },
-        setRiesgo(field) {
-            if (field.switch_ct_risk == true) {
-                field.switch_ct_risk = false;
-                field.content.ct_risk_id = null;
-            } else if (field.switch_ct_risk == false) {
-                field.switch_ct_risk = true;
-            }
         },
         async getSuggestions(field) {
             field.loadingSuggestions = true;
@@ -385,6 +423,7 @@ export default {
     mounted() {
         this.getForm();
         this.getRisks();
+        this.getFailures();
     }
 }
 </script>

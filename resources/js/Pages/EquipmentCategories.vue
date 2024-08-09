@@ -17,8 +17,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                     <v-card>
                         <v-row>
                             <v-col cols="12" sm="12">
-                                <v-data-table :headers="headers" :items="ct_equipments" fixed-header
-                                    :search="search" :mobile="isMobile()">
+                                <v-data-table :headers="headers" :items="ct_equipments" fixed-header :search="search"
+                                    :mobile="isMobile()">
                                     <template v-slot:item.active="{ value }">
                                         <v-icon :color="getColor(value)">mdi-circle-slice-8</v-icon>
                                     </template>
@@ -26,12 +26,15 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <v-toolbar flat>
                                             <v-toolbar-title class="ml-1">
                                                 <v-text-field v-model="search" label="Buscar" hide-details
-                                                    variant="solo" append-inner-icon="mdi-magnify" density="compact"></v-text-field>
+                                                    variant="solo" append-inner-icon="mdi-magnify"
+                                                    density="compact"></v-text-field>
                                             </v-toolbar-title>
                                             <v-divider class="mx-4" inset vertical></v-divider>
                                             <v-spacer></v-spacer>
-                                            <v-dialog v-model="dialog" max-width="500px" v-if="hasPermissionTo('equipments_categories.create') || hasPermissionTo('equipments_categories.update')">
-                                                <template v-slot:activator="{ props }" v-if="hasPermissionTo('equipments_categories.create')">
+                                            <v-dialog v-model="dialog" max-width="500px"
+                                                v-if="hasPermissionTo('equipments_categories.create') || hasPermissionTo('equipments_categories.update')">
+                                                <template v-slot:activator="{ props }"
+                                                    v-if="hasPermissionTo('equipments_categories.create')">
                                                     <v-btn class="mb-2" color="primary" dark v-bind="props"
                                                         icon="mdi-plus"></v-btn>
                                                 </template>
@@ -44,8 +47,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                         <v-container>
                                                             <v-row>
                                                                 <v-col cols="12">
-                                                                    <v-text-field
-                                                                        v-model="editedItem.ct_equipment"
+                                                                    <v-text-field v-model="editedItem.ct_equipment"
                                                                         label="Nombre" variant="solo"
                                                                         hide-details></v-text-field>
                                                                 </v-col>
@@ -56,9 +58,70 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-switch label="Activo" v-model="editedItem.active"
-                                                                        color="primary"></v-switch>
+                                                                        color="primary" hide-details></v-switch>
                                                                 </v-col>
+                                                                <v-col cols="12">
+                                                                    <div class="d-flex justify-end">
+                                                                        <v-btn v-if="showCreateField" density="compact"
+                                                                            prepend-icon="mdi-close"
+                                                                            class="mb-1 pr-0 text-none text-red"
+                                                                            variant="plain"
+                                                                            @click="showCreateField = false">Cancelar</v-btn>
+                                                                        <v-btn v-if="showCreateField" density="compact"
+                                                                            prepend-icon="mdi-content-save-check-outline"
+                                                                            class="mb-1 pr-0 text-none text-primary"
+                                                                            variant="plain" @click="addField"
+                                                                            :disabled="!new_field">Guardar</v-btn>
+                                                                    </div>
+                                                                    <v-text-field v-model="new_field" label="Campo"
+                                                                        variant="outlined" hide-details
+                                                                        v-if="showCreateField" @keyup.enter="addField"></v-text-field>
+                                                                    <div class="d-flex justify-between">
+                                                                        <p class="text-grey">Campos requeridos para el
+                                                                            informe:
+                                                                        </p>
+                                                                        <v-btn v-if="!showCreateField" density="compact"
+                                                                            prepend-icon="mdi-plus"
+                                                                            class="mb-1 pr-0 text-none text-primary"
+                                                                            variant="plain"
+                                                                            @click="showCreateField = true">Agregar</v-btn>
+                                                                    </div>
+                                                                    <div v-if="editedItem.required_fields_report">
+                                                                        <v-table density="compact" fixed-header class="mt-4">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Campo</th>
+                                                                                    <th>Mostrar</th>
+                                                                                    <th>Requerido</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr v-for="perm in editedItem.required_fields_report.fields"
+                                                                                    :key="perm.key">
+                                                                                    <td>{{ perm.name }}</td>
+                                                                                    <td>
+                                                                                        <v-checkbox hide-details
+                                                                                            class="py-0"
+                                                                                            v-model="perm.active">
+                                                                                        </v-checkbox>
+                                                                                    </td>
 
+                                                                                    <td>
+                                                                                        <v-checkbox hide-details
+                                                                                            class="py-0"
+                                                                                            v-model="perm.required">
+                                                                                        </v-checkbox>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </v-table>
+                                                                    </div>
+                                                                    <div v-else>
+                                                                        <p class="text-red"><small>No se han registrado
+                                                                                campos requeridos
+                                                                                para el informe.</small></p>
+                                                                    </div>
+                                                                </v-col>
                                                             </v-row>
                                                         </v-container>
                                                     </v-card-text>
@@ -66,7 +129,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                     <v-card-actions>
                                                         <v-spacer></v-spacer>
                                                         <v-btn color="blue-darken-1" variant="text" @click="close">
-                                                            Cancelar
+                                                            Cerrar
                                                         </v-btn>
                                                         <v-btn color="blue-darken-1" variant="text" @click="save">
                                                             Guardar
@@ -92,10 +155,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
-                                        <v-icon class="me-2" size="small" @click="editItem(item)" v-if="hasPermissionTo('equipments_categories.update')">
+                                        <v-icon class="me-2" size="small" @click="editItem(item)"
+                                            v-if="hasPermissionTo('equipments_categories.update')">
                                             mdi-pencil
                                         </v-icon>
-                                        <v-icon size="small" @click="deleteItem(item)" v-if="hasPermissionTo('equipments_categories.delete')">
+                                        <v-icon size="small" @click="deleteItem(item)"
+                                            v-if="hasPermissionTo('equipments_categories.delete')">
                                             mdi-delete
                                         </v-icon>
                                     </template>
@@ -148,6 +213,8 @@ export default {
             description: '',
             active: false
         },
+        showCreateField: false,
+        new_field: '',
     }),
     computed: {
         formTitle() {
@@ -167,6 +234,7 @@ export default {
             this.editedIndex = this.ct_equipments.indexOf(item)
             item.active = item.active == "1" ? true : false
             this.editedItem = Object.assign({}, item)
+            this.editedItem.required_fields_report = JSON.parse(item.required_fields_report);
             this.dialog = true
         },
         deleteItem(item) {
@@ -213,6 +281,7 @@ export default {
                     return axios.put('api/equipment/categories/' + this.editedItem.ct_equipment_uuid, {
                         ct_equipment: this.editedItem.ct_equipment,
                         description: this.editedItem.description,
+                        required_fields_report: JSON.stringify(this.editedItem.required_fields_report),
                         active: this.editedItem.active
                     });
                 };
@@ -220,7 +289,7 @@ export default {
                     loading: 'Procesando...',
                     success: (data) => {
                         this.$inertia.reload()
-                        this.close()
+                        //this.close()
                         return 'Categoria actualizada correctamente';
                     },
                     error: (data) => {
@@ -233,6 +302,7 @@ export default {
                     return axios.post('api/equipment/categories', {
                         ct_equipment: this.editedItem.ct_equipment,
                         description: this.editedItem.description,
+                        required_fields_report: JSON.stringify(this.editedItem.required_fields_report),
                         active: this.editedItem.active
                     });
                 };
@@ -254,6 +324,19 @@ export default {
         getColor(value) {
             return value ? 'green' : 'red';
         },
+        addField() {
+            if (this.new_field) {
+                if (this.editedItem.required_fields_report == null) {
+                    this.editedItem.required_fields_report = { fields: [] };
+                }
+                let key = this.new_field.replace(/ /g, '_').toLowerCase();
+                this.editedItem.required_fields_report.fields.push({ key: key, name: this.new_field, type: "string", active: true, required: true });
+                this.new_field = '';
+                this.showCreateField = false;
+            } else {
+                toast.error('El campo no puede estar vacío');
+            }
+        }
     },
 
 }

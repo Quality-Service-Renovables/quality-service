@@ -107,8 +107,7 @@ class ProjectService extends Service implements ServiceInterface
             'employees.user',
             'inspections.status',
             'inspections.category',
-            'inspections.equipment.category',
-            'inspections.inspectionEquipments.equipment',
+            'inspections.inspectionEquipments.equipment.category',
         ]);
 
         if ($user->hasRole('tecnico')) {

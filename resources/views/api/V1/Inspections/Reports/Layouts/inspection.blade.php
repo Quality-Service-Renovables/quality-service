@@ -1,53 +1,122 @@
-{{--  INSPECCIÓN  --}}
-@foreach ($inspection->category->sections as $section)
-    <h3>{{ $section->ct_inspection_section }}</h3>
-    @if (count($section->fields))
-        <table class="inspection-table">
-            <thead>
-                <th>{{ trans('api.revision') }}</th>
-                <th>{{ trans('api.estado') }}</th>
-                <th>{{ trans('api.comments') }}</th>
-            </thead>
-            <tbody>
-                @foreach ($section->fields as $field)
-                    <tr style="border-color: grey">
-                        <td>
-                            <small>{{ $field->ct_inspection_form }}</small>
-                        </td>
-                        <td ><small>{!! $field->result->inspection_form_value ?? '' !!}</small></td>
-                        <td style="background-color: <?= $field->result->risk->ct_color ?? '' ?>">
-                            <small>{!! $field->result->inspection_form_comments ?? '' !!}</small>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @endif
-    @if (count($section->subSections))
-        @foreach ($section->subSections as $subSection)
-            <h4>{{ $subSection->ct_inspection_section }}</h4>
-            @if (count($subSection->fields))
-                <table class="inspection-table">
-                    <thead>
-                        <th>{{ trans('api.revision') }}</th>
-                        <th>{{ trans('api.estado') }}</th>
-                        <th>{{ trans('api.comments') }}</th>
-                    </thead>
+<div class="section">
+    {{--  INSPECCIÓN  --}}
+    <h3 class="primary-color uppercase">6. RESULTADOS PRINCIPALES</h3>
+
+    {{--  Secciones  --}}
+    @foreach ($inspection->category->sections as $index => $section)
+        <h3 class="primary-color uppercase" style="margin-bottom: 0px;margin-top:15px;">6.{{ $index + 1 }}
+            {{ $section->ct_inspection_section }}</h3>
+        <div class="text-center">
+            <p>Tabla 6.{{ $index + 1 }} {{ $section->ct_inspection_section }}</p>
+        </div>
+
+        {{--  Campos  --}}
+        @if (count($section->fields))
+            @foreach ($section->fields as $field)
+                <table style="margin-bottom:10px;">
                     <tbody>
-                        @foreach ($subSection->fields as $field)
-                            <tr style="border-color: grey">
-                                <td>
-                                    <small>{{ $field->ct_inspection_form }}</small>
-                                </td>
-                                <td><small>{!! $field->result->inspection_form_value ?? '' !!}</small></td>
-                                <td style="background-color: <?= $field->result->risk->ct_color ?? '' ?>">
-                                    <small>{!! $field->result->inspection_form_comments ?? '' !!}</small>
-                                </td>
-                            </tr>
-                        @endforeach
+                        <tr class="text-center">
+                            <td class="bg-gray border" style="width:40%;max-width:40%;">Componente</td>
+                            <td class="bg-gray border" style="width:20%;max-width:20%;">Nivel de riesgo</td>
+                            <td class="bg-gray border" style="width:40%;max-width:40%;">Comentarios</td>
+                        </tr>
+                        <tr>
+                            <td class="border">{{ $field->ct_inspection_form }}</td>
+                            <td class="border text-center" style="background-color: {!! $field->result->risk->ct_color !!}">
+                                {!! $field->result->inspection_form_value ?? '' !!}</td>
+                            <td class="border">
+                                @isset($field->result->inspection_form_comments)
+                                    {!! $field->result->inspection_form_comments ?? '' !!}
+                                @endisset
+                            </td>
+                        </tr>
+                        {{--  Sección campos evidencias --}}
+                        @isset($field->result->evidences)
+                            @if (count($field->result->evidences) > 0)
+                                <tr>
+                                    <td colspan="3" class="border">
+                                        <p class="m-0">Evidencias fotográficas</p>
+                                        <table>
+                                            <tr>
+                                                @foreach ($field->result->evidences as $evidence)
+                                                    <td style="padding:5px;">
+                                                        <img src="{{ $evidence->inspection_evidence }}"
+                                                            alt="{{ $evidence->description }}">
+                                                        <small>{{ $evidence->title . ' - ' . $evidence->description }}</small>
+                                                    </td>
+                                                @endforeach
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            @endif
+                        @endisset
                     </tbody>
                 </table>
-            @endif
-        @endforeach
-    @endif
-@endforeach
+            @endforeach
+        @endif
+
+        {{--  Subsecciones  --}}
+        @if (count($section->subSections))
+            @foreach ($section->subSections as $indexSub => $subSection)
+                <h3 class="primary-color uppercase" style="margin-bottom: 0px;margin-top:15px;">
+                    6.{{ $index + 1 }}.{{ $indexSub + 1 }}
+                    {{ $subSection->ct_inspection_section }}</h3>
+                <div class="text-center">
+                    <p>Tabla 6.{{ $index + 1 }}.{{ $indexSub + 1 }} {{ $subSection->ct_inspection_section }}</p>
+                </div>
+                {{--  Subsección campos  --}}
+                @if (count($subSection->fields))
+                    @foreach ($subSection->fields as $field)
+                        {{--@if ($field->result)--}}
+                            <table style="margin-bottom:10px;">
+                                <tbody>
+                                    <tr class="text-center">
+                                        <td class="bg-gray border" style="width:40%;max-width:40%;">Componente</td>
+                                        <td class="bg-gray border" style="width:20%;max-width:20%;">Nivel de riesgo</td>
+                                        <td class="bg-gray border" style="width:40%;max-width:40%;">Comentarios</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border">{{ $field->ct_inspection_form }}</td>
+                                        <td class="border text-center"
+                                            style="background-color: <?= $field->result ? $field->result->risk->ct_color : '' ?>">
+                                            {!! $field->result->inspection_form_value ?? '' !!}</td>
+                                        <td class="border">
+                                            @isset($field->result->inspection_form_comments)
+                                                {!! $field->result->inspection_form_comments ?? '' !!}
+                                            @endisset
+                                        </td>
+
+                                    </tr>
+                                    {{--  Subsección campos evidencias --}}
+                                    @isset($field->result->evidences)
+                                        @if (count($field->result->evidences) > 0)
+                                            <tr>
+                                                <td colspan="3" class="border">
+                                                    <p class="m-0">Evidencias fotográficas</p>
+                                                    <table>
+                                                        <tr>
+                                                            @foreach ($field->result->evidences as $evidence)
+                                                                <td style="padding:5px;">
+                                                                    <img src="{{ $evidence->inspection_evidence }}"
+                                                                        alt="{{ $evidence->description }}">
+                                                                    <small>{{ $evidence->title . ' - ' . $evidence->description }}</small>
+                                                                </td>
+                                                            @endforeach
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endisset
+                                </tbody>
+                            </table>
+                        {{--@endif--}}
+                    @endforeach
+                @endif
+            @endforeach
+        @endif
+    @endforeach
+
+</div>

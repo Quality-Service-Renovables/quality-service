@@ -21,6 +21,7 @@ class EvidenceRequest extends CustomRequest
             'description' => 'nullable|string',
             'inspection_uuid' => 'required|uuid|exists:inspections,inspection_uuid',
             'position' => 'required|integer',
+            'inspection_form_id' => 'required|integer|exists:inspection_forms,inspection_form_id',
         ];
     }
 }

@@ -45,12 +45,13 @@ class FailureService extends Service implements ServiceInterface
         try {
             // Control de transacciones
             DB::beginTransaction();
+            $ct_failure_id = Category::where('ct_failure_code', $request->ct_failure_code)
+                ->first()->ct_failure_id;
             // Agrega atributos a la solicitud
             $request->merge([
                 'failure_uuid' => Str::uuid()->toString(),
-                'failure_code' => create_slug($request->failure),
-                'ct_failure_id' => Category::where('ct_failure_code', $request->ct_failure_code)
-                    ->first()->ct_failure_id,
+                'failure_code' => $ct_failure_id . "_" . create_slug($request->failure),
+                'ct_failure_id' => $ct_failure_id,
             ]);
             // Respuesta del servicio
             $this->statusCode = 201;
@@ -101,9 +102,11 @@ class FailureService extends Service implements ServiceInterface
             // Control de transacciones
             DB::beginTransaction();
             $request->failure_code = create_slug($request->failure);
+            $ct_failure_id = Category::where('ct_failure_code', $request->ct_failure_code)
+                ->first()->ct_failure_id;
             $request->merge([
-                'ct_failure_id' => Category::where('ct_failure_code', $request->ct_failure_code)
-                    ->first()->ct_failure_id,
+                'ct_failure_id' => $ct_failure_id,
+                'failure_code' => $ct_failure_id . "_" . create_slug($request->failure),
             ]);
             // Actualiza falla
             $failure = Failure::where('failure_uuid', $request->failure_uuid)->first();

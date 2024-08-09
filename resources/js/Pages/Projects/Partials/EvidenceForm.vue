@@ -24,7 +24,7 @@
             <v-text-field label="Título secundario" v-model="form.title_secondary" variant="outlined" hide-details
                 density="compact"></v-text-field>
         </v-card-title>-->
-        <v-card-title class="pb-0">
+        <v-card-title class="pb-1">
             <v-textarea label="Descripción" v-model="form.description" variant="outlined" rows="2" hide-details
                 density="compact"></v-textarea>
         </v-card-title>
@@ -32,7 +32,7 @@
             <v-textarea label="Descripción secundaría" v-model="form.description_secondary" variant="outlined" rows="2"
                 hide-details density="compact"></v-textarea>
         </v-card-title>-->
-        <v-card-actions class="p-0 m-0">
+        <v-card-actions class="p-0 m-0" v-if="evidence">
             <!--Delete button-->
             <v-btn color="error" @click="dialogDelete = true" v-if="evidence" block @mouseover="isHoveredDelete = true"
                 @mouseleave="isHoveredDelete = false">
@@ -44,7 +44,6 @@
     </v-card>
     <v-card v-else class="pb-0" border="dashed thin dark md">
         <v-skeleton-loader type="card"></v-skeleton-loader>
-        <v-skeleton-loader type="paragraph" />
         <v-skeleton-loader type="paragraph" />
         <v-skeleton-loader type="paragraph" />
         <br>
@@ -120,6 +119,10 @@ export default {
         positionAux: {
             type: Number,
             required: false
+        },
+        inspection_form_id: {
+            type: String,
+            required: true
         }
     },
     data() {
@@ -138,6 +141,7 @@ export default {
                 description_secondary: null,
                 inspection_evidence_secondary: null,
                 loading: false,
+                inspection_form_id: this.inspection_form_id,
             },
             formDefault: {
                 inspection_uuid: this.inspection_uuid,
@@ -149,9 +153,11 @@ export default {
                 description_secondary: null,
                 inspection_evidence_secondary: null,
                 loading: false,
+                inspection_form_id: this.inspection_form_id,
             },
             serverConfig: {
                 process: (fieldName, file, metadata, load, error, progress, abort) => {
+                    console.log(this.inspection_form_id);
                     this.form.evidence_store = file;
 
                     // Create a CancelToken source
@@ -280,7 +286,7 @@ export default {
 
 <style scoped>
 .min-height {
-    min-height: 300px;
+    min-height: auto !important;
 }
 
 .container-img {

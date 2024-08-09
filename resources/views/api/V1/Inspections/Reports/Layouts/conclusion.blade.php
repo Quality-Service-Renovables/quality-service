@@ -1,6 +1,6 @@
-<h3>Conclusión</h3>
-<hr><br>
-{!! $inspection->conclusion !!}
-<h3>Recomendaciones</h3>
-<hr>
-<p style="color:darkcyan">{!! $inspection->recomendations !!}</p>
+<div class="section justify">
+    <h3 class="primary-color uppercase">7. CONCLUSIONES Y RECOMENDACIONES</h3>
+    {!! $inspection->conclusion !!}
+    <hr>
+    <p style="color:darkcyan">{!! $inspection->recomendations !!}</p>
+</div>

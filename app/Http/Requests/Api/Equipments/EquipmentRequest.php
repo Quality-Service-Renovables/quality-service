@@ -15,8 +15,6 @@ class EquipmentRequest extends CustomRequest
     public function rules(): array
     {
         return [
-            //'equipment' => 'required|string',
-            //'ct_equipment_code' => 'required|string|exists:ct_equipments,ct_equipment_code',
             'equipment' => [
                 'required',
                 'string',
@@ -25,15 +23,9 @@ class EquipmentRequest extends CustomRequest
                 Rule::unique('equipments', 'equipment')
                     ->whereNull('deleted_at'),
             ],
+            'serial_number' => 'nullable|string',
             'equipment_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'equipment_diagram' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'serial_number' => 'nullable|string',
-            'manufacture_date' => 'nullable|date_format:Y-m-d',
-            'work_hours' => 'nullable|integer',
-            'energy_produced' => 'nullable|integer',
-            'barcode' => 'nullable|string',
-            'description' => 'nullable|string|max:255',
-            'location' => 'nullable|string|max:255',
             'manual' => 'nullable|file|mimes:pdf|max:2048',
             'ct_equipment_code' => [
                 'required',
@@ -43,8 +35,8 @@ class EquipmentRequest extends CustomRequest
                 Rule::exists('ct_equipments', 'ct_equipment_code')
                     ->whereNull('deleted_at'),
             ],
-            'trademark_code' => 'required|string|exists:trademarks,trademark_code',
-            'trademark_model_code' => 'required|string|exists:trademark_models,trademark_model_code',
+            'trademark' => 'nullable|string',
+            'model' => 'nullable|string',
             'status_code' => 'required|string|exists:status,status_code',
             'active' => 'required|boolean',
         ];

@@ -39,6 +39,10 @@ class ReportController extends Controller
         return response()->json($this->service->response, $this->service->statusCode);
     }
 
+    public function streamDocument(string $uuid){
+        return $this->service->streamDocument($uuid);
+     }
+
     /**
      * Perform common validation for the request data.
      *

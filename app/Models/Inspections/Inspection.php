@@ -6,6 +6,7 @@ use App\Models\Clients\Client;
 use App\Models\Inspections\Categories\CtInspection;
 use App\Models\Projects\Project;
 use App\Models\Status\Status;
+use App\Models\Users\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,14 +27,16 @@ class Inspection extends Model
         'conclusion',
         'recomendations',
         'location',
+        'escala_condicion',
+        'equipment_fields_report',
         'ct_inspection_id',
-        'equipment_id',
+        'ct_risk_id',
         'client_id',
         'status_id',
         'project_id',
     ];
 
-    protected $hidden = ['inspection_id', 'ct_inspection_id', 'equipment_id', 'client_id', 'status_id', 'project_id'];
+    protected $hidden = ['inspection_id', 'ct_inspection_id', 'client_id', 'status_id', 'project_id'];
 
     /**
      * Get the client associated with the inspection.
@@ -102,5 +105,15 @@ class Inspection extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class, 'project_id', 'project_id');
+    }
+
+    public function diagnosis(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'diagnosis_user_id', 'id');
+    }
+
+    public function risk(): BelongsTo
+    {
+        return $this->belongsTo(CtRisk::class, 'ct_risk_id', 'ct_risk_id');
     }
 }

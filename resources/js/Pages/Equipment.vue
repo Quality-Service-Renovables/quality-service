@@ -9,7 +9,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     <Head title="Equipos" />
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl  leading-tight">Equipos</h2>
+            <h2 class="font-semibold text-xl  leading-tight">Equipos de inspección</h2>
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
@@ -64,19 +64,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         label="Categoría" variant="solo" hide-details></v-select>
                                                                 </v-col>
                                                                 <v-col cols="12">
-                                                                    <v-select v-model="editedItem.trademark_code"
-                                                                        :items="trademarks" item-title="trademark"
-                                                                        item-value="trademark_code" label="Marca"
-                                                                        @update:model-value="setTradermarkModels()" variant="solo" hide-details></v-select>
-                                                                </v-col>
-                                                                <v-col cols="12">
-                                                                    <v-select v-model="editedItem.trademark_model_code"
-                                                                        :items="editedItem.models"
-                                                                        item-title="trademark_model"
-                                                                        item-value="trademark_model_code"
-                                                                        label="Modelo" variant="solo" hide-details></v-select>
-                                                                </v-col>
-                                                                <v-col cols="12">
                                                                     <v-select v-model="editedItem.status_code"
                                                                         :items="status" item-title="status"
                                                                         item-value="status_code"
@@ -84,20 +71,28 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 </v-col>
                                                                 <v-col cols="12">
                                                                     <v-text-field v-model="editedItem.serial_number"
-                                                                        label="Número de serie" variant="solo" hide-details></v-text-field>
+                                                                        label="Número de serie (opcional)" variant="solo" hide-details></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="12">
-                                                                    <v-file-input variant="solo" label="Manual"
+                                                                    <v-text-field v-model="editedItem.trademark"
+                                                                       label="Marca (opcional)" variant="solo" hide-details></v-text-field>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-text-field v-model="editedItem.model"
+                                                                        label="Modelo (opcional)" variant="solo" hide-details></v-text-field>
+                                                                </v-col>
+                                                                <v-col cols="12">
+                                                                    <v-file-input variant="solo" label="Manual (opcional)"
                                                                         v-model="editedItem.manual"
                                                                         accept=".pdf" prepend-icon="" prepend-inner-icon="mdi-file-upload" hide-details></v-file-input>
                                                                 </v-col>
                                                                 <v-col cols="12">
-                                                                    <v-file-input variant="solo" label="Imagen"
+                                                                    <v-file-input variant="solo" label="Imagen (opcional)"
                                                                         v-model="editedItem.equipment_image"
                                                                         accept="image/*" prepend-icon="" prepend-inner-icon="mdi-image-plus" hide-details></v-file-input>
                                                                 </v-col>
                                                                 <v-col cols="12">
-                                                                    <v-file-input variant="solo" label="Diagrama"
+                                                                    <v-file-input variant="solo" label="Diagrama (opcional)"
                                                                         v-model="editedItem.equipment_diagram"
                                                                         accept="image/*" prepend-icon="" prepend-inner-icon="mdi-image-plus" hide-details></v-file-input>
                                                                 </v-col>
@@ -187,9 +182,8 @@ export default {
                 align: 'start',
                 key: 'equipment',
             },
-            { title: 'Marca', key: 'trademark.trademark' },
-            { title: 'Modelo', key: 'model.trademark_model' },
-            { title: 'No. Serie', key: 'serial_number' },
+            { title: 'Marca', key: 'trademark' },
+            { title: 'Modelo', key: 'model' },
             { title: 'Categoría', key: 'category.ct_equipment' },
             { title: 'Estado', key: 'status.status' },
             { title: 'Diagrama', key: 'equipment_diagram' },
@@ -201,31 +195,28 @@ export default {
             equipment_uuid: '',
             equipment: '',
             ct_equipment_code: '',
-            trademark_code: '',
-            trademark_model_code: '',
-            status_code: '',
             serial_number: '',
-            active: false,
+            trademark: '',
+            model: '',
+            status_code: '',
+            active: true,
             manual: null,
             equipment_image: null,
             equipment_diagram: null,
-            models: [],
         },
         defaultItem: {
             equipment_uuid: '',
             equipment: '',
             ct_equipment_code: '',
-            trademark_code: '',
-            trademark_model_code: '',
-            status_code: '',
             serial_number: '',
+            trademark: '',
+            model: '',
+            status_code: '',
             active: false,
             manual: null,
             equipment_image: null,
             equipment_diagram: null,
-            models: [],
         },
-        trademarks: [],
         ct_equipments: [],
         status: [],
     }),
@@ -248,15 +239,14 @@ export default {
                 equipment_uuid: item.equipment_uuid,
                 equipment: item.equipment,
                 ct_equipment_code: item.category.ct_equipment_code,
-                trademark_code: item.trademark.trademark_code,
-                trademark_model_code: item.model.trademark_model_code,
-                status_code: item.status.status_code,
+                trademark: item.trademark,
                 serial_number: item.serial_number,
+                model: item.model,
+                status_code: item.status.status_code,
                 active: item.active,
                 manual: item.manual,
                 equipment_image: item.equipment_image,
                 equipment_diagram: item.equipment_diagram,
-                models: this.trademarks.find(trademark => trademark.trademark_code === item.trademark.trademark_code).models
             }
         },
         editItem(item) {
@@ -309,10 +299,10 @@ export default {
             let formData = {
                 'equipment': this.editedItem.equipment,
                 'ct_equipment_code': this.editedItem.ct_equipment_code,
-                'trademark_code': this.editedItem.trademark_code,
-                'trademark_model_code': this.editedItem.trademark_model_code,
-                'status_code': this.editedItem.status_code,
                 'serial_number': this.editedItem.serial_number,
+                'trademark': this.editedItem.trademark,
+                'model': this.editedItem.model,
+                'status_code': this.editedItem.status_code,
                 'active': this.editedItem.active ? 1 : 0,
                 'manual_storage': this.editedItem.manual,
                 'equipment_image_storage': this.editedItem.equipment_image,
@@ -359,23 +349,9 @@ export default {
                     }
                 });
             }
-
         },
         getColor(value) {
             return value ? 'green' : 'red';
-        },
-        getTrademarks() {
-            axios.get('api/trademarks')
-                .then(response => {
-                    this.trademarks = response.data.data;
-                })
-                .catch(error => {
-                    toast.error('Error al cargar el catálogo de marcas');
-                });
-        },
-        setTradermarkModels() {
-            this.editedItem.trademark_model_code = '';
-            this.editedItem.models = this.trademarks.find(trademark => trademark.trademark_code === this.editedItem.trademark_code).models;
         },
         getCategories() {
             axios.get('api/equipment/categories')
@@ -403,7 +379,6 @@ export default {
         },
     },
     mounted() {
-        this.getTrademarks();
         this.getCategories();
         this.getStatus();
     }

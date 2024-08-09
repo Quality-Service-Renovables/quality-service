@@ -97,6 +97,8 @@ Route::middleware('auth')->group(function () {
         return redirect('index/' . $any);
     })->where('any', '.*');
 
+    Route::get('/inspection/stream-document/{uuid}', [ReportController::class, 'streamDocument'])->name('stream-get');
+
 });
 
 require __DIR__ . '/auth.php';

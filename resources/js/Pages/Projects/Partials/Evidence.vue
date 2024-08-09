@@ -1,50 +1,46 @@
 <template>
-    <div class="max-w-7xl mx-auto my-auto sm:px-4 lg:px-6 mt-5 mb-5 pb-5">
-        <div class="overflow-hidden shadow-sm sm:rounded-lg pb-5 mb-5">
-            <v-row class="d-flex justify-center">
-                <v-col cols="12" lg="4">
-                    <EvidenceForm :inspection_uuid="inspection_uuid" @getEvidences="getEvidences"
-                        :positionAux="evidences.length + 1" />
-                </v-col>
-            </v-row>
-            <v-row class="d-flex justify-center">
-                <v-col cols="12" class="text-center">
-                    <v-divider></v-divider>
-                    <p class="text-h5 mt-4" v-if="evidences.length">Evidencias cargadas</p>
-                </v-col>
-                <template v-if="!loading">
-                    <draggable class="dragArea list-group w-full d-contents" :list="evidences" @change="log">
-                        <v-col cols="12" lg="4" class="list-group-item" v-for="(evidence, index) in evidences"
-                            :key="evidence.inspection_evidence_uuid">
-                            <EvidenceForm :inspection_uuid="inspection_uuid" :evidence="evidence"
-                                @getEvidences="getEvidences" :positionAux="index + 1" />
-                        </v-col>
-                    </draggable>
-                </template>
-                <template v-else>
-                    <v-col cols="12" lg="4" v-for="i in 3" :key="i">
-                        <v-skeleton-loader type="card"></v-skeleton-loader>
-                        <v-skeleton-loader type="paragraph" />
-                        <v-skeleton-loader type="paragraph" />
+    <v-col cols="12" lg="3">
+        <EvidenceForm :inspection_uuid="inspection_uuid" @getEvidences="getEvidences"
+            :positionAux="evidences.length + 1" :inspection_form_id="inspection_form_id" />
+    </v-col>
+    <v-col cols="12" lg="9">
+        <template v-if="!loading">
+            <v-row>
+                <draggable class="dragArea list-group w-full d-contents mt-0 pt-0" :list="evidences" @change="log">
+                    <v-col cols="12" lg="4" class="list-group-item" v-for="(evidence, index) in evidences"
+                        :key="evidence.inspection_evidence_uuid">
+                        <EvidenceForm :inspection_uuid="inspection_uuid" :evidence="evidence"
+                            @getEvidences="getEvidences" :positionAux="index + 1"
+                            :inspection_form_id="inspection_form_id" />
                     </v-col>
-                </template>
+                </draggable>
             </v-row>
-            <!-- Botón flotante -->
-            <v-expand-transition>
-                <v-btn prepend-icon="mdi-content-save-check" variant="flat" color="primary" class="fab m-5"
-                    @click="saveChanges" v-show="thereIsChanges" :loading="savingChanges">
-                    Guardar cambios
-                </v-btn>
-            </v-expand-transition>
-        </div>
-    </div>
+
+        </template>
+        <template v-else>
+            <v-row>
+                <v-col cols="12" lg="4" v-for="i in 3" :key="i">
+                    <v-skeleton-loader type="card"></v-skeleton-loader>
+                    <v-skeleton-loader type="paragraph" />
+                    <v-skeleton-loader type="paragraph" />
+                </v-col>
+            </v-row>
+        </template>
+    </v-col>
+    <!-- Botón flotante -->
+    <v-expand-transition>
+        <v-btn prepend-icon="mdi-content-save-check" variant="flat" color="primary" class="fab m-5" @click="saveChanges"
+            v-show="thereIsChanges" :loading="savingChanges">
+            Guardar cambios
+        </v-btn>
+    </v-expand-transition>
 </template>
 <script>
 import { defineComponent } from 'vue'
 import { VueDraggableNext } from 'vue-draggable-next'
 import EvidenceForm from './EvidenceForm.vue';
 import { Toaster, toast } from 'vue-sonner'
-import { getInspection } from '@/Functions/api';
+import { getEvidences } from '@/Functions/api';
 import axios from 'axios';
 
 export default defineComponent({
@@ -55,6 +51,10 @@ export default defineComponent({
     },
     props: {
         inspection_uuid: {
+            type: String,
+            required: true
+        },
+        inspection_form_id: {
             type: String,
             required: true
         }
@@ -70,7 +70,9 @@ export default defineComponent({
         }
     },
     mounted() {
-        this.getEvidences();
+        if (this.inspection_form_id !== null) {
+            this.getEvidences();
+        }
     },
     methods: {
         log(event) {
@@ -81,8 +83,8 @@ export default defineComponent({
             this.evidences = [];
             try {
                 this.loading = true;
-                const response = await getInspection(this.inspection_uuid);
-                this.evidences = response.data.data.evidences;
+                const response = await getEvidences(this.inspection_form_id);
+                this.evidences = response.data.data;
                 this.evidences = this.evidences.sort((a, b) => a.position - b.position);
                 this.loading = false;
             } catch (error) {
@@ -119,7 +121,7 @@ export default defineComponent({
 .d-contents {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: left;
 }
 
 .fab {

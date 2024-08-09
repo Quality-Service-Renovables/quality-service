@@ -47,7 +47,7 @@ class FormController extends Controller
         $validated = Validator::make($request->all(), [
             'inspection_uuid' => 'required|string|min:10|max:255|exists:inspections,inspection_uuid',
             'form.*.ct_inspection_form_uuid' => 'required|string|exists:ct_inspection_forms,ct_inspection_form_uuid',
-            'form.*.inspection_form_value' => 'required|string',
+            'form.*.inspection_form_value' => 'nullable|string',
             'form.*.inspection_form_comments' => 'nullable|string',
         ]);
 
@@ -97,6 +97,30 @@ class FormController extends Controller
         }
 
         $this->service->getFormInspection($uuid);
+
+        return response()->json($this->service->response, $this->service->statusCode);
+    }
+
+    /**
+     * Gets the form related to an inspection.
+     *
+     * @param string $uuid The UUID of the inspection.
+     */
+    public function getFormEvidences(string $id): JsonResponse
+    {
+        $request = ['inspection_form_id' => $id];
+
+        $validated = Validator::make($request, [
+            'inspection_form_id' => 'required|integer|exists:inspection_forms,inspection_form_id',
+        ]);
+
+        if ($validated->fails()) {
+            $this->service->setFailValidation($validated->errors());
+
+            return response()->json($this->service->response, $this->service->statusCode);
+        }
+
+        $this->service->getFormEvidences($id);
 
         return response()->json($this->service->response, $this->service->statusCode);
     }

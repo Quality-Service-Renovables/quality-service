@@ -26,25 +26,18 @@ class Equipment extends Model
         'equipment_uuid',
         'equipment',
         'equipment_code',
+        'serial_number',
         'equipment_image',
         'equipment_diagram',
         'model',
-        'serial_number',
-        'work_hours',
-        'energy_produced',
-        'manufacture_date',
-        'barcode',
-        'description',
-        'location',
+        'trademark',
         'manual',
         'ct_equipment_id',
-        'trademark_id',
-        'trademark_model_id',
         'status_id',
         'active',
     ];
 
-    protected $hidden = ['equipment_id', 'ct_equipment_id', 'trademark_id', 'trademark_model_id', 'status_id'];
+    protected $hidden = ['equipment_id', 'ct_equipment_id', 'status_id'];
 
     /**
      * Get the category that this equipment belongs to.
@@ -60,23 +53,5 @@ class Equipment extends Model
     public function status(): BelongsTo
     {
         return $this->belongsTo(Status::class, 'status_id', 'status_id');
-    }
-
-    /**
-     * Get the trademark that this item belongs to.
-     */
-    public function trademark(): BelongsTo
-    {
-        return $this->belongsTo(Trademark::class, 'trademark_id', 'trademark_id');
-    }
-
-    /**
-     * Get the model that this item belongs to.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function model(): BelongsTo
-    {
-        return $this->belongsTo(TrademarkModel::class, 'trademark_model_id', 'trademark_model_id');
     }
 }

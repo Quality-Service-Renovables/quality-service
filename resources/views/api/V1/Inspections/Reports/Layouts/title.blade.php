@@ -1,9 +1,21 @@
-<div style="margin-top: 200px;">
-    @if($inspection->client->logo)
-        <img src="{{$inspection->client->logo}}" width="300px" height="300px" alt="{{$inspection->client->client}}">
-    @endif
-    <p>{{$inspection->client->client}}</p>
-    <p style="color: gray">{{$inspection->client->legal_name}}</p>
-    <p style="color: gray">{{date("d M Y")}}</p>
-    <p style="font-size: 16px;"><small>{!! $inspection->category->description !!}</small></p>
+<div class="cover">
+    <table style="width: 100%;"> 
+        <tr style="width: 100%;">
+            <td style="width:40%;">
+                @if ($inspection->client->logo)
+                    <img src="{{ $inspection->client->logo }}" alt="{{ $inspection->client->client }}">
+                @endif
+            </td>
+            <td style="width:60%;">
+                <h3 class="primary-color uppercase" style="margin: 0px;">{!! $inspection->category->description !!}</h>
+                <p style="color: gray" class="space italic">{{ $inspection->project->title_report }}</p>
+                <p>ELABORADO PARA:</p>
+                <p class="primary-color space">{{ $inspection->client->client }}</p>
+                <p>UBICACIÓN:</p>
+                <p class="primary-color space">{{ $inspection->location }}</p>
+                <p>FECHA:</p>
+                <p class="primary-color space">{{ date('d M Y') }}</p>
+            </td>
+        </tr>
+    </table>
 </div>

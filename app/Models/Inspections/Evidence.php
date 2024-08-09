@@ -25,6 +25,7 @@ class Evidence extends Model
         'description_secondary',
         'inspection_id',
         'position',
+        'inspection_form_id',
     ];
 
     protected $hidden = ['inspection_evidence_id', 'inspection_id'];
