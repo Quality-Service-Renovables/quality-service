@@ -116,7 +116,8 @@
                                                             </v-col>
                                                         </v-row>
                                                         <!-- Photo evidences -->
-                                                        <v-row v-if="field.content.inspection_form_id /*&& field.content.inspection_form_value != 'No aplica'*/">
+                                                        <v-row
+                                                            v-if="field.content.inspection_form_id /*&& field.content.inspection_form_value != 'No aplica'*/">
                                                             <Evidence :inspection_uuid="inspection_uuid"
                                                                 :inspection_form_id="field.content.inspection_form_id" />
                                                         </v-row>
@@ -246,7 +247,8 @@
                                                                             </v-col>
                                                                         </v-row>
                                                                         <!-- Photo evidences -->
-                                                                        <v-row v-if="fieldSub.content.inspection_form_id">
+                                                                        <v-row
+                                                                            v-if="fieldSub.content.inspection_form_id">
                                                                             <Evidence :inspection_uuid="inspection_uuid"
                                                                                 :inspection_form_id="fieldSub.content.inspection_form_id" />
                                                                         </v-row>
@@ -328,7 +330,7 @@ export default {
         closeSectionDialog() {
             this.$emit('closeSectionDialog');
         },
-        saveField(field) {
+        async saveField(field) {
             field.loading = true;
 
             let formData = {
@@ -341,12 +343,7 @@ export default {
                 }]
             }
 
-            /*if (this.isEmptyField(formData.form[0].inspection_form_value)) {
-                toast.error('El contenido no puede estar vacío');
-                field.loading = false;
-                return;
-            } else {*/
-            axios.post('api/inspection/forms/set-form-inspection', formData)
+            await axios.post('api/inspection/forms/set-form-inspection', formData)
                 .then(response => {
                     field.loading = false;
                     toast.success('Campo guardado correctamente');
@@ -361,7 +358,11 @@ export default {
                     field.loading = false;
                     this.handleErrors(error);
                 });
-            //}
+
+            let btn = document.querySelector('#btn_upload_evidence_' + field.content.inspection_form_id + ' .filepond--action-process-item');
+            if (btn) {
+                btn.click();
+            }
         },
         complementData(field) {
             if (field.content == null) {

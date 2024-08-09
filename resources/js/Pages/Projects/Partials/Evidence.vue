@@ -1,7 +1,9 @@
 <template>
     <v-col cols="12" lg="3" v-if="evidences.length < 3">
-        <EvidenceForm :inspection_uuid="inspection_uuid" @getEvidences="getEvidences"
+        <div :id="'btn_upload_evidence_'+inspection_form_id">
+            <EvidenceForm :inspection_uuid="inspection_uuid" @getEvidences="getEvidences"
             :positionAux="evidences.length + 1" :inspection_form_id="inspection_form_id"/>
+        </div>
     </v-col>
     <v-col cols="12" lg="9">
         <template v-if="!loading">
