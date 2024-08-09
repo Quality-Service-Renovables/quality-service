@@ -330,7 +330,7 @@ export default {
                     this.editedItem.required_fields_report = { fields: [] };
                 }
                 let key = this.new_field.replace(/ /g, '_').toLowerCase();
-                this.editedItem.required_fields_report.fields.push({ key: key, name: this.new_field, active: true, required: true });
+                this.editedItem.required_fields_report.fields.push({ key: key, name: this.new_field, type: "string", active: true, required: true });
                 this.new_field = '';
                 this.showCreateField = false;
             } else {
