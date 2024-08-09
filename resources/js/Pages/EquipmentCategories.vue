@@ -61,15 +61,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         color="primary" hide-details></v-switch>
                                                                 </v-col>
                                                                 <v-col cols="12">
-                                                                    <div class="d-flex justify-between">
-                                                                        <p class="text-grey">Campos requeridos para el
-                                                                            informe:
-                                                                        </p>
-                                                                        <v-btn v-if="!showCreateField" density="compact"
-                                                                            prepend-icon="mdi-plus"
-                                                                            class="mb-1 pr-0 text-none text-primary"
-                                                                            variant="plain"
-                                                                            @click="showCreateField = true">Agregar</v-btn>
+                                                                    <div class="d-flex justify-end">
                                                                         <v-btn v-if="showCreateField" density="compact"
                                                                             prepend-icon="mdi-close"
                                                                             class="mb-1 pr-0 text-none text-red"
@@ -82,14 +74,47 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                             :disabled="!new_field">Guardar</v-btn>
                                                                     </div>
                                                                     <v-text-field v-model="new_field" label="Campo"
-                                                                        variant="solo" hide-details
-                                                                        v-if="showCreateField"></v-text-field>
+                                                                        variant="outlined" hide-details
+                                                                        v-if="showCreateField" @keyup.enter="addField"></v-text-field>
+                                                                    <div class="d-flex justify-between">
+                                                                        <p class="text-grey">Campos requeridos para el
+                                                                            informe:
+                                                                        </p>
+                                                                        <v-btn v-if="!showCreateField" density="compact"
+                                                                            prepend-icon="mdi-plus"
+                                                                            class="mb-1 pr-0 text-none text-primary"
+                                                                            variant="plain"
+                                                                            @click="showCreateField = true">Agregar</v-btn>
+                                                                    </div>
                                                                     <div v-if="editedItem.required_fields_report">
-                                                                        <v-checkbox
-                                                                            v-for="perm in editedItem.required_fields_report.fields"
-                                                                            :key="perm.key" :label="perm.name"
-                                                                            hide-details class="py-0"
-                                                                            v-model="perm.required"></v-checkbox>
+                                                                        <v-table density="compact" fixed-header class="mt-4">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Campo</th>
+                                                                                    <th>Mostrar</th>
+                                                                                    <th>Requerido</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr v-for="perm in editedItem.required_fields_report.fields"
+                                                                                    :key="perm.key">
+                                                                                    <td>{{ perm.name }}</td>
+                                                                                    <td>
+                                                                                        <v-checkbox hide-details
+                                                                                            class="py-0"
+                                                                                            v-model="perm.active">
+                                                                                        </v-checkbox>
+                                                                                    </td>
+
+                                                                                    <td>
+                                                                                        <v-checkbox hide-details
+                                                                                            class="py-0"
+                                                                                            v-model="perm.required">
+                                                                                        </v-checkbox>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </v-table>
                                                                     </div>
                                                                     <div v-else>
                                                                         <p class="text-red"><small>No se han registrado
@@ -304,7 +329,8 @@ export default {
                 if (this.editedItem.required_fields_report == null) {
                     this.editedItem.required_fields_report = { fields: [] };
                 }
-                this.editedItem.required_fields_report.fields.push({ key: this.new_field, name: this.new_field, required: false });
+                let key = this.new_field.replace(/ /g, '_').toLowerCase();
+                this.editedItem.required_fields_report.fields.push({ key: key, name: this.new_field, active: true, required: true });
                 this.new_field = '';
                 this.showCreateField = false;
             } else {

@@ -48,7 +48,7 @@
                                             inspeccionar.
                                         </p>
                                     </v-col>
-                                    <v-col cols="12" lg="6" v-for="(field, index) in inspection_form.fields"
+                                    <v-col cols="12" lg="6" v-for="(field, index) in inspection_form.fields" v-show="field.active"
                                         :key="index">
                                         <v-text-field v-model="field.value"
                                             :label="field.name + ' (' + isRequiredLabel(field.required) + ')'"
@@ -86,7 +86,7 @@
                                 </v-autocomplete>
                             </v-col>
                         </v-row>
-                        <PrimaryButton @click="asignInspection()" :disabled="false" :loading="false" class="mt-3">
+                        <PrimaryButton @click="asignInspection($event)" :disabled="false" :loading="false" class="mt-3">
                             Guardar
                         </PrimaryButton>
                     </v-card-text>
@@ -213,8 +213,8 @@ export default {
         isRequiredLabel(required) {
             return required ? 'Requerido' : 'Opcional';
         },
-        async asignInspection() {
-            
+        async asignInspection(e) {
+            e.preventDefault();
             const { valid } = await this.$refs.form.validate()
 
             if (valid) {
