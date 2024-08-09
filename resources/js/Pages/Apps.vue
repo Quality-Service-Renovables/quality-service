@@ -42,7 +42,7 @@ import { mdiCheckBold } from '@mdi/js';
                                 v-if="checkVisivility('Roles y permisos') && hasPermissionTo('roles')" />
                             <App path="profile" title="Perfil" icon="mdi-face-man-profile"
                                 v-if="checkVisivility('Perfil')" />
-                            <App path="https://www.qualityservicerenovables.com.mx" title="Landing page"
+                            <App path="https://www.qsr.mx" title="Landing page"
                                 icon="mdi-monitor" v-if="checkVisivility('Landing page')" />
                         </div>
                     </v-col>
