@@ -33,14 +33,15 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         <p>{{ item.address }}, {{ item.zip_code }}</p>
                                     </template>
                                     <template v-slot:item.phone="{ item }">
-                                        <p>Celular:{{ item.phone }}</p>
-                                        <p>Oficina:{{ item.phone_office }}</p>
+                                        {{ item.phone }}
+                                        <!--<p>Celular:{{ item.phone }}</p>
+                                        <p>Oficina:{{ item.phone_office }}</p>-->
                                     </template>
-                                    <template v-slot:item.open_time="{ item }">
+                                    <!--<template v-slot:item.open_time="{ item }">
                                         {{ item.office_days }}
                                         <small>{{ formatTime(item.open_time) }} - {{ formatTime(item.close_time)
                                             }}</small>
-                                    </template>
+                                    </template>-->
                                     <template v-slot:top>
                                         <v-toolbar flat>
                                             <v-toolbar-title class="ml-1">
@@ -71,7 +72,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                 <v-col cols="12" md="4">
                                                                     <v-text-field v-model="editedItem.client"
                                                                         label="Cliente" hide-details
-                                                                        variant="solo"></v-text-field>
+                                                                        variant="solo" @input="setEmail"></v-text-field>
                                                                 </v-col>
 
                                                                 <v-col cols="12" md="4">
@@ -97,7 +98,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         type="phone"></v-text-field>
                                                                 </v-col>
 
-                                                                <v-col cols="12" md="4">
+                                                                <!--<v-col cols="12" md="4">
                                                                     <v-text-field v-model="editedItem.phone_office"
                                                                         label="Teléfono oficina" hide-details
                                                                         variant="solo" type="phone"></v-text-field>
@@ -125,7 +126,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                     <v-text-field v-model="editedItem.website"
                                                                         label="Website" hide-details
                                                                         variant="solo"></v-text-field>
-                                                                </v-col>
+                                                                </v-col>-->
 
                                                                 <v-col cols="12" md="4">
                                                                     <v-text-field v-model="editedItem.email"
@@ -214,8 +215,8 @@ export default {
             { title: 'Nombre fiscal', key: 'legal_name', minWidth: '200' },
             { title: 'Dirección', key: 'address', minWidth: '200' },
             { title: 'Tels.', value: 'phone', minWidth: '200' },
-            { title: 'Horario', key: 'open_time', align: 'center', minWidth: '150' },
-            { title: 'Website', key: 'website' },
+            /*{ title: 'Horario', key: 'open_time', align: 'center', minWidth: '150' },
+            { title: 'Website', key: 'website' },*/
             { title: 'Email', key: 'email' },
             { title: 'Activo', key: 'active' },
             { title: 'Actions', key: 'actions', sortable: false }
@@ -229,11 +230,11 @@ export default {
             address: '',
             zip_code: '',
             phone: '',
-            phone_office: '',
+            /*phone_office: '',
             open_time: '',
             close_time: '',
             office_days: '',
-            website: '',
+            website: '',*/
             email: '',
             active: false
         },
@@ -245,11 +246,11 @@ export default {
             address: '',
             zip_code: '',
             phone: '',
-            phone_office: '',
+            /*phone_office: '',
             open_time: '',
             close_time: '',
             office_days: '',
-            website: '',
+            website: '',*/
             email: '',
             active: false
         }
@@ -320,11 +321,11 @@ export default {
                 address: this.editedItem.address,
                 zip_code: this.editedItem.zip_code,
                 phone: this.editedItem.phone,
-                phone_office: this.editedItem.phone_office,
+                /*phone_office: this.editedItem.phone_office,
                 open_time: moment(this.editedItem.open_time, 'HH:mm:ss').format('HH:mm'),
                 close_time: moment(this.editedItem.close_time, 'HH:mm:ss').format('HH:mm'),
                 office_days: this.editedItem.office_days,
-                website: this.editedItem.website,
+                website: this.editedItem.website,*/
                 email: this.editedItem.email,
                 active: this.editedItem.active ? 1 : 0
             };
@@ -379,6 +380,9 @@ export default {
         },
         showImage(item) {
             window.open('../' + item.logo, '_blank');
+        },
+        setEmail() {
+            this.editedItem.email = this.editedItem.client.toLowerCase().replace(/ /g, '_') + '@qsr.mx';
         },
     },
 

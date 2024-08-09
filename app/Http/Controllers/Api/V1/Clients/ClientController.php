@@ -104,11 +104,11 @@ class ClientController extends Controller
             'address' => 'nullable|string',
             'zipcode' => 'nullable|string',
             'phone' => 'nullable|string',
-            'phone_office' => 'nullable|string',
+            /*'phone_office' => 'nullable|string',
             'open_time' => 'nullable|date_format:H:i',
             'close_time' => 'nullable|date_format:H:i',
             'office_days' => 'nullable|string',
-            'website' => 'nullable|url',
+            'website' => 'nullable|url',*/
             'email' => [
                 'required',
                 'email',
