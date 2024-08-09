@@ -116,8 +116,7 @@
                                                             </v-col>
                                                         </v-row>
                                                         <!-- Photo evidences -->
-                                                        <v-row
-                                                            v-if="field.content.inspection_form_id /*&& field.content.inspection_form_value != 'No aplica'*/">
+                                                        <v-row>
                                                             <Evidence :inspection_uuid="inspection_uuid"
                                                                 :inspection_form_id="field.content.inspection_form_id" />
                                                         </v-row>
@@ -247,8 +246,7 @@
                                                                             </v-col>
                                                                         </v-row>
                                                                         <!-- Photo evidences -->
-                                                                        <v-row
-                                                                            v-if="fieldSub.content.inspection_form_id">
+                                                                        <v-row>
                                                                             <Evidence :inspection_uuid="inspection_uuid"
                                                                                 :inspection_form_id="fieldSub.content.inspection_form_id" />
                                                                         </v-row>

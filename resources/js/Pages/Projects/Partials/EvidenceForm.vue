@@ -157,7 +157,7 @@ export default {
             },
             serverConfig: {
                 process: (fieldName, file, metadata, load, error, progress, abort) => {
-                    console.log(this.inspection_form_id);
+                    this.form.inspection_form_id = this.inspection_form_id;
                     this.form.evidence_store = file;
 
                     // Create a CancelToken source
@@ -165,8 +165,9 @@ export default {
                     const source = CancelToken.source();
 
                     if (!this.form.title) {
-                        toast.error("El título es requerido");
-                        this.abort(source);
+                        error('El título de la evidencia es requerido');
+                        toast.error('El título de la evidencia es requerido');
+                        return;
                     }
 
                     this.save(source, load, error, progress);
@@ -256,12 +257,10 @@ export default {
                     });
             }
         },
-        abort() {
+        abort(source) {
             source.cancel('Operación cancelada por el usuario.');
         },
         deleteEvidence() {
-            console.log("Entro a eliminar");
-
             axios.delete('api/inspection/evidences/' + this.evidence.inspection_evidence_uuid)
                 .then(response => {
                     toast.success("Evidencia eliminada");
