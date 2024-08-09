@@ -1,0 +1,1 @@
+import{H as n}from"./app-CkRXx2h3.js";const t=n.create({baseURL:window.location.origin+"/api"}),o=e=>t.get(`/inspections/${e}`),s=e=>t.get("/inspection/forms/get-form-evidences/"+e);export{s as a,o as g};
