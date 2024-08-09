@@ -169,6 +169,9 @@ class ProjectService extends Service implements ServiceInterface
                     foreach ($project->inspections as $inspection) {
                         $inspection->client_id = $clientId;
                         $inspection->status_id = $status->status_id;
+                        if($request->status_code === 'proyecto_validado') {
+                            $inspection->diagnosis_user_id = auth()->user()->id;
+                        }
                         $inspection->save();
                     }
 
