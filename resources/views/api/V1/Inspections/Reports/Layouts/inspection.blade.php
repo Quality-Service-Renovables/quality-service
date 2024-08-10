@@ -41,13 +41,12 @@
                                                 @foreach ($field->result->evidences as $evidence)
                                                     <td style="padding:5px;">
                                                         <img src="{{ $evidence->inspection_evidence }}"
-                                                            alt="{{ $evidence->description }}">
+                                                            alt="{{ $evidence->description }}" style="max-width:200px;"><br>
                                                         <small>{{ $evidence->title . ' - ' . $evidence->description }}</small>
                                                     </td>
                                                 @endforeach
                                             </tr>
                                         </table>
-
                                     </td>
                                 </tr>
                             @endif
@@ -100,7 +99,7 @@
                                                             @foreach ($field->result->evidences as $evidence)
                                                                 <td style="padding:5px;">
                                                                     <img src="{{ $evidence->inspection_evidence }}"
-                                                                        alt="{{ $evidence->description }}">
+                                                                        alt="{{ $evidence->description }}"style="max-width:200px;"><br>
                                                                     <small>{{ $evidence->title . ' - ' . $evidence->description }}</small>
                                                                 </td>
                                                             @endforeach

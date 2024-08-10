@@ -1,6 +1,6 @@
  {{--  2. ESCALA DE CONDICIÓN  --}}
 <div class="section">
-    <h3 class="primary-color uppercase">3. ESCALA DE CONDICIÓN</h3>
+    <h3 class="primary-color uppercase">4. ESCALA DE CONDICIÓN</h3>
     <p>A continuación se resumen los principales hallazgos de las inspecciones.</p>
     <table class="inspection-table">
         <tbody>
