@@ -2,7 +2,7 @@
     <table>
         <tr>
             <td class="text-left v-top">
-                {{ $inspection->client->client }}
+                QUALITY SERVICE RENOVABLES S. DE R.L DE C.V
                 <br>
                 Copyright ©  {{$inspection->provider->client}} {{date("Y")}}
                 <br>

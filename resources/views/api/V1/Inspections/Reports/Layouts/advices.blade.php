@@ -43,7 +43,7 @@
     <table>
         <tr>
             <td colspan="2" class="primary-color">
-                <h3>CLAVE PARA LA CLASIFICACIÓN DE DOCUMENTOS</h3>
+                <h3>CLASIFICACIÓN DE DOCUMENTOS</h3>
             </td>
         </tr>
         <tr>

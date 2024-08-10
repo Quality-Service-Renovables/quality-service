@@ -270,6 +270,10 @@
         @include('api.V1.Inspections.Reports.Layouts.table-content')
         {{--  Introducción  --}}
         @include('api.V1.Inspections.Reports.Layouts.introduction')
+        <div class="page-break"></div>
+        {{--  Referencias  --}}
+        @include('api.V1.Inspections.Reports.Layouts.references')
+        <div class="page-break"></div>
         {{--  Información  --}}
         @include('api.V1.Inspections.Reports.Layouts.information')
         <div class="page-break"></div>
