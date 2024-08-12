@@ -6,7 +6,7 @@
         2.1 ESTANDARES
     </h3>
     <p class="justify font-12">
-        La inspección se ha realizado siguiendo el procedimiento interno 35-IW-S0855 de UL, que se basa en las siguientes normas IEC para turbinas eólicas, así como en la norma UL de seguridad para la extensión de la vida útil:
+        La inspección se ha realizado siguiendo el procedimiento basado en las siguientes normas IEC para turbinas eólicas:
     </p>
     <ul class="justify font-12">
         <li>
@@ -14,9 +14,6 @@
         </li>
         <li>
             Comisión Electrotécnica Internacional (IEC): IEC 61400-4 Turbinas eólicas – Parte 4: Requisitos de diseño para cajas de engranajes de turbinas eólicas, Ed. 1, 12-2012.
-        </li>
-        <li>
-            Norma UL de seguridad: Generador de turbinas eólicas – Extensión de la vida útil (LTE) 9 de febrero (2018) Ed. 1.
         </li>
     </ul>
 
