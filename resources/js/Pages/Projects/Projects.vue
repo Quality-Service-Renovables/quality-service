@@ -365,8 +365,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                     <v-card>
                                         <v-tabs v-model="tab" align-tabs="center"
                                             class="position-fixed w-100 bg-primary-color">
-                                            <v-tab value="information">Información</v-tab>
-                                            <v-tab value="sections">Secciones</v-tab>
+                                            <v-tab value="information">INFORMACIÓN</v-tab>
+                                            <v-tab value="sections">EVIDENCIAS</v-tab>
                                             <v-tab value="recomendations">Concluciones y Recomendaciones</v-tab>
                                         </v-tabs>
 
