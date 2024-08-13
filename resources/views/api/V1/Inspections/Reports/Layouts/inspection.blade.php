@@ -1,13 +1,13 @@
 <div class="section">
     {{--  INSPECCIÓN  --}}
-    <h3 class="primary-color uppercase">6. RESULTADOS PRINCIPALES</h3>
+    <h3 class="primary-color uppercase">7. RESULTADOS PRINCIPALES</h3>
 
     {{--  Secciones  --}}
     @foreach ($inspection->category->sections as $index => $section)
-        <h3 class="primary-color uppercase" style="margin-bottom: 0px;margin-top:15px;">6.{{ $index + 1 }}
+        <h3 class="primary-color uppercase" style="margin-bottom: 0px;margin-top:15px;">7.{{ $index + 1 }}
             {{ $section->ct_inspection_section }}</h3>
         <div class="text-center">
-            <p>Tabla 6.{{ $index + 1 }} {{ $section->ct_inspection_section }}</p>
+            <p>Tabla 7.{{ $index + 1 }} {{ $section->ct_inspection_section }}</p>
         </div>
 
         {{--  Campos  --}}
@@ -41,8 +41,8 @@
                                                 @foreach ($field->result->evidences as $evidence)
                                                     <td style="padding:5px;">
                                                         <img src="{{ $evidence->inspection_evidence }}"
-                                                            alt="{{ $evidence->description }}" style="max-width:200px;"><br>
-                                                        <small>{{ $evidence->title . ' - ' . $evidence->description }}</small>
+                                                            alt="{{ $evidence->description }}" style="max-width: 220px;"><br>
+                                                        <small>{{ $evidence->title }} {{ $evidence->description ? ' - ' . $evidence->description : '' }}</small>
                                                     </td>
                                                 @endforeach
                                             </tr>
@@ -60,10 +60,10 @@
         @if (count($section->subSections))
             @foreach ($section->subSections as $indexSub => $subSection)
                 <h3 class="primary-color uppercase" style="margin-bottom: 0px;margin-top:15px;">
-                    6.{{ $index + 1 }}.{{ $indexSub + 1 }}
+                    7.{{ $index + 1 }}.{{ $indexSub + 1 }}
                     {{ $subSection->ct_inspection_section }}</h3>
                 <div class="text-center">
-                    <p>Tabla 6.{{ $index + 1 }}.{{ $indexSub + 1 }} {{ $subSection->ct_inspection_section }}</p>
+                    <p>Tabla 7.{{ $index + 1 }}.{{ $indexSub + 1 }} {{ $subSection->ct_inspection_section }}</p>
                 </div>
                 {{--  Subsección campos  --}}
                 @if (count($subSection->fields))
@@ -99,8 +99,8 @@
                                                             @foreach ($field->result->evidences as $evidence)
                                                                 <td style="padding:5px;">
                                                                     <img src="{{ $evidence->inspection_evidence }}"
-                                                                        alt="{{ $evidence->description }}"style="max-width:200px;"><br>
-                                                                    <small>{{ $evidence->title . ' - ' . $evidence->description }}</small>
+                                                                        alt="{{ $evidence->description }}"style="max-width:220px;"><br>
+                                                                    <small>{{ $evidence->title }} {{ $evidence->description ? ' - ' . $evidence->description : '' }}</small>
                                                                 </td>
                                                             @endforeach
                                                         </tr>

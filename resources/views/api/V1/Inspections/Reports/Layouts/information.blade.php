@@ -1,6 +1,6 @@
 <div class="section">
-    <h3 class="primary-color uppercase">3. INFORMACIÓN</h3>
-    <h3 class="primary-color uppercase">3.1 INFORMACIÓN GENERAL</h3>
+    <h3 class="primary-color uppercase">4. INFORMACIÓN</h3>
+    <h3 class="primary-color uppercase">4.1 INFORMACIÓN GENERAL</h3>
     <table>
         <tbody>
             <tr class="text-center">
@@ -34,7 +34,7 @@
         </tbody>
     </table>
     <br>
-    <h3 class="primary-color uppercase">3.1 INFORMACIÓN DEL EQUIPO</h3>
+    <h3 class="primary-color uppercase">4.2 INFORMACIÓN DEL EQUIPO</h3>
     @if($inspection->equipment_fields_report != null && count(json_decode($inspection->equipment_fields_report)))
     <table>
         <tbody>
