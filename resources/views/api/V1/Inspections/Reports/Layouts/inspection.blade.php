@@ -38,12 +38,15 @@
                                         <p class="m-0">Evidencias fotográficas</p>
                                         <table>
                                             <tr>
-                                                @foreach ($field->result->evidences as $evidence)
-                                                    <td style="padding:5px;">
+                                                @foreach ($field->result->evidences as $index => $evidence)
+                                                    <td style="width: 33.33%; padding:5px;">
                                                         <img src="{{ $evidence->inspection_evidence }}"
-                                                            alt="{{ $evidence->description }}" style="max-width: 220px;"><br>
+                                                            alt="{{ $evidence->description }}" style="max-width: 220px; height: auto;"><br>
                                                         <small>{{ $evidence->title }} {{ $evidence->description ? ' - ' . $evidence->description : '' }}</small>
                                                     </td>
+                                                    @if(($index + 1) % 3 == 0)
+                                                        <tr></tr>
+                                                    @endif
                                                 @endforeach
                                             </tr>
                                         </table>
@@ -96,12 +99,15 @@
                                                     <p class="m-0">Evidencias fotográficas</p>
                                                     <table>
                                                         <tr>
-                                                            @foreach ($field->result->evidences as $evidence)
-                                                                <td style="padding:5px;">
+                                                            @foreach ($field->result->evidences as $index => $evidence)
+                                                                <td style="width: 33.33%; padding:5px;">
                                                                     <img src="{{ $evidence->inspection_evidence }}"
-                                                                        alt="{{ $evidence->description }}"style="max-width:220px;"><br>
+                                                                        alt="{{ $evidence->description }}" style="max-width: 220px; height: auto;"><br>
                                                                     <small>{{ $evidence->title }} {{ $evidence->description ? ' - ' . $evidence->description : '' }}</small>
                                                                 </td>
+                                                                @if(($index + 1) % 3 == 0)
+                                                                    <tr></tr>
+                                                                @endif
                                                             @endforeach
                                                         </tr>
                                                     </table>
