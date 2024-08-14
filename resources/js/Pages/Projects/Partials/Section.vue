@@ -58,6 +58,11 @@
                                                                     :items="failures" item-title="failure"
                                                                     item-value="failure" variant="outlined" hide-details
                                                                     class="rounded" density="compact" clearable>
+                                                                    <template v-slot:item="{ props, item }">
+                                                                        <v-list-item v-bind="props"
+                                                                            :subtitle="item.raw.category.ct_failure"
+                                                                            :title="item.raw.failure"></v-list-item>
+                                                                    </template>
                                                                 </v-autocomplete>
                                                             </v-col>
                                                             <v-col cols="12" lg="6">
@@ -180,6 +185,11 @@
                                                                                     variant="outlined" hide-details
                                                                                     class="rounded" density="compact"
                                                                                     clearable>
+                                                                                    <template v-slot:item="{ props, item }">
+                                                                                    <v-list-item v-bind="props"
+                                                                                        :subtitle="item.raw.category.ct_failure"
+                                                                                        :title="item.raw.failure"></v-list-item>
+                                                                                </template>
                                                                                 </v-autocomplete>
                                                                             </v-col>
                                                                             <v-col cols="12" lg="6">
