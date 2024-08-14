@@ -23,6 +23,7 @@ class Inspection extends Model
 
     protected $fillable = [
         'inspection_uuid',
+        'inspection_date',
         'resume',
         'conclusion',
         'recomendations',

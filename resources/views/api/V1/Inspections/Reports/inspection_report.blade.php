@@ -89,7 +89,7 @@
         }
         #title-header {
             color: #c10202;
-            vertical-align: top;
+            vertical-align: middle;
             font-weight: bold;
             font-size: 15px;
         }
@@ -271,8 +271,10 @@
         {{--  Introducción  --}}
         @include('api.V1.Inspections.Reports.Layouts.introduction')
         <div class="page-break"></div>
-        {{--  Referencias  --}}
+        {{--  Referencias --}}
         @include('api.V1.Inspections.Reports.Layouts.references')
+        {{--  Metodología --}}
+        @include('api.V1.Inspections.Reports.Layouts.metodologia')
         <div class="page-break"></div>
         {{--  Información  --}}
         @include('api.V1.Inspections.Reports.Layouts.information')

@@ -6,15 +6,15 @@
 
 namespace App\Services\Api\V1\Inspections\Reports;
 
-use Throwable;
 use App\Mail\ServiceMail;
-use App\Services\Service;
-use App\Services\Api\Audits;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Inspections\CtRisk;
-use Illuminate\Support\Facades\Mail;
 use App\Models\Inspections\Inspection;
+use App\Services\Api\Audits;
+use App\Services\Service;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class ReportService extends Service
 {
@@ -44,7 +44,6 @@ class ReportService extends Service
                 'risk',
                 'diagnosis',
             ])->where('inspection_uuid', $uuid)->first();
-//            dd($inspection->category->sections->first()->subSections->first()->fields->first()->result->evidences);
             // Valida si la inspección tiene información.
             if ($inspection && $this->isValidInspection($inspection)) {
                 $inspection->fields = $inspection->equipment_fields_report
@@ -53,17 +52,28 @@ class ReportService extends Service
                 $inspection->provider = $user->client;
                 $inspection->risk_catalog = CtRisk::all();
                 // Generación de la vista en base a la información de la colección.
-                $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
+                $pdf = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
+                $pdf->render();
+
+                $pdf->getDomPDF()->getCanvas()->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+                    if($pageNumber > 1){
+                        $text = "Página $pageNumber/$pageCount";
+                        $font = $fontMetrics->getFont('Helvetica', 'normal');
+                        $size = 10;
+                        $width = $fontMetrics->getTextWidth($text, $font, $size);
+                        $canvas->text((1070 - $width) / 2, 45, $text, $font, $size);
+                    }
+                });
                 // Cifrar el PDF
                 if ($user->client->config && $user->client->config->crypt_report) {
                     $passReport = decrypt($user->client->config->key_report);
                     $this->response['data']['key_report'] = $passReport;
-                    $document->getDomPDF()->getCanvas()->get_cpdf()->setEncryption($passReport);
+                    $pdf->getDomPDF()->getCanvas()->get_cpdf()->setEncryption($passReport);
                 }
                 // Nombre del documento
                 $filename = $inspection->category->ct_inspection_code . '_' . now()->format('Y-m-d_His') . '.pdf';
                 // Obtener el contenido PDF como una cadena
-                $pdfContent = $document->output();
+                $pdfContent = $pdf->output();
                 $paths = $this->getApplicationPaths();
                 $pathStorage = $paths->evidences->reports . '/' . $filename;
                 // Registro de reporte en el storage
@@ -161,18 +171,29 @@ class ReportService extends Service
                 $inspection->provider = $user->client;
                 $inspection->risk_catalog = CtRisk::all();
                 // Generación de la vista en base a la información de la colección.
-                $document = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
+                $pdf = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
+                $pdf->render();
+
+                $pdf->getDomPDF()->getCanvas()->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+                    if($pageNumber > 1){
+                        $text = "Página $pageNumber/$pageCount";
+                        $font = $fontMetrics->getFont('Helvetica', 'normal');
+                        $size = 10;
+                        $width = $fontMetrics->getTextWidth($text, $font, $size);
+                        $canvas->text((1070 - $width) / 2, 45, $text, $font, $size);
+                    }
+                });
                 // Cifrar el PDF
                 if ($user->client->config && $user->client->config->crypt_report) {
                     $passReport = decrypt($user->client->config->key_report);
                     $this->response['data']['key_report'] = $passReport;
-                    $document->getDomPDF()->getCanvas()->get_cpdf()->setEncryption($passReport);
+                    $pdf->getDomPDF()->getCanvas()->get_cpdf()->setEncryption($passReport);
                 }
                 // Nombre del documento
                 $filename = $inspection->category->ct_inspection_code . '_' . now()->format('Y-m-d_His') . '.pdf';
                 // Obtener el contenido PDF como una cadena
-                $pdfContent = $document->output();
-               return response($pdfContent, 200, [
+                $pdfContent = $pdf->output();
+                return response($pdfContent, 200, [
                     'Content-Type' => 'application/pdf',
                     'Content-Disposition' => 'inline; filename="' . $filename . '"',
                 ]);
