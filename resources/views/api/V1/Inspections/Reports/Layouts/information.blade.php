@@ -13,7 +13,7 @@
             </tr>
             <tr>
                 <td class="border">Fecha de inspección</td>
-                <td class="border">{{ $inspection->created_at }}</td>
+                <td class="border">{{ $inspection->inspection_date }}</td>
             </tr>
             <tr>
                 <td class="border">Ubidación del sitio</td>

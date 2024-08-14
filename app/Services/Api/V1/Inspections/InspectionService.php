@@ -58,6 +58,7 @@ class InspectionService extends Service
                     'status_id' => $status->status_id,
                     'project_id' => $project->project_id,
                     'location' => $request->location,
+                    'inspection_date' => $request->inspection_date,
                 ]);
                 // Create Register
                 $inspection = Inspection::create($request->all());

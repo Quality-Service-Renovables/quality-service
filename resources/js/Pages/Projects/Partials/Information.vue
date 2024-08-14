@@ -5,11 +5,14 @@
                 <v-card :loading="loading" :disabled="loading">
                     <v-card-text>
                         <p class="text-grey mb-2 text-h5 font-weight-bold">
-                            Información del proyecto
+                            Información de la inspección
                         </p>
-                        <p class="text-primary">Rellena la información relacionada a la inspección a realizar.</p>
+                        <p class="text-primary">Rellena la información relacionada a la inspección.</p>
                         <v-divider class="my-3"></v-divider>
                         <v-row>
+                            <v-col cols="12">
+                                <v-date-input label="Fecha de inspección" variant="outlined" prepend-icon="" v-model="inspection_form.inspection_date" hide-details required :rules="rules"></v-date-input>
+                            </v-col>
                             <v-col cols="12">
                                 <v-autocomplete v-model="inspection_form.ct_inspection_code" :items="inspections"
                                     item-title="ct_inspection" item-value="ct_inspection_code"
@@ -34,18 +37,18 @@
                                 <v-text-field v-model="inspection_form.location" label="Ubicación" variant="outlined"
                                     hide-details required :rules="rules"></v-text-field>
                             </v-col>
+                            <v-divider></v-divider>
                             <v-col cols="12">
-                                <p class="text-grey mb-1">Define el resumen de la inspección a
-                                    realizar (opcional)
+                                <p class="text-grey mb-1">Define el resumen de la inspección (opcional)
                                 </p>
                                 <QuillEditor v-model:content="inspection_form.resume" theme="snow" toolbar="essential"
                                     heigth="100%" contentType="html" />
                             </v-col>
+                            <v-divider></v-divider>
                             <v-col cols="12">
                                 <v-row v-if="inspection_form.fields && inspection_form.fields.length">
                                     <v-col cols="12">
-                                        <p class="text-primary">Define los datos del equipo a
-                                            inspeccionar.
+                                        <p class="text-primary">Define los datos del equipo.
                                         </p>
                                     </v-col>
                                     <v-col cols="12" lg="6" v-for="(field, index) in inspection_form.fields" v-show="field.active"
@@ -102,11 +105,14 @@ import { getInspection } from '@/Functions/api';
 import { QuillEditor } from '@vueup/vue-quill'
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import { VDateInput } from 'vuetify/labs/VDateInput'
+import moment from 'moment';
 
 export default {
     components: {
         QuillEditor,
-        PrimaryButton
+        PrimaryButton,
+        VDateInput
     },
     props: {
         inspection_uuid: String,
@@ -251,7 +257,8 @@ export default {
                         location: this.inspection_form.location,
                         equipment_fields_report: JSON.stringify(this.inspection_form.fields),
                         escala_condicion: this.inspection_form.escala_condicion,
-                        ct_risk_id: this.inspection_form.ct_risk_id
+                        ct_risk_id: this.inspection_form.ct_risk_id,
+                        inspection_date: moment(this.inspection_form.inspection_date).format('YYYY-MM-DD')
                     }
                     request = () => {
                         return axios.post('api/inspections', formData);
@@ -271,7 +278,8 @@ export default {
                         location: this.inspection_form.location,
                         equipment_fields_report: JSON.stringify(this.inspection_form.fields),
                         escala_condicion: this.inspection_form.escala_condicion,
-                        ct_risk_id: this.inspection_form.ct_risk_id
+                        ct_risk_id: this.inspection_form.ct_risk_id,
+                        inspection_date: moment(this.inspection_form.inspection_date).format('YYYY-MM-DD')
                     }
                 }
 

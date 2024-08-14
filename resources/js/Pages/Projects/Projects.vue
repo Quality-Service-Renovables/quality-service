@@ -76,18 +76,18 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                                                         hide-details required></v-text-field>
                                                                 </v-col>
                                                                 <v-col cols="12">
-                                                                    <p class="text-grey mb-2">Descripción del proyecto
+                                                                    <p class="text-grey mb-2">Introducción
                                                                     </p>
                                                                     <QuillEditor
                                                                         v-model:content="editedItem.description"
                                                                         theme="snow" toolbar="essential" heigth="100%"
                                                                         contentType="html" />
                                                                 </v-col>
-                                                                <v-col cols="12">
+                                                                <!--<v-col cols="12">
                                                                     <v-textarea v-model="editedItem.comments"
                                                                         label="Comentarios" variant="outlined"
                                                                         hide-details></v-textarea>
-                                                                </v-col>
+                                                                </v-col>-->
                                                                 <v-col cols="12">
                                                                     <v-select v-model="editedItem.client_uuid"
                                                                         :items="clients" item-title="client"
