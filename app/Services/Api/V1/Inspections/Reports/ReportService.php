@@ -44,7 +44,6 @@ class ReportService extends Service
                 'risk',
                 'diagnosis',
             ])->where('inspection_uuid', $uuid)->first();
-//            dd($inspection->category->sections->first()->subSections->first()->fields->first()->result->evidences);
             // Valida si la inspección tiene información.
             if ($inspection && $this->isValidInspection($inspection)) {
                 $inspection->fields = $inspection->equipment_fields_report
@@ -54,7 +53,17 @@ class ReportService extends Service
                 $inspection->risk_catalog = CtRisk::all();
                 // Generación de la vista en base a la información de la colección.
                 $pdf = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
-                $pdf->getDomPDF()->set_option("enable_php", true);
+                $pdf->render();
+
+                $pdf->getDomPDF()->getCanvas()->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+                    if($pageNumber > 1){
+                        $text = "Página $pageNumber/$pageCount";
+                        $font = $fontMetrics->getFont('Helvetica', 'normal');
+                        $size = 10;
+                        $width = $fontMetrics->getTextWidth($text, $font, $size);
+                        $canvas->text((1070 - $width) / 2, 45, $text, $font, $size);
+                    }
+                });
                 // Cifrar el PDF
                 if ($user->client->config && $user->client->config->crypt_report) {
                     $passReport = decrypt($user->client->config->key_report);
@@ -174,7 +183,6 @@ class ReportService extends Service
                         $canvas->text((1070 - $width) / 2, 45, $text, $font, $size);
                     }
                 });
-
                 // Cifrar el PDF
                 if ($user->client->config && $user->client->config->crypt_report) {
                     $passReport = decrypt($user->client->config->key_report);
