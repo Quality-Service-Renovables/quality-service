@@ -10,7 +10,7 @@
                     <v-divider></v-divider>
                     <v-container>
                         <v-row>
-                            <v-col cols="12" class="padding-0">
+                            <v-col cols="12" class="padding-0" v-if="sectionsForm">
                                 <v-expansion-panels multiple v-model="expandedPanel">
                                     <v-expansion-panel v-for="(section, indexSection) in sectionsForm"
                                         :key="indexSection" class="my-5 border" :expanded="true">
@@ -429,11 +429,11 @@ export default {
             field.content.inspection_form_comments = comment;
         },
     },
-    mounted() {
+    created(){
         this.getForm();
         this.getRisks();
         this.getFailures();
-    }
+    },
 }
 </script>
 

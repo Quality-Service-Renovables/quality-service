@@ -8,11 +8,12 @@
     <meta name="theme-color" content="#c40000" />
     <meta NAME="keywords" CONTENT="quality, service, renovables, eólico, energía" />
     <meta NAME="description" CONTENT="Servicios profesionales técnicos industriales, especializados en mecatrónica dentro de sector eólico y las nuevas fuentes de energías renovables" />
-    <style>
+    <link rel="stylesheet" href="css/style.css">
+   <style>
         body {
             text-align: center;
             justify-content: center;
-            font-family: Arial, sans-serif; /* Utilizamos una fuente legible */
+            font-family: 'Arimo', sans-serif;
             margin: 20px; /* Margen exterior */
         }
         table {
@@ -251,7 +252,7 @@
         }
         .p-0{
             padding: 0;
-        }
+        } 
     </style>
 </head>
 
