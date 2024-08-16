@@ -180,7 +180,7 @@ class ReportService extends Service
                         $font = $fontMetrics->getFont('Helvetica', 'normal');
                         $size = 10;
                         $width = $fontMetrics->getTextWidth($text, $font, $size);
-                        $canvas->text((1070 - $width) / 2, 45, $text, $font, $size);
+                        $canvas->text((1070 - $width) / 2, 35, $text, $font, $size);
                     }
                 });
                 // Cifrar el PDF

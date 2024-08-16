@@ -1,0 +1,8 @@
+{
+    "arimo": {
+        "normal": "\/var\/www\/html\/storage\/fonts\/arimo_normal_f16a5456b7194616c8560f42552a82d7",
+        "bold": "\/var\/www\/html\/storage\/fonts\/arimo_bold_c63d6d818b026f8280e541b9f3e6f266",
+        "italic": "\/var\/www\/html\/storage\/fonts\/arimo_italic_0c98c7d23a0e45e5a5d4b590cfda9a59",
+        "bold_italic": "arimo_bold_italic_1cce031c72f539e1fa35f3c186a3cbda"
+    }
+}

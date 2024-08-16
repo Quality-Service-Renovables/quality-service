@@ -17,7 +17,7 @@
                                 <v-autocomplete v-model="inspection_form.ct_inspection_code" :items="inspections"
                                     item-title="ct_inspection" item-value="ct_inspection_code"
                                     label="Seleccionar inspección" variant="outlined" hide-details
-                                    required :rules="rules"></v-autocomplete>
+                                    required :rules="rules" v-if="inspections.length"></v-autocomplete>
                             </v-col>
                             <v-col cols="12" lg="6">
                                 <v-autocomplete v-model="inspection_form.ct_equipment_uuid"
@@ -25,7 +25,7 @@
                                     item-value="ct_equipment_uuid"
                                     label="Seleccionar categoría de equipo a inspeccionar" variant="outlined"
                                     hide-details required
-                                    @update:modelValue="setEquipmentFields(inspection_form.ct_equipment_uuid)"></v-autocomplete>
+                                    @update:modelValue="setEquipmentFields(inspection_form.ct_equipment_uuid, 'change')" v-if="inspectionsEquipmentsCategories.length"></v-autocomplete>
                             </v-col>
                             <v-col cols="12" lg="6">
                                 <v-autocomplete v-model="inspection_form.equipments_uuid" :items="equipmentsByCategory"
@@ -80,7 +80,7 @@
                                 <v-autocomplete v-model="inspection_form.ct_risk_id" :items="ct_risks"
                                     item-title="ct_risk" item-value="ct_risk_id" variant="outlined" hide-details
                                     class="w-50 rounded" density="compact"
-                                    :style="{ 'background-color': getBgColor(inspection_form.ct_risk_id) }">
+                                    :style="{ 'background-color': getBgColor(inspection_form.ct_risk_id) }" v-if="ct_risks.length">
                                     <template v-slot:item="{ props, item }">
                                         <v-list-item v-bind="props" :title="item.raw.ct_risk"
                                             :style="{ 'background-color': item.raw.ct_color }"
@@ -193,11 +193,7 @@ export default {
                     this.handleErrors(error);
                 });
         },
-        setEquipmentFields(ct_equipment_uuid) {
-            console.log("Entro a setEquipmentFields");
-            console.log("ct_equipment_uuid: " + ct_equipment_uuid);
-
-
+        setEquipmentFields(ct_equipment_uuid, event = null) {
             if (ct_equipment_uuid) {
                 this.inspection_form.fields = null;
                 //this.inspection_form.equipments_uuid = [];
@@ -214,6 +210,9 @@ export default {
                     }
                 });
                 this.equipmentsByCategory = equipments.equipments.length > 0 ? equipments.equipments : [];
+            }
+            if (event === "change") {
+                this.inspection_form.equipments_uuid = [];
             }
         },
         isRequiredLabel(required) {

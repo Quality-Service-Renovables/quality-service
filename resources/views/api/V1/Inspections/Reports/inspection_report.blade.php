@@ -8,11 +8,19 @@
     <meta name="theme-color" content="#c40000" />
     <meta NAME="keywords" CONTENT="quality, service, renovables, eólico, energía" />
     <meta NAME="description" CONTENT="Servicios profesionales técnicos industriales, especializados en mecatrónica dentro de sector eólico y las nuevas fuentes de energías renovables" />
-    <style>
+    <link rel="stylesheet" href="css/style.css">
+   <style>
+        /** Define the margins of your page **/
+        @page {
+            /* arriba - derecha - abajo - izquierda */
+            /*margin: 100px 25px 0px 25px;*/
+            margin: 100px 25px 0px 25px;
+        }
+
         body {
             text-align: center;
             justify-content: center;
-            font-family: Arial, sans-serif; /* Utilizamos una fuente legible */
+            font-family: 'Arimo', sans-serif;
             margin: 20px; /* Margen exterior */
         }
         table {
@@ -51,12 +59,7 @@
             border: 1px solid black;
         }
 
-        /** Define the margins of your page **/
-        @page {
-            /* arriba - derecha - abajo - izquierda */
-            /*margin: 100px 25px 0px 25px;*/
-            margin: 100px 25px 0px 25px;
-        }
+       
 
         .page-break {
             page-break-after: always;
@@ -65,19 +68,18 @@
         header {
             position: fixed;
             top: -60px;
-            left: 0;
-            right: 0;
+            left: 20px;
+            right: 20px;
             margin-bottom: 10px;
             text-align: center;
-            line-height: 35px;
         }
 
         footer {
             position: fixed;
-            bottom: 60px;
+            bottom: 25px;
             left: 25px;
             right: 25px;
-            height: 30px;
+            height: 60px;
             font-size: 10px;
             /*text-align: center;*/
             line-height: 15px;
@@ -173,7 +175,7 @@
         }
        
         .space{
-            margin-bottom: 75px;
+            margin-bottom: 60px;
         }
 
         .uppercase{
@@ -234,7 +236,7 @@
 
         .section{
             font-size: 12px;
-            margin-bottom: 70px;
+            margin-bottom: 60px;
         }
 
         .section p, .section a{
@@ -251,6 +253,9 @@
         }
         .p-0{
             padding: 0;
+        } 
+        ul{
+            margin: 0px;
         }
     </style>
 </head>
