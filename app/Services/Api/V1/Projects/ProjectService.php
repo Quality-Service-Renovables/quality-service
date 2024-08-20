@@ -29,12 +29,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Throwable;
+use App\Services\Api\V1\Inspections\Reports\ReportService;
 
 class ProjectService extends Service implements ServiceInterface
 {
     use Audits;
 
     public string $nameService = 'project_service';
+    protected reportService $reportService;
 
     /**
      * Create a new equipment
@@ -193,6 +195,12 @@ class ProjectService extends Service implements ServiceInterface
                     );
                     // Confirmación de transacción
                     DB::commit();
+
+                    if ($request->status_code === 'proyecto_validado' && $project->inspections->isNotEmpty()) {
+                        $this->reportService = new ReportService();
+                        $this->reportService->getDocument($project->inspections->first()->inspection_uuid);
+                        $this->response['message'] .= ", PDF generado y guardado."; 
+                    }
                 }
             } else {
                 // En caso de que el estado no sea válido se retorna el error
