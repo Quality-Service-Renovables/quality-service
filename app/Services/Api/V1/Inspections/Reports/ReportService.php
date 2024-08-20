@@ -44,6 +44,15 @@ class ReportService extends Service
                 'risk',
                 'diagnosis',
             ])->where('inspection_uuid', $uuid)->first();
+
+            // Verifica si ya se generó el PDF, si ya se generó se regresa el path del PDF
+            if($inspection->path_final_pdf){
+                $this->statusCode = 202;
+                $this->response['message'] = trans('api.document_generated');
+                $this->response['data']['path_storage'] = $inspection->path_final_pdf;
+                return $this->response;
+            }
+            
             // Valida si la inspección tiene información.
             if ($inspection && $this->isValidInspection($inspection)) {
                 $inspection->fields = $inspection->equipment_fields_report
@@ -82,6 +91,12 @@ class ReportService extends Service
                 $this->statusCode = 202;
                 $this->response['message'] = trans('api.document_generated');
                 $this->response['data']['path_storage'] = $pathStorage;
+
+                // Guardamos el path del PDF generado en la inspección
+                $isnpectionAux = Inspection::where('inspection_uuid', $uuid)->first();
+                $isnpectionAux->path_final_pdf = $pathStorage;
+                $isnpectionAux->save();
+
                 // Cifrar el PDF
                 if ($user->client->config && $user->client->config->send_email) {
                     $mail = [

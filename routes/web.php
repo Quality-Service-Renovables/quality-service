@@ -98,7 +98,6 @@ Route::middleware('auth')->group(function () {
     })->where('any', '.*');
 
     Route::get('/inspection/stream-document/{uuid}', [ReportController::class, 'streamDocument'])->name('stream-get');
-
 });
 
 require __DIR__ . '/auth.php';

@@ -986,15 +986,19 @@ export default {
             }
         },
         generatePdf(item) {
-            toast.warning('Solicitando documento, espere...');
-            axios.get('inspection/get-document/' + item.inspections[0].inspection_uuid)
-                .then(response => {
-                    window.open(response.data.data.path_storage, '_blank');
-                })
-                .catch(error => {
-                    toast.error('No fue posible recuperar el documento');
-                    console.log(error);
-                });
+            if (item.status.status_code === 'proyecto_validado') {
+                toast.warning('Solicitando documento, espere...');
+                axios.get('inspection/get-document/' + item.inspections[0].inspection_uuid)
+                    .then(response => {
+                        window.open(response.data.data.path_storage, '_blank');
+                    })
+                    .catch(error => {
+                        toast.error('No fue posible recuperar el documento');
+                        console.log(error);
+                    });
+            } else {
+                window.open('inspection/stream-document/' + item.inspections[0].inspection_uuid, '_blank');
+            }
         },
         checkPermissionToPdf(item) {
             if (this.$page.props.auth.role.name === 'admin' || this.$page.props.auth.role.name === 'tecnico') {
