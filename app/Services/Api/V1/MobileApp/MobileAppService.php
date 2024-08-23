@@ -52,6 +52,19 @@ class MobileAppService extends Service
                     ])
                     ->select('projects.*')
                     ->get();
+                if ($status->projects->isNotEmpty()) {
+                    $status->projects->each(function ($project) {
+                        $inspection = DB::table('inspections')
+                            ->join(
+                                'ct_inspections',
+                                'ct_inspections.ct_inspection_id',
+                                '=', 'inspections.ct_inspection_id'
+                            )->where('project_id', $project->project_id)
+                            ->select('ct_inspections.ct_inspection_uuid')
+                            ->first();
+                        $project->ct_inspection_uuid = $inspection?->ct_inspection_uuid;
+                    });
+                }
             });
             // Define parámetros de respuesta
             $this->statusCode = 200;
