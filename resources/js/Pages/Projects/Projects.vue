@@ -132,7 +132,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
-                                        <div class="d-flex">
+                                        <div class="d-flex" v-if="!inspectionIsInProcess(item)">
                                             <ActionButton text="Editar" icon="mdi-pencil"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_creado', 'proyecto_asignado', 'proyecto_iniciado'])"
                                                 @click="editItem(item)" size="small" />
@@ -156,7 +156,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </div>
                                     </template>
                                     <template v-slot:item.inspection_actions="{ item }">
-                                        <div class="d-flex">
+                                        <div class="d-flex" v-if="!inspectionIsInProcess(item)">
                                             <ActionButton text="Asignar técnico" icon="mdi-account-plus-outline"
                                                 v-if="hasPermissionTo('projects.update') && checkStatus(item, ['proyecto_creado'])"
                                                 size="small" @click="asignTechniciensDialog('create', item)"
@@ -1012,7 +1012,13 @@ export default {
         },
         setInspectionUuid(inspectionUuid) {
             this.inspectionUuid = inspectionUuid;
-        }
+        },
+        inspectionIsInProcess(item) {
+            if(item.inspections.length){
+                return item.inspections[0].inspection_in_process;
+            }
+            return false;
+        },
     }
 }
 </script>
