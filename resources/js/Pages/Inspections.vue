@@ -117,7 +117,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                                         </v-toolbar>
                                     </template>
                                     <template v-slot:item.actions="{ item }">
-                                        <div class="d-flex">
+                                        <div class="d-flex" v-if="!item.inspection_in_process">
                                             <v-icon class="me-2" size="small" @click="editItem(item)"
                                                 v-if="hasPermissionTo('inspections.update')">
                                                 mdi-pencil

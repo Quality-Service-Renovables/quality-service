@@ -6,12 +6,13 @@
 
 namespace App\Services\Api\V1\Inspections\Categories;
 
-use App\Models\Inspections\Categories\CtInspection;
+use Throwable;
 use App\Services\Service;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Throwable;
+use App\Models\Inspections\Inspection;
+use App\Models\Inspections\Categories\CtInspection;
 
 class CtInspectionService extends Service
 {
@@ -70,7 +71,18 @@ class CtInspectionService extends Service
     {
         try {
             $this->response['message'] = trans('api.read');
-            $this->response['data'] = CtInspection::all();
+            $ctInspections = CtInspection::all();
+
+            foreach ($ctInspections as $value) {
+                $isThereAnInspectionInProcess = Inspection::where('ct_inspection_id', $value->ct_inspection_id)
+                    ->where('inspection_in_process', 1)
+                    ->where('deleted_at', null)
+                    ->exists();
+                
+                $value->inspection_in_process = $isThereAnInspectionInProcess;
+            }
+
+            $this->response['data'] = $ctInspections;
         } catch (Throwable $exceptions) {
             // Manejo del error
             $this->setExceptions($exceptions);
