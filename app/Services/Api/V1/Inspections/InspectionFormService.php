@@ -149,7 +149,7 @@ class InspectionFormService extends Service
                 if (count($sections)) {
                     $fields = CtInspectionForm::whereIn(
                         'ct_inspection_section_id', $sections->pluck('ct_inspection_section_id'))
-                        ->with("result.risk")->get();
+                        ->with(["result.risk", "result.evidences"])->get();
                     if ($fields) {
                         $form = $this->buildForm($sections, $fields);
                     }
