@@ -62,6 +62,8 @@ class MobileAppService extends Service
                             )->where('project_id', $project->project_id)
                             ->select('ct_inspections.ct_inspection_uuid')
                             ->first();
+                        // Requeridos para la app
+                        $project->inspection_uuid = $inspection?->inspection_uuid;
                         $project->ct_inspection_uuid = $inspection?->ct_inspection_uuid;
                     });
                 }
