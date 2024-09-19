@@ -60,8 +60,8 @@ class MobileAppService extends Service
                                 'ct_inspections.ct_inspection_id',
                                 '=', 'inspections.ct_inspection_id'
                             )->where('project_id', $project->project_id)
-                            ->select('inspection_uuid, ct_inspections.ct_inspection_uuid')
                             ->first();
+                        dd($inspection);
                         // Requeridos para la app
                         $project->inspection_uuid = $inspection?->inspection_uuid;
                         $project->ct_inspection_uuid = $inspection?->ct_inspection_uuid;
