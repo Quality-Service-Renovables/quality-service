@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Models\Inspections\Evidence;
 use App\Models\Inspections\Inspection;
 use App\Models\Inspections\InspectionForm;
