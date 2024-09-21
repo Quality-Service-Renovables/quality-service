@@ -290,7 +290,7 @@ class InspectionFormService extends Service
             Log::info('Request recibido y procesado correctamente.');
 
             // Control de transacciones
-            /*DB::beginTransaction();
+            DB::beginTransaction();
             $inspection = Inspection::where('inspection_uuid', $request->inspection_uuid)->first();
             $categoryForm = CtInspectionForm::all();
             $inspectionForms = [];
@@ -316,7 +316,7 @@ class InspectionFormService extends Service
 
                 $inspectionForms[] = $inspectionForm;
 
-                if ($formInspection['evidences']) {
+                /*if ($formInspection['evidences']) {
                     foreach ($formInspection['evidences'] as $key => $evidence) {
                         $evidenceRequest = new Request();
                         $evidenceRequest->merge([
@@ -331,7 +331,7 @@ class InspectionFormService extends Service
                         $serviceEvidence = new EvidenceService();
                         $serviceEvidence->create($evidenceRequest);
                     }
-                }
+                }*/
             }
 
             $this->statusCode = 201;
@@ -345,9 +345,9 @@ class InspectionFormService extends Service
                 trans('api.message_log'),
             );
             // Finaliza Transacción
-            DB::commit();*/
-            $this->response['message'] = trans('api.created');
-            $this->response['data'] = 'Información recibida y procesada correctamente.';
+            DB::commit();
+            //$this->response['message'] = trans('api.created');
+            //$this->response['data'] = 'Información recibida y procesada correctamente.';
         } catch (Throwable $exceptions) {
             DB::rollBack();
             // Manejo del error
