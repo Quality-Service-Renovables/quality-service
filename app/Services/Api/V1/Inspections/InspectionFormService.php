@@ -16,6 +16,7 @@ use App\Models\Inspections\Evidence;
 use App\Models\Inspections\Inspection;
 use App\Models\Inspections\InspectionForm;
 use App\Models\Inspections\Categories\CtInspection;
+use App\Services\Api\V1\Inspections\EvidenceService;
 use App\Models\Inspections\Categories\CtInspectionForm;
 use App\Models\Inspections\Categories\CtInspectionSection;
 
@@ -258,7 +259,11 @@ class InspectionFormService extends Service
             } else {
                 // Tratamiento exclusivo para secciones principales o raíces
                 $form['sections'][$section->ct_inspection_section_code]['section_details'] = $section;
-                $form['sections'][$section->ct_inspection_section_code]['fields'] = $fields->where('ct_inspection_section_id', $section->ct_inspection_section_id);
+                //$form['sections'][$section->ct_inspection_section_code]['fields'] = $fields->where('ct_inspection_section_id', $section->ct_inspection_section_id);
+                $form['sections'][$section->ct_inspection_section_code]['fields'] = $fields->where('ct_inspection_section_id', $section->ct_inspection_section_id)
+                    ->mapWithKeys(function ($item) {
+                        return [$item['ct_inspection_form_code'] => $item];
+                    })->all(); 
                 $section['fields'] = $fields->collect()->mapWithKeys(function ($item) {
                     return [$item['ct_inspection_form_code'] => $item];
                 })->where('ct_inspection_section_id', $section->ct_inspection_section_id)->all();
@@ -278,8 +283,14 @@ class InspectionFormService extends Service
     public function setFormInspection(Request $request): array
     {
         try {
+            // Guarda el contenido completo del request en el archivo de log
+            Log::info('Contenido del Request:', $request->all());
+
+            // Si deseas registrar un mensaje adicional con el log
+            Log::info('Request recibido y procesado correctamente.');
+
             // Control de transacciones
-            DB::beginTransaction();
+            /*DB::beginTransaction();
             $inspection = Inspection::where('inspection_uuid', $request->inspection_uuid)->first();
             $categoryForm = CtInspectionForm::all();
             $inspectionForms = [];
@@ -288,18 +299,12 @@ class InspectionFormService extends Service
                     'ct_inspection_form_uuid', '=', $formInspection['ct_inspection_form_uuid'])
                     ->first()->ct_inspection_form_id;
 
-                /*$formInspection['inspection_form_uuid'] = Str::uuid()->toString();
-                $formInspection['inspection_id'] = $inspection->inspection_id;
-                $formInspection['ct_inspection_form_id'] = $categoryFormId;
-
-                $inspectionForms[] = InspectionForm::create($formInspection);*/
-
                 $inspectionFormUuid = InspectionForm::where([
                     'inspection_id' => $inspection->inspection_id,
                     'ct_inspection_form_id' => $categoryFormId,
                 ])->first()->inspection_form_uuid ?? Str::uuid()->toString();
 
-                $inspectionForms[] = InspectionForm::updateOrCreate([
+                $inspectionForm = InspectionForm::updateOrCreate([
                     'inspection_id' => $inspection->inspection_id,
                     'ct_inspection_form_id' => $categoryFormId,
                 ], [
@@ -308,6 +313,25 @@ class InspectionFormService extends Service
                     'inspection_form_value' => $formInspection['inspection_form_value'],
                     'ct_risk_id' => $formInspection['ct_risk_id'],
                 ]);
+
+                $inspectionForms[] = $inspectionForm;
+
+                if ($formInspection['evidences']) {
+                    foreach ($formInspection['evidences'] as $key => $evidence) {
+                        $evidenceRequest = new Request();
+                        $evidenceRequest->merge([
+                            'inspection_uuid' => $request->inspection_uuid,
+                            'inspection_form_id' => $inspectionForm->inspection_form_id,
+                            'evidence_store' => $evidence['evidence_store'],
+                            'title' => 'Evidencia ' . ($key + 1),
+                            'description' => '',
+                            'position' => $key+1,
+                        ]);
+
+                        $serviceEvidence = new EvidenceService();
+                        $serviceEvidence->create($evidenceRequest);
+                    }
+                }
             }
 
             $this->statusCode = 201;
@@ -321,7 +345,9 @@ class InspectionFormService extends Service
                 trans('api.message_log'),
             );
             // Finaliza Transacción
-            DB::commit();
+            DB::commit();*/
+            $this->response['message'] = trans('api.created');
+            $this->response['data'] = 'Información recibida y procesada correctamente.';
         } catch (Throwable $exceptions) {
             DB::rollBack();
             // Manejo del error
