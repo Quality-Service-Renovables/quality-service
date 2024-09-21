@@ -314,8 +314,8 @@ class InspectionFormService extends Service
                 ], [
                     'inspection_form_uuid' => $inspectionFormUuid,
                     'inspection_form_comments' => $formInspection['inspection_form_comments'],
-                    'inspection_form_value' => $formInspection['inspection_form_value'],
-                    'ct_risk_id' => $formInspection['ct_risk_id'],
+                    'inspection_form_value' => $formInspection['inspection_form_value'] ?? '',
+                    'ct_risk_id' => $formInspection['ct_risk_id'] ?? null,
                 ]);
 
                 $inspectionForms[] = $inspectionForm;
@@ -350,8 +350,9 @@ class InspectionFormService extends Service
             );
             // Finaliza Transacción
             DB::commit();
-            //$this->response['message'] = trans('api.created');
-            //$this->response['data'] = 'Información recibida y procesada correctamente.';
+            /*$this->statusCode = 201;
+            $this->response['message'] = trans('api.created');
+            $this->response['data'] = 'Información recibida y procesada correctamente.';*/
         } catch (Throwable $exceptions) {
             DB::rollBack();
             // Manejo del error
