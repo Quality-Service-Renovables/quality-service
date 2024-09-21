@@ -250,6 +250,7 @@ class InspectionFormService extends Service
                 // Set section details
                 $form['sections'][$sectionCode]['section_details'] = $currentSection;
                 // Set fields
+                //$form['sections'][$sectionCode]['fields'] = $fields->where('ct_inspection_section_id', $section->ct_inspection_relation_id);
                 $form['sections'][$sectionCode]['fields'] = $fields->where('ct_inspection_section_id', $section->ct_inspection_relation_id)->mapWithKeys(function ($item) {
                     return [$item['ct_inspection_form_code'] => $item];
                 })->all(); 
