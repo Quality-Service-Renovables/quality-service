@@ -15,8 +15,8 @@ class EvidenceRequest extends CustomRequest
     public function rules(): array
     {
         return [
-            'evidence_store' => 'required|file|mimes:jpeg,png,jpg,pdf,doc,docx,ppt,pptx|max:2048',
-            'evidence_store_secondary' => 'nullable|file|mimes:jpeg,png,jpg,pdf,doc,docx,ppt,pptx|max:2048',
+            'evidence_store' => 'required|file|mimes:jpeg,png,jpg',
+            'evidence_store_secondary' => 'nullable|file|mimes:jpeg,png,jpg',
             'title' => 'nullable|string',
             'description' => 'nullable|string',
             'inspection_uuid' => 'required|uuid|exists:inspections,inspection_uuid',
