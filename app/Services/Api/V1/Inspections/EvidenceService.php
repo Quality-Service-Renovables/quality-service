@@ -43,10 +43,12 @@ class EvidenceService extends Service
                     'inspection_evidence_secondary'
                 );
             }
-            // Primero eliminamos todas las evidencias asociadas al mismo campo e inspección
-            Evidence::where('inspection_form_id', $request->inspection_form_id)
-                ->where('inspection_id', $inspection->inspection_id)
-                ->delete();
+            // En caso de que la solicitud provenga de la aplicación móvil, se eliminan todas las evidencias asociadas al mismo campo e inspección
+            if ($request->has('from') && $request->from === 'app') {
+                Evidence::where('inspection_form_id', $request->inspection_form_id)
+                    ->where('inspection_id', $inspection->inspection_id)
+                    ->delete();
+            }
 
             // Create Register
             $inspectionEquipment = Evidence::create($request->all());
