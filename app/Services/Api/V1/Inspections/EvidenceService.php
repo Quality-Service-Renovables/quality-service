@@ -48,7 +48,7 @@ class EvidenceService extends Service
                 Evidence::where('inspection_form_id', $request->inspection_form_id)
                     ->where('inspection_id', $inspection->inspection_id)
                     ->whereNotNull("sync_app_uuid")
-                    ->where("sync_app_uuid", $request->sync_app_uuid)
+                    ->whereNot("sync_app_uuid", $request->sync_app_uuid)
                     ->delete();
             }
 
