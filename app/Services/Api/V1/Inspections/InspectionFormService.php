@@ -316,26 +316,9 @@ class InspectionFormService extends Service
                     'inspection_form_comments' => $formInspection['inspection_form_comments'],
                     'inspection_form_value' => $formInspection['inspection_form_value'] ?? '',
                     'ct_risk_id' => $formInspection['ct_risk_id'] ?? null,
-                ]);
+                ])-with("field")->first();
 
                 $inspectionForms[] = $inspectionForm;
-
-                /*if ($formInspection['evidences']) {
-                    foreach ($formInspection['evidences'] as $key => $evidence) {
-                        $evidenceRequest = new Request();
-                        $evidenceRequest->merge([
-                            'inspection_uuid' => $request->inspection_uuid,
-                            'inspection_form_id' => $inspectionForm->inspection_form_id,
-                            'evidence_store' => $evidence['evidence_store'],
-                            'title' => 'Evidencia ' . ($key + 1),
-                            'description' => '',
-                            'position' => $key+1,
-                        ]);
-
-                        $serviceEvidence = new EvidenceService();
-                        $serviceEvidence->create($evidenceRequest);
-                    }
-                }*/
             }
 
             $this->statusCode = 201;
@@ -350,9 +333,6 @@ class InspectionFormService extends Service
             );
             // Finaliza Transacción
             DB::commit();
-            /*$this->statusCode = 201;
-            $this->response['message'] = trans('api.created');
-            $this->response['data'] = 'Información recibida y procesada correctamente.';*/
         } catch (Throwable $exceptions) {
             DB::rollBack();
             // Manejo del error
