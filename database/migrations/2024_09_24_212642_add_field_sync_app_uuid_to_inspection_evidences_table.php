@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('inspection_forms', function (Blueprint $table) {
-            $table->uuid('sync_app_uuid')->nullable()->after('ct_risk_id');
+        Schema::table('inspection_evidences', function (Blueprint $table) {
+            $table->uuid('sync_app_uuid')->nullable()->after('position');
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('inspection_forms', function (Blueprint $table) {
+        Schema::table('inspection_evidences', function (Blueprint $table) {
             $table->dropColumn('sync_app_uuid');
         });
     }
