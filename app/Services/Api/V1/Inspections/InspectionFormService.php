@@ -316,7 +316,9 @@ class InspectionFormService extends Service
                     'inspection_form_comments' => $formInspection['inspection_form_comments'],
                     'inspection_form_value' => $formInspection['inspection_form_value'] ?? '',
                     'ct_risk_id' => $formInspection['ct_risk_id'] ?? null,
-                ])-with("field")->first();
+                ]);
+
+                $inspectionForm->load('field');
 
                 $inspectionForms[] = $inspectionForm;
             }
