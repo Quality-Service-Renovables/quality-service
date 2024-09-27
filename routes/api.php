@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\V1\AuthGuards\RolePermissionController;
 use App\Http\Controllers\Api\V1\Trademarks\TrademarkModelController;
 use App\Http\Controllers\Api\V1\Inspections\Reports\ReportController;
 use App\Http\Controllers\Api\V1\Inspections\Resources\ResourceController;
+use App\Http\Controllers\Api\V1\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -119,4 +120,5 @@ Route::group(['middleware' => ['auth:sanctum']], static function () {
     Route::resource('auth-guard/role-permissions', RolePermissionController::class);
 
     Route::resource('risks', RiskController::class);
+    Route::get('profile', [ProfileController::class, 'index']);
 });
