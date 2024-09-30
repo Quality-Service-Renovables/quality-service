@@ -24,7 +24,7 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);*/
-    return redirect('index');
+    return redirect('login');
 });
 
 Route::get('/home', function () {
