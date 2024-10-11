@@ -96,8 +96,8 @@ class EvidenceController extends Controller
         $request->merge(['inspection_evidence_uuid' => $uuid]);
         $validated = Validator::make($request->all(), [
             'inspection_evidence_uuid' => 'required|uuid|exists:inspection_evidences,inspection_evidence_uuid',
-            'evidence_store' => 'nullable|file|mimes:jpeg,png,jpg,pdf,doc,docx,ppt,pptx|max:2048',
-            'evidence_store_secondary' => 'nullable|file|mimes:jpeg,png,jpg,pdf,doc,docx,ppt,pptx|max:2048',
+            'evidence_store' => 'nullable|file|mimes:jpeg,png,jpg,pdf,doc,docx,ppt,pptx',
+            'evidence_store_secondary' => 'nullable|file|mimes:jpeg,png,jpg,pdf,doc,docx,ppt,pptx',
             'title' => 'nullable|string',
             'description' => 'nullable|string',
             'inspection_uuid' => [

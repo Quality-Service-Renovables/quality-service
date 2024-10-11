@@ -24,9 +24,9 @@ class EquipmentRequest extends CustomRequest
                     ->whereNull('deleted_at'),
             ],
             'serial_number' => 'nullable|string',
-            'equipment_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'equipment_diagram' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'manual' => 'nullable|file|mimes:pdf|max:2048',
+            'equipment_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:3052',
+            'equipment_diagram' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:3052',
+            'manual' => 'nullable|file|mimes:pdf|max:3052',
             'ct_equipment_code' => [
                 'required',
                 'string',
