@@ -74,7 +74,7 @@ class UserController extends Controller
         $validated = Validator::make($request->all(), [
             'uuid' => 'required|uuid|exists:users,uuid',
             'name' => 'required|string',
-            //'image_profile' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            //'image_profile' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:3052',
             'email' => [
                 'required',
                 'email',
@@ -109,7 +109,7 @@ class UserController extends Controller
         $request->merge(['uuid' => $uuid]);
         $validated = Validator::make($request->all(), [
             'uuid' => 'required|uuid|exists:users,uuid',
-            'image_profile' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_profile' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:3052',
         ]);
 
         if ($validated->fails()) {

@@ -99,7 +99,7 @@ class ClientController extends Controller
                     ->whereNull('deleted_at'),
             ],
             'logo' => 'nullable|string',
-            'logo_store' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo_store' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:3052',
             'legal_name' => 'nullable|string',
             'address' => 'nullable|string',
             'zipcode' => 'nullable|string',
