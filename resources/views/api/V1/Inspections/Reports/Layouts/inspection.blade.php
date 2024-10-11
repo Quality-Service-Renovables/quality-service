@@ -82,7 +82,7 @@
                                     <tr>
                                         <td class="border">{{ $field->ct_inspection_form }}</td>
                                         <td class="border text-center"
-                                            style="background-color: <?= $field->result ? $field->result->risk->ct_color : '' ?>">
+                                            style="background-color: <?= $field->result->risk->ct_color ?? '' ?>">
                                             {!! $field->result->inspection_form_value ?? '' !!}</td>
                                         <td class="border">
                                             @isset($field->result->inspection_form_comments)
