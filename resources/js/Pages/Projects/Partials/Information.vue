@@ -11,7 +11,9 @@
                         <v-divider class="my-3"></v-divider>
                         <v-row>
                             <v-col cols="12">
-                                <v-date-input label="Fecha de inspección" variant="outlined" prepend-icon="" v-model="inspection_form.inspection_date" hide-details required :rules="rules"></v-date-input>
+                                <!--<v-date-input label="Fecha de inspección" variant="outlined" prepend-icon="" v-model="inspection_form.inspection_date" hide-details required :rules="rules"></v-date-input>-->
+                                <v-text-field v-model="inspection_form.inspection_date" label="Fecha de inspección" variant="outlined"
+                                hide-details required :rules="rules" type="date"></v-text-field>
                             </v-col>
                             <v-col cols="12">
                                 <v-autocomplete v-model="inspection_form.ct_inspection_code" :items="inspections"
