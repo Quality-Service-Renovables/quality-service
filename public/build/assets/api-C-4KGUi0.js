@@ -1,0 +1,1 @@
+import{a2 as n}from"./app-CHOVJK0B.js";const t=n.create({baseURL:window.location.origin+"/api"}),o=e=>t.get(`/inspections/${e}`),s=e=>t.get("/inspection/forms/get-form-evidences/"+e);export{s as a,o as g};
