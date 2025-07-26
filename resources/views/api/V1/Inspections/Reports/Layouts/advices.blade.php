@@ -3,7 +3,7 @@
         AVISO A TERCEROS
     </h3>
     <p class="justify font-12">
-        Este informe fue preparado por Quality Service Renovables S. de R.L. de C.V. y se basa en información que no
+        Este informe fue preparado por QSR Solutions S. de R.L. de C.V. y se basa en información que no
         está
         bajo el control de QSR. QSR ha asumido que la información proporcionada por otros, tanto verbal como escrita, es
         completa

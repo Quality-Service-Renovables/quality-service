@@ -22,7 +22,7 @@ class UsersSeeder extends Seeder
     {
         foreach ($this->getUsers() as $user) {
             User::updateOrCreate(
-                ['email' => $user['email']], 
+                ['email' => $user['email']],
                 [
                     'uuid' => $user['uuid'],
                     'name' => $user['name'],
@@ -44,7 +44,7 @@ class UsersSeeder extends Seeder
         return [
             [
                 'uuid' => Str::uuid()->toString(),
-                'name' => 'Quality Service',
+                'name' => 'QSR Solutions',
                 'email' => 'admin@qsr.mx',
                 'password' => Hash::make('qsr.2024!'),
                 'client_id' => $client->client_id,

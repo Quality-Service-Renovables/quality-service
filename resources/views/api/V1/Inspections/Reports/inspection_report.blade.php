@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
-    <title>{{ config('app.name', 'Quality Service Renovables') }}</title>
+    <title>{{ config('app.name', 'QSR Solutions') }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
     <meta name="theme-color" content="#c40000" />
@@ -59,7 +59,7 @@
             border: 1px solid black;
         }
 
-       
+
 
         .page-break {
             page-break-after: always;
@@ -173,7 +173,7 @@
         .cover td{
             vertical-align: top;
         }
-       
+
         .space{
             margin-bottom: 60px;
         }
@@ -200,7 +200,7 @@
 
         .text-right{
             text-align: right;
-        }   
+        }
 
         .text-center{
             text-align: center;
@@ -253,7 +253,7 @@
         }
         .p-0{
             padding: 0;
-        } 
+        }
         ul{
             margin: 0px;
         }

@@ -1,4 +1,4 @@
-<h1 align="center">Quality Service</h1>
+<h1 align="center">QSR Solutions</h1>
 <p align="center">Versión 1.0.0</p>
 
 ## Application Web Service

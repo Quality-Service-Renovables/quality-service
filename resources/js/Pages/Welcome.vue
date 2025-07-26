@@ -41,7 +41,7 @@ function handleImageError() {
                 <main>
                     <div class="mb-12">
                         <p class="text-2xl">
-                            <span class="text-white">Quality Service</span> Renovables
+                            <span class="text-white">QSR</span> Solutions
                             <div class="flex justify-center">
                                 <p class="text-sm">Estamos creando algo increible</p>
                             </div>

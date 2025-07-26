@@ -32,8 +32,8 @@ import { mdiCheckBold } from '@mdi/js';
                         v-if="checkRole(['admin', 'tecnico', 'cliente'])">
                         <h4 class="text-grey-darken-1" v-if="!hideTittleSection">Administración</h4>
                         <div class="d-flex align-start flex-wrap">
-                            <App path="dashboard" title="Dashboard" icon="mdi-monitor-dashboard"
-                                v-if="checkVisivility('Dashboard')" />
+                            <!--<App path="dashboard" title="Dashboard" icon="mdi-monitor-dashboard"
+                                v-if="checkVisivility('Dashboard')" />-->
                             <App path="projects" title="Proyectos" icon="mdi-folder-text-outline"
                                 v-if="checkVisivility('Proyectos') && hasPermissionTo('projects')" />
                             <App path="users" title="Usuarios" icon="mdi-account-group"
