@@ -9,12 +9,11 @@
                 <p style="color: gray" class="space italic">{{ $inspection->project->title_report }}</p>
                 <p>ELABORADO PARA:</p>
                 <div class="space">
+                    <p class="primary-color" style="margin-bottom: 10px;">
+                        {{ $inspection->client->client }}
+                    </p>
                     @if($inspection->client->logo)
-                        <img src="{{ $inspection->client->logo }}" alt="{{ $inspection->client->client }}" style="max-width: 100px; height: auto;margin:0px;">
-                    @else
-                        <p class="primary-color" style="margin-bottom: 0px;">
-                            {{ $inspection->client->client }}
-                        </p>
+                        <img src="{{ $inspection->client->logo }}" alt="{{ $inspection->client->client }}" style="max-width: 100px; height: auto;margin:0px;border: 2px solid gray;">
                     @endif
                 </div>
                 <p>UBICACIÓN:</p>
