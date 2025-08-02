@@ -10,7 +10,7 @@
                 <p>ELABORADO PARA:</p>
                 <div class="space">
                     @if($inspection->client->logo)
-                        <img src="{{ $inspection->client->logo }}" alt="{{ $inspection->client->client }}" style="max-width: 50px; height: auto;margin:0px;">
+                        <img src="{{ $inspection->client->logo }}" alt="{{ $inspection->client->client }}" style="max-width: 100px; height: auto;margin:0px;">
                     @else
                         <p class="primary-color" style="margin-bottom: 0px;">
                             {{ $inspection->client->client }}
