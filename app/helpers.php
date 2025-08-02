@@ -22,3 +22,29 @@ if (! function_exists('create_slug')) {
         return strtolower(trim($slug, '-'));
     }
 }
+
+if (! function_exists('has_results')) {
+    /**
+     * Checks if a section has results.
+     *
+     * @param  object  $section  The section to check.
+     * @return int Returns true if results are found, otherwise returns false.
+     */
+    function has_results($section) {
+        // Checa si hay campos con resultado
+        foreach ($section->fields as $field) {
+            if (!empty($field->result)) {
+                return true;
+            }
+        }
+        // Checa subsecciones recursivamente
+        if (isset($section->subSections)) {
+            foreach ($section->subSections as $subSection) {
+                if (has_results($subSection)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}

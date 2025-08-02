@@ -1,30 +1,10 @@
-@php
-    function hasResults($section) {
-        // Checa si hay campos con resultado
-        foreach ($section->fields as $field) {
-            if (!empty($field->result)) {
-                return true;
-            }
-        }
-        // Checa subsecciones recursivamente
-        if (isset($section->subSections)) {
-            foreach ($section->subSections as $subSection) {
-                if (hasResults($subSection)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-@endphp
-
 <div class="section">
     {{--  INSPECCIÓN  --}}
     <h3 class="primary-color uppercase">7. RESULTADOS PRINCIPALES</h3>
 
     {{--  Secciones  --}}
     @foreach ($inspection->category->sections as $index => $section)
-        @if (hasResults($section))
+        @if (has_results($section))
             <h3 class="primary-color uppercase" style="margin-bottom: 0px;margin-top:15px;">7.{{ $index + 1 }}
                 {{ $section->ct_inspection_section }}</h3>
             <div class="text-center">
@@ -34,7 +14,7 @@
             {{--  Campos  --}}
             @if (count($section->fields))
                 @foreach ($section->fields as $field)
-                    @if (!empty($field->result))
+                    @if ($field->result && ($field->result->inspection_form_value || $field->result->inspection_form_comments || $field->result->risk))
                         <table style="margin-bottom:10px;">
                             <tbody>
                                 <tr class="text-center">
@@ -85,7 +65,7 @@
             {{--  Subsecciones  --}}
             @if (isset($section->subSections) && count($section->subSections))
                 @foreach ($section->subSections as $indexSub => $subSection)
-                    @if (hasResults($subSection))
+                    @if (has_results($subSection))
                         <h3 class="primary-color uppercase" style="margin-bottom: 0px;margin-top:15px;">
                             7.{{ $index + 1 }}.{{ $indexSub + 1 }}
                             {{ $subSection->ct_inspection_section }}</h3>
@@ -95,7 +75,7 @@
                         {{--  Subsección campos  --}}
                         @if (count($subSection->fields))
                             @foreach ($subSection->fields as $field)
-                                @if (!empty($field->result))
+                                @if ($field->result && ($field->result->inspection_form_value || $field->result->inspection_form_comments || $field->result->risk))
                                     <table style="margin-bottom:10px;">
                                         <tbody>
                                             <tr class="text-center">
