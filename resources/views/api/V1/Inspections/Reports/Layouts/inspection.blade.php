@@ -3,12 +3,14 @@
     <h3 class="primary-color uppercase">7. RESULTADOS PRINCIPALES</h3>
 
     {{--  Secciones  --}}
-    @foreach ($inspection->category->sections as $index => $section)
+    @php $indexSection = 0; @endphp
+    @foreach ($inspection->category->sections as $section)
         @if (has_results($section))
-            <h3 class="primary-color uppercase" style="margin-bottom: 0px;margin-top:15px;">7.{{ $index + 1 }}
+            @php $indexSection ++; @endphp
+            <h3 class="primary-color uppercase" style="margin-bottom: 0px;margin-top:15px;">7.{{ $indexSection }}
                 {{ $section->ct_inspection_section }}</h3>
             <div class="text-center">
-                <p>Tabla 7.{{ $index + 1 }} {{ $section->ct_inspection_section }}</p>
+                <p>Tabla 7.{{ $indexSection }} {{ $section->ct_inspection_section }}</p>
             </div>
 
             {{--  Campos  --}}
@@ -61,16 +63,17 @@
                     @endif
                 @endforeach
             @endif
-
+            @php $indexSubSection = 0; @endphp
             {{--  Subsecciones  --}}
             @if (isset($section->subSections) && count($section->subSections))
-                @foreach ($section->subSections as $indexSub => $subSection)
+                @foreach ($section->subSections as $subSection)
                     @if (has_results($subSection))
+                        @php $indexSubSection++; @endphp
                         <h3 class="primary-color uppercase" style="margin-bottom: 0px;margin-top:15px;">
-                            7.{{ $index + 1 }}.{{ $indexSub + 1 }}
+                            7.{{ $indexSection }}.{{ $indexSubSection }}
                             {{ $subSection->ct_inspection_section }}</h3>
                         <div class="text-center">
-                            <p>Tabla 7.{{ $index + 1 }}.{{ $indexSub + 1 }} {{ $subSection->ct_inspection_section }}</p>
+                            <p>Tabla 7.{{ $indexSection }}.{{ $indexSubSection}} {{ $subSection->ct_inspection_section }}</p>
                         </div>
                         {{--  Subsección campos  --}}
                         @if (count($subSection->fields))

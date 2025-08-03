@@ -16,8 +16,13 @@
     <p><a href="#escale" class="list">5. ESCALA DE CONDICIÓN</a></p>
     <p><a href="#resume" class="list">6. RESUMEN DE LOS RESULTADOS PRINCIPALES</a></p>
     <p><a href="#main_results" class="list">7. RESULTADOS PRINCIPALES</a></p>
-    @foreach ($inspection->category->sections as $index => $section)
-        <p><a href="#{{ $section->ct_inspection_section }}"class="list sub-list uppercase">7.{{$index+1}} {{ $section->ct_inspection_section }}</a></p>
+    {{--  Secciones  --}}
+    @php $indexSection = 0; @endphp
+    @foreach ($inspection->category->sections as $section)
+        @if (has_results($section))
+            @php $indexSection ++; @endphp
+            <p><a href="#{{ $section->ct_inspection_section }}"class="list sub-list uppercase">7.{{ $indexSection }} {{ $section->ct_inspection_section }}</a></p>
+        @endif
     @endforeach
     <p><a href="#section5" class="list">8. CONCLUCIONES Y RECOMENDACIONES</a></p>
 </div>
