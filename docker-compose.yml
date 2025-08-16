@@ -20,7 +20,31 @@ services:
         volumes:
             - ./:/app
             - /app/vendor         # proteger dependencias PHP
-            - /app/node_modules   # proteger dependencias JS            -
+            - /app/node_modules   # proteger dependencias JS
+    mysql:
+        image: 'mysql:8.3.0'
+        container_name: database
+        hostname: database
+        ports:
+            - '${MYSQL_PORT:-3306}:3306'
+        environment:
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+        env_file:
+            - .env
+        volumes:
+            - mysql:/var/lib/mysql
+        networks:
+            - net-databases
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+            retries: 3
+            timeout: 5s
 networks:
     net-sso:
         driver: bridge
+    net-databases:
+        driver: bridge
+volumes:
+    dumps:
+    mysql:
