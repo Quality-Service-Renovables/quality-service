@@ -50,14 +50,12 @@ export default {
                 },
                 menu: ['crop', 'text', 'draw'],
                 initMenu: 'draw',
-                uiSize: {
-                    width: '100%',
-                    height: '700px',
-                },
-                menuBarPosition: 'bottom',
+                menuBarPosition: 'right',
                 theme: whiteTheme,
                 locale: locale_es_ES,
             },
+            cssMaxWidth: '800',
+            cssMaxHeight: '600',
         });
     },
     methods: {
@@ -103,4 +101,8 @@ export default {
 </script>
 
 
-<style scoped></style>
+<style scoped>
+.tui-image-editor-container{
+    height: 85vh !important;
+}
+</style>

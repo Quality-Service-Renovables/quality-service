@@ -1,9 +1,9 @@
 .tui-image-editor-main-container{
-    border-radius: 20px 20px 0px 0px !important;
+    /*border-radius: 20px 20px 0px 0px !important;*/
     overflow: hidden !important;
 }
 .tui-image-editor-container{
-    border-radius: 0px 0px 20px 20px !important;
+    /*border-radius: 0px 0px 20px 20px !important;*/
     overflow: hidden !important;
     background-color: white !important;
 }
@@ -18,7 +18,7 @@
         width: 100% !important;
         flex-wrap: wrap !important;
     }
-    
+
     .tui-image-editor-header-buttons {
         display: none !important;
     }

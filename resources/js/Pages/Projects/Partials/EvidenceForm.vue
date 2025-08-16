@@ -63,13 +63,12 @@
         </v-card>
     </v-dialog>
     <!-- Dialog edit image-->
-    <v-dialog v-model="editImage" class="width-edit">
-        <v-card title="Editando imágen de evidencia">
-            <v-card-text>
+    <v-dialog v-model="editImage" fullscreen>
+        <v-card>
+            <v-card-text class="pb-0">
                 <ImageEditor :evidence="evidence" :form="form" @closeEditImageDialog="closeEditImageDialog" @setEvidence="setEvidence"/>
             </v-card-text>
             <v-card-actions>
-                <v-spacer></v-spacer>
                 <v-btn text="Cancelar" variant="text" @click="closeEditImageDialog"></v-btn>
             </v-card-actions>
         </v-card>
@@ -298,15 +297,5 @@ export default {
     bottom: 35px;
     z-index: 1;
     left: 24px;
-}
-
-.width-edit {
-    width: 800px;
-}
-
-@media screen and (max-width: 600px) {
-    .width-edit {
-        width: 100% !important;
-    }
 }
 </style>
