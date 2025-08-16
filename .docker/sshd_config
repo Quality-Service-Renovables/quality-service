@@ -1,0 +1,17 @@
+Port 			    22
+#ListenAddress 		172.20.0.0/16
+LoginGraceTime 		30
+X11Forwarding 		no
+Ciphers 			chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com
+MACs 				hmac-sha2-256,hmac-sha2-512
+KexAlgorithms 		curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+StrictModes 		yes
+SyslogFacility 		AUTHPRIV
+PasswordAuthentication 	no
+PermitEmptyPasswords 	no
+PermitRootLogin 	yes
+#AllowUsers 			<username> # Opcional, restringir a usuarios específicos
+AuthorizedKeysFile	~/.ssh/authorized_keys
+ChallengeResponseAuthentication no
+UsePAM 			no
+Subsystem sftp 		internal-sftp

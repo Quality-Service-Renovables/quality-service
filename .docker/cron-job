@@ -1,0 +1,6 @@
+# Ejemplo de trabajo de cron: ejecuta un script cada minuto
+# * * * * * root /usr/bin/example-script.sh >> /var/log/cron.log 2>&1
+
+* * * * * php /app/artisan schedule:run >> /var/log/cron.log 2>&1
+
+# Importante: agrega una línea en blanco al final del archivo cron
