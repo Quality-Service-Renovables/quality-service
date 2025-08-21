@@ -54,8 +54,8 @@ export default {
                 theme: whiteTheme,
                 locale: locale_es_ES,
             },
-            cssMaxWidth: '800',
-            cssMaxHeight: '600',
+            cssMaxWidth: '600',
+            cssMaxHeight: '400',
         });
     },
     methods: {
