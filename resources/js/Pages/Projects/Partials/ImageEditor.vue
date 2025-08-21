@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="tui-image-editor-container" class="w-100"></div>
+        <div id="tui-image-editor-container"></div>
         <div class="text-center">
             <PrimaryButton @click="saveImage()" class="mt-2" :loading="form.loading" :disabled="form.loading">Guardar
             </PrimaryButton>
@@ -9,11 +9,8 @@
 </template>
 
 <script>
-import ImageEditor from 'tui-image-editor';
-import 'tui-image-editor/dist/tui-image-editor.css';
 import whiteTheme from '@/Plugins/tui-image-editor/white-theme.js';
 import locale_es_ES from '@/Plugins/tui-image-editor/locale_es_ES';
-import '@/Plugins/tui-image-editor/service-mobile.css';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Toaster, toast } from 'vue-sonner'
 
@@ -42,26 +39,34 @@ export default {
         };
     },
     mounted() {
-        this.imageEditor = new ImageEditor(document.querySelector('#tui-image-editor-container'), {
+        this.imageEditor = new tui.ImageEditor('#tui-image-editor-container', {
             includeUI: {
                 loadImage: {
                     path: this.form.evidence_store,
                     name: 'SampleImage',
                 },
-                menu: ['crop', 'text', 'draw'],
+                theme: {},
+                menu: ['crop', 'draw', 'text', 'icon'],
                 initMenu: 'draw',
+                uiSize: {
+                    width: '100%',
+                    height: '85vh'
+                },
                 menuBarPosition: 'right',
                 theme: whiteTheme,
                 locale: locale_es_ES,
             },
-            cssMaxWidth: '600',
-            cssMaxHeight: '400',
+            cssMaxWidth: 600,
+            cssMaxHeight: 400,
+        });
+        this.imageEditor.setBrush({
+            width: 10,
+            color: '#ff0000'   // rojo
         });
     },
     methods: {
         saveImage() {
             const dataURL = this.imageEditor.toDataURL();
-            // Convertimos el dataURL a un objeto File
             const blob = this.dataURLtoBlob(dataURL);
             const file = new File([blob], 'image.png', { type: 'image/png' });
             this.form.evidence_store = file;
@@ -101,8 +106,12 @@ export default {
 </script>
 
 
-<style scoped>
-.tui-image-editor-container{
-    height: 85vh !important;
+<style>
+#tui-image-editor-container {
+  width: 100%;
+  height: 85vh;
+}
+.tui-image-editor-header-buttons, .tui-image-editor-download-btn, .tui-image-editor-header {
+  display: none !important;
 }
 </style>

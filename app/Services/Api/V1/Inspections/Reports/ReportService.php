@@ -14,6 +14,7 @@ use App\Services\Service;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use App\Services\Api\V1\Inspections\InspectionFormService;
 use Throwable;
 
 class ReportService extends Service
@@ -21,6 +22,18 @@ class ReportService extends Service
     use Audits;
 
     public string $nameService = 'inspection_report';
+
+    protected InspectionFormService $inspectionFormService;
+
+    /**
+     * Create a new instance of the class.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->inspectionFormService = new InspectionFormService();
+    }
 
     /**
      * Get the document for a given inspection UUID.
@@ -52,7 +65,7 @@ class ReportService extends Service
                 $this->response['data']['path_storage'] = $inspection->path_final_pdf;
                 return $this->response;
             }
-            
+
             // Valida si la inspección tiene información.
             if ($inspection && $this->isValidInspection($inspection)) {
                 $inspection->fields = $inspection->equipment_fields_report
@@ -168,16 +181,21 @@ class ReportService extends Service
         try {
             // Obtiene datos del usuario
             $user = auth()->user()->load('client.config');
+
             // Obtiene resumen de inspección
             $inspection = Inspection::with([
                 'client',
-                'category.sections.subSections.fields.result.evidences',
-                'category.sections.subSections.fields.result.risk',
+                'category',
                 'inspectionEquipments.equipment',
                 'project.employees.user',
                 'risk',
                 'diagnosis',
             ])->where('inspection_uuid', $uuid)->first();
+
+            // Obtiene las secciones del formulario de inspección con sus campos y subsecciones con sus evidencias
+            $sections = $this->inspectionFormService->getFormInspection($uuid)['data'];
+            $inspection->sections = $sections['sections'];
+
             // Valida si la inspección tiene información.
             if ($inspection && $this->isValidInspection($inspection)) {
                 $inspection->fields = $inspection->equipment_fields_report

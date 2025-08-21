@@ -32,14 +32,14 @@ if (! function_exists('has_results')) {
      */
     function has_results($section) {
         // Checa si hay campos con resultado
-        foreach ($section->fields as $field) {
-            if (!empty($field->result)) {
+        foreach ($section['fields'] as $field) {
+            if (!empty($field['content'])) {
                 return true;
             }
         }
         // Checa subsecciones recursivamente
-        if (isset($section->subSections)) {
-            foreach ($section->subSections as $subSection) {
+        if (isset($section['sub_sections'])) {
+            foreach ($section['sub_sections'] as $subSection) {
                 if (has_results($subSection)) {
                     return true;
                 }

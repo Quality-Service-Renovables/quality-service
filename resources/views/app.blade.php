@@ -23,10 +23,24 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    <!-- CSS del color picker (dependencia) -->
+    <link rel="stylesheet" href="https://unpkg.com/tui-color-picker/dist/tui-color-picker.css" />
+
+    <!-- CSS principal del image editor -->
+    <link rel="stylesheet" href="https://unpkg.com/tui-image-editor/dist/tui-image-editor.css" />
+
     <!-- Scripts -->
     @routes
     @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
     @inertiaHead
+
+    <!-- Scripts de dependencias -->
+    <script src="https://unpkg.com/fabric/dist/fabric.js"></script>
+    <script src="https://unpkg.com/tui-code-snippet/dist/tui-code-snippet.js"></script>
+    <script src="https://unpkg.com/tui-color-picker/dist/tui-color-picker.js"></script>
+
+    <!-- Script principal del image editor -->
+    <script src="https://unpkg.com/tui-image-editor/dist/tui-image-editor.js"></script>
 </head>
 
 <body class="font-sans antialiased">
