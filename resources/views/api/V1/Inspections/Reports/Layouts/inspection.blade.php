@@ -44,8 +44,10 @@
                                                     <tr>
                                                         @foreach ($field->content->evidences as $index => $evidence)
                                                             <td style="width: 33.33%; padding:5px;">
-                                                                <img src="{{ $evidence->inspection_evidence }}"
-                                                                    alt="{{ $evidence->description }}" style="max-width: 220px; height: auto;"><br>
+                                                                <a href="{{ asset($evidence->inspection_evidence) }}" target="_blank">
+                                                                    <img src="{{ $evidence->inspection_evidence }}"
+                                                                        alt="{{ $evidence->description }}" style="max-width: 220px; height: auto;"><br>
+                                                                </a>
                                                                 <small>{{ $evidence->title }} {{ $evidence->description ? ' - ' . $evidence->description : '' }}</small>
                                                             </td>
                                                             @if(($index + 1) % 3 == 0)
@@ -107,8 +109,10 @@
                                                                 <tr>
                                                                     @foreach ($field->content->evidences as $index => $evidence)
                                                                         <td style="width: 33.33%; padding:5px;">
-                                                                            <img src="{{ $evidence->inspection_evidence }}"
-                                                                                alt="{{ $evidence->description }}" style="max-width: 220px; height: auto;"><br>
+                                                                            <a href="{{ asset($evidence->inspection_evidence) }}" target="_blank">
+                                                                                <img src="{{ $evidence->inspection_evidence }}"
+                                                                                    alt="{{ $evidence->description }}" style="max-width: 220px; height: auto;"><br>
+                                                                            </a>
                                                                             <small>{{ $evidence->title }} {{ $evidence->description ? ' - ' . $evidence->description : '' }}</small>
                                                                         </td>
                                                                         @if(($index + 1) % 3 == 0)
