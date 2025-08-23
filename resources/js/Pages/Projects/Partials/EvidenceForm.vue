@@ -2,9 +2,9 @@
     <v-card class="p-0" border="dashed thin dark md" v-if="!form.loading">
         <div class="container-img p-0">
             <file-pond name="evidence" ref="pond"
-                label-idle="Arrastra y suelta tu archivo o <span class='filepond--label-action'>selecciona</span>"
-                :allow-multiple="false" accepted-file-types="image/jpeg, image/png" :files="myFiles"
-                @init="handleFilePondInit" :server="serverConfig" instantUpload="false" allowProcess="true"
+                label-idle="Arrastra y suelta tus imágenes o <span class='filepond--label-action'>selecciónalas</span>"
+                :allow-multiple="multiple" accepted-file-types="image/jpeg, image/png" :files="myFiles"
+                @init="handleFilePondInit" :server="serverConfig" instantUpload="false" allowProcess="false"
                 allowReplace="true" allowImagePreview="true" labelInvalidField="Tipo de archivo no permitido"
                 labelFileLoading="Cargando" labelFileLoadError="Error al subir el archivo"
                 labelFileProcessing="Procesando" labelFileProcessingComplete="Proceso completado"
@@ -12,52 +12,41 @@
                 labelTapToCancel="Toca para cancelar" labelTapToRetry="Toca para reintentar"
                 labelTapToUndo="Toca para deshacer" labelButtonAbortItemLoad="Cancelar"
                 labelButtonRetryItemLoad="Reintentar" labelButtonAbortItemProcessing="Cancelar"
-                labelButtonProcessItem="Subir" :class="evidence ? 'min-height' : ''"/>
-            <v-btn icon="mdi-pencil" density="compact" class="bg-grey-darken-3 btn-edit"
-                @click="openEditImageDialog" v-if="evidence"></v-btn>
+                labelButtonProcessItem="Subir" :class="evidence ? 'min-height' : ''" />
+            <v-btn icon="mdi-pencil" density="compact" class="bg-grey-darken-3 btn-edit" @click="openEditImageDialog"
+                v-if="evidence"></v-btn>
         </div>
         <v-card-title>
             <v-text-field label="Título" v-model="form.title" variant="outlined" hide-details
                 density="compact"></v-text-field>
         </v-card-title>
-        <!--<v-card-title>
-            <v-text-field label="Título secundario" v-model="form.title_secondary" variant="outlined" hide-details
-                density="compact"></v-text-field>
-        </v-card-title>-->
         <v-card-title class="pb-1">
             <v-textarea label="Descripción" v-model="form.description" variant="outlined" rows="2" hide-details
                 density="compact"></v-textarea>
         </v-card-title>
-        <!--<v-card-title>
-            <v-textarea label="Descripción secundaría" v-model="form.description_secondary" variant="outlined" rows="2"
-                hide-details density="compact"></v-textarea>
-        </v-card-title>-->
-        <v-card-actions class="p-0 m-0" v-if="evidence">
-            <!--Delete button-->
-            <v-btn color="error" @click="dialogDelete = true" v-if="evidence" block @mouseover="isHoveredDelete = true"
-                @mouseleave="isHoveredDelete = false">
-                <v-icon left class="text-h5 primary-color">
-                    {{ isHoveredDelete ? 'mdi-delete-empty-outline' : 'mdi-delete-outline' }}
-                </v-icon>
-            </v-btn>
+        <v-card-actions class="p-0 m-0 d-flex justify-center">
+                <v-btn @click="uploadAll" prepend-icon="mdi-upload" variant="tonal" size="small" color="secondary">
+                    {{ evidence ? 'Actualizar' : 'Subir' }}
+                </v-btn>
+                <v-btn v-if="evidence" @click="dialogDelete = true" prepend-icon="mdi-delete" variant="tonal" size="small" color="red">
+                    Eliminar
+                </v-btn>
         </v-card-actions>
     </v-card>
     <v-card v-else class="pb-0" border="dashed thin dark md">
         <v-skeleton-loader type="card"></v-skeleton-loader>
         <v-skeleton-loader type="paragraph" />
         <v-skeleton-loader type="paragraph" />
-        <br>
+        <br />
     </v-card>
     <!-- Dialog delete image-->
     <v-dialog v-model="dialogDelete" max-width="500px">
         <v-card>
-            <v-card-title class="text-h5 text-center">¿Estás seguro de
-                eliminar?</v-card-title>
+            <v-card-title class="text-h5 text-center">¿Estás seguro de eliminar?</v-card-title>
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue-darken-1" variant="text" @click="dialogDelete = false">Cancelar</v-btn>
-                <v-btn color="blue-darken-1" variant="text" @click="deleteEvidence()">Si,
-                    eliminar</v-btn>
+                <v-btn color="blue-darken-1" variant="text" @click="deleteEvidence()">Si, eliminar</v-btn>
                 <v-spacer></v-spacer>
             </v-card-actions>
         </v-card>
@@ -66,7 +55,8 @@
     <v-dialog v-model="editImage" fullscreen>
         <v-card>
             <v-card-text class="pb-0">
-                <ImageEditor :evidence="evidence" :form="form" @closeEditImageDialog="closeEditImageDialog" @setEvidence="setEvidence"/>
+                <ImageEditor :evidence="evidence" :form="form" @closeEditImageDialog="closeEditImageDialog"
+                    @setEvidence="setEvidence" />
             </v-card-text>
             <v-card-actions>
                 <v-btn text="Cancelar" variant="text" @click="closeEditImageDialog"></v-btn>
@@ -76,12 +66,12 @@
 </template>
 
 <script>
-import { Toaster, toast } from 'vue-sonner'
+import { Toaster, toast } from "vue-sonner";
 import Swal from "sweetalert2";
 
 // Import Vue FilePond
 import vueFilePond from "vue-filepond";
-import axios from 'axios';
+import axios from "axios";
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-file-poster/dist/filepond-plugin-file-poster.min.css";
@@ -92,7 +82,9 @@ import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFilePoster from "filepond-plugin-file-poster";
 import FilePondPluginImageTransform from "filepond-plugin-image-transform";
-import ImageEditor from './ImageEditor.vue';
+import ImageEditor from "./ImageEditor.vue";
+import { FileStatus } from "filepond";
+
 // Create component
 const FilePond = vueFilePond(
     FilePondPluginFileValidateType,
@@ -104,30 +96,34 @@ export default {
     components: {
         FilePond,
         Toaster,
-        ImageEditor
+        ImageEditor,
     },
     props: {
         inspection_uuid: {
             type: String,
-            required: true
+            required: true,
         },
         evidence: {
             type: Object,
-            required: false
+            required: false,
         },
         positionAux: {
             type: Number,
-            required: false
+            required: false,
         },
         inspection_form_id: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
+        multiple: {
+            type: Boolean,
+            default: false,
+        },
     },
     data() {
         return {
             myFiles: [],
-            action: 'create',
+            action: "create",
             dialogDelete: false,
             isHoveredDelete: false,
             form: {
@@ -164,25 +160,25 @@ export default {
                     const source = CancelToken.source();
 
                     if (!this.form.title) {
-                        error('El título de la evidencia es requerido');
-                        toast.error('El título de la evidencia es requerido');
+                        error("El título de la evidencia es requerido");
+                        toast.error("El título de la evidencia es requerido");
                         return;
                     }
 
                     this.save(source, load, error, progress);
-                }
+                },
             },
             editImage: false,
         };
     },
     mounted() {
         if (this.evidence) {
-            this.action = 'update';
+            this.action = "update";
             this.setEvidence(this.evidence);
         }
     },
     methods: {
-        setEvidence(evidence){
+        setEvidence(evidence) {
             this.form.evidence_store = evidence.inspection_evidence;
             this.form.title = evidence.title;
             this.form.description = evidence.description;
@@ -191,7 +187,7 @@ export default {
                 {
                     source: evidence.inspection_evidence,
                     options: {
-                        type: 'remote',
+                        type: "remote",
                     },
                 },
             ];
@@ -201,71 +197,81 @@ export default {
         },
         save(source, load, error, progress) {
             this.form.position = this.positionAux;
-            if (this.action === 'create') {
-                axios.post('api/inspection/evidences', this.form, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    },
-                    cancelToken: source.token,
-                    onUploadProgress: (e) => {
-                        progress(e.lengthComputable, e.loaded, e.total);
-                    }
-                })
-                    .then(response => {
+            if (this.action === "create") {
+                axios
+                    .post("api/inspection/evidences", this.form, {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                        cancelToken: source.token,
+                        onUploadProgress: (e) => {
+                            progress(e.lengthComputable, e.loaded, e.total);
+                        },
+                    })
+                    .then((response) => {
                         load(response.data.fileId);
                         setTimeout(() => {
                             this.myFiles = [];
                             this.form = this.formDefault;
-                            this.$emit('getEvidences');
+                            this.$emit("getEvidences");
                         }, 2000);
                     })
-                    .catch(thrown => {
+                    .catch((thrown) => {
                         if (axios.isCancel(thrown)) {
                             this.abort(source);
                         } else {
-                            error('Error al subir la información.');
+                            error("Error al subir la información.");
                             this.handleErrors(thrown);
                         }
                     });
-            } else if (this.action === 'update') {
+            } else if (this.action === "update") {
                 this.form.loading = true;
-                axios.post('api/inspection/evidences/update/' + this.evidence.inspection_evidence_uuid, this.form, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    },
-                    cancelToken: source.token,
-                    onUploadProgress: (e) => {
-                        progress(e.lengthComputable, e.loaded, e.total);
-                    }
-                })
-                    .then(response => {
+                axios
+                    .post(
+                        "api/inspection/evidences/update/" +
+                        this.evidence.inspection_evidence_uuid,
+                        this.form,
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                            },
+                            cancelToken: source.token,
+                            onUploadProgress: (e) => {
+                                progress(e.lengthComputable, e.loaded, e.total);
+                            },
+                        }
+                    )
+                    .then((response) => {
                         load(response.data.fileId);
                         setTimeout(() => {
                             let evidence = response.data.data;
-                            this.setEvidence(evidence)
+                            this.setEvidence(evidence);
                         }, 2000);
                     })
-                    .catch(thrown => {
+                    .catch((thrown) => {
                         this.form.loading = false;
                         if (axios.isCancel(thrown)) {
                             this.abort(source);
                         } else {
-                            error('Error al subir la información.');
+                            error("Error al subir la información.");
                             this.handleErrors(thrown);
                         }
                     });
             }
         },
         abort(source) {
-            source.cancel('Operación cancelada por el usuario.');
+            source.cancel("Operación cancelada por el usuario.");
         },
         deleteEvidence() {
-            axios.delete('api/inspection/evidences/' + this.evidence.inspection_evidence_uuid)
-                .then(response => {
+            axios
+                .delete(
+                    "api/inspection/evidences/" + this.evidence.inspection_evidence_uuid
+                )
+                .then((response) => {
                     toast.success("Evidencia eliminada");
-                    this.$emit('getEvidences');
+                    this.$emit("getEvidences");
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.handleErrors(error);
                 });
         },
@@ -276,11 +282,24 @@ export default {
         closeEditImageDialog() {
             this.editImage = false;
         },
+        uploadAll() {
+            console.log("Subiendo todas las imágenes...");
+            const pond = this.$refs.pond;
+            if (!pond) return;
+            console.log("paso el if...");
+            // Procesa solo archivos en estado IDLE (no subidos)
+            pond.getFiles().forEach((file) => {
+                console.log("Entro al for");
+                console.log(file);
+                if (file.status === FileStatus.IDLE) {
+                    console.log("Archivo en estado IDLE:", file);
+                    pond.processFile(file.id);
+                }
+            });
+        },
     },
 };
 </script>
-
-
 
 <style scoped>
 .min-height {
