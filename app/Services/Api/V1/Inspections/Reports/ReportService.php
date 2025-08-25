@@ -15,6 +15,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Services\Api\V1\Inspections\InspectionFormService;
+use App\Models\Clients\Client;
 use Throwable;
 
 class ReportService extends Service
@@ -47,6 +48,10 @@ class ReportService extends Service
         try {
             // Obtiene datos del usuario
             $user = auth()->user()->load('client.config');
+
+            //Obtenemos los datos de QSR
+            $qsrData = Client::where('client_id', '1')->with('config')->first();
+
             // Obtiene resumen de inspección
             $inspection = Inspection::with([
                 'client',
@@ -71,7 +76,7 @@ class ReportService extends Service
                 $inspection->fields = $inspection->equipment_fields_report
                 ? json_decode($inspection->equipment_fields_report)
                 : null;
-                $inspection->provider = $user->client;
+                $inspection->provider = $qsrData;
                 $inspection->risk_catalog = CtRisk::all();
                 // Generación de la vista en base a la información de la colección.
                 $pdf = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
@@ -182,6 +187,9 @@ class ReportService extends Service
             // Obtiene datos del usuario
             $user = auth()->user()->load('client.config');
 
+            //Obtenemos los datos de QSR
+            $qsrData = Client::where('client_id', '1')->with('config')->first();
+
             // Obtiene resumen de inspección
             $inspection = Inspection::with([
                 'client',
@@ -201,7 +209,7 @@ class ReportService extends Service
                 $inspection->fields = $inspection->equipment_fields_report
                 ? json_decode($inspection->equipment_fields_report)
                 : null;
-                $inspection->provider = $user->client;
+                $inspection->provider = $qsrData;
                 $inspection->risk_catalog = CtRisk::all();
                 // Generación de la vista en base a la información de la colección.
                 $pdf = PDF::loadView('api.V1.Inspections.Reports.inspection_report', compact('inspection'));
